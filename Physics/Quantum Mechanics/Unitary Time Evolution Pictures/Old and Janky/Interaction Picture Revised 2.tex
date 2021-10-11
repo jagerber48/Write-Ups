@@ -1,0 +1,663 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Interaction Picture}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I will show how we can move between different ``pictures'' of quantum mechanics by performing Unitary transformations in the Hilbert space which transform the kets and the operators in particular ways. Namely, any unitary operator induces a transformation the kets and operators. This transformation changes the dynamical equations of motion for kets and the operators. This is advantageous, technically, because it can allow us to simplify the Hamiltonians and dynamical equations that we are working with to make them more tractable analytically or numerically. 
+
+Performing these transformations can also provide different types of intuitive insight into problems. For example, by moving into the Heisenberg picture on can look at the Heisenberg evolution of operators (analogous to classical variables) while moving into certain interaction pictures can be equivalent to analyzing a problem in a reference frame co-rotating with some degree of freedom of the system under study. Such rotating frames also find use in classical mechanics. Moving into the appropriate frame can often allow us to eliminate explicit time dependence from the Hamiltonian which can again make the diagonalization of the Hamiltonian much simpler.
+
+I will first show how we define unitary transformations on Hilbert spaces. Next I will show in the most general case how a unitary transformation affects the dynamics of the kets and the operators. Subsequently I will specialize to different cases of interest.
+
+For me it is helpful to see all of the different types of transformations we encounter (Schrodinger picture, Heisenberg picture, Interaction picture, Rotating frame) all as manifestations of applying different Unitary transformations to the system.
+
+
+\section{Unitary Transformation on Hilbert Space}
+
+We can perform a unitary operation on a Hilbert space. A unitary operation $U_T$ is defined as one that preserves the inner product. Note that this implies, for all $\ket{\psi}, \ket{\phi}$ that
+
+\begin{align}
+\bra{\psi}U_T^{\dag} U_T \ket{\phi} &= \braket{\psi | \phi}\\
+\implies U_T^{\dag}U_T &= \mathbbm{1}
+\end{align}
+
+
+I will use the language that the following transformation is induced by the operator $U_T$. Namely we have
+
+\begin{align}
+\boxed{\ket{\psi}_0 \rightarrow U_T^{\dag}\ket{\psi}_0 = \ket{\psi}_T}
+\end{align}
+
+We also demand that operators $A$ transform in such a way that their expectation values are preserved.
+
+\begin{align}
+\braket{A_0} = \bra{\psi}_0 A_0\ket{\psi}_0 \rightarrow \bra{\psi}_T A_T \ket{\psi}_T = \bra{\psi}_0 U_T A_T U_T^{\dag}\ket{\psi_0} =  \bra{\psi}_0 A_0 \ket{\psi}_0
+\end{align}
+
+This implies that
+
+\begin{align}
+\boxed{A_0 \rightarrow U_T^{\dag} A_0 U_T = A_T}
+\end{align}
+
+Note that it will serve you well to remember whether the $U_T$ or $U_T^{\dag}$ comes first. When you are calculating the ket/operator in a NEW space in terms of the ket/operator in the OLD space the OLD ket/operator is PRECEDED by a $U_T^{\dag}$. Or, thought of the opposite way, to take an OLD ket/operator into a NEW space you PRECEDE it with $U_T$. Of course once you remember that you must not forget the second unitary needed to conjugate a transformed operator.
+
+\section{Transformation of Dynamical Equations}
+
+We are interested in how the equations of motion for kets and operators change when a unitary transformation is applied to the space. 
+
+In this section, for brevity, clarity, and cleanliness, I will leave of the $t$ parameter from all variables. However, I will emphasize that \emph{every} symbol here can in general depend on time.
+
+Suppose we begin in a space indexed by $0$ to indicate the initial space and suppose we have the following rules for the dynamical equations of motion:
+
+\begin{align}
+\ddt{\ket{\psi}_0} &= -i H_0 \ket{\psi}_0\\
+\ddt{A_0} &= -i[A_0,V_0] + \frac{\partial A_0}{\partial t}
+\end{align}
+
+Note, the fact that such dynamical equations of motion for kets and operators exists at all could be taken as a fundamental postulate of quantum mechanics. Often the time evolution postulate is stated in terms of the ket evolution and nothing is mentioned about operators. It is implicitly assumed that the author is working in the Schr{\"o}dinger picture to state the time evolution postulate. What I show here could be a more general postulation of the nature of time evolution in quantum mechanics that includes for the possibility of operators to evolve as well as kets. We thus have a ``ket Hamiltonian'' $H_0$ and an operator Hamiltonian $V_0$.
+
+The interpretation of $\frac{\partial A_0}{\partial t}$ can be a bit tricky here but the short story is that it has to do with \textit{explicit} time dependence of $A_0$ on the parameter $t$. In the Schr{\"o}dinger picture, for example, we have that $\ddt{X_S} = 0$. This is a special feature of the Schr{\"o}dinger picture. This means that $\ddt{X_S} = \frac{\partial X_S}{\partial t} \ddt{t} = \frac{\partial X_S}{\partial t} =  0$. However, we are free to define a variable $Y_S = t X_S$. This variable now has $\textit{explicit}$ dependence on $t$. We would now have $\ddt{Y_S} = \frac{\partial{Y_S}}{\partial X_S} \ddt{X_S} + \frac{\partial{Y_S}}{\partial t} \ddt{t} = \frac{\partial Y_S}{\partial t}= X_S \neq 0$.
+
+Suppose we apply the unitary transformation induced by $U_T$. We then have
+
+\begin{align}
+\ket{\psi}_T &= U_T^{\dag} \ket{\psi}_0\\
+A_T &= U_T^{\dag} A_0 U_T
+\end{align}
+
+We want to derive differential equations for the time evolution of each of these.
+
+\begin{align}
+\ket{\psi}_T &= U_T^{\dag}\ket{\psi}_0 =\\
+\ddt{\ket{\psi}_T} &= \left(\ddt{U_T^{\dag}} \right) \ket{\psi}_0 + U_T^{\dag} \ddt{\ket{\psi}_0}
+\end{align}
+
+We can plug in the known time evolution for $\ket{\psi}_0$ to find
+
+\begin{align}
+\ddt{\ket{\psi}_T} &= -i i\ddt{U_T^{\dag}} \ket{\psi}_0 -i U_T^{\dag} H_0 \ket{\psi}_0\\
+&= -i \left(i\ddt{U_T^{\dag}} U_T\right) U_T^{\dag} \ket{\psi}_0 -i U_T^{\dag} H_0U_TU_T^{\dag} \ket{\psi}_0\\
+&= -i \left(i\ddt{U_T^{\dag}} U_T\right) \ket{\psi}_T - i H_T \ket{\psi}_T\\
+&= -i \left(H_T + i \ddt{U_T^{\dag}} U_T\right)\ket{\psi}_T
+\end{align}
+
+Note the trick of introducing a factor of $U_TU_T^{\dag} = \mathbbm{1}$ to be able to express variables in the appropriate frame. I will use this prolifically throughout without further comment and often skipping this step.
+We see then that $\ket{\psi}_T$ evolves similarly to $\ket{\psi}_0$ but with a different effective ket Hamiltonian, modified by the addition of $i \ddt{U_T^{\dag}} U_t(T)$. Now for the operators.
+
+\begin{align}
+\ddt{A_T} &= \ddt{U_T^{\dag}}A_0U_T + U_T^{\dag}A_0\ddt{U_T} + U_T^{\dag} \ddt{A_0} U_T\\
+&= \ddt{U_T^{\dag}} U_TA_T + A_T U_T^{\dag} \ddt{U_T}\\
+&+ U_T^{\dag} \left(-i[A_0,V_0] + \frac{\partial A_0}{\partial t}\right)U_T
+\end{align}
+
+I will now quickly prove three claims.  First:
+
+\begin{align}
+U_T^{\dag} U_T &= \mathbbm{1}\\
+\ddt{U_T^{\dag} U_T} &= \ddt{U_T^{\dag}}U_T + U_T^{\dag} \ddt{U_T} = 0
+\end{align}
+
+so
+
+\begin{align}
+U_T^{\dag} \ddt{U_T} = - \ddt{U_T^{\dag}} U_T
+\end{align}
+
+Second:
+
+\begin{align}
+U_T^{\dag}[A_0,V_0]U_T &= U_T^{\dag}(A_0V_0 - V_0A_0)U_T\\
+&= A_TV_T - V_TA_T = [A_T,V_T]
+\end{align}
+
+That is, the unitary transformation preserves commutation relations.
+
+The final tricky claim is that $U_T^{\dag} \frac{\partial A_0}{\partial t} U_T = \frac{\partial A_T}{\partial t}$ This essentially follows because $\partial_t A_0$ will be some polynomial function of some collection of operators as well as the parameter $t$. When we conjugate this function by $U_T^{\dag}$ each of the operators will transform while the time dependence will remain the same.
+
+We put this all together to find
+
+\begin{align}
+\ddt{A_T} &= \left[\ddt{U_T^{\dag}}U_T,A_T \right] -i [A_T,V_T] + \frac{\partial A_T}{\partial t}\\
+&= -i  \left[i\ddt{U_T^{\dag}}U_T,A_T \right] -i [A_T,V_T] + \frac{\partial A_T}{\partial t}\\
+&= -i \left[A_T, V_T - i \ddt{U_T^{\dag}}U_T\right] + \frac{\partial A_T}{\partial t}
+\end{align}
+
+We see that the transformed kets, $\ket{\psi}_T$ and operators, $A_T$ transform each under new effective ket and operator Hamiltonians which are both modified by $i\ddt{U_T^{\dag}}U_T$ which is added to the transformed ket Hamiltonian and subtracted from the transformed operator Hamiltonian. We summarize:
+
+\begin{align}
+\boxed{\ddt{\ket{\psi}_T} = -i \left(H_T + i\ddt{U_T^{\dag}}U_T \right) \ket{\psi}_T}
+\end{align}
+
+\begin{align}
+\boxed{
+	\ddt{A_T} = -i\left[A_T, V_T -i\ddt{U_T^{\dag}}U_T \right] + \frac{\partial A_T}{\partial t}
+}
+\end{align}
+
+Often transformations we encounter are of the form
+
+\begin{align}
+U_T = e^{-i G_0 t}
+\end{align}
+
+Where $G$ is a hermitian operator. In the case the $G_0$ is time independent (this condition is critical!) we get
+
+\begin{align}
+\ddt{U_T} &= -iG_0 e^{-iG_0t} = -iG_0 U_T\\
+\ddt{U_T^{\dag}} &= e^{iG_0t} iG_0 = iU_T^{\dag} G_0
+\end{align}
+
+Again in the case that $G_0$ is time independent the operator order doesn't matter. If $G_0$ is time dependent then the expression isn't necessarily correct regardless of time ordering. If we plug this into the formulas above we get
+
+\begin{align}
+\boxed{\ddt{\ket{\psi}_T} = -i \left(H_T - G_T \right) \ket{\psi}_T}
+\end{align}
+
+\begin{align}
+\boxed{
+	\ddt{A_T} = -i\left[A_T, V_T + G_T \right] + \frac{\partial A_T}{\partial t}
+}
+\end{align}
+
+We see that the unitary operation defined above has the effect of simply adding/subtracting the Hermitian which generates $U$ to the ket and operator Hamiltonians (after being transformed into the new frame, of course).
+
+\section{Pictures of Quantum Mechanics}
+
+From the formulas above it is quite simple to specify into the different pictures of quantum mechanics, namely the Schr{\"o}dinger, Heisenberg, and interaction (or Dirac) pictures.
+
+Suppose the $0$-picture introduce at the top of the last section is in the Schr{\"o}dinger picture. Then we would have $V_0=0$. 
+
+Suppose the $0$-picture was in the Heisenberg picture. Then we would have $H_0=0$.
+
+Suppose the $0$-picture was in the Interaction picture. Note, I will distinguish between two different interaction pictures. An interaction picture is a picture where one of $H_0$ and $V_0$ contains simple, well-understood dynamics and the other one contains complicated, perturbative, or new dynamics. 
+
+In the ``traditional'' or ket-based interaction picture we move the ``boring'' dynamics out of the kets. This means that $V_0$ is a boring well-understood Hamiltonian while $H_0$ has interesting dynamics which we investigate by focusing on the kets.
+
+In the operator-based interaction picture we move the ``boring'' dynamics out of the operators and focus on the interesting dynamics in the operators. This means we would want $H_0$ to be boring and $V_0$ to be interesting.
+
+I will point out these are not the only pictures possible. The other very important picture is the rotating frame picture. The rotating frame picture seems like an interaction picture but it serves a slightly different purpose. In particular, the purpose of the rotating frame is to eliminate explicit time dependence from the problem. It is in fact a bit more complicated because when considering transformations one must bear in mind that the operator $G_0$ may not be time dependent and thus one must deal with the difficult equations. I would say the interaction picture is much more in line with thinking about adding or subtracting a hermitian term from the original Hamiltonian as demonstrated above, an idea that is only completely valid in the case that the operator being added or subtracted is time independent.
+
+\section{Moving between pictures}
+
+Often when solving problems we move from one picture into another. Here I'll just briefly explain how this is done.
+
+\subsection{From Schr{\"o}dinger to Heisenberg}
+
+In this case we have $H_S$ as the Hamiltonian which evolves kets and $V_S =0$. Whether $H_S$ is time dependent or not we can find 
+
+
+
+
+\section{Interaction Picture}
+
+In quantum mechanics we typically describe systems by their Hamiltonians and solve the Schr{\"o}dinger differential equation which subsequently arises.
+Often we encounter (or choose to treat) systems which have a Hamiltonian composed of two parts. There is a first part $H_0$ which we know how to solve or which is easily solvable and has ``uninteresting'' dynamics. There is also a second part $V$ which introduces new interesting dynamics. We can perform a Unitary transformation on Hilbert space which ``factors out'' the uninteresting dynamics under $H_0$. Said one of two ways: 1) we perform a transformation or rotation on Hilbert space which ``cancels out'' the dynamics of $\ket{\psi(t)}$ under $H_0$ and thus only motion induced by $V$ remains. If needed we can perform the inverse rotation to recover the dynamics under $H_0$. Said another way we ``go into a frame co-rotating with $H_0$''. That is we go into the rotating frame. In this frame we only see motion induced by $V$.
+
+The Hamiltonian we consider is
+
+\begin{align}
+H_S = H_{0,S} + V_S
+\end{align}
+
+There is an operator $U_0(t)$ which satisfies $\frac{d U_0(t)}{d t} = -i H_{0,S}(t) U_0(t)$ This is the operator which gives time evolution under $H_{0,S}$ We will take this as the operator which induces the unitary transformation we will consider. When the unitary inducing the transformation is chosen in this way we say we are working in the interaction picture or going into the rotating frame. I will use the subscript $I$ to indicate the interaction picture.
+
+\begin{align}
+\ket{\psi(t)}_I &= U_0^{\dag}(t) \ket{\psi(t)}_S\\
+A_I(t) &= U_0^{\dag}(t) A_S(t) U_0(t)
+\end{align}
+
+We want to derive a differential equation for the time evolution of both $\ket{\psi(t)}_I$ and $A_I(t)$. This will be done using what has been worked out above. I'll drop the time dependence of the variables for convenience but it should be kept in mind that all operators and kets depend on $t$ unless explicitly stated otherwise by indicating the variable is evaluated at $0$. However, even then care must be taken because we will see that $\ket{\psi(0)}_I$ still depends on $t$ since it is assumed that only $\ket{\psi(0)}_S$ is time independent.
+
+\begin{align}
+\ket{\psi(t)}_I &= U_0^{\dag}\ket{\psi(t)}_S = U_0^{\dag}U\ket{\psi(0)}_S\\
+&= U_0^{\dag} U U_0 U_0^{\dag} \ket{\psi(0)}_S = U_I \ket{\psi(0)}_I
+\end{align}
+
+Where $U=U(t)$ is the time evolution operator under the total Hamiltonian.
+
+\begin{align}
+\frac{d \ket{\psi(t)}_I}{d t} = \frac{d U_I}{d t} \ket{\psi(0)}_I + U_I \frac{d \ket{\psi(0)}_I}{d t}
+\end{align}
+
+We work this out in chunks.
+
+\begin{align}
+\frac{d{U_I}}{d t} &= \frac{d}{d t}(U_0^{\dag} U U_0)\\
+&= iU_0^{\dag} H_{0,S} U U_0 - iU_0^{\dag} H_S U U_0 -iU_0^{\dag} U H_{0,S} U_0\\
+&= iU_0^{\dag} H_{0,S} U_0 U_0^{\dag} U U_0 - iU_0^{\dag} H_SU_0 U_0^{\dag} U U_0 -iU_0^{\dag} U U_0 U_0^{\dag}H_{0,S} U_0\\
+&= i H_{0,I} U_I - i H_I U_I - i U_I H_{0,I}\\
+&= 
+\end{align}
+
+\begin{align}
+\frac{d \ket{\psi(0)}_I}{d t} &= \frac{d}{d t} \left(U_0^{\dag} \ket{\psi(0)}_S\right)\\
+&=i U_0^{\dag} H_0 \ket{\psi(0)}_S = i U_0^{\dag}H_0 U_0 U_0^{\dag} \ket{\psi(0)}_S\\
+&= i H_{0,I} \ket{\psi(0)}_I
+\end{align}
+
+Putting it together we find
+
+\begin{align}
+\frac{d \ket{\psi(t)}_I}{d t} &= \left(i H_{0,I} U_I - i (H_{0,I} + V_I) U_I - i U_I H_{0,I} + i U_I H_{0,I} \right)\ket{\psi(0)}_I\\
+&=-iV_iU_i\ket{\psi(0)}_I = -iV_i\ket{\psi(t)}_I
+\end{align}
+
+\begin{align}
+\boxed{\frac{d \ket{\psi(t)}_I}{d t} = -\frac{i}{\hbar} V_I \ket{\psi(t)}_I}
+\end{align}
+
+I've shown $\hbar$ for reference.
+We now work out the time evolution of the operators
+
+\begin{align}
+\frac{d A_I(t)}{d t} &= \frac{d U_0^{\dag}}{d t} A_S(t) U_0 + U_0^{\dag} \frac{d A_S(t)}{d t} U_0 + U_0^{\dag} A_S(t) \frac{d U_0}{d t}\\
+&= i U_0^{\dag}H_{0,S} A_S(t)U_0 + U_0^{\dag} \frac{d A_S(t)}{d t} U_0 - i U_0^{\dag}A_S(t)H_{0,S} U_0\\
+&= i\left(H_{0,I}(t)A_I(t) - A_I(t)H_{0,I}(t)\right) + \left(\frac{d A_S(t)}{d t} \right)_I\\
+&= -i\left[A_I(t), H_{0,I}(t)\right] + \left(\frac{d A_S(t)}{d t}\right)_I
+\end{align}
+
+For reference we write
+
+\begin{align}
+\boxed{\frac{d A_I(t)}{d t} = -\frac{i}{\hbar} \left[A_I(t), H_{0,I}(t)\right] + \left(\frac{d A_S(t)}{d t} \right)_I}
+\end{align}
+
+A few notes. First, the final term is carefully defined as
+
+\begin{align}
+\left(\frac{d A_S(t)}{d t} \right)_I = U_0^{\dag} \frac{d A_S(t)}{d t} U_0 
+\end{align}
+
+That is you first calculate the time derivative of the Schr{\"o}dinger version of the operator and then convert it into the interaction picture by conjugating with $U_0^{\dag}$. Second, often operators in the Schr{\"o}dinger picture are defined with no time dependence. In this case this final term is not present. Third, the commutator and minus sign is written in the way it is because this is consistent with the way I already have it memorized.
+
+Finally a note about the transformation of the Hamiltonian. One might ask (I often find/found myself asking) ``in what picture is $H_0$ specified in?'' The answer is that it must be specified in the interaction picture. However, Often when one chooses to use the interaction picture they have that $H_{0,S}$ is time independent. In this case $U_0$ and $U_0^{\dag}$ commute with $H_{0,S}$ so that we get $H_{0,I} = H_{0,S}$.
+
+One more note on being careful with which Hamiltonian you use in these pictures. I have had the temptation in the past to write
+
+\begin{align}
+\frac{d \ket{\psi(t)}_I}{d t} \overset{\text{wrong}}{=} -\frac{i}{\hbar} H_I \ket{\psi(t)}_I
+\end{align}
+
+This temptation came from the idea to ``just replace'' all operators with their interaction picture counterparts. However, this is not how the transformation is meant to work. If this is how it worked then the equations of motion would be unchanged. The transformation is specifically in place to change and simplify dynamical equations.
+
+Another note regarding which Hamiltonian should be used. When calculating the time evolution of an operator we must calculate
+
+\begin{align}
+[A_I(t), H_{0,I}(t)]
+\end{align}
+
+However, it is not too difficult to see
+
+\begin{align}
+[A_I, B_I] &= [U_0^{\dag}A_SU_0, U_0^{\dag}B_IU_0]\\
+&= U_0^{\dag}[A_S,B_S]U_0 = \left([A_S,B_S]\right)_I
+\end{align}
+
+That is to say we can calculate the commutator in the Schr{\"o}dinger picture and then convert into the interaction picture afterwards.
+
+
+\section{Heisenberg and Schr{\"o}dinger Picture}
+
+Often the Heisenberg Picture is presented before the interaction picture. Perhaps this is because it is simpler or found more use earlier on historically. In any case, I was for a long time confused about the Heisenberg picture and for an even longer time confused about the interaction picture. I roughly knew what they did but couldn't keep track of the transformations.
+
+An alternative approach which is more clear in my mind is to introduce first the Schr{\"o}dinger picture, because this apparently must be introduced first but then to introduce the Interaction picture as a general unitary transform on the space and show how new dynamical equations arise in the different frame. Finally, We can derive both the Schr{\"o}dinger and Heisenberg pictures easily from the Interaction picture.
+
+The Heisenberg picture corresponds to the case when the entire Hamiltonian evolution is rotated out of the kets and placed into the operators. In this case the transformation unitary should be the time evolution for the whole Hamiltonian. We can realize this case by setting $V_S = 0$ in the section above and leaving $H_S = H_{0,S}$. 
+
+Note that we are now transforming with
+
+
+In that case we quickly see that we get
+
+\begin{align}
+\boxed{\frac{d \ket{\psi(t)}_H}{d t} = 0}
+\end{align}
+\begin{align}
+\boxed{\frac{d A_H(t)}{d t} = -\frac{i}{\hbar} \left[A_H(t), H_H(t)\right] + \left(\frac{d A_S(t)}{d t} \right)_H}
+\end{align}
+
+Since $H_S = H_{0,S}$ commutes with $U_0$ we can see that $H_H = H_S$.
+
+It is equally as easy to recover the Schr{\"o}dinger picture from the interaction picture by now setting $H_{0,S} = 0$ and $H_S=V_S$. In that case we see that we recover the original dynamics by noting the $U_0^{\dag} = \mathbbm{1}$.
+
+\begin{align}
+\frac{d \ket{\psi(t)}_S}{d t} &= -\frac{i}{\hbar} H_S \ket{\psi(t)}_S\\
+\frac{d A_S(t)}{d t} &= \left(\frac{d A_S(t)}{d t} \right)_S
+\end{align}
+
+The first equation says the ket follows the usualy Schr{\"o}dinger equation and the second equation says the operators evolve as they originally did. One might feel this is too trivial to write down but I think it is useful to see how each limit is arrived at from the interaction picture.
+
+\section{When to Use Each Picture?}
+
+I think much of my confusion on these different pictures stemmed from understanding when and why it might be good to use each. I think what was really the most confusing for me was originally I was very comfortable working with kets and operators were a bit mysterious to me. However, I went through a transition where I became more and more comfortable working with operators when I realized that I could carry over most of my classical intuition when dealing with systems of Heisenberg differential equations of motion. Which picture you use and why depends a bit on whether you prefer to work with kets or with operators.
+
+If you prefer to work with kets then you will default to the Schr{\"o}dinger picture when possible. However, in cases where there are perturbations to well known Hamiltonian $H_{0,S}$ you will move into the interaction picture in the way I have described above using the transformation induced by $U_0$. That is to say you will remove the $H_{0,S}$ dynamics from the kets because you already understand that and want to get it out of the way so that you can see clearly the effect of $V_S$ on the kets.
+
+However, if you are comfortable working with operators then you will default to using the Heisenberg picture when possible. In cases when there are perturbations you will move into the interaction picture, however, instead of using $U_0$ to perform the transformation you will now use $U_V$, the unitary describing time evolution under the perturbing Hamiltonian. You will do this because you want to move these dynamics INTO the operators and leave out the well-understood dynamics from $H_{0,S}$ (these are left in the kets).
+
+Finally, I'll warn that one must be careful when moving between multiple pictures. For example, I do not know how to move directly from the Heisenberg picture into the interaction picture. I'll denote the interaction picture where the transformation has been performed with respect to $H_{0,S}$ as $I0$ and the picture where the transformation was performed with respect to $V_S$ to be $IV$.
+
+Consider the following
+
+\begin{align}
+\ket{\psi}_H &= U_H^{\dag} \ket{\psi}_S\\
+\ket{\psi}_{I0} &= U_0^{\dag} \ket{\psi}_S\\
+\ket{\psi}_{IV} &= U_V^{\dag} \ket{\psi}_S\\
+\ket{\psi}_{IV} &= U_V^{\dag} U_H \ket{\psi}_H\\
+\end{align}
+
+Notice that to move from the $IV$ picture to the Heisenberg picture it is necessary to do two transformations. One to bring you back into the Schr{\"o}dinger picture and one to put you into the $IV$ picture. There is probably a way to go directly from one to another but I do not know it and at present wouldn't recommend it. I would recommend first going into the Schr{\"o}dinger picture and then into the $IV$.
+
+\section{Density Matrix}
+
+We can determine how the density matrix dynamics transform under a unitary transformation as well. From the Schr{\"o}dinger equation we can derive the Liouville-Von Neumann equation for the density matrix.  We consider a complete basis for the Hilbert space given by $\{\ket{\phi_i}_I\}$. We work in the interaction picture with respect to $V$.
+
+\begin{align}
+\rho_I(t) = \sum_i p_i \ket{\phi_i(t)}_I\bra{\phi_i(t)}_I
+\end{align}
+
+\begin{align}
+\frac{d{\rho}_I(t)}{d t} &= \sum_i p_i \left(\frac{d \ket{\phi_i(t)}_I}{d t} \bra{\phi_i(t)}_I + \ket{\phi_i(t)}_I\frac{d \bra{\phi_i(t)}_I}{d t} \right)\\
+&= \sum_I p_i \left(-iV_I(t) \ket{\phi_i(t)}_I\bra{\phi_i(t)}_I + i \ket{\phi_i(t)}_I\bra{\phi_i(t)}_I V_I(t) \right)\\
+&= -i V_i(t) \rho_I(t) + i \rho_I(t) V_i(t)\\
+&= i \left[\rho_I(t), V_I(t)\right]
+\end{align}
+
+\begin{align}
+\boxed{\frac{d \rho_I(t)}{d t} = \frac{i}{\hbar} \left[\rho_I(t), V_I(t)\right]}
+\end{align}
+
+In the Schr{\"o}dinger picture we choose $V_S=H_S$ so we get
+
+\begin{align}
+\boxed{\frac{d \rho_S(t)}{d t} = \frac{i}{\hbar} \left[\rho_S(t), H_S(t)\right]}
+\end{align}
+
+In the Heisenberg picture we choose $V_S = 0$ so we get
+
+\begin{align}
+\boxed{\frac{d \rho_H(t)}{d t} = 0}
+\end{align}
+
+\section{Transformation by Arbitrary Unitary}
+
+We are not restricted to transformations induced by operators which are found in the Hamiltonian. Say we would like to make a transformation which is induced by the unitary operator $U_S$. We can take the time derivative of this operator and define
+
+\begin{align}
+\frac{d U_S(t)}{d t} = -\frac{i}{\hbar} D_S(t) U_S(t)
+\end{align} We can then write
+
+\begin{align}
+H_S = H_S - D_S + D_S
+\end{align}
+
+If we now move into the interaction picture taking $H_{0,S} = H_s - D_s$ and $V_S = U_S$ we end up with the following dynamics
+
+\begin{align}
+\frac{d \ket{\psi(t)}_D}{d t} = -\frac{i}{\hbar}D_S\ket{\psi(t)}_D
+\end{align}
+
+\begin{align}
+\boxed{\frac{d A_D(t)}{d t} = -\frac{i}{\hbar} \left[A_D(t), H_D(t)-D_D(t)\right] + \left(\frac{d A_D(t)}{d t} \right)_U}
+\end{align}
+
+
+\section{Unitary Time Evolution Operator}
+
+In quantum mechanics states of physical systems are represented by vectors (kets) such as $\ket{\psi}_S$ that live in a Hilbert space, $\mathcal{H}$. It is postulated that there exist a linear operator $\tilde{U}(t,t_0)$ on that Hilbert space which determines the time evolution of that ket.
+
+\begin{align}
+\ket{\psi(t)}_S = \tilde{U}(t,t_0) \ket{\psi(t_0)}_S
+\end{align}
+
+The states are represented by normalized kets with the property that $\Braket{\psi | \psi} = 1$. This property should hold true for all time. This implies that 
+
+\begin{align}
+\tilde{U}^{\dag}(t,t_0)\tilde{U}(t,t_0) = 1
+\end{align}
+
+
+That is that $\tilde{U}(t,t_0)$ is unitary. Note also that $\tilde{U}(t_0,t_0) = \mathbbm{1}$ since $\tilde{U}(t_0,t_0)\ket{\psi(t_0)} = \ket{\psi(t_0)}$.
+
+We also require that we can concatenate evolution over smaller intervals to get evolution of bigger intervals. That is
+
+\begin{align}
+\tilde{U}(t_2,t_0) = \tilde{U}(t_2,t_1)\tilde{U}(t_1,t_0)
+\end{align}
+
+We can Taylor expand $\tilde{U}(t,t_0)$.
+
+\begin{align}
+\tilde{U}(t_0+dt,t_0) &\approx \tilde{U}(t_0,t_0) + \frac{d \tilde{U}(t,t_0)}{dt} \Bigr\rvert_{t=t_0} dt + \mathcal{O}(dt^2)
+\\&\approx \mathbbm{1} + \Omega(t_0) dt
+\end{align}
+
+Where $\Omega(t_0) = \frac{d \tilde{U}(t,t_0)}{dt} \Bigr \rvert_{t=t_0}$.
+Consider then
+
+\begin{align}
+\mathbbm{1} = \tilde{U}^{\dag}(t_0+dt,t_0)\tilde{U}(t_0+dt,t_0) \approx \mathbbm{1} + \left(\Omega^{\dag}(t_0) + \Omega(t_0)\right) dt
+\end{align}
+
+We see that we must have
+
+\begin{align}
+\Omega^{\dag}(t_0) = -\Omega(t_0)
+\end{align}
+
+That is $\Omega(t_0)$ is anti-Hermitian. From this we define a Hermitian operator
+
+\begin{align}
+H_S(t_0) = i \hbar \Omega(t_0) = i \hbar \frac{d \tilde{U}(t,t_0)}{dt} \Bigr\rvert_{t=t_0}
+\end{align}
+
+The $\hbar$ is to give $H(t_0)$ units of energy. We can write this more familiarly as
+
+\begin{align}
+\frac{d \tilde{U}(t,t_0)}{dt} \Bigr \rvert_{t=t_0} = -\frac{i}{\hbar} H_S(t_0)
+\end{align}
+
+We want a differential equation for $\tilde{U}(t,t_0)$ at all times.
+
+\begin{align}
+\frac{d \tilde{U}(t',t_0)}{d t'}\Bigr \rvert_{t'=t} &= \lim_{dt \rightarrow 0} \left[\frac{\tilde{U}(t+dt,t_0) - \tilde{U}(t,t_0)}{dt} \right]\\
+&= \lim_{dt \rightarrow 0} \left[\frac{\tilde{U}(t+dt,t) - \mathbbm{1}}{dt} \right] \tilde{U}(t,t_0)\\
+&= \frac{d \tilde{U}(t',t)}{dt'} \Bigr \lvert_{t'=t} \tilde{U}(t,t_0)\\
+\end{align}
+
+\begin{align}
+\boxed{\frac{d \tilde{U}(t',t_0)}{d t'}\Bigr \rvert_{t'=t} = -\frac{i}{\hbar} H_S(t) \tilde{U}(t,t_0)}
+\end{align}
+
+
+Note that the order of the two operators is important here. In general $H_s(t)$ and $\tilde{U}(t,t_0)$ do not commute. We will see below that if $H_S(t)$ is time independent than the two operators do commute. Also importantly note the reversal of operator ordering for the complex conjugate formula.
+
+\begin{align}
+\frac{d \tilde{U}^{\dag}(t',t_0)}{d t} \Bigr \rvert_{t'=t} = \frac{i}{\hbar} \tilde{U}^{\dag}(t,t_0) H_s(t)
+\end{align}
+
+We can now Derive the Schr{\"o}dinger equation.
+
+\begin{align}
+\frac{d \ket{\psi(t')}_S}{d t'} \Bigr \rvert_{t'=t} &= \frac{d \tilde{U}(t',t_0)}{dt'} \Bigr \rvert_{t'=t} \ket{\psi(t_0)}_S\\
+\frac{d \ket{\psi(t')}_S}{d t'} \Bigr \rvert_{t'=t} &= -\frac{i}{\hbar} H_S(t) \tilde{U}(t,t_0) \ket{\psi(t_0)}_S = -\frac{i}{\hbar} H_S(t)\ket{\psi(t)}_S
+\end{align}
+
+The pedantic derivative notation was important above when we were taking the derivative of $\tilde{U}(t,t_0)$ evaluated at $t_0$ because without it the partial derivative of the multi-variable function would have been ambiguous. We can drop it now that we are back to single variables.
+
+\begin{align}
+\boxed{\frac{d}{d t} \ket{\psi(t)}_S = -\frac{i}{\hbar} H_S(t) \ket{\psi(t)}_S}
+\end{align}
+
+I'll set $\hbar = 1$ now.
+
+Consider the operator
+
+\begin{align}
+e^{-i H_S(t) t} = \sum_{n=0}^{\infty} \frac{1}{n!} (-i H_S(t) t)^n
+\end{align}
+
+In the case that $H(t)=H$ is time independent We can take the time derivative of this operator to get
+
+\begin{align}
+\frac{d}{dt} e^{-iH_S t} &= \frac{d}{dt} \sum_{n=0}^{\infty} \frac{1}{n!} (-iH_S t)^n = (-iH_S)\sum_{n=1}^{\infty} \frac{1}{(n-1)!} (-iH_S t)^{n-1}\\
+&= -iH_S\sum_{n=0}^{\infty} \frac{1}{n!} (-iH_S t)^{n} = -iH_S e^{-iH_S t} 
+\end{align}
+
+
+If the Hamiltonian is time-independent then the second term vanishes and we see that $e^{-iH_S t}$ satisfies the same differential equation at $\tilde{U}(t,0)$. Also note that $e^{-iH_S 0} = \mathbbm{1}$. This means that
+
+\begin{align}
+\tilde{U}(t,0) = e^{-iH_S t}
+\end{align}
+
+for time-independent Hamiltonians.
+Note that in this case we have that 
+
+\begin{align}
+\left[H_S,\tilde{U}(t,0)\right] = 0
+\end{align}
+
+This is because $\tilde{U}(t,0)$ depends only on $H_S$ and an operator commutes with itself. However, if $H_S(t)$ depends on time then it does not necessarily commute with $\tilde{U}(t,t_0)$. Furthermore, It is not even guaranteed that $H_S(t_1)$ commutes with $H_S(t_2)$.
+
+
+\section{Compendium of Mistakes}
+
+The biggest mistake I have ever made regarding unitary transformations is the following:
+
+\begin{align}
+\frac{d}{dt} e^{-iH(t) t} \stackrel{Not}{=} -iH(t) e^{-iH(t)t} -i \left(\frac{d}{d t} H(t)\right) t e^{-iH(t)t}
+\end{align}
+
+This was an attempt to apply the regular calculus product rule, however, because $H(t)$ may not commute with itself at different times it is not valid to apply the product rule in that way. Instead one must apply more sophisticated operator algebra. One approach to determine this derivative involves Baker-Campbell-Hausdorff formulas.
+
+
+
+
+\section{Transformation of Dynamical Equations}
+
+We are interested in how the equations of motion for kets and operators change when a unitary transformation is applied to the space. 
+
+Suppose we begin in a space indexed by $0$ to indicate the initial space and suppose we have the following rules for the dynamical equations of motion:
+
+\begin{align}
+\ddt{\ket{\psi(t)}_0} &= -i H_0(t) \ket{\psi(t)}_0\\
+\ddt{A_0(t)} &= -i[A_0(t),V_0(t)] + \frac{\partial A_0(t)}{\partial t}
+\end{align}
+
+Note, the fact that such dynamical equations of motion for kets and operators exists at all could be taken as a fundamental postulate of quantum mechanics. Often the time evolution postulate is stated in terms of the ket evolution and nothing is mentioned about operators. It is implicitly assumed that the author is working in the Schr{\"o}dinger picture to state the time evolution postulate. What I show here could be a more general postulation of the nature of time evolution in quantum mechanics that includes for the possibility of operators to evolve as well as kets. We thus have a ``ket Hamiltonian'' $H_0(t)$ and an operator Hamiltonian $V_0(t)$.
+
+The interpretation of $\frac{\partial A_0(t)}{\partial t}$ can be a bit tricky here but the short story is that it has to do with \textit{explicit} time dependence of $A_0(t)$ on the parameter $t$. In the Schr{\"o}dinger picture, for example, we have that $\ddt{X_S} = 0$. This is a special feature of the Schr{\"o}dinger picture. This means that $\ddt{X_S} = \frac{\partial X_S}{\partial t} \ddt{t} = \frac{\partial X_S}{\partial t} =  0$. However, we are free to define a variable $Y_S = t X_S$. This variable now has $\textit{explicit}$ dependence on $t$. We would now have $\ddt{Y_S} = \frac{\partial{Y_S}}{\partial X_S} \ddt{X_S} + \frac{\partial{Y_S}}{\partial t} \ddt{t} = \frac{\partial Y_S}{\partial t} = X_S \neq 0$.
+
+Suppose we apply the unitary transformation induced by $U_T(t)$. We then have
+
+\begin{align}
+\ket{\psi(t)}_T &= U_T^{\dag}(t) \ket{\psi(t)}_0\\
+A_T(t) &= U_T^{\dag}(t) A_0(t) U_T(t)
+\end{align}
+
+We want to derive differential equations for the time evolution of each of these.
+
+\begin{align}
+\ket{\psi(t)}_T &= U_T^{\dag}(t)\ket{\psi(t)}_0 =\\
+\ddt{\ket{\psi(t)}_T} &= \left(\ddt{U_T^{\dag}(t)} \right) \ket{\psi(t)}_0 + U_T^{\dag}(t) \ddt{\ket{\psi(t)}_0}
+\end{align}
+
+We can plug in the known time evolution for $\ket{\psi(t)}_0$ to find
+
+\begin{align}
+\ddt{\ket{\psi(t)}_T} &= -i i\ddt{U_T^{\dag}(t)} \ket{\psi(t)}_0 -i U_T^{\dag} H_0(t) \ket{\psi(t)}_0\\
+&= -i \left(i\ddt{U_T^{\dag}(t)} U_T(t)\right) U_T^{\dag}(t) \ket{\psi(t)}_0 -i U_T^{\dag}(t) H_0(t)U_T(t)U_T^{\dag}(t) \ket{\psi(t)}_0\\
+&= -i \left(i\ddt{U_T^{\dag}(t)} U_T(t)\right) \ket{\psi(t)}_T - i H_T(t) \ket{\psi(t)}_T\\
+&= -i \left(H_T(t) + i \ddt{U_T^{\dag}(t)} U_T(t)\right)\ket{\psi(t)}_T
+\end{align}
+
+Note the trick of introducing a factor of $U_T(t)U_T^{\dag}(t) = 1$ to be able to express variables in the appropriate frame. I will use this prolifically throughout without further comment and often skipping this step.
+We see then that $\ket{\psi(t)}_T$ evolves similarly to $\ket{\psi(t)}_0$ but with a different effective ket Hamiltonian, modified by the addition of $i \ddt{U_T^{\dag}(t)} U_t(T)$. Now for the operators.
+
+\begin{align}
+\ddt{A_T(t)} &= \ddt{U_T^{\dag}(t)}A_0(t)U_T(t) + U_T^{\dag}(t)A_0(t)\ddt{U_T(t)} + U_T^{\dag}(t) \ddt{A_0(t)} U_T(t)\\
+&= \ddt{U_T^{\dag}(t)} U_T(t)A_T(t) + A_T(t) U_T^{\dag}(t) \ddt{U_T(t)}\\
+&+ U_T^{\dag}(t) \left(-i[A_0(t),V_0(t)] + \frac{\partial A_0(t)}{\partial t}\right)U_T(t)
+\end{align}
+
+I will now quickly prove three claims.  First:
+
+\begin{align}
+U_T^{\dag}(t) U_T(t) &= 1\\
+\ddt{U_T^{\dag}(t) U_T(t)} &= \ddt{U_T^{\dag}(t)}U_T(t) + U_T^{\dag}(t) \ddt{U_T(t)} = 0
+\end{align}
+
+so
+
+\begin{align}
+U^{\dag}(t) \ddt{U(t)} = - \ddt{U^{\dag}(t)} U(t)
+\end{align}
+
+Second:
+
+\begin{align}
+U_T^{\dag}(t)[A_0(t),V_0(t)]U_T(t) &= U_T^{\dag}(t)(A_0(t)V_0(t) - V_0(t)A_0(t))U_T(t)\\
+&= A_T(t)V_T(t) - V_T(t)A_T(t) = [A_T,V_T]
+\end{align}
+
+That is, the unitary transformation preserves commutation relations.
+
+The final tricky claim is that $U_T^{\dag}(t) \frac{\partial A_0(t)}{\partial t} U_T(t) = \frac{\partial A_T(t)}{\partial t}$ This essentially follows because $\partial_t A_0(t)$ will be some polynomial function of some collection of operators as well as the parameter $t$. When we conjugate this function by $U_T^{\dag}(t)$ each of the operators will transform while the time dependence will remain the same.
+
+We put this all together to find
+
+\begin{align}
+\ddt{A_T(t)} &= \left[\ddt{U_T^{\dag}(t)}U_T(t),A_T(t) \right] -i [A_T(t),V_T(t)] + \frac{\partial A_T(t)}{\partial t}\\
+&= -i  \left[i\ddt{U_T^{\dag}(t)}U_T(t),A_T(t) \right] -i [A_T(t),V_T(t)] + \frac{\partial A_T(t)}{\partial t}\\
+&= -i \left[A_T(t), V_T(t) - i \ddt{U_T^{\dag}(t)}U_T(t)\right] + \frac{\partial A_T(t)}{\partial t}
+\end{align}
+
+We see that the transformed kets, $\ket{\psi(t)}_T$ and operators, $A_T(t)$ transform each under new effective ket and operator Hamiltonians which are both modified by $i\ddt{U_T^{\dag}(t)}U_T(t)$ which is added to the transformed ket Hamiltonian and subtracted from the transformed operator Hamiltonian. We summarize:
+
+\begin{align}
+\boxed{\ddt{\ket{\psi(t)}_T} = -i \left(H_T(t) + i\ddt{U_T^{\dag}(t)}U_T(t) \right) \ket{\psi(t)}_T}
+\end{align}
+
+\begin{align}
+\boxed{
+	\ddt{A_T(t)} = -i\left[A_T(t), V_T(t) -i\ddt{U_T^{\dag}(t)}U_T(t) \right] + \frac{\partial A_T(t)}{\partial t}
+}
+\end{align}
+
+
+
+
+\end{document}

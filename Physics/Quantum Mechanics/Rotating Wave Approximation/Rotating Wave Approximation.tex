@@ -1,0 +1,125 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Rotating Wave Approximation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Here I will show a convincing argument for the justification of the rotating wave approximation.
+
+We consider the Hamiltonian
+
+\begin{align}
+\frac{1}{\hbar}H_S &= \omega_0 \frac{1}{2}(1+\sigma_3) + 4g \cos(\omega t)\sigma_1\\
+&= \omega_0 \frac{1}{2}(1+\sigma_3) + 2g \cos(\omega t)(\sigma^+ + \sigma^-)\\
+&= \omega_0 \ket{e}\bra{e} + 2g \cos(\omega t) (\ket{e}\bra{g} + \ket{g}\bra{e})\\
+&= \frac{1}{\hbar}\left(H_{0,S} + V_S\right)
+\end{align}
+
+with
+
+\begin{align}
+1 &= \ket{e}\bra{e} + \ket{g}\bra{g}\\
+\sigma_3 &= \ket{e}\bra{e} - \ket{g}\bra{g}\\
+\sigma_1 &= \frac{1}{2}(\sigma^+ + \sigma^-)\\
+\sigma^+ &= \ket{e}\bra{g}\\
+\sigma^- &= \ket{g}\bra{e}
+\end{align}
+
+We go into the interaction picture by acting the unitary
+
+\begin{align}
+U_0(t) = e^{-\frac{i}{\hbar} H_0t} = e^{-i \omega_0 t \ket{e}\bra{e}}
+\end{align}
+
+The wavefunction evolves under the interaction time-evolution operator as
+
+\begin{align}
+\frac{\partial \ket{\psi(t)}_I}{\partial t} = -\frac{i}{\hbar} V_I \ket{\psi(t)}
+\end{align}
+
+We must calculate $V_I = U_0^{\dag} V_S U_0$. This comes out to
+
+\begin{align}
+\frac{V_I}{\hbar} &= 2g \cos(\omega t)\left( e^{i\omega_0t} \ket{e}\bra{g} + e^{-i\omega_0 t} \ket{g}\bra{e}\right)\\
+&= g(e^{i\omega t} + e^{-i\omega t})(e^{i\omega_0 t}\sigma^+ + e^{-i\omega_0 t}\sigma^-)\\
+&= g \left[\left(e^{i(\omega-\omega_0)t} \sigma^- + e^{-i(\omega-\omega_0)t}\sigma^+\right) + \left(e^{i(\omega + \omega_0)t}\sigma^+ + e^{-i(\omega + \omega_0)t}\sigma^-\right)\right]
+\end{align}
+
+Interestingly and a bit confusingly the $\sigma^+$ and $\sigma^-$ operators here are the Schr{\"o}dinger picture raising and lowering operators. In the end that was somehow the goal of this manipulation because now it is plain to see that the time dependence of $V_I$ (despite being an operator in the interaction picture) is made explicit in the exponentials. We can see that the latter two terms rotate quickly (at frequency $\omega+\omega_0$) and the former two terms rotate slowly (at frequency $\omega - \omega_0$).
+
+Before giving a calculation I will give intuition for why the rotating wave approximation will be justified. I typically get tripped up when I think of this an equation describing quantum states and quantum operators. However, it helps to step back for a second and think of it as some coupled differential equations (the components of the ket) with some constant parameters (the Schr{\"o}dinger picture operators). Alternatively, in the Heisenberg picture the Heisenberg differential equations can be directly thought of as classical differential equations if you just remove the hats. 
+
+Now, we think about the effect of a rapidly rotating term in a set of one or more coupled differential equations. The short story is that the rapidly rotating part of the equation will undergo its dynamics much faster than any of the other parts of the equation. In particular, the rapidly rotating terms will basically experience the instantaneous value of the other parts of the equation (and behave as if those terms in the differential equation were truly constant) whereas the other parts of the equation will act as an effective low pass filter on the rapidly moving parts and interact dominantly with the mean of the rapidly rotating terms (which is typically zero). This is the intuition on separation of timescales for why we can neglect the rapidly rotating terms. Of course if the rapidly rotating terms aren't rotating that rapidly or they are extremely large then they can appreciably alter the motion of the other terms and they must be taken into account.
+
+To show that we can neglect these terms we do a first order time-dependent perturbation theory expansion. We can integrate the interaction picture Schr{\"o}dinger equation.
+
+\begin{align}
+\ket{\psi(t)}_I = \ket{\psi(0)}_I -\frac{i}{\hbar}\int_{t'=0}^{t} V_1 \ket{\psi(t')}_Idt'
+\end{align}
+
+We plug this equation into itself to find
+
+\begin{align}
+&\ket{\psi(t)}_I =\\
+&\ket{\psi(0)}_I + \left(-\frac{i}{\hbar}\right)\int_{t_1=0}^t V_1(t_1)\ket{\psi(0)}_I dt_1 + \left(-\frac{i}{\hbar} \right)^2 \int_{t_1=0}^t \int_{t_2=0}^{t_1}V_1(t_1)V_1(t_2)\ket{\psi(t_2)}_I dt_2dt_1
+\end{align}
+
+To first order in perturbation theory we neglect the final term. Here is a bit of intuition for why that might be allowed. $\frac{V_1}{\hbar} \approx g$. We are integrating $g$ over a time window of length $t$. If $gt \ll 1$ we can expect higher order terms to get smaller and smaller.
+
+We are then left to calculate
+
+\begin{align}
+\left(-\frac{i}{\hbar}\right)\int_{t_1=0}^t V_1(t_1)\ket{\psi(0)}_I dt_1
+\end{align}
+
+Note that every term of $V_1$ is of the form
+
+\begin{align}
+\sigma^{\pm}e^{\pm i(\omega \pm \omega_0)t}
+\end{align}
+
+I'll calculate all the terms at once using this. This is just a sketch of the full calculation anyways to justify the rotating wave approximation.
+
+\begin{align}
+\int_{t_1=0}^t e^{\pm i(\omega \pm \omega_0)t} \sigma^{\pm} \ket{\psi(0)}_I dt_1
+\end{align}
+
+Importantly we note that $\sigma^{\pm}\ket{\psi(0)}_I$ is time independent so we can pull it out of the integral. We are now left only with
+
+\begin{align}
+\int_{t_1=0}^t e^{\pm(\omega \pm \omega_0)t} dt_1 &= \frac{e^{\pm(\omega \pm \omega_0)t}}{\pm i (\omega \pm \omega_0)} \Biggr \rvert_{t_1=0}^t\\
+&= \frac{e^{\pm (\omega \pm \omega_0) t} - 1}{\pm i(\omega \pm \omega_0)}
+\end{align}
+
+The key here is the denominator. We can see that the magnitude of this term is either inversely proportional to $\omega - \omega_0$ or $\omega+\omega_0$. For optical transitions we have transitions where $\omega$ is hundreds of THz ($10^{14}$ Hz). We often work with detunings of 10s of GHz ($10^7$ Hz) at most. Sometimes we work with detunings of MHz or less. This is a 7 order of magnitude difference in the magnitude of the contribution of each of these terms.
+
+
+\end{document}

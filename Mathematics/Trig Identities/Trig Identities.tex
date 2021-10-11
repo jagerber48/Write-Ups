@@ -1,0 +1,91 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Trig Sum and Difference Forumalas}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+I always forget the trig sum and difference formulas. Maybe writing the identities and their derivations will help me remember them.
+
+\section{Derivation}
+
+\begin{align}
+e^{ix} & = \cos(x) + i \sin(x)\\
+e^{-ix} &= \cos(x) - i \sin(x)
+\end{align}
+
+\begin{align}
+\cos(x) &= \frac{1}{2}\left( e^{ix} + e^{-ix}\right)\\
+\sin(x) &= \frac{1}{2i}\left( e^{ix} - e^{-ix} \right)
+\end{align}
+
+\begin{align}
+\cos(x)\cos(y) &= \frac{1}{4} \left(e^{ix} + e^{-ix}\right)\left( e^{iy} + e^{-iy} \right)\\
+&=\frac{1}{4}\left( e^{i(x+y)} + e^{-i(x+y)} + e^{i(x-y)} + e^{-i(x-y)}\right)\\
+&=\frac{1}{2}\left(\cos(x+y) + \cos(x-y)\right)
+\end{align}
+
+\begin{align}
+\sin(x)\sin(y) &= -\frac{1}{4} \left(e^{ix} - e^{-ix}\right)\left( e^{iy} - e^{-iy} \right)\\
+&=\frac{1}{4}\left( e^{i(x+y)} + e^{-i(x+y)} - e^{i(x-y)} - e^{-i(x-y)}\right)\\
+&=-\frac{1}{2}\left(\cos(x+y) - \cos(x-y)\right)
+\end{align}
+
+\begin{align}
+\cos(x)\sin(y) &= \frac{1}{4i} \left(e^{ix} + e^{-ix}\right)\left( e^{iy} - e^{-iy} \right)\\
+&=\frac{1}{4}\left( e^{i(x+y)} - e^{-i(x+y)} - e^{i(x-y)} + e^{-i(x-y)}\right)\\
+&=\frac{1}{2}\left(\sin(x+y) - \sin(x-y)\right)
+\end{align}
+
+\begin{align}
+\sin(x)\cos(y) = \cos(y)\sin(x) &= \frac{1}{2} \left(\sin(y+x) - \sin(y-x)\right)\\
+&= \frac{1}{2} \left(\sin(x+y) + \sin(x-y)\right)
+\end{align}
+
+\section{Summary}
+
+Product to Sum Formulas:
+\begin{align}
+\cos(x)\cos(y) &= \frac{1}{2}\left(\cos(x+y) + \cos(x-y)\right)\\
+\sin(x)\sin(y) &= -\frac{1}{2}\left(\cos(x+y) - \cos(x-y)\right)\\
+\cos(x)\sin(y) &= \frac{1}{2}\left(\sin(x+y) - \sin(x-y)\right)\\
+\sin(x)\cos(y) &= \frac{1}{2}\left(\sin(x+y) + \sin(x-y)\right)
+\end{align}
+
+Sum to Product Formulas:
+
+\begin{align}
+\cos(x+y) &= \cos(x)\cos(y) - \sin(x)\sin(y)\\
+\cos(x-y) &= \cos(x)\cos(y) + \sin(x)\sin(y)\\
+\sin(x+y) &= \sin(x)\cos(y) + \cos(x)\sin(y)\\
+\sin(x-y) &= \sin(x)\cos(y) - \cos(x)\sin(y)
+\end{align}
+
+\end{document}

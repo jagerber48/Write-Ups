@@ -1,0 +1,740 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+\usepackage{empheq}
+
+\usepackage[sorting=none, style=numeric]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Cavity Modes and Beatnote}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+This document was written to support a Mathematica simulation of the cavity beatnote between a cavity QED probe beam and an optical dipole trap beam.
+
+In this document I will do three things. First I will briefly derive the Rayleigh range and mode center of an optical cavity based on its mirror radii of curvature and cavity length. Second I will systematically derive the transfer functions to calculate the reflected, transmitted, and intra cavity fields from the incident field. This will be largely redundant with part of a previous write up I have done but this treatment will be slightly more thorough and cleaner. It will also include the Gouy phase unlike the previous one. Third I will use the resultant formula for the intracavity field to determine the beatnote between a probe and trap beam. Namely I want to calculate the amplitude of the probe at the locations of the anti-nodes of the trap. If the trap is close to twice the probes wavelength then this ``beatnote'' will be slowly varying throughout the cavity. I will derive an analytical form for the envelope of this beatnote.
+
+\section{Rayleigh range and cavity center}
+
+Consider a cavity made of two mirrors with radii of curvature $R_1$ and $R_2$. I take $R_1,R_2>0$ explicitly. The distance between the mirrors is $L$. I take this to mean the distance from the center of one mirror to the center of the other mirror. I will set my origin of $z=0$ to be at the mirror on the left, mirror 1.
+
+The condition (in some approximations; scalar electromagnetism, paraxial maybe, see \cite{Uphoff2015}) for a mode to be supported by two mirrors is that the gradient of the phase of the mode is perpindicular to the mirror surface, i.e. the mirror is a equiphase surface. This is equivalent to saying the radius of curvature at the mode is equal to the radius of curvature of the mirror. This condition must hold for both mirrors.
+
+For a Gaussian mode we have for the radius of curvature as a function of $z$ along the beam:
+
+\begin{align}
+R(z) = (z-z_0)\left(1+\left( \frac{z_R}{z-z_0}\right)^2\right)
+\end{align}
+
+$z_0$ is the location of the waist of the Gaussian mode and $z_R$ is the Rayleigh range.
+If a spatial mode is to be supported by the cavity then we have:
+
+
+\begin{align}
+R(0) &=  -R_1 = -z_0\left(1+\frac{z_R^2}{z_0^2}\right)\\
+R(L) &= R_2 = (L-z_0)\left(1+\frac{z_R^2}{(L-z_0)^2}\right)
+\end{align}
+
+We manipulate the equation for $R(0)$ to find
+
+\begin{align}
+z_R^2 = z_0\left(R_1-z_0\right)
+\end{align}
+
+We then plug this into the equation for $R(L)$ and expand:
+
+\begin{align}
+R_2(L-z_0) &= (L-z_0)^2 + z_0(R_1-z_0)\\
+R_2L - R_2z_0 &= L^2 + z_0^2 - 2Lz_0 + R_1z_0 - z_0^2\\
+z_0 &= \frac{L(L-R_2)}{2L-R_1-R_2}
+\end{align}
+
+We can define the cavity stability parameters $g_i = 1-\frac{L}{R_i}$ and express $z_0$ in terms of these. We find (from Mathematica)
+
+\begin{align}
+z_0 &= \frac{L(L-R_2)}{2L-R_1-R_2} = \frac{(g_1-1)g_2}{2g_1g_2 - g_1 - g_2} L
+\end{align}
+
+We can plug this into the expression for $z_R$ to find (unilluminatingly)
+
+\begin{align}
+z_R = \sqrt{\frac{(L-R_1)(L-R_2)(R_1+R_2-L)}{(2L-R_1-R_2)^2}L} = \sqrt{\frac{g_1g_2(1-g_1g_2)}{(2g_1g_2 - g_1 - g_2)^2}} L
+\end{align}
+
+The main important feature is to notice that for a given cavity geometry (values for $g_1$ and $g_2$) $z_0$ and $z_R$ scale linearly with the cavity length. Furthermore, it is clear that $z_0$ and $z_R$ depend only on $R_1$, $R_2$, and $L$ and not on, for example, the wavelength of light used to drive the cavity.
+
+Note that for $R_1 = R_2 = R$ we get
+
+\begin{align}
+z_0 &= \frac{L}{2}\\
+z_R &= \sqrt{\left(R-\frac{L}{2}\right)\frac{L}{2}}
+\end{align}
+
+For all of the above recall that 
+
+\begin{align}
+w_0 = \sqrt{\frac{z_R \lambda}{\pi}}
+\end{align}
+
+\subsection{Guoy Phase}
+
+In this section I'll calculate the Guoy phase collected by the cavity mode during a round trip.
+
+
+For a right propagating beam (with positive frequency: $-i \omega t + i kz$) the Gouy phase, $\psi_{G,R}(z)$ at position $z$ along the beam is given by
+
+\begin{align}
+\psi_{G,R}(z) = -\arctan\left(\frac{z-z_0}{z_R} \right)
+\end{align}
+
+For a left propagating beam (with positive frequency: $-i \omega t - i kz$) the Gouy phase, $\psi_{G,L}(z)$ at position $z$ along the beam is given by
+
+\begin{align}
+\psi_{G,L}(z) = +\arctan\left(\frac{z-z_0}{z_R} \right)
+\end{align}
+
+$\phi_G$ is the total Gouy phase the beam collects after crossing the cavity once.
+
+\begin{align}
+\phi_G &= \psi_{G,R}(L) - \psi_{G,R}(0) = -\arctan\left(\frac{L-z_0}{z_R} \right) - \left(-\arctan\left(\frac{-z_0}{z_R} \right)\right)\\
+&= \psi_{G,L}(0) - \psi_{G,L}(L) = \arctan\left(\frac{-z_0}{z_R} \right) - \arctan\left(-\frac{L-z_0}{z_R} \right)\\
+\end{align}
+
+We see that the collected Gouy phase is the same for both the right traveling and left traveling wave.
+
+I will point out that an assumption is being made that the cavity transmission and reflection coefficients are constant across all frequencies of interest. In the case of a poly-chromatic cavity this is explicitly not the case. The finesse and reflection/transmission phases will in general differ between the two wavelengths leading to subtle but important effects.
+
+
+\section{Cavity Transfer Function}
+
+In considering a two sided cavity we suppose that we send in an incident $E$ field described by
+
+\begin{align}
+E_{in}(z=0,t) &= E_{in}^+(t) + E_{in}^-(t)\\
+\end{align}
+
+Splitting the field into it's components due to positive and negative Fourier components.
+
+We only consider the amplitude of the electric field (not the vector part) and we evaluate it at position $z=0$ right at the surface of the first mirror. This field will reflect off of the first mirror and create a reflected field $E_R^+(t)$, it will transmit through both mirrors and create a transmitted field $E_T^+(t)$ and it will also build up two fields in the cavity mode, a right traveling field $E_{Cav,R}^+(t)$ and a left traveling field $E_{Cav,L}^+(t)$. Subsequently we will calculate the time evolution of these fields in terms of the incident electric field $E_{in}^+(t)$. That is, we will find the transfer cavity for these 4 different output modes.
+
+The approach here of treating the Fabry-Perot resonator as a sort of real time tapped delay is adapted from that found in \cite{Xiao2011, Sanchez-Soto2016}. We assume that light travels at the speed of light $c$ and partially transmits and reflects at each mirror surface with various complex coefficients. The field at any location then is the sum of all the possible paths light could have taken to get to that location. For example, light can get to the far edge of the cavity by entering it from the left and traversing the cavity once or by entering, traversing once, reflecting off the right mirror, traversing it backwards, reflecting off the left mirror, traversing it again and ending at the right side. This latter path would take longer so it will have the amplitude of the incident field evaluated at an earlier time than that of the short path light.
+
+We can write
+
+\begin{align}
+E_R^+(t) &= -r_1 E_{in}^+(t) -t_1^2r_2 E_{in}^+(t) + t_1^2 r_2 \sum_{N=0}^{\infty} (r_1r_2)^N \left(e^{i 2 \phi_G}\right)^N E_{in}^+(t - N\tau)\\
+E_T^+(t) &= t_1t_2\sum_{N=0}^{\infty}(r_1r_2)^N \left(e^{i 2 \phi_G}\right)^N E_{in}^+\left(t-\frac{L}{c}-N\tau\right)\\
+E_{Cav,R}^+(z,t) &= t_1 e^{i\psi_R(z)} \sum_{N=0}^{\infty} (r_1r_2)^N \left(e^{i 2 \phi_G}\right)^N E_{in}^+\left(t-\frac{z}{c}-N\tau\right)\\
+E_{Cav,L}^+(z,t) &= t_1r_2 e^{i\phi_G} e^{i\psi_L(L-z)} \sum_{N=0}^{\infty} (r_1r_2)^N \left(e^{i 2 \phi_G}\right)^N E_{in}^+\left(t-\frac{2L-z}{c} - N\tau\right)
+\end{align}
+
+Here $t_1$, $t_2$, $r_1 = |r_1|e^{i\phi_{r_1}}$, and $r_2 = |r_2|e^{i\phi_{r_2}}$ are the complex transmission and reflection coefficients for mirror 1 and 2. We have $|t_i|^2 = T_i$ and $|r_i|^2 = R_i$. We have $R_i+T_i+L_i = 1$ where $L_i$ represents losses for mirror $i$. $L_i,T_i \ll R_i$. 
+
+$\tau = \frac{1}{f_{FSR}} = \frac{2L}{c}$ is the cavity round trip time. 
+
+$\psi_R(z)$ is the Gouy phase collected by a right propagating beam between position $z$ and the left mirror. $\psi_L(z)$ is the Gouy phase collected by a left traveling beam between position $z$ and the right mirror. These will be more clearly defined below.
+
+\section{Infinite Sum}
+
+We focus on the term inside of the sum which can be expressed generally for all the 4 modes as
+
+\begin{align}
+A(t,\tilde{t}) = \sum_{N=0}^{\infty}(r_1r_2)^N \left(e^{i2 \phi_G} \right)^N E_{in}^+(t-\tilde{t} - N\tau)
+\end{align}
+
+Where $\tilde{t}$ can be chosen appropriately for whichever mode is being considered.
+
+We first look at $(r_1r_2)^n$.
+
+\begin{align}
+r_1 r_2 = |r_1||r_2|e^{i(\phi_{r_1} + \phi_{r_2})} = \sqrt{R_1}\sqrt{R_2} e^{i(\phi_{r_1}+\phi_{r_2})}
+\end{align}
+
+\begin{align}
+\sqrt{R_1}\sqrt{R_2} &= \sqrt{1-T_1-L_1}\sqrt{1-T_2-L_2} \approx \left(1-\frac{1}{2}T_1 - \frac{1}{2}L_1\right)\left(1-\frac{1}{2}T_2 - \frac{1}{2}L_2\right)\\
+&\approx \left(1-\frac{1}{2}\left(T_1+T_2+L_1+L_2\right)\right)
+\end{align}
+
+The cavity Finesse is defined as
+
+\begin{align}
+\mathcal{F} = \frac{2\pi}{T_1+T_2+L_1+L_2}
+\end{align}
+
+So we see that
+
+\begin{align}
+|r_1||r_2| \approx 1 - \frac{\pi}{\mathcal{F}} \approx e^{-\frac{\pi}{\mathcal{F}}}
+\end{align}
+
+We can define a cavity circulation time as 
+
+\begin{align}
+t_N = N\tau
+\end{align}
+So we have
+
+\begin{align}
+(r_1r_2)^N = e^{-\frac{\pi}{\mathcal{F}} \frac{t_N}{\tau}}e^{i(\phi_{r_1}+\phi_{r_2})\frac{t_N}{\tau}}
+\end{align}
+
+Note that
+
+\begin{align}
+\frac{\pi}{\mathcal{F}}\frac{1}{\tau} = \pi \frac{f_{FSR}}{\mathcal{F}} = \frac{\kappa}{2}
+\end{align}
+
+Where I have defined $\kappa = 2\pi \frac{f_{FSR}}{\mathcal{F}}$. We will see later that $\kappa$ corresponds to the cavity full-linewidth in angular frequency units.
+
+\begin{align}
+(r_1r_2)^N = e^{-\frac{\kappa}{2} t_N}e^{i(\phi_{r_1}+\phi_{r_2})\frac{t_N}{\tau}}
+\end{align}
+
+We then plug in to find
+
+\begin{align}
+A(t,\tilde{t}) = \sum_{N=0}^{\infty} e^{i(\phi_{r_1} + \phi_{r_2}+2\phi_G) \frac{t_N}{\tau}}e^{-\frac{\kappa}{2}t_N}E_{in}^+(t-\tilde{t} - t_N)
+\end{align}
+
+We can rewrite this as
+
+\begin{align}
+A(t,\tilde{t}) &= \int_{t'=-\infty}^{+\infty} \sum_{N=0}^{\infty} e^{i(\phi_{r_1} + \phi_{r_2}+2\phi_G) \frac{t_N}{\tau}}e^{-\frac{\kappa}{2}t_N}E_{in}^+(t-t') \delta(t'-\tilde{t}-t_N)dt'\\
+&= \int_{t'=-\infty}^{+\infty} E_{in}^+(t-t') \sum_{N=0}^{\infty} e^{i(\phi_{r_1} + \phi_{r_2}+2\phi_G) \frac{t_N}{\tau}}e^{-\frac{\kappa}{2}t_N} \delta(t'-\tilde{t}-t_N)dt'\\
+&= \int_{t'=-\infty}^{+\infty} E_{in}^+(t-t') h_{\tilde{t}}(t') dt'\\
+&= (E_{in}^+ \ast h_{\tilde{t}})(t')
+\end{align}
+
+That is, the time evolution is given by the convolution of the input with the impulse response function $h_{\tilde{t}}(t')$ which has been defined as
+
+\begin{align}
+h_{\tilde{t}}(t') &= \sum_{N=0}^{\infty} e^{i(\phi_{r_1}+\phi_{r_2} + 2\phi_G) \frac{t_N}{\tau}}e^{-\frac{\kappa}{2}t_N}\delta(t'-\tilde{t}-t_N)\\
+&=\sum_{N=0}^{\infty} e^{i(\phi_{r_1}+\phi_{r_2} + 2\phi_G) \frac{t'-\tilde{t}}{\tau}}e^{-\frac{\kappa}{2}(t'-\tilde{t})}\delta(t'-\tilde{t}-t_N)\\
+\end{align}
+
+Since we've found the impulse response function the natural thing to do is take the Fourier transform to find the transfer function. In fact, we will find the transfer function, make some approximations, and then Inverse Fourier transform to come up with a slightly nicer looking impulse response function.
+
+\begin{align}
+\tilde{h}_{\tilde{t}}(f) &= \int_{t=-\infty}^{+\infty} e^{i 2\pi f t} h_{\tilde{t}}(t) dt\\
+&= \int_{t=-\infty}^{+\infty} e^{i 2\pi f t}\sum_{N=0}^{\infty} e^{i(\phi_{r_1}+\phi_{r_2} + 2\phi_G) \frac{t_N}{\tau}}e^{-\frac{\kappa}{2}t_N}\delta(t-\tilde{t}-t_N) dt\\
+&= e^{i 2 \pi f(\tilde{t}+t_N)} \sum_{N=0}^{\infty} e^{i(\phi_{r_1}+\phi_{r_2} + 2\phi_G) \frac{t_N}{\tau}}e^{-\frac{\kappa}{2}t_N}\\
+&= e^{i 2\pi f \tilde{t}}\sum_{N=0}^{\infty} e^{i\left(2\pi f t_N + (\phi_{r_1} + \phi_{r_2} + 2\phi_G)\frac{t_N}{\tau}\right) -\frac{\kappa}{2} t_N}\\
+&= e^{i 2\pi f \tilde{t}} \sum_{N=0}^{\infty} \left(e^{i\left(2\pi f \tau + (\phi_{r_1} + \phi_{r_2} + 2\phi_G)\right) - \frac{\kappa}{2}\tau}\right)^N
+\end{align}
+
+Note that $-\frac{\kappa}{2}\tau = \frac{\pi}{\mathcal{F}} \ll 1$. This means this function is an easily summable geometric series.
+
+\begin{align}
+\tilde{h}_{\tilde{t}}(f) = e^{i 2\pi f \tilde{t}} \frac{1}{1-e^{i\left(2\pi f \tau + (\phi_{r_1} + \phi_{r_2} + 2\phi_G)\right) - \frac{\kappa}{2}\tau}}
+\end{align}
+
+We now want to approximate the exponential in the limit that its argument is small. I have just mentioned that the real part is small. This means we can expand
+
+\begin{align}
+e^{- \frac{\kappa}{2} \tau} \approx 1 - \frac{\kappa}{2} \tau
+\end{align}
+
+
+
+We now consider the imaginary part. Define
+
+\begin{align}
+f_n = f_{FSR} \left(n-\frac{\phi_{r_1}+\phi_{r_2}+2\phi_G}{2\pi}\right)
+\end{align}
+
+Where $n$ is an integer.
+Then let $f = f_n + \Delta f_n$.
+
+\begin{align}
+e^{i(2\pi f \tau + (\phi_{r_1} + \phi_{r_2} + 2\phi_G))} &= e^{i(2\pi f_n \tau + (\phi_{r_1}+\phi_{r_2}+2\phi_G) + 2\pi \Delta_n \tau)}\\
+&= e^{i 2 \pi n} e^{i 2 \pi \Delta f_n \tau} = e^{i 2 \pi \Delta f_n \tau}
+\end{align}
+
+In the limit that $\Delta f_n \tau = \frac{\Delta f_n}{f_{FSR}} \ll 1$ We can expand this as 
+
+\begin{align}
+e^{i(2\pi f \tau + (\phi_{r_1} + \phi_{r_2} + 2\phi_G))} &\approx 1 + i 2\pi \Delta f_n \tau
+\end{align}
+
+We can multiply these two (neglecting terms which are doubly small)
+
+\begin{align}
+e^{i\left(2\pi f \tau + (\phi_{r_1} + \phi_{r_2} + 2\phi_G)\right) - \frac{\kappa}{2}\tau} \approx 1 + i 2\pi \Delta f_n \tau - \frac{\kappa}{2} \tau
+\end{align}
+
+This expansion is valid in the limit that $\mathcal{F} \gg 1$ and $\Delta f_n \ll f_{FSR}$. In that case we get
+
+\begin{align}
+\tilde{h}_{\tilde{t}}(f) = e^{i 2 \pi f \tilde{t}} \frac{1}{\frac{\kappa}{2} \tau - i 2 \pi \Delta f_n \tau}
+\end{align}
+
+I'll now perform a few manipulations on the Lorentzian looking term to make things a little nicer. First I'll define
+
+\begin{align}
+\nu = \frac{\kappa}{2\pi}
+\end{align}
+
+We will see shortly that $\nu$ is the cavity full linewidth in cyclic units. Note that $f_{FSR} = \mathcal{F} \nu$
+
+\begin{align}
+\frac{1}{\frac{\kappa}{2} \tau - i 2 \pi \Delta f_n \tau} &= \frac{f_{FSR}}{\pi \nu - i 2 \pi \Delta f_n}\\
+&= \frac{\mathcal{F}}{\pi} \frac{\frac{\nu}{2}}{\frac{\nu}{2} - i \Delta f_n}\\
+&= \frac{\mathcal{F}}{\pi} L(\Delta f_n)
+\end{align}
+
+Here I've defined 
+
+\begin{align}
+L(\Delta f) = \frac{\frac{\nu}{2}}{\frac{\nu}{2} - i \Delta f}
+\end{align}
+
+Note that $L(0) = 1$. We see that
+
+\begin{align}
+|L(\Delta f)|^2 = \frac{\left(\frac{\nu}{2}\right)^2}{\left(\frac{\nu}{2} \right)^2 + \Delta f^2}
+\end{align}
+
+We can see that $\lvert L\left( \pm\frac{\nu}{2}\right)\rvert^2 = \frac{1}{2} = \frac{1}{2} L(0)$. So we can see that for $-\frac{\nu}{2} < \Delta f < \frac{\nu}{2}$ we have that $L(\Delta f) > \frac{L(0)}{2}$. This is why we refer to $\nu$ and $\kappa$ as the full width at half max for the cavity transfer function.
+It is also not too difficult to see that $\int_{\Delta = -\infty}^{+\infty} |L(\Delta f)|^2 d\Delta f= \pi \frac{\nu}{2}$.
+
+We can finally summarize that
+
+\begin{align}
+\tilde{h}_{\tilde{t}}(f) = e^{i 2\pi f \tilde{t}} \frac{\mathcal{F}}{\pi}L(\Delta f_n)
+\end{align}
+
+Note that this formula is valid for $\Delta f_n \ll f_{FSR}$ so it describes a single cavity mode. However, the magnitude of this function at neighboring cavity modes (different values of $n$) will be very small since $f_{FSR} \gg \nu$. This means we can express the cavity function as
+
+\begin{align}
+\tilde{h}_{\tilde{t}}(f) = e^{i 2\pi f \tilde{t}} \frac{\mathcal{F}}{\pi}\sum_{n=0}^{\infty} L(\Delta f_n)
+\end{align}
+
+I want to now inverse Fourier transform these terms to get an alternative expression for the impulse response function. We proceed in two steps and apply the convolution theorem.
+
+\begin{align}
+\mathcal{FT}^{-1}[e^{i 2\pi f \tilde{t}}](f) &= \int_{f=-\infty}^{+\infty} e^{-i 2\pi f t} e^{i 2\pi f \tilde{t}} df = \delta(t-\tilde{t})\\
+\mathcal{FT}^{-1}\left[\frac{1}{\frac{\nu}{2} - i (f-f_n)} \right](f) &= 2 \pi e^{(-i 2 \pi f_n - \pi \nu)|t|} \theta(t) = 2\pi e^{\left(-i 2\pi f_n - \frac{\kappa}{2}\right)|t|}\theta(t)
+\end{align}
+
+I solved the last integral on Mathematica but it is not too bad to solve by reverse engineering or by hand (maybe with a contour integral). Now applying the convolution theorem
+
+\begin{align}
+h_{\tilde{t}}(t) &= \frac{\mathcal{F}}{\pi} \frac{\nu}{2} 2 \pi \int_{t'=-\infty}^{+\infty} e^{\left(-i2\pi f_n -\frac{\kappa}{2}\right)|t-t'|}\theta(t-t') \delta(t'-\tilde{t}) dt'\\
+&= \mathcal{F} \nu e^{\left(-i 2\pi f_n -\frac{\kappa}{2}\right) |t-\tilde{t}|}\theta(t-\tilde{t})\\
+&= f_{FSR} e^{\left(-i 2\pi f_n -\frac{\kappa}{2}\right) (t-\tilde{t})}\theta(t-\tilde{t})
+\end{align}
+
+The Heaviside theta function captures the fact that as things have been defined if the light was turned on (at position $z=0$) at $t=0$ there would be a short delay of time $\tilde{t}$ before any field appeared at the output mode we are considering. Generally we will be looking on timescales much longer that $\tilde{t}$ since $\tilde{t} < \tau = \frac{1}{f_{FSR}}$ so this $\tilde{t}$ can just be dropped.
+
+Summarizing including sums over all cavity modes:
+
+\begin{empheq}[box=\fbox]{align}
+h_{\tilde{t}}(t) &= f_{FSR} \theta(t)\sum_{n=0}^{+\infty} e^{\left(-i 2 \pi f_n - \frac{\kappa}{2}\right)t}\\
+\tilde{h}_{\tilde{f}}(t)&= e^{i 2\pi f \tilde{t}} \frac{\mathcal{F}}{\pi} \sum_{n=0}^{\infty} L(\Delta f_n)
+\end{empheq}
+
+\section{Monochromatic Input}
+
+We now consider the case where the input wave is a monochromatic plane wave. It will be easy to convolve the plane wave input with the impulse response function to get the time evolution of the cavity fields. For a plane wave we have
+
+\begin{align}
+E_{in}^+(t) = E^+_{mc}(t) = E_0^+ e^{i\phi_E}e^{-i 2 \pi f t} = \frac{E_0}{2}e^{i\phi_E} e^{-i 2 \pi f t} 
+\end{align}
+
+The factor of 2 between $E_0$ and $E_0^+$ comes from the fact that half of the amplitude of a real valued wave (the electric field) is contained in the positive frequency component and the other half is in the negative component. The important thing to remember is that $E_0$ represents the peak to peak amplitude of the \textit{real} electric field while $E_0^+$ does \textit{not} represent the full peak to peak amplitude.
+
+We can take the convolution of this with the impulse response function to get
+
+\begin{align}
+\left(E_{mc}^+ \ast h_{\tilde{t}}\right)(t) &= \int_{t'=-\infty}^{+\infty} E_0^+ e^{i\phi_E}e^{-i 2\pi f (t-t')}h_{\tilde{t}}(t') dt'\\
+&= E_0^+e^{i\phi_E}e^{-i 2\pi f t} \int_{t'=-\infty}^{+\infty} e^{i 2 \pi f t'} h_{\tilde{t}}(t') dt' = E_0^+ e^{i\phi_E}e^{-i2\pi f t} \tilde{h}_{\tilde{f}}(f)\\
+&= E_0^+e^{i\phi_E}e^{-i 2 \pi f t} e^{i 2\pi f \tilde{t}} \frac{\mathcal{F}}{\pi} L(\Delta f_n)
+\end{align}
+
+Here I've only considered the mode $f_n$ which is closest to $f$. The other modes will have negligible amplitudes.
+
+\section{Cavity Modes}
+
+We can now plug this into the initial expression above for the transmitted, reflected, and intracavity modes, inputing the appropriate coefficients, phases and $\tilde{t}$ for each mode.
+
+\begin{align}
+E_R^+(t) &= -(r_1+t_1^2 r_2) E_0^+ e^{i\phi_E}e^{i 2\pi f t} + \frac{\mathcal{F}}{\pi}L(\Delta f_n) t_1^2 r_2 E_0^+ e^{i\phi_E}e^{-i 2\pi f t}\\
+\end{align}
+
+
+
+\begin{align}
+E_R^+(t) &= \left(\frac{\mathcal{F}}{\pi} t_1^2 r_2 L(\Delta f_n) - (r_1 + t_1^2 r_2)\right) E_{in}^+(t)\\
+E_T^+(t) &=t_1t_2 \frac{\mathcal{F}}{\pi} L(\Delta f_n) e^{i 2\pi f \frac{L}{c}} E_{in}^+(t)\\
+E_{Cav,R}^+(z,t) &=t_1 \frac{\mathcal{F}}{\pi} L(\Delta f_n)e^{i \psi_R(z)}  e^{i 2\pi f \frac{z}{c}} E_{in}^+(t)\\
+E_{Cav,L}^+(z,t) &= t_1r_2 \frac{\mathcal{F}}{\pi} L(\Delta f_n) e^{i \phi_G} e^{i\psi_L(L-z)} e^{i 2\pi f \frac{2L-z}{c}} E_{in}^+(t)
+\end{align}
+
+\begin{align}
+E_R^+(t) &= E_0^+ e^{i\phi_E}\left(\frac{\mathcal{F}}{\pi} t_1^2 r_2 L(\Delta f_n) - (r_1 + t_1^2 r_2)\right)  e^{-i2\pi ft}\\
+E_T^+(t) &= E_0^+ e^{i\phi_E}t_1t_2 \frac{\mathcal{F}}{\pi} L(\Delta f_n) e^{i 2\pi f \frac{L}{c}} e^{-i 2\pi ft}\\
+E_{Cav,R}^+(z,t) &= E_0^+ e^{i\phi_E}t_1  \frac{\mathcal{F}}{\pi} L(\Delta f_n)  e^{i \psi_R(z)}e^{i 2\pi f \frac{z}{c}} e^{-i2\pi f t}\\
+E_{Cav,L}^+(z,t) &= E_0^+ e^{i\phi_E}t_1r_2 \frac{\mathcal{F}}{\pi} L(\Delta f_n) e^{i \phi_G} e^{i\psi_L(L-z)} e^{i 2\pi f \frac{2L-z}{c}} e^{-i2\pi ft}\\
+\end{align}
+
+We can define the drive angular frequency $\omega = 2\pi f$ and wavevector $k = \frac{\omega}{c} = \frac{2\pi f}{c}$ to get
+
+\begin{align}
+E_R^+(t) &= E_0^+ e^{i\phi_E}\left(\frac{\mathcal{F}}{\pi} t_1^2 r_2 L(\Delta f_n) - (r_1 + t_1^2 r_2)\right) e^{-i2\pi ft}\\
+E_T^+(t) &= E_0^+ e^{i\phi_E}t_1t_2 \frac{\mathcal{F}}{\pi} L(\Delta f_n) e^{i kL} e^{-i \omega t}\\
+E_{Cav,R}^+(z,t) &= E_0^+ e^{i\phi_E}t_1  \frac{\mathcal{F}}{\pi} L(\Delta f_n)  e^{i \psi_R(z)}e^{i kz} e^{-i\omega t}\\
+E_{Cav,L}^+(z,t) &= E_0^+ e^{i\phi_E}t_1r_2 \frac{\mathcal{F}}{\pi} L(\Delta f_n) e^{i \phi_G} e^{i\psi_L(L-z)} e^{i (2kL - kz)} e^{-i\omega t}\\
+\end{align}
+
+Finally, we can define $L(\Delta f_n)$ = $|L(\Delta f_n)|e^{i\phi_L}$ and get
+
+\begin{align}
+E_R^+(t) &= E_0^+\left(\frac{\mathcal{F}}{\pi} t_1^2 r_2 |L(\Delta f_n)|e^{i\phi_E}e^{i\phi_L} - (r_1 + t_1^2 r_2)e^{i\phi_E}\right) e^{-i2\pi ft}\\
+E_T^+(t) &= E_0^+|t_1||t_2| \frac{\mathcal{F}}{\pi} |L(\Delta f_n)|e^{i\phi_E}e^{i\phi_{t_1}}e^{i\phi_{t_2}}e^{i\phi_L} e^{i kL} e^{-i \omega t}\\
+E_{Cav,R}^+(z,t) &= E_0^+|t_1|  \frac{\mathcal{F}}{\pi} |L(\Delta f_n)|e^{i\phi_E}e^{i\phi_{t_1}}e^{i\phi_L}  e^{i \psi_R(z)}e^{i kz} e^{-i\omega t}\\
+E_{Cav,L}^+(z,t) &= E_0^+|t_1||r_2| \frac{\mathcal{F}}{\pi} |L(\Delta f_n)|e^{i\phi_E}e^{i\phi_{t_1}} e^{i\phi_{r_2}}e^{i\phi_L} e^{i \phi_G} e^{i\psi_L(L-z)} e^{i (2kL - kz)} e^{-i\omega t}\\
+\end{align}
+
+\section{Intracavity Field}
+
+To calculate the intracavity field we must add up the $E_{Cav,R}^+(z,t)$ and $E_{Cav,L}^+(z,t)$.
+
+\begin{align}
+E_{Cav}^+(z,t) = E_{Cav,R}^+(z,t) + E_{Cav,L}^+(z,t)
+\end{align}
+
+\begin{align}
+E_{Cav}^+(z,t) \frac{\pi}{E_0^+|t_1| \mathcal{F} |L(\Delta f_n)|} =& e^{i\phi_E}e^{i\phi_{t_1}} e^{i\phi_L} e^{i\psi_R(z)} e^{ikz} e^{-i\omega t} \\
+&+  |r_2|e^{i\phi_E}e^{i\phi_{t_1}}e^{i\phi_{r_2}} e^{i\phi_L} e^{i\phi_G} e^{i \psi_L(L-z)}e^{i2kL}e^{-ikz} e^{-i\omega t}
+\end{align}
+
+This formula looks like a mess but we will try to break it down. I'll break it down into phases which are shared by both terms, phases which are the opposite between the two terms, and phases which are unique to individual terms.
+
+\begin{align}
+A = \phi_A &= \phi_E + \phi_{t_1} + \phi_L - \omega t\\
+B = \phi_B &= kz\\
+C = \phi_C &= \psi_R(z)\\
+D = \phi_D &= \phi_{r_2} + \phi_G + \psi_L(L-z) + 2kL\\
+\end{align}
+
+We then have
+
+\begin{align}
+E_{Cav}^+(z,t) \frac{\pi}{E_0^+|t_1| \mathcal{F} |L(\Delta f_n)|} &= e^{i(A+B+C)} + |r_2| e^{i(A-B+D)}\\
+&=e^{i(A+B+C)} + e^{i(A-B+D)}
+\end{align}
+
+Where I've set $|r_2|=1$ for the high finesse limit. We can define
+
+\begin{align}
+E_{0,Cav}^+ = E_0^+ |t_1| |L(\Delta f_n)| \frac{\mathcal{F}}{\pi}
+\end{align}
+
+
+I am interested in determining the amplitude and nodes of the electric field within the cavity. To this end I am interested in the real part of this expression.
+
+\begin{align}
+b(z,t) &= e^{i(A+B+C)} + e^{i(A-B+D)}\\
+\text{Re}(b(z,t)) &= \cos(A+B+C) + \cos(A-B+D)\\
+&= 2\cos\left(A + \frac{C}{2} + \frac{D}{2} \right) \cos\left(B+\frac{C}{2}-\frac{D}{2}\right)
+\end{align}
+
+According to a trig identity from Wolfram Alpha. This is the result I am looking for. $A$ contains the time dependence and $B$ contains the spatial dependence.
+
+For reference we have
+
+\begin{align}
+A + \frac{C}{2} + \frac{D}{2} &= - \omega t + \phi_E + \phi_{t_1} + \phi_L + \frac{\psi_R(z) + \psi_L(L-z) + \phi_{r_2} + \phi_G + 2 kL}{2}\\
+&= \omega t + \phi_T\\
+B + \frac{C}{2} - \frac{D}{2} &= kz + \frac{\psi_R(z) - \psi_L(L-z) - \phi_{r_2} - \phi_G - 2 kL}{2}\\
+&= kz + \phi_{z}
+\end{align}
+
+So that
+
+\begin{align}
+\text{Re}(b(z,t)) = 2 \cos(-\omega t + \phi_t)\cos(kz + \phi_z)
+\end{align}
+
+So we see that $\phi_t$ and $\phi_z$ just set the relative temporal and spatial phase of the standing wave.
+
+We can put this together to find a full expression for the intracavity electric field
+
+\begin{align}
+E_{Cav}(z,t) &= 2E_{0,Cav}^+ \cos\left(-\omega t + \phi_t\right)\cos\left(kz + \phi_z\right)\\
+&= E_{0,Cav} \cos\left(-\omega t + \phi_t \right)\cos\left(kz + \phi_z\right)
+\end{align}
+
+\begin{align}
+E_{0,Cav} = E_0^+ |t_1||L(\Delta f_n)| \mathcal{F} \frac{2}{\pi} = E_0 |t_1||L(\Delta f_n)| \mathcal{F}\frac{1}{\pi}
+\end{align}
+
+We can define the cavity input efficiency as
+
+\begin{align}
+\eta_{in} = \frac{T_1}{T_1+T_2+L_1+L_2} = T_1 \frac{\mathcal{F}}{2\pi}
+\end{align}
+
+It can be shown that if energy is stored in the cavity then it will decay via transmission through the input port at a rate given be $\eta_{in}\kappa$. Similarly, energy builds up in the cavity due to incident power on this port by a similar relation. There is a respective efficiency for each of the cavity loss ports, $T_1$, $T_2$, $L_1$, and $L_2$. Here we consider driving the cavity through $T_1$ so that is all we consider. Manipulating we find
+
+\begin{align}
+E_{0,Cav} = E_0 |L(\Delta f_n)| \sqrt{\mathcal{F}\eta_{in}} \sqrt{\frac{2}{\pi}}
+\end{align}
+
+
+\section{Spatial Dependence and Phase}
+
+We see that the mode in the cavity is a standing wave. In E6 we are planning on driving the cavity mode with two fields. One probe field near atomic resonance and another field providing an optical dipole trap for the atoms. We'll likely use an attractive red detuned dipole trap meaning the atoms will be attracted to anti-nodes of the ODT. However, we want to ensure that when we trap the atoms in the anti-nodes of the ODT they are also at a location of high probe intensity. We are interested in the spatial phase overlap between the two modes. 
+
+We focus on the second term
+
+\begin{align}
+M(z) &= \cos\left(kz - \phi_z\right)\\
+&= \cos\left(kz - kL +\frac{\psi_R(z)}{2} - \frac{\phi_{r_2} + \phi_G + \psi_L(L-z)}{2} \right)
+\end{align}
+
+We would like to identify the anti-nodes of this function. These occur when the argument of the cosine is equal to $m\pi$ for $m\in \mathbb{N}$. We let $z^{AN}(m)$ be the $m^{th}$ zero of the function
+
+\begin{align}
+k z^{AN}(m) -kL +\frac{\psi_R\left(z^{AN}(m)\right)}{2} - \frac{\phi_{r_2} + \phi_G + \psi_L\left(L-z^{AN}(m)\right)}{2} &= m\pi\\ 
+\end{align}
+
+Unfortunately because of the Gouy phase terms it is not possible to invert this formula. However, the Gouy phase only depends on the Rayleigh range and as we saw above the Rayleigh range will be the same for all modes supported in the cavity. This means that the Gouy phase contributes no \textit{differential} phase shift between the beams so for purposes of determining mode overlap we can neglect the Gouy phase. In particular, the Gouy phase will slightly shift the locations of the anti-nodes of the trap, however, because it is the same for both beams, it will NOT affect the amplitude of the probe at the location of these anti-nodes which is what we really care about. To this end I will neglect the Gouy phase entirely. In that case we have
+
+\begin{align}
+M(z) = \cos\left(kz - kL - \frac{\phi_{r_2}}{2}\right)
+\end{align}
+
+and we can see
+
+\begin{align}
+k z^{AN}(m) -kL  - \frac{\phi_{r_2}}{2} &= m\pi\\ 
+z^{AN}(m) = \frac{1}{k} m\pi + \frac{1}{k} \frac{\phi_{r_2}}{2} + L
+\end{align}
+
+For Mathematica calculations suppose we want to know the values of $m$ that give $z_{lower} < z^{AN}(m) < z_{upper}$. These are given by
+
+\begin{align}
+z_{lower} \frac{k}{\pi} - \frac{\phi_{r_2}}{2 \pi} - \frac{kL}{\pi} < m < z_{upper} \frac{k}{\pi} - \frac{\phi_{r_2}}{2 \pi} -\frac{kL}{\pi}
+\end{align}
+
+We consider two modes. The probe with $\lambda \approx 2\pi \times 780 \text{ nm}$ and the trap with $\lambda_T \approx 1560 \text{ nm}$. Recall that $\omega = 2\pi f$, $k=\frac{2\pi}{\lambda}$, $f\lambda = c$, etc. We want to plug the zeros of the trap into the formula for the amplitude of the probe. 
+It is important to note at this point that the phase shift upon reflection for the different mirrors can be different. That is, $\phi_i^P \neq \phi_i^T$. We will need to keep track of this.
+
+We get
+
+\begin{align}
+M_P\left(z^{AN}_T\right) &= \cos\left(k_P z^{AN}_T - k_PL -\frac{\phi_{r_2}^P}{2}\right)\\
+&= \cos\left(\frac{k_P}{k_T}\left(m\pi + \frac{\phi_{r_2}^T}{2} + k_T L\right) - k_P L - \frac{\phi_{r_2}^P}{2}\right)\\
+&= \cos\left(\frac{k_P}{k_T}\left( m\pi + \frac{\phi_{r_2}^T}{2}\right) - \frac{\phi_{r_2}^P}{2} \right)
+\end{align}
+
+We can see that as $m$ is stepped by one this cosine can collect phase which is an appreciable fraction or much larger than $\pi$ depending on the relative values of $k_P$ and $k_T$. The picture here is that we are ``sampling'' the probe beam using the trap beam. We want to know what the sampled image of the probe beam looks. That is, we want to work out the ``beatnote'' between the trap and the probe. Because the sampling frequency is comparable to the signal frequency there will be significant aliasing. To that end, we are interested in the lowest frequency alias. To get at that we can define the following:
+
+\begin{align}
+k_P &= p k_T + \Delta k\\
+p &= \text{Round}\left(\frac{k_P}{k_T}\right)
+\end{align}
+
+Thus if $\lambda_P \approx 780 \text{ nm}$ and $\lambda_T \approx 1560 \text{ nm}$ we will have $p=2$ and any small detuning from perfect doubling accounted for by $\Delta k$. We plug this in above and see
+
+\begin{align}
+M_P\left(z_T^{AN}\right) &= \cos\left(\left(p + \frac{\Delta k}{k_T} \right)\left(m\pi + \frac{\phi_{r_2}^T}{2}\right) - \frac{\phi_{r_2}^P}{2} \right)\\
+&= \cos\left(\frac{\Delta k}{k_T} m\pi + pm \pi +\left(\frac{\Delta k}{k_T} + p\right)\frac{\phi_{r_2}^T}{2} - \frac{\phi_{r_2}^P}{2} \right) 
+\end{align}
+
+This is a discrete formula that tells us the amplitude of the probe mode at each $m^{th}$ anti-node of the trap. We would like to visualize this as a slowly varying beat note. To that end we want to replace the discrete index $m$ with a continuous position variable. We do that by inverting the formula for the $m^{th}$ anti-node.
+
+\begin{align}
+m\pi \rightarrow k_T z - k_T L - \frac{\phi_{r_2}^T}{2}
+\end{align}
+
+Consider for a moment the $pm \pi$ term. If $p$ is even then this term can be dropped as it is an integer multiple of $2\pi$. If $p$ is odd then as we step from anti-node to anti-node we see that the phase of the probe will flip. However, if we look at the squared amplitude of the probe we would see that this $pm \pi$ term has no effect. To that end we can ignore this term when trying to find the slowly varying beatnote as long as we recall this behavior depending on $p$. We make the replacement on $m\pi$ and find
+
+\begin{align}
+M_{BN}(z) = \cos\left(\Delta k z - \Delta k L + p\frac{\phi_{r_2}^T}{2} - \frac{\phi_{r_2}^P}{2} \right)
+\end{align}
+
+This formula is general for two wavelengths of light with any wavevectors. It will be interesting to expand this formula for the special (and of course relevant) case that the trap and the probe are both resonant with the cavity. This will show the explicit dependence of the beatnote on the probe and trap mode numbers, $n_P$ and $n_T$ as well as all of the mirror reflection phases.
+
+For light on resonance we have
+
+\begin{align}
+k = \frac{2\pi}{c} f_n = \frac{2\pi}{c} f_{FSR}\left(n - \frac{\phi_{r_1}+\phi_{r_2}}{2} \right) = \frac{\pi}{L}\left(n - \frac{\phi_{r_1}+\phi_{r_2}}{2} \right)
+\end{align}
+
+We then have
+
+\begin{align}
+\Delta k &= k_P - p k_T\\
+&=\frac{\pi}{L} \left((n_P-pn_T) - \frac{(\phi_{r_1}^P + \phi_{r_2}^P) - p(\phi_{r_1}^T+\phi_{r_2}^T)}{2\pi}\right)
+\end{align}
+
+Plugging this in we find
+
+\begin{align}
+M_{BN}(z) = \cos\left((z-L)\frac{\pi}{L} \left((n_P-pn_T) - \frac{(\phi_{r_1}^P + \phi_{r_2}^P) - p(\phi_{r_1}^T+\phi_{r_2}^T)}{2\pi}\right)+ p\frac{\phi_{r_2}^T}{2} - \frac{\phi_{r_2}^P}{2}  \right)
+\end{align}
+
+We can define the total phase function
+
+\begin{align}
+\Phi(z) = (z-L)\frac{\pi}{L} \left((n_P-pn_T) - \frac{(\phi_{r_1}^P + \phi_{r_2}^P) - p(\phi_{r_1}^T+\phi_{r_2}^T)}{2\pi}\right)+ p\frac{\phi_{r_2}^T}{2} - \frac{\phi_{r_2}^P}{2}
+\end{align}
+
+Which is a linear function of $z$. We can read off that
+
+\begin{align}
+\Phi(0) &= -\pi(n_P-pn_T) + \frac{\phi_{r_1}^P-p\phi_{r_1}^P}{2}\\
+\Phi(L) &= -\frac{\phi_{r_2}^P-p\phi_{r_2}^T}{2}
+\end{align}
+
+
+So we can write
+
+\begin{align}
+\Phi(z) &= \frac{z}{L} (\Phi(L)-\Phi(0)) + \Phi(0)\\
+M_{BN}(z) &= \cos(\Phi(z)) = \cos\left(\frac{z}{L}(\Phi(L)-\Phi(0)) + \Phi(0)\right)
+\end{align}
+
+We can glean a few things from this. First, the phase of the beatnote on the left mirror depends on $\phi_{r_1}^P$ and $\phi_{r_1}^T$ and the phase on the right mirror depends on $\phi_{r_2}^P$ and $\phi_{r_2}^T$. Next, The phase of the left mirror (modulo $2\pi$) flips sign depending on the even or oddness of $n_P-p n_T$. Next, the total phase collection rate across the mirror is given by $n_P-pn_T$, thus larger free spectral ranges skipped away from the perfect doubling corresponds to more nodes in the beatnote pattern.
+
+\section{Effective Cavity Length}
+
+So far I haven't introduced the concept of effective cavity length, I will do so here. Consider again just a single mode in the cavity. There is description of the effect of $\phi_{r_1}$ and $\phi_{r_2}$ on the cavity mode which says that because of $\phi_{r_1}$ and $\phi_{r_2}$ differing from $\pi$ the cavity mode ``leaks into'' the coatings of the mirror some distance $\delta L$. The cavity can then be re-analyzed with a new cavity length given by $L_{eff} = L+\delta L$ where $L$ is now the geometric length of the cavity measured from the surface of one mirror to the surface of the other mirror.
+
+This is a convenient way to extend our intuition about purely reflective mirrors (which satisfy $\phi_{1,2} = \pi$) to lossy dielectric mirrors which give different phase shifts. To that end we are interested in comparing expressions for general mirrors, $\phi_{1,2} \neq \pi$ with ``ideal'' mirrors $\phi_{1,2} = \pi$ and using that comparison to define an effective cavity length $L_{eff}$.
+
+\begin{align}
+f_{FSR} &= \frac{c}{2L}\\
+f_n &= f_{FSR}\left(n - \frac{\phi_{r_1}+\phi_{r_2}}{2\pi} \right)\\
+k &= \frac{2\pi f_n}{c} = \frac{\pi}{L}\left(n-\frac{\phi_{r_1}+\phi_{r_2}}{2\pi}\right) = \frac{2\pi}{\lambda}\\
+L &= \left(n-\frac{\phi_{r_1}+\phi_{r_2}}{2\pi}\right)\frac{\lambda}{2}
+\end{align}
+
+In the ideal case that $\phi_{1,2} = \pi$ we would have
+
+\begin{align}
+L_{eff} = (n-1) \frac{\lambda}{2}
+\end{align}
+
+We can then see that
+
+\begin{align}
+\delta L = L_{eff}-L = \left(\frac{\phi_{r_1}+\phi_{r_2}}{2\pi} - 1 \right)\frac{\lambda}{2}
+\end{align}
+
+We see that under this definition $-\frac{\lambda}{2}<\delta L<\frac{\lambda}{2}$.
+
+The idea of effective cavity length is explored in \cite{Hood2000,Hood2001}, though there the authors see deviations from the geometric cavity length of $\approx 1.6 \frac{\lambda}{2}>\frac{\lambda}{2}$ so they must be using a slightly different definition of effective cavity length than I am.
+
+\section{Input Power}
+
+Here I would like to relate the maximum field in the cavity to the probe input power. This is in fact a bit subtle because we must take into account the probes mode profile.
+
+We start from
+
+\begin{align}
+E_{Cav}(z,t) &= E_{0,Cav} \cos\left(-\omega t + \phi_t\right)\cos\left(kz + \phi_z\right)
+\end{align}
+
+and
+
+\begin{align}
+E_{0,Cav} = E_0 |L(\Delta f_n)| \sqrt{\mathcal{F}\eta_{in}}\sqrt{\frac{2}{\pi}}
+\end{align}
+
+This expression is not quite correct because it doesn't include the longitudinal spatial profile for a Gaussian beam which captures the fact that the intensity of the beam increases closer to the focuse because the waist is smaller. It does, however, include the wavevector and Gouy phase for the Gaussian beam. The formula above relates the intracavity electric field to the incident electric field. The question then is where is this expression correct and where must it be modified by the probes spatial profile? I think the answer is that it is correct at the mirror where the probe light is entering the cavity. This is because at that mirror the incident field and the cavity field have the same spatial mode. Then, as the field travels deeper into the cavity it is compressed and the maximum field on axis is enhanced.
+
+The expression for the longitudinal amplitude envelope is given by
+
+\begin{align}
+\frac{w_0}{w(z-z_0)}
+\end{align}
+
+I believe the expression for the electric field should be modified as
+
+\begin{align}
+E_{Cav}(z,t) = \frac{w(0)}{w(z)}E_0 |L(\Delta f_n)| \sqrt{\mathcal{F} \eta_{in}} \sqrt{\frac{2}{\pi}} \cos\left(-\omega t + \phi_t\right)\cos\left(kz + \phi_z\right)
+\end{align}
+
+Recalling that $z=0$ corresponds to the left mirror. We see that at $z=0$ this expression agrees with that above, but at the cavity waist, when $z=z_0$ we see an enhancement due to the mode confinement. Note that at each location the electric field is oscillating at frequency $\omega$. The local peak to peak amplitude is modulated by the cosine involving $B$. This information can be used to calculate the local Rabi frequency for an atom sitting at a given location.
+
+Now I want to relate the incident electric field $E_0$ to an incident power. Note that this will be a time averaged incident energy as measured on a power meter, for example.
+If the incident field is a Gaussian beam we have, on the axis of the beam, at the location of the input mirror that
+
+\begin{align}
+I_{in} = \frac{\epsilon_0 c}{2} E_0^2 =  \frac{2 P_{in}}{\pi w(0)^2}
+\end{align}
+
+So we get that
+
+\begin{align}
+E_0 = \sqrt{\frac{4 P_{in}}{\epsilon_0 c \pi w(0)^2}}
+\end{align}
+
+
+This and the above formula for $E_{Cav}(z,t)$ could be used to find the Rabi frequency $\Omega(z)$ for an atom place at any point along the cavity axis.
+
+\section{Mode Volume}
+
+The mode function for an EM field can be defined as a spatial function such that
+
+\begin{align}
+E(\bv{r}) = E_{\text{max}}f(\bv{r})	
+\end{align}
+
+Where $E_{\text{max}}$ is the maximum value the electric field takes on anywhere. We see than that $f(r_{\text{max}})=1$. $f(\bv{r})$ is the normalized mode function. For a Gaussian standing wave beam the mode function is given by
+
+\begin{align}
+\frac{w_0}{w(z)} e^{-\frac{r}{w(z)}} \cos(kz)
+\end{align}
+
+This expression might neglect some phases.
+For application in the quantization of the electromagnetic field and cavity QED it is useful to define the mode volume.
+
+\begin{align}
+\int_{V} f^*(\bv{r})f(\bv{r}) dV = \int_V |f(\bv{r})|^2 dV	= V_{\text{mode}}
+\end{align}
+
+For a gaussian beam in a cavity this looks like
+
+\begin{align}
+V_{\text{mode}} &= \int_{\phi=0}^{2\pi} \int_{z=0}^L	\int_{r=0}^{\infty} \frac{w_0^2}{w(z)^2} e^{-2\left(\frac{r}{w(z)}\right)^2} \cos^2(kz) r dr dz d\phi\\
+&= 2\pi \int_{z=0}^L \frac{w_0^2}{w(z)^2} \frac{w(z)^2}{4} \cos^2(kz) = 2\pi \frac{w_0^2}{4} \frac{L}{2} = \frac{1}{4} \pi w_0^2 L\\
+V_{\text{mode}} &= \frac{1}{4} \pi w_0^2 L
+\end{align}
+
+This integral was performed in cylindrical coordinates (hence $rdr dz d\theta$). First the radial integral was done which nicely canceled out $w(z)$. Then the azimuthal integral was done which was easily $2\pi$. Finally the integral over a half-integer multiple of the period of $\cos^2$ was performed resulting in $\frac{L}{2}$. putting it together we see that the volume looks like the volume of a cylinder with radius $\frac{w_0}{\sqrt{2}}$ and length $L$ multiplied by $\frac{1}{2}$. The intuition here is that when $r=\frac{w_0}{\sqrt{2}}$ the \textit{intensity} falls off to $\frac{1}{e}$ of its original value (in contrast to $r=w_0$ which represents the $\frac{1}{e}$ point of amplitude but $\frac{1}{e^2}$ point of intensity) and the $\frac{1}{2}$ comes from the periodic modulation of the intensity of the standing wave meaning that only half of the volume is actually filled with electric field.
+
+\printbibliography
+
+
+\end{document}

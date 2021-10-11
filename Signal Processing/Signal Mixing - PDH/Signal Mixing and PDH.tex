@@ -1,0 +1,428 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{siunitx}
+\usepackage{braket}
+
+\usepackage[
+sorting=none,
+style=numeric
+]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+	
+
+\begin{document}
+\title{Quadrature Modulation and PDH}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I will go through some basic mathematical formalism to realize an efficient description of amplitude and phase modulation.
+
+Next, I will use this formalism to simulate Pound-Drever-Hall error signals.
+
+\section{Quadrature Representation of Oscillating Signals}
+
+Consider a real signal $S(t)$ which is a sinusoidal signal oscillating at frequency $\omega$. It is known that generally this signal can be written in a number of different ways using Euler's identity.
+
+\begin{align}
+S(t) =& A \cos(\omega t - \phi) = \frac{A}{2}\left(e^{i\omega t}e^{-i\phi} + e^{-i\omega t} e^{i\phi}\right)\\
+=& \frac{A}{2}\Big((\cos(\omega t) + i \sin(\omega t))(\cos(\phi)-i\sin(\phi))\\
+&+ (\cos(\omega t)-i\sin(\omega t))(\cos(\phi)+i\sin(\phi))\Big)\\
+=& A\left(\cos(\omega t)\cos(\phi) + \sin(\omega t)\sin(\phi) \right)
+\end{align}
+
+There are three representations of the signal of interest:
+
+\begin{align}
+S(t) &= A\cos(\omega t + \phi) = A\sin\left(\omega t - \phi - \frac{\pi}{2}\right)\\
+S(t) &= \frac{A}{2}\left(e^{i\phi}e^{-i\omega t} + e^{-i\phi}e^{i\omega t}\right) = \frac{1}{2}S^+e^{-i\omega t} + \frac{1}{2}S^-e^{i\omega t}\\
+S(t) &= A\left(\cos(\phi)\cos(\omega t) +\sin(\phi)\sin(\omega t)\right) = I_S \cos(\omega t) + Q_S\sin(\omega t)
+\end{align}
+
+Here we have introduced the variables $S^+$, $S^-$, $I_S$ and $Q_S$ which will be explained shortly.
+
+The first representation could be called the angle/phase representation. In this representation everything about the signal is determined by its real amplitude, $A$, and the phase $\phi$.
+
+The second representation can be called the complex representation. In this representation $S^{\pm}$ are the complex amplitudes of the positive and negative rotating components of the signal, $e^{\pm \omega t}$. Note that $e^{-i\omega t}$ is taken to be the positive rotating component, this is essentially a convention choice for the Fourier transform \footnote{In other documents I've described how the Fourier transform can be parametrized by two parameters $(a,b)$. I utilize the same notation for describing these conventions as Mathematica. Under this notation if one has that $b>0$ then one will find that the Fourier transform of $e^{i\omega t}$ is a Dirac delta function which has weight for a positive value of $\omega$.}.
+
+The third representation of the signal is the quadrature representation. In this representation $I_S$ and $Q_S$ are the \textit{in-phase} and \textit{quadrature} components of the signal. Note that $I_S$ and $Q_S$ are real.
+
+Note that for this signal we have
+
+\begin{align}
+S^+ &= Ae^{i\phi}\\
+S^- &= Ae^{-i\phi}\\
+I_S &= A\cos(\phi)\\
+Q_S &= A\sin(\phi)
+\end{align}
+
+We can see clearly that it is easy to convert between the complex, quadrature and phase/amplitude representations of the signal.
+
+\begin{align}
+S^+ &= I_S + i Q_S\\
+S^- &= I_S - i Q_S = \left(S^+\right)^*\\
+I_S &= \frac{1}{2}\left(S^- + S^+\right) = \text{Re}(S^+)\\
+Q_S &= \frac{i}{2}\left(S^- - S^+\right) = \text{Im}(S^+)
+\end{align}
+
+We can also calculate $A$ and $\phi$ from either $S^{\pm}$ or $I_S$ and $Q_S$.
+
+\begin{align}
+A &= |S^+| = \sqrt{S^+S^-}\\
+\phi &= \text{Arg}(S^+)
+\end{align}
+
+or
+
+\begin{align}
+A = \sqrt{(I_S^2 + Q_S^2)}\\
+\phi = \arctan\left(\frac{Q_S}{I_S} \right)
+\end{align}
+
+We can neatly summarize all of these relations:
+
+\begin{align}
+S^+ &= Ae^{i\phi} = I + i Q\\
+S^- &= Ae^{-i\phi} = I - i Q\\
+I_S &= A\cos(\phi) = \text{Re}(S^+)\\
+Q_S &= A\sin(\phi) = \text{Im}(S^-)\\
+A &= |S^+| = \sqrt{I^2 + Q^2}\\
+\phi &= \text{Arg}(S^+) = \arctan\left(\frac{Q_S}{I_S}\right)
+\end{align}
+
+At this point it is very apparent that we have built up a phasor representation of the signal. 
+
+We can imagine a 2D plane. We can represent the signal by a point in this 2D plane. If we think of the horizontal axis as the $I$ axis and the vertical axis as the $Q$ axis then the point $(I, Q)$ can represent our signal. This is the quadrature representation. 
+
+Alternatively, if we think of the plane as the complex plane with the horizontal axis as the real axis and the vertical axis as the imaginary axis then the point corresponding to the complex number $S^+$ also represents the signal. This is the complex representation.
+
+Finally, we can consider a point which is placed such that it is distance $A$ from the origin and the line between the origin and the point makes angle $\phi$ with the horizontal axis. This point would also represent the signal.
+
+\section{Modulated Signals}
+
+Here we will now consider the possibility that $A$ and $\phi$ are functions of time, $A(t)$ and $\phi(t)$. This clearly means $S^+(t)$, $S^-(t)$, $I_S(t)$ and $Q_S(t)$ are also functions of time. In signal process the time dependence of these functions is typically sinusoidal. If the time dependence is more complicated than sinusoidal then it can still be considered as a superposition of sinusoids (Fourier transform).
+
+Consider
+
+\begin{align}
+S(t) = \frac{1}{2}S^+(t) e^{-i\omega t} + \frac{1}{2}S^-(t)e^{i\omega t}
+\end{align}
+
+Focusing on the positive frequency component we have $\frac{1}{2}S^+(t)e^{-i\omega t}$. This is a product of two functions. An oscillating exponential and the function $S^+(t)$. The convolution theorem tells us that the Fourier transform of this term will be the convolution of the Fourier transforms of these individual components. Since the Fourier transform of the $e^{-i\omega t}$ is simply a Dirac delta function at frequency $\omega$, this means the Fourier transform of the combinations will look just like the Fourier transform of $S^+(t)$ but shifted up in frequency by an amount $\omega$. 
+
+For example, if $S^+(t) = e^{-i\Omega t}$, the positive rotating part of a signal with frequency $\Omega$, then the resultant term $\frac{1}{2}e^{-i\Omega t}e^{-i\omega t}$ is a new signal at frequency $\Omega + \omega$. In general $S^+(t)$ has frequency content in some frequency range that may include positive and negative frequencies. Suppose the largest magnitude frequency component (positive of negative) in $S^+(t)$ is given by $\Omega_{max}$. If $\Omega_{max} \ll \omega$ then we can think of $S^+(t)$ as representing some narrow low frequency signal and the product $\frac{1}{2}S^+(t)e^{-i\omega t}$ represents the \textit{upconversion} of $S^+(t)$ up to the frequency $\omega$ called the carrier or local oscillator (LO) frequency. We also say that the carrier at $\omega$ is modulated by the signal $S^+(t)$.
+
+If the above conditions are not met then the math still works, however the interpretation must be adjusted a little bit. Typically in signal processing we consider situations in which the modulation is low frequency and narrow. In practice this means that Fourier transform of the modulation is centered at a frequency much less than $\omega$ and the bandwidth of the Fourier transform is also much less than $\omega$. These are very reasonable assumption in signal processing. The canonical example is to consider a radio signal modulated by an audio signal. The radio signal may be around $\SI{100}{MHz}$ while the audio signal is in the range from $2-\SI{20}{kHz}$.
+
+Because of the relationships between $A(t)$, $\phi(t)$, $S^+(t)$, $S^-(t)$, $I_S(t)$, and $Q_S(t)$ the Fourier spectra of these functions are all closely related. Thus, if the Fourier spectrum of one of these satisfies the constraints for the carrier/modulation situation above then they all do.
+
+Given the phasor picture above we can easily interpret different types of modulation. If $A(t)$ is non-constant then we say the signal is amplitude modulated. If $\phi(t)$ is non-constant then we say the signal is phase modulated. Similarly we can consider $I$ and $Q$ modulation which occur when either $I(t)$ or $Q(t)$ are non-constant. Of course if modulation is present in one representation it will be present in all representations. I emphasize amplitude, phase, and $I/Q$ modulation because these are what are often encountered in electronic circuits or signal processing literature. That is, there are techniques for realizing direct modulation of these sorts in circuitry. In contrast, the complex representation is a little more abstract and there are not as direct schemes to create particular sorts of complex modulation, though of course they can be realized in terms of the above sorts of modulation.
+
+In fact, it turns out that for small modulations amplitude modulation is the same $I$ modulation and phase modulation is the same as $Q$ modulation. Suppose $\phi(t)=0$ and  we have a small amount of amplitude modulation then we may write:
+
+\begin{align}
+A(t) &= 1 + \epsilon(t)\\
+\end{align}
+
+with $m(t) \ll 1$. The $I(t)$ and $Q(t)$ quadratures can be written as
+
+\begin{align}
+I(t) &= 1 + \epsilon(t)\\
+Q(t) &= 0\\
+S^+(t) &= (1+\epsilon(t))
+\end{align}
+
+So we see that amplitude modulation just corresponds to modulation of the $I(t)$ quadrature directly. Now suppose we have a fixed amplitude signal, $A(t)=1$ and phase modulation $\phi(t) = \eta(t) \ll 2\pi$ then we can write 
+
+\begin{align}
+I(t) &= A\cos(\eta(t)) \approx A\left(1-\frac{\eta(t)^2}{2}\right) \approx A\\
+Q(t) &= A\sin(\eta(t)) \approx A\eta(t)\\
+S^+(t) &= Ae^{i\eta(t)} \approx A(1+i\eta(t))
+\end{align}
+
+So small phase modulation is modulation of the phase along the imaginary axis in the complex space.
+
+Let's consider complex representation of a signal which is both amplitude and phase modulated:
+
+\begin{align}
+S^+(t) &= A(t)e^{i\phi(t)} = (1+\epsilon(t))e^{i\eta(t)}\\
+&\approx (1+\epsilon(t))(1+i\eta(t)) \approx 1 + \epsilon(t) + i\eta(t)
+\end{align}
+
+Where the term like $\epsilon(t)\eta(t)$ has been dropped because it is second order in the small modulations. As expected the amplitude modulation simply shows up along the real axis and the phase modulation shows up along the imaginary axis.
+
+\section{Signal Mixing}
+\subsection{Mixer}
+An ideal mixer is a 3 port electronic device which takes in two signals, $S_1(t)$ and $S_2(t)$ and outputs on its third port the product of the two inputs, $S_1(t)$ and $S_2(t)$. In practice there are no ideal mixers. The ports on real mixers are labeled LO (local oscillator), RF (radio frequency), and IF (intermediate frequency). For an upconverting or modulating mixer the LO is the carrier signal, the IF is the low frequency signal of interest and RF is the output which is the carrier modulated by the IF signal. For a downconverting or demodulating mixer we consider the RF to be a modulated signal which we mix with the LO to get an output on the IF port. 
+
+Linear circuits do not change the frequency of sinusoidal signals so mixers must involve non-linear circuits. A double balanced mixer works by using one signal, the LO typically, to ``gate'' either the RF or IF signal so that a demodulated or modulated signal comes out on the other port. In a sentence, the gating works by using the LO to activate diodes which open conduction paths for RF or IF signals to pass through into the opposite port. 
+
+Suppose that we mix in two signals $S_{LO}(t) = \cos(\omega t)$ and $S_{IF}(t) = \cos(\Omega t)$ The output will be
+
+\begin{align}
+S_{RF}(t) = \cos(\Omega t)\cos(\omega t)
+\end{align}
+
+We might say that the carrier $\cos(\omega t)$ has been amplitude modulated but it is worth noticing that the signal is very heavily modulated. In fact, the amplitude goes negative every half cycle of $\cos(\Omega t)$. This is far outside of the small signal amplitude modulation. In fact, if the amplitude goes negative one could think of this as including some phase modulation as well. In any case, I point out the distinction between this sort of mixing modulation and small signal amplitude modulation.
+
+If instead the signal into the IF port had been $1+\epsilon\cos(\Omega t)$ with $m\ll 1$ then we would recover the small amplitude modulation picture from before:
+
+\begin{align}
+S_{RF}(t) = (1+\epsilon\cos(\Omega t))\cos(\omega t)
+\end{align}
+
+\subsection{$I/Q$ mixer}
+
+We see that just a single mixer can intrinsically perform amplitude modulation. One question is how can we realize phase modulation? The answer is we can use an $I/Q$ mixer. A mixer is a four port device. It has on port for an LO, a port for $I(t)$, a port for $Q(t)$ and an RF port. When used as a modulator a carrier LO tone is sent into the LO port. Then IF signals are sent into both the $I(t)$ and the $Q(t)$ ports. As expected the signal at the RF port is the LO with the corresponding $I(t)$ and $Q(t)$ modulation. That is the output signal is:
+
+\begin{align}
+S_{RF}(t) = I(t)\cos(\omega t) + Q(t)\sin(\omega t)
+\end{align}
+
+We see that if we want an $I/Q$ modulated signal then the trick is to get an amplitude modulated $\cos$ signal and an amplitude modulated $\sin$ signal and add them together. If we have an LO signal which is like $\cos(\omega t)$ then we can accomplish this as follows. Take the LO signal and split it into two paths. Put one of the paths directly into a mixer and modulate on a signal $I(t)$. This is the $I$ modulation. For the second path first put the signal through a $90^{\circ}$ phase shifter. Now the signal looks like $\sin(\omega t)$. Now put this signal through a mixer and mix it with signal $Q(t)$. Now recombine the two paths. The final result is an arbitrary $I/Q$ modulated RF signal. Note that there is a device called a hybrid which splits a signal and adds $90^{\circ}$ to one of the paths.
+
+Pure $Q(t)$ modulation can be realized by sending in a constant DC signal $I(t)=1$ and a small $Q(t) = \eta(t)$ signal so that the output is
+
+\begin{align}
+S_{RF}(t) = \cos(\omega t) + \eta(t)\sin(\omega t)
+\end{align}
+
+In the small modulation limit $Q$ modulation is the same as phase modulation: $\phi(t) \approx Q(t) = \eta(t)$ so we have
+
+\begin{align}
+S_{RF}(t) \approx \cos(\omega t - \eta(t)) = \frac{1}{2}e^{\eta(t)}e^{-i\omega t} + c.c.
+\end{align}
+
+
+
+\section{Arbitrary sinusoidal amplitude/phase modulation}
+
+It is very typical in signal processing to have a signal which is sinusoidally modulated. Suppose we have a signal which has small magnitude amplitude and phase modulation, or equivalently small magnitude $I/Q$ modulation. This signal can be written in the complex representation as 
+
+\begin{align}
+S(t) &= \frac{1}{2}(1 + \ep(t) + i\eta(t))e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+\end{align} 
+
+I have included a phase $\phi_{\omega}$ for bookkeeping. We will see that this just constitutes an arbitrary global phase but I will hold onto it to show that this is in fact the case.
+
+Suppose $\ep(t)$ and $\eta(t)$ are sinusoidal functions at frequency $\Omega$ with tunable amplitude and phase.
+
+\begin{align}
+\ep(t) &= |\ep|\cos(\Omega t - \phi_{\ep})\\
+\eta(t) &= |\eta|\cos(\Omega t - \phi_{\eta}
+\end{align}
+
+And that the functions themselves have complex representations
+
+\begin{align}
+\ep(t) &= |\ep|e^{i\phi_{\ep}}e^{-i\Omega t} + c.c. = \ep e^{-i\omega t} + c.c.\\
+\eta(t) &= |\eta|e^{i\phi_{\eta}}e^{-i\Omega t} + c.c. = \eta e^{-i\omega t} + c.c.
+\end{align}
+
+Note that $\eta$ is a complex amplitude and is different from $\eta(t)$ which is the real signal. Note also that $S_{\ep}^+ = 2\ep$, for example. That is a factor of two has been absorbed into $\ep$.
+
+The total signal can then be written
+
+\begin{align}
+S(t) &= \frac{1}{2}\left(1 + \ep e^{-i\Omega t} + \ep^* e^{i\Omega t} + i\eta e^{-i\Omega t} + i\eta^*e^{i\Omega t}\right)e^{i\phi_{\omega}}e^{-i\omega t} + c.c.\\
+&=\frac{1}{2}\left(1 + (\ep + i\eta)e^{-i\Omega t} + (\ep - i \eta)^* e^{i\Omega t} \right)e^{i\phi_{\omega}}e^{-i\omega t} + c.c.\\
+&= \frac{1}{2}\left(1 + \left(|\ep|e^{i\phi_{\ep}} + i|\eta| e^{i\phi_{\eta}}\right)e^{-i\Omega t} + \left(|\ep|e^{i\phi_{\ep}} - i|\eta|e^{i\phi_{\eta}}\right)^*e^{i\Omega t} \right)e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+\end{align}
+
+We see that the amplitude and phase modulation creates three tones. One at the carrier frequency which corresponds to the $1$ in the expression, One at frequency $\omega + \Omega$ corresponding to the second term in the expression, and one at frequency $\omega - \Omega$ corresponding to the third term in the product. The modulation put two sidebands onto the carrier.
+
+The nature of the modulation is captured by the relative amplitude and phase of the two sidebands. 
+
+\subsection{Pure amplitude ($I$) modulation}
+In the case of pure amplitude modulation we have $|\eta|=0$ so we have
+
+\begin{align}
+S(t) = \frac{1}{2}\left(1 + |\ep|e^{i\phi_{\ep}}e^{-i\Omega t} + |\ep|e^{-i\phi_{\ep}}e^{i\Omega t} \right)e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+\end{align} 
+
+Note that the complex amplitude of the $\omega + \Omega$ term is the complex conjugate of the complex amplitude of the $\omega - \Omega$ term. This is the signature of pure amplitude modulation. Note that the sideband coefficients can be made to be real by choosing $\phi_{\ep} = 0$. In this case the amplitudes of the two coefficients would be equal to each other. For this reason it is sometimes said that the sidebands are ``in phase'' for amplitude modulation. This can be a little misleading because if instead one had chose $\phi_{\ep} = \frac{\pi}{2}$ then the coefficients of the two side bands would be $i$ and $-i$ so it would look like the coefficients are actually negatives of eachother.
+
+\subsection{Pure phase ($Q$) modulation}
+In the case of pure $Q$ modulation we have $|\ep| = 0$ so we have
+
+\begin{align}
+S(t) = \frac{1}{2}\left(1 + i|\eta|e^{i\phi_{\eta}}e^{-i\Omega t} + i|\eta|e^{-i\phi_{\eta}}e^{i\Omega t} \right)e^{i\phi_{\omega}}e^{-i\omega t}
+\end{align}
+
+Notice now that the complex amplitude of the $\omega + \Omega$ term is the negative of the conjugate of the complex amplitude of the $\omega - \Omega$ term. This is the signature of pure phase modulation. Note again that the coefficients of the two sidebands can be made to be real by choosing $\phi_{\eta} = \frac{\pi}{2}$. In this case the two sidebands would have coefficients which are negatives of each other. For this reason it is sometimes said that the sidebands for phase modulation are ''out of phase''. However, if $\phi_{\eta}$ was chosen to equal $0$ then the coefficients would have been identical to each other.
+
+\subsection{Single sideband modulation}
+If amplitude and phase modulation are employed then it is possible to modulate a tone in such a way that only one sideband appears. For this we must have $|\ep| = |\eta|$ and either $\phi_{\ep} = \phi_{\eta} + \frac{\pi}{2}$ giving
+
+\begin{align}
+S(t) = \frac{1}{2}\left(1 + 2 |\ep|e^{i\phi_{\ep}} e^{-i\Omega t} \right)e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+\end{align}
+
+ or $\phi_{\ep} = \phi_{\eta} - \frac{\pi}{2}$ giving
+ 
+ \begin{align}
+ S(t) = \frac{1}{2}\left(1 + 2|\ep|e^{-i\phi_{\ep}}e^{i\Omega t}\right)e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+ \end{align}
+ 
+So we see that if we do equal parts $I$ and $Q$ modulation then it is possible, if the phase is set appropriately, to eliminate either the upper or lower modulation sideband. Note that in the phasor complex representation the phasor would be circling around the average point which represents the carrier. If $I$ and $Q$ modulations are thought of as linear polarizations of light then single sideband modulation can be thought of as a $\frac{\pi}{2}$ out of phase superposition of $I$ and $Q$ modulation which gives rise to circularly polarized light. 
+
+\subsection{Arbitrary Modulation}
+In general the phasor path can be any sort of ellipse cycling around the carrier signal. Just like light it could be characterized by its rotation angle and ellipticity. We can see that the angle of the ellipse traced out in phase space is going to be related to the relative amplitude of $|\ep|$ and $|\eta|$ while the ellipticity is going to be related to the phase different $\phi_{\ep}-\phi_{\eta}$. If $|\ep|\gg |\eta|$ then there is mostly $I$ modulation while if $|\ep|\ll |\eta|$ then there is mostly $Q$ modulation. If $\phi_{\ep} = \phi_{\eta}$ then the phasor simply moves in a line back and forth through the central point whereas if $|\phi_{\ep} - \phi_{\eta}| = \frac{\pi}{2}$ then the phasor will take more of an elliptical path around the central point, circular if the magnitudes of $|\ep|$ and $|\eta|$ are equal.
+
+These factors which determine the behavior could be put into a sort of Jones vector, something like
+
+\begin{align}
+\begin{bmatrix}
+|\ep|\\
+|\eta|e^{i(\phi_{\ep} - \phi_{\eta})}
+\end{bmatrix}
+\end{align}
+
+which could be analyzed to determine the behavior of the signal in phase space.
+
+\section{Pound-Drever-Hall Signal}
+
+With a thorough formalism for signal modulation under our belts, I will now apply what we have discussed to the case of the generation of Pound-Drever-Hall error signal. PDH is encountered in a scenario where there is some system which has an absorptive response to excitation (RF, microwave, optical) at some frequency $\omega_0$. According to the Kramers-Kronig relations this absorptive response is also associated with a dispersive phase response of the medium. The goal of PDH is to generate a dispersive error signal as a function of excitation frequency, $\omega$ which passes through 0 when $\omega=\omega_0$. This error signal can then be used as the error signal in a feedback loop which can be used to lock the excitation signal onto the resonance frequency of the responsive system.
+
+In practice the `system' may be an optical cavity with resonance frequency $\omega_0$ or it may be a spectroscopy gas cell filled with atoms with a resonant frequency at $\omega_0$.
+
+The transfer function of such an absorptive system can generically be written as 
+
+\begin{align}
+T(\Delta) = \frac{1}{\frac{\kappa}{2} - i\Delta} = \frac{\frac{\kappa}{2} + i\Delta}{\left(\frac{\kappa}{2}\right)^2 + \Delta^2}
+\end{align}
+
+With $\kappa$ the full width at half max of the power transfer function and $\Delta = \omega - \omega_0$ the detuning of the excitation probe from resonance. In general there may be a constant pre-factor in front to set the overall amplitude, but we will not be concerned with that here as we are only concerned with the changes in the transfer function as a function of frequency.
+
+The magnitude squared of the transfer function is given by
+
+\begin{align}
+|T(\Delta)|^2 = \frac{1}{\left(\frac{\kappa}{2}\right)^2 + \Delta^2}
+\end{align}
+
+and the phase of the transfer function is given by
+
+\begin{align}
+\arg(T(\Delta)) = \arctan\left(\frac{\Delta}{\kappa}\right)
+\end{align}
+
+So for $\frac{\Delta}{\kappa} \gg 1$ a phase shift of $+\frac{\pi}{2}$ appears while for $-\frac{\Delta}{\kappa} \gg 1$ a phase shift of $-\frac{\pi}{2}$ appears with a linear dispersive crossing at $\Delta = 0$.
+
+If a tone of frequency $\omega$ with the form $e^{-i\omega t}$ passes through the system then the output will be $T(\omega - \omega_0)e^{-i\omega t}$. In frequency space the signal spectrum is multiplied by the system transfer function.
+
+Will now consider what happens when a signal tone which has $I/Q$ modulated is passed through the system. Recall that an arbitrary $I/Q$ modulated signal can be written as
+
+\begin{align}
+S(t) = \frac{1}{2}\Bigg[&1\\
++&(|\ep|e^{i\phi_{\ep}} + i|\eta|e^{i\phi_{\eta}})e^{-i\Omega t}\\
++&(|\ep|e^{i\phi_{\ep}} - i|\eta|e^{i\phi_{\eta}})^*e^{i\Omega t}\Bigg]e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+\end{align}
+
+When this passes through the system transfer function $T(\omega)$ the result will be
+
+\begin{align}
+S_T(t) = \frac{1}{2}\Bigg[&T(\Delta)\\
++&T(\Delta + \Omega)(|\ep|e^{i\phi_{\ep}} + i |\eta|e^{i\phi_{\eta}})e^{-i\Omega t}\\
++&T(\Delta - \Omega)(|\ep|e^{i\phi_{\ep}} - i |\eta|e^{i\phi_{\eta}})^*e^{i\Omega t}\Bigg]e^{i\phi_{\omega}}e^{-i\omega t} + c.c.
+\end{align}
+
+We now consider the square law detection of this signal. The signal can be written as
+
+\begin{align}
+S_T(t) = \frac{1}{2}S_T^+(t)e^{-i\omega t} + \frac{1}{2}S_T^-(t)e^{+i\omega t}
+\end{align}
+
+Consider a detector that measures the square of this signal. It would detect:
+
+\begin{align}
+S_T(t)^2 = \frac{1}{2}S_T^+(t)S_T^-(t) + \frac{1}{4}S_T^+(t)^2e^{-i2\omega t} + \frac{1}{4}S_T^-(t)^2e^{+i2\omega t}
+\end{align}
+
+In practice the $2\omega$ terms can be dropped either because they are low pass filtered out or the detector simply isn't responsive at those high frequencies. The detected signal is then
+
+\begin{align}
+D(t) =& \frac{1}{2}S_T^+(t)S_T^-(t)\\
+= \frac{1}{2}& \left(T(\Delta) + T(\Delta +\Omega)(\ep + i \eta)e^{-i\Omega t} + T(\Delta -\Omega)(\ep-i\eta)^*e^{i\Omega t} \right)\\
+\times& \left(T^*(\Delta) + T^*(\Delta +\Omega)(\ep + i \eta)^*e^{i\Omega t} + T^*(\Delta -\Omega)(\ep-i\eta)e^{-i\Omega t} \right)
+\end{align}
+
+We see that in this signal there 9 terms. 3 are DC terms which have to do with each term multiplied by its own complex conjugate. These can be ignored as low frequency. 2 terms oscillate at $2\Omega$, these can be eliminated by high pass filtering. There are 4 remaining terms oscillating at frequency $\Omega$. Two of them are positive frequency and two are negative frequency complex conjugates of the first. We write
+
+\begin{align}
+D_{\Omega}(t) &= \frac{1}{2}\left(T(\Delta)T^*(\Delta-\Omega)(\ep-i\eta) + T^*(\Delta)T(\Delta+\Omega)(\ep+i\eta) \right)e^{-i\Omega t}+c.c.
+\end{align}
+
+Lets consider
+
+\begin{align}
+D_{\Omega}^+ &= T(\Delta)T^*(\Delta-\Omega)(\ep-i\eta) + T^*(\Delta)T(\Delta+\Omega)(\ep+i\eta)\\
+&= \ep\left(T(\Delta)T^*(\Delta-\Omega) + T^*(\Delta)T(\Delta+\Omega)\right)\\
+&- i\eta\left(T(\Delta)T^*(\Delta-\Omega) - T^*(\Delta)T(\Delta+\Omega)\right)
+\end{align}
+
+Recall that the goal of this exercise was to generate a signal which is odd as a function of $\Delta$ such that it would have a dispersive zero crossing at $\Delta=0$. If we consider $T(\Delta)$ on its own then we can see that $T(\Delta)$ is a hermitian function, meaning that
+
+\begin{align}
+T^*(\Delta) = T(-\Delta)
+\end{align}
+
+If we consider the combination $T(\Delta)T^*(\Delta-\Omega)$ which arises from one of the transmitted sidebands beating with the carrier we see
+
+\begin{align}
+T(-\Delta)T^*(-\Delta-\Omega) = T^*(\Delta)T(\Delta+\Omega)
+\end{align}
+
+From this we can see that
+
+\begin{align}
+\chi_E(\Delta,\Omega) &= T(\Delta)T^*(\Delta-\Omega) + T^*(\Delta)T(\Delta+\Omega)\\ 
+&= T(\Delta)T^*(\Delta-\Omega) + T(-\Delta)T^*(-\Delta - \Omega)
+\end{align}
+
+must be an even function of $\Delta$ and
+
+\begin{align}
+\chi_O(\Delta, \Omega) &= T(\Delta)T^*(\Delta-\Omega) - T^*(\Delta)T(\Delta+\Omega)\\
+& = T(\Delta)T^*(\Delta-\Omega) - T(-\Delta)T^*(-\Delta - \Omega)
+\end{align}
+
+must be an odd function of $\Delta$.
+
+The measured signal can be written as
+
+\begin{align}
+D_{\Omega}^+ = \ep \chi_E(\Delta, \Omega) - i\eta \chi_O(\Delta, \Omega)
+\end{align}
+
+Note that both the real and imaginary parts of $\chi_E(\Delta, \Omega)$ are even and both the real and imaginary parts of $\chi_O(\Delta, \Omega)$ are odd. We recall that the $I$ and $Q$ quadratures are given by
+
+\begin{align}
+I_D &= \text{Re}(D_{\Omega}^+)\\
+Q_D &= \text{Im}(D_{\Omega}^+)
+\end{align}
+
+We see that ideally for the generation of the error signal we would have $\ep = 0$. This way there would be no amplitude modulation and no component of $\chi_E(\Delta, \Omega)$ would show up in the signal to spoil the dispersive error function. Otherwise we see that in general $\chi_E$ and $\chi_O$ are complex functions so the main effect of $\phi_{\ep}$ and $\phi_{\eta}$ is to rotate the real and imaginary parts of the $\chi_{E/O}$ between the $I$ and $Q$ quadratures.
+
+\section{Examples of PDH signals}
+
+We'll now look at some examples of PDH signal for various parameters. We will look at PDH signals for $T(\Delta)$ for both cavity transmission and reflection. We will also look at PDH signals for different ratios of $\frac{\Omega}{\kappa}$, $\frac{|\eta|}{|\ep|}$ and for different values of $\phi_{\ep}$ and $\phi_{\eta}$.
+
+\section{How to get phase modulated signal beams?}
+
+The key ingredient (in addition to the dispersive system) for generation of the PDH signal is to have a signal tone which has been phase modulated. In the electronic domain such a signal can be straightforwardly realized using the $Q$ port of an $I/Q$ mixer.
+
+In the optical domain phase modulation is realized also straightforwardly using an electro optic modulator. An electro-optic modulator leverages a non-linear crystal whose index of refraction changes as a function of an applied DC or AC electric field across the material. Thus, optical light traveling through the medium collects a different phase shift as a function of the applied electric field. The electric field can be controlled by a strong DC, audio, or RF signal.
+
+Phase modulation can also be realized using an acousto-optic modulator. An acousto-optic modulator works by using a strong RF to drive a sound-wave in a crystal material. The sound wave introduces periodic modulations in the density and thus index of refraction of the crystal material. If light is shined onto these travelling soundwaves at the appropriate angle then the light can reflect/diffract off of what is essentially a moving mirror. In this process the frequency of the transmitted light is shifted up or down in frequency by the RF drive frequency. However, if the amplitude or frequency of the drive RF drive tone is adjusted then the optical amplitude and frequency will also chnage. The same goes for the phase of the RF drive. This means that an AOM works exactly like a mixer which mixes an optical LO signal on one port with a radio frequency `IF' signal on the second port to get a modulated optical signal on the `RF' port.
+
+However, I will note that it is in practice quite difficult to get pure phase modulation out of AOM. This is because 1) in the lab it is often difficult to get a phase modulated RF signal (this is mostly because we don't have $I/Q$ modulators lying around the lab, if we did it would presumably be not too bad) and 2) AOMs have a very limited efficiency bandwidth. This means that while the AOM might operate well with an RF signal at 80 MHz it does give as high of an efficiency at 60 MHz. This means that any deep frequency or phase modulation is accompanied by drops in amplitude of the light coming out because of the decreased efficiency. This means that the phase modulation will come with some amount of residual amplitude modulation which can spoil the signal. In practice we have gotten PDH to work with frequency modulated AO but it has been tricky. The modulation has been realized by adding a modulated signal to a DC signal going into the VCO. This gives a frequency modulated drive tone which is then sent into the AO. The VCO also introduces a bit of amplitude modulation.
+
+\end{document}

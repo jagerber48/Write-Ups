@@ -1,0 +1,370 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\usepackage[
+sorting=none,
+style=numeric
+]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+	
+
+\begin{document}
+\title{Squeezing Detection}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In other documents I have shown that the variance of the detected photocurrent is related to
+
+\begin{align}
+\Braket{:\hat{X}(t)\hat{X}(t):}
+\end{align}
+
+Here I will calculate this quantity for a squeezed state of light and show that it can go negative. This is significant because this ``negative'' variance can ``cancel out'' some of the shot noise, thus increasing the sensitivity of the detector.
+
+Consider the squeezing Hamiltonian
+
+\begin{align}
+\hat{H} = i \hbar (\chi^* \hat{a}^{\dag2} + \chi{\hat{a}}^2)
+\end{align}
+
+With $\chi = |\chi|e^{i \phi_{\chi}}$. We can calculate the equations of motion using $\dot{\hat{A}} = -\frac{i}{\hbar} \left[\hat{A},\hat{H}\right]$.
+
+\begin{align}
+\dot{\hat{a}}(t) &= \chi^* \hat{a}^{\dag}(t)\\
+\dot{\hat{a}}^{\dag}(t) &= \chi \hat{a}(t)\\
+\end{align}
+
+Defining $\hat{X} = 2\text{Re}(\hat{a}) = \hat{a}^{\dag} + \hat{a}$ and $\hat{P} = 2\text{Im}(\hat{a}) = i(\hat{a}^{\dag} - \hat{a})$
+
+\begin{align}
+\dot{\hat{X}}(t) = \frac{\chi}{2}(\hat{X}(t) + i \hat{P}(t)) + \frac{\chi^*}{2}(\hat{X}(t) - i \hat{P}(t)) = \text{Re}(\chi)\hat{X}(t) - \text{Im}(\chi)\hat{P}(t)\\
+\dot{\hat{P}}(t) = i\frac{\chi}{2}(\hat{X}(t) + i \hat{P}(t)) -i\frac{\chi^*}{2}(\hat{X}(t) - i \hat{P}(t)) = -\text{Im}(\chi) \hat{X}(t) - \text{Re}(\chi)\hat{P}(t)
+\end{align}
+
+\begin{align}
+\begin{bmatrix}
+\dot{\hat{X}}(t)\\
+\dot{\hat{P}}(t)
+\end{bmatrix}
+=
+\begin{bmatrix}
+\text{Re}(\chi) & -\text{Im}(\chi)\\
+-\text{Im}(\chi) & -\text{Re}(\chi)
+\end{bmatrix}
+\begin{bmatrix}
+\hat{X}(t)\\
+\hat{P}(t)
+\end{bmatrix}
+\end{align}
+
+Let $\chi = -|\chi|$ so that $\phi_{\chi} = \pi$. The $\text{Re}(\chi) = -|\chi|$ and $\text{Im}(\chi) = 0$. So that
+
+\begin{align}
+\dot{\hat{X}}(t) = -|\chi| \hat{X}(t)\\
+\dot{\hat{P}}(t) = |\chi| \hat{P}(t)
+\end{align}
+
+So that
+
+\begin{align}
+\label{exp}
+\hat{X}(t) = \hat{X}(0) e^{-|\chi| t}\\
+\hat{P}(t) = \hat{P}(0) e^{|\chi| t}
+\end{align}
+
+We are now interested in
+
+\begin{align}
+\Braket{:\hat{X}(t) \hat{X}(t):}
+\end{align}
+
+Note that it would be incorrect to insert Eq. (\ref{exp}) into the normal ordered expression as the effect of normal and time ordering would be different for the two expressions. Instead we must expand $:\hat{X}(t) \hat{X}(t):$ into it's expression in terms of $\hat{a}(t)$ and $\hat{a}^{\dag}(t)$, apply normal and time ordering, and then re-express in terms of $\hat{X}(t)$ and $\hat{P}(t)$ without the ordering symbols. The result of doing this, as calculated in the normal ordered quadrature operators write up, is 
+
+\begin{align}
+\Braket{:\hat{X}(t) \hat{X}(t):} &= \Braket{\frac{1}{2} \left(\left\{\hat{X}(t), \hat{X}(t) \right\} + i \left[\hat{X}(t),\hat{P}(t) \right] \right)}\\
+&= \Braket{\hat{X}(t)^2} + \frac{i}{2} \Braket{\left[\hat{X}(t), \hat{P}(t) \right]}
+\end{align}
+
+We konw that the equal time commutator of $\hat{X}(t)$ and $\hat{P}(t)$ obeys the canonical commutation relation. For these scalings
+
+\begin{align}
+\left[\hat{X}(t),\hat{P}(t)\right] = 2i
+\end{align}
+
+and we can write
+
+\begin{align}
+\Braket{:\hat{X}(t)\hat{X}(t):} = \Braket{\hat{X}(0)\hat{X}(0)} e^{-2|\chi|t} + \frac{i}{2}(2i) = e^{-2|\chi|t} - 1
+\end{align}
+
+We thus see that for $t>0$ the normal ordered variance of $\hat{X}(t)$ can be negative.
+
+Suppose this para-amp is squeezing the optical field in a cavity with linewidth (half width half max) of $\kappa$. Then if the signal is detected on a balanced homodyne receiver with quantum efficiency $\epsilon_Q$ and total detection efficiency $\epsilon$, then the formula for the variance of the detected signal variance is (see details in the Kelley-Kleiner formula document):
+
+\begin{align}
+\Braket{i(t)^2} = e^2|\alpha|^2\epsilon_Q\left( 2 \kappa \epsilon \Braket{:\hat{X}(t) \hat{X}(t):} + \frac{1}{T}\right)
+\end{align}
+
+The second term is the shot noise contribution. It arises from integrating shot noise over the detector bandwidth where the detector bandwidth is $f_{\text{BW}} = \frac{1}{T}$. For any classical signal the normal ordered variance would be positive and shot noise would represent the minimum possible signal variance. However, as we have seen here, for the case of a squeezed state it is possible for the normal ordered variance to be negative, in which case the signal variance can decrease below shot noise. In this case the minimum variance possible is
+
+\begin{align}
+e^2|\alpha|^2\epsilon_Q(f_{\text{BW}} - 2\kappa \epsilon)
+\end{align}
+
+We see the minimum squeezing arises from a competition between $f_{\text{BW}}$, which captures the rate at which shot noise appears on the detector with $\kappa$, the rate at which correlated photons exit the cavity. Note that it looks here as if the detector photocurrent can go negative. However, this is not possible since $i(t)^2$, a classical real random variable, must be positive. Below we will develop a more thorough model of the detection of light which has been parametrically amplified (and thus squeezed,) inside of a cavity.
+
+Recall that the above formula for the photocurrent variance used the assumption that $\hat{\Omega}_{\text{Bal}}(t,t+T) \approx T \epsilon_Q \hat{n}_{\text{bal}}(t)$. This assumption relies on $\hat{n}_{\text{bal}}$ varying slowly on timescale $T$. In the event that $\kappa > f_{\text{BW}}$ then it will no longer be the case that $\hat{n}_{\text{bal}}$ varies slowly on the timescale $T = \frac{1}{f_{\text{BW}}}$.
+
+\section{Parametric Amplification in a Cavity}
+
+We now consider parametric amplification in a cavity. The difference with the above expressions is that the field which is being amplified is now damping away at rate $\kappa$ and is beset by vacuum fluctuations. We write down
+
+\begin{align}
+\dot{\hat{X}}(t) = \chi \hat{X}(t) - \kappa \hat{X}(t) + \sqrt{2\kappa}\hat{X}_{\text{in}}(t)\\
+\dot{\hat{P}}(t) = -\chi \hat{P}(t) - \kappa \hat{P}(t) + \sqrt{2\kappa}\hat{P}_{\text{in}}(t)
+\end{align}
+
+Where $\hat{X}_{\text{in}}$ and $\hat{P}_{\text{in}}$ obey the usual delta correlated expectation values and commutation relations for quantum input noise.
+The two modes are decoupled so we can solve them as
+
+\begin{align}
+\hat{X}(t) = e^{(\chi - \kappa)t}\left(\hat{X}(0) + \sqrt{2\kappa} \int_{t'=0}^t e^{-(\chi-\kappa)t'}\hat{X}_{\text{in}}(t') dt'\right)\\
+\hat{P}(t) = e^{(-\chi - \kappa)t}\left(\hat{P}(0) + \sqrt{2\kappa} \int_{t'=0}^t e^{-(-\chi-\kappa)t'}\hat{P}_{\text{in}}(t') dt'\right)\\
+\end{align}
+
+Note the signs of the arguments in the exponents. Also note that we dropped the explicit absolute value on $\chi$. We will just make sure to remember that if we want $\chi$ to squeeze the $\hat{X}$ quadrature we should have $\chi$ be real and negative and if we want to antisqueeze the $\hat{X}$ quadrature we should let $\chi$ be real and positive.
+
+We now again need to work out
+
+\begin{align}
+\Braket{:\hat{X}(t_1)\hat{X}(t_2) :} = \frac{1}{2}\left(\Braket{\left\{\hat{X}(t_1),\hat{X}(t_2) \right\}} + i \Braket{\left[\hat{X}(t_\text{max}),\hat{P}(t_{\text{min}}) \right]} \right)
+\end{align}
+
+We first work out the anticommutator.
+
+\begin{align}
+&\Braket{\left\{\hat{X}(t_1),\hat{X}(t_2) \right\}} =\\
+& e^{(\chi - \kappa)(t_1 + t_2)}\left(\Braket{\left\{\hat{X}(0),\hat{X}(0)\right\}} + 2\kappa \int_{t'=0}^{t_1} \int_{t''=0}^{t_2} e^{-(\chi-\kappa)(t'+t'')}\Braket{\left\{\hat{X}_{\text{in}}(t')\hat{X}_{\text{in}}(t'')\right\}}dt'dt''\right)
+\end{align}
+
+Cross terms vanish because the noise at later times is uncorrelated with the initial state. We now apply $\Braket{\left\{\hat{X}(0),\hat{X}(0)\right\}} = 2$ and $\Braket{\left\{\hat{X}_{\text{in}}(t')\hat{X}_{\text{in}}(t'')\right\}} = 2\delta(t' - t'')$, supposing the initial state and the input noise are both in the vacuum state. We get
+
+\begin{align}
+&\Braket{\left\{\hat{X}(t_1),\hat{X}(t_2) \right\}} = \\
+&e^{(\chi - \kappa)(t_1 + t_2)}\left((2) + (2)2\kappa\int_{t'=0}^{t_{\text{min}}} e^{-(\chi-\kappa)2t'} dt' \right)\\
+&=(2)e^{(\chi - \kappa)(t_1 + t_2)}\left(1 + \frac{2\kappa}{-2(\chi-\kappa)} \left(e^{-(\chi-\kappa)2t_{\text{min}}} - 1\right) \right)\\
+&=(2)\left(\left(1 + \frac{\kappa}{\chi-\kappa} \right)e^{(\chi-\kappa)(t_1+t_2)} - \frac{\kappa}{\chi-\kappa} e^{(\chi-\kappa)|t_1-t_2|} \right)\\
+&= (2)\left(\frac{\chi}{\chi-\kappa}e^{(\chi-\kappa)(t_1+t_2)} - \frac{\kappa}{\chi-\kappa} e^{(\chi-\kappa)|t_1-t_2|} \right)
+\end{align}
+
+$(2)$ is left in parentheses so that we can recall it arose from the anti-commutator. Note that for $\chi-\kappa <0$ and large $t_1+t_2$ the first term will vanish and the system will reach a steady state in which the two-time correlation function is stationary and given by the second term. Note that (with $\chi<0$) it will be positive as expected for the ``classical'' behaving anti-commutator. If $\chi-\kappa > 0$ then there is no steady state. This corresponds to the anti-squeezed quadrature which grows without bound.
+
+Now the anti-commutator.
+
+\begin{align}
+&\Braket{\left[\hat{X}(t_{\text{max}}),\hat{P}(t_{\text{min}}) \right]} = \\
+&e^{(\chi-\kappa)t_{\text{max}}} e^{(-\chi-\kappa)t_{\text{min}}}\Bigg(\Braket{\left[\hat{X}(0),\hat{P}(0) \right]}\\
+& + 2\kappa \int_{t'=0}^{t_{\text{max}}} \int_{t''=0}^{t_{\text{min}}} e^{-(\chi-\kappa)t'}e^{-(-\chi-\kappa)t''}\Braket{\left[\hat{X}(t'),\hat{P}(t'') \right]}dt'dt''\Bigg)\\
+&= e^{\chi(t_{\text{max}} - t_{\text{min}})} e^{-\kappa(t_{\text{max}}+t_{\text{min}})} \left((2i) + 2\kappa (2i) \int_{t'=0}^{t_{\text{min}}} e^{2\kappa t'} dt' \right)\\
+&= (2i) e^{\chi(t_{\text{max}} - t_{\text{min}})} e^{-\kappa(t_{\text{max}}+t_{\text{min}})} \left(1 + \frac{2\kappa}{2\kappa}\left(e^{2\kappa t_{\text{min}}} - 1 \right) \right)\\
+&= (2i)e^{(\chi-\kappa)(t_{\text{max}}-t_{\text{min}})} = (2i) e^{(\chi-\kappa)|t_1-t_2|}
+\end{align}
+
+We have used $\Braket{\left[\hat{X}(0),\hat{P}(0) \right]} = 2i $ and$\Braket{\left[\hat{X}_{\text{in}}(t'),\hat{P}_{\text{in}}(t'') \right]} = 2i \delta(t' - t'')$.
+
+We combine these two together in 
+
+\begin{align}
+&\Braket{:\hat{X}(t_1)\hat{X}(t_2) :} = \frac{1}{2}\left(\Braket{\left\{\hat{X}(t_1),\hat{X}(t_2) \right\}} + i \Braket{\left[\hat{X}(t_\text{max}),\hat{P}(t_{\text{min}}) \right]} \right)\\
+&= \frac{(2)}{2}\left(\frac{\chi}{\chi-\kappa}e^{(\chi-\kappa)(t_1+t_2)} - \frac{\kappa}{\chi-\kappa} e^{(\chi-\kappa)|t_1-t_2|} \right) + \frac{i}{2}(2i) e^{(\chi-\kappa)|t_1-t_2|}\\
+\end{align}
+
+We see that (in the case $\chi-\kappa <0$) the first two terms are positive but that the final term is negative. We see that if the third term can outweigh the previous two then the normal and time ordered two time correlation function can be negative for all time. This is something which could not be possible for the classical analogue, which would only include the first two terms. A little manipulation yields
+
+\begin{align}
+&\Braket{:\hat{X}(t_1)\hat{X}(t_2) :} = \\
+&= \frac{\chi}{\chi-\kappa} \left(e^{(\chi-\kappa)|t_1+t_2|} - e^{(\chi-\kappa)(t_1-t_2)} \right)
+\end{align}
+
+This is the normal and time ordered two-time correlation function which will be needed for subsequent calculations. In the equilibrium limit we have
+
+
+\begin{align}
+&\Braket{:\hat{X}(t_1)\hat{X}(t_2) :} = -\frac{\chi}{\chi-\kappa} e^{(\chi-\kappa)|t_1-t_2|}
+\end{align}
+
+Here I will recall an intermediate formula for the photocurrent variance from the Kelley-Kleiner formula write up. We have
+
+\begin{align}
+\Braket{i(t)^2} &= \left(\frac{e}{T}\right)^2 \Braket{:\hat{\Omega}_{\text{bal}}(t,t+T)\hat{\Omega}_{\text{bal}}(t,t+T):}\\
+&+\left(\frac{e}{T}\right)^2\Braket{:\hat{\Omega}_+(t,t+T) + \hat{\Omega}_-(t_1,t_1+T) :}
+\end{align}
+
+We have
+
+\begin{align}
+\hat{\Omega}_{\pm}(t,t+T) = \epsilon_Q\int_{t'=t}^{t+T} \hat{n}_{\pm}(t')dt'
+\end{align}
+
+Where
+
+\begin{align}
+\hat{n}_{\pm}(t) = \frac{1}{2}\left(\hat{n}_{\text{LO}}(t) + 2\kappa \epsilon_{C}\epsilon_P \hat{n}(t) \pm \sqrt{2\kappa} \sqrt{\epsilon_{MM}\epsilon_C\epsilon_P}|\alpha|\hat{X}(t) \right)
+\end{align}
+
+Here $\hat{n}_{\text{LO}}$ in the first term is the LO photon number flux. The second term is the signal photon number flux expressed in units of intracavity photons, thus it is the intracavity photon number scaled by the energy decay rate of the cavity into the detected mode, $2\kappa \epsilon_C$ and the losses on the way to the detector, $\epsilon_P$. This second term will be dropped because it is small compared to the first term. The final term is the homo/hetero-dyne interference term expressed again in terms of intracavity photons. This term is additionally scaled by the mode matching efficiency. $|\alpha| = \sqrt{\braket{\hat{n}_{\text{LO}}}} = \sqrt{\bar{n}_{\text{LO}}}$ is the LO amplitude. Here we have assumed that the detector is in a homodyne configuration and the phase is set to detect the amplitude quadrature.
+
+We consider
+
+\begin{align}
+\Braket{:\hat{\Omega}_+(t,t+T) + \hat{\Omega}_-(t,t+T) :} &= \epsilon_Q\int_{t' = t}^{t+T} \Braket{:\hat{n}_+(t') + \hat{n}_-(t'):} dt'\\
+&\approx \epsilon_Q\int_{t'=t}^{t+T} \Braket{:\hat{n}_{\text{LO}}(t'):} dt'\\
+&= \epsilon_Q |\alpha|^2 T
+\end{align}
+
+We then calculate the shot noise term to be
+
+\begin{align}
+e^2  |\alpha|^2 \epsilon_Q\frac{1}{T} = e^2 |\alpha|^2\epsilon_Q f_{\text{BW}}
+\end{align}
+
+The other term will be more complicated.
+
+\begin{align}
+\hat{n}_{\text{bal}}(t) = \hat{n}_+(t) - \hat{n}_-(t) = |\alpha|\sqrt{2\kappa} \sqrt{\epsilon_{MM}\epsilon_C\epsilon_P} \hat{X}(t)
+\end{align}
+
+\begin{align}
+&\Braket{:\hat{\Omega}_{\text{bal}}(t,t+T) \hat{\Omega}_{\text{bal}}(t,t+T):}\\
+&= \epsilon_Q^2|\alpha|^2 2\kappa \epsilon_{MM} \epsilon_C \epsilon_P \int_{t'=t}^{t+T}\int_{t''=t}^{t+T} \Braket{:\hat{X}(t')\hat{X}(t'') :}dt' dt''
+\end{align}
+
+We are integrating in two dimensions over the normal and time ordered two-time correlation function of $\hat{X}$. In the case that the integration region is much smaller than the correlation time of $\hat{X}$ we can assume the integrand is roughly constant over the integration domain as follows.
+
+\begin{align}
+\int_{t'=t}^{t+T}\int_{t''=t}^{t+T} \Braket{:\hat{X}(t')\hat{X}(t'') :}dt' dt'' &\approx \Braket{:\hat{X}(t)\hat{X}(t):}
+\int_{t'=t}^{t+T}\int_{t''=t}^{t+T} dt' dt''\\
+&=\Braket{:\hat{X}(t)\hat{X}(t):}T^2
+\end{align}
+
+At late time when the system is equilibrated we have
+
+\begin{align}
+\Braket{:\hat{X}(t)\hat{X}(t):} = -\frac{\chi}{\chi-\kappa}
+\end{align}
+
+We can plug this all in to find
+
+\begin{align}
+\Braket{:\hat{\Omega}_{\text{bal}}(t,t+T) \hat{\Omega}_{\text{bal}}(t,t+T):} = \epsilon_Q^2 |\alpha|^2 \epsilon_{MM}\epsilon_C \epsilon_P 2\kappa \left(-\frac{\chi}{\chi-\kappa}\right) T^2
+\end{align}
+
+The detected signal variance (leaving off shot noise) is then
+
+\begin{align}
+-e^2 \epsilon_Q^2 |\alpha|^2 \epsilon_{MM}\epsilon_C \epsilon_P \frac{\chi}{\chi-\kappa} 2\kappa
+\end{align}
+
+Putting the two terms together we find
+
+\begin{align}
+\Braket{i(t)^2} = e^2 |\alpha|^2 \epsilon_Q\left(-\epsilon2\kappa \frac{\chi}{\chi-\kappa} + f_{\text{BW}} \right)
+\end{align}
+
+In the limit that $|\chi| \gg \kappa$ (recalling that we are considering $\chi<0$ for amplitude squeezing) this reduces to
+
+\begin{align}
+\Braket{i(t)^2} = e^2 |\alpha|^2 \epsilon_Q\left(f_{\text{BW}}-2\kappa \epsilon\right)
+\end{align}
+
+This is the same as the naive formula found above without going through all of the cavity dynamics. However, for this formula to be true we had to make the approximation that $\Braket{:\hat{X}(t')\hat{X}(t''):}$ varied slowly on the timescale $T$. Now with an explicit form for $\Braket{:\hat{X}(t')\hat{X}(t'') :}$ we can see that this amounts to requiring $f_{\text{BW}} \gg \kappa,\chi$. We can define the squeezing depth as the reduction in shot noise level divided by the shot noise level. In this limit then we have
+
+\begin{align}
+S = 2 \epsilon \frac{\kappa}{f_{\text{BW}}} \ll 1
+\end{align}
+
+We see that in the regime of a large bandwidth detector the squeezing depth is limited by the ratio of the linewidth to the detector bandwidth. To see greater squeezing depth we must reduce the detector bandwidth, however, formally, this requires relaxing the approximation made above.
+
+Thanks to a result similar to the Wiener-Khintchine theorem we can work out the result for the case that $T$ is much larger than the normal and time ordered auto-correlation function for $\hat{X}$. The argument is basically as follows. If the autocorrelation function is stationary, that is $\Braket{:\hat{X}(t')\hat{X}(t'') :} = \Braket{:\hat{X}(t'-t'')\hat{X}(0) :}$ then integrating over the 2D region $t<t',t''<t+T$ can be imagined as follows. We can perform the integration over $t'$ with $t''= t + \frac{T}{2}$, for example. Since $T$ is much larger than the autocorrelation time then integrating $t'$ from $t$ to $t+T$ with $t'' = t + \frac{T}{2}$ amounts to integration of the autocorrelation function  from $-\infty$ to $\infty$. We then must perform this integration for each value of $t''$, but since the result of the integration is the same for each value of $t''$ this just amounts to multiplying the previous result by $T$. This is the same argument which is followed to prove the Wiener-Khintchine theorem.
+
+By that logic we are then trying to work out
+
+\begin{align}
+&\int_{t'=t}^{t+T}\int_{t''=t}^{t+T} \Braket{:\hat{X}(t')\hat{X}(t'') :}dt' dt''\\
+&\approx T \int_{t'=-\infty}^{\infty} \Braket{:\hat{X}(t')\hat{X}(0) :} dt'\\
+&= T \left(-\frac{\chi}{\chi-\kappa}\right) \int_{t'=-\infty}^{\infty} e^{(\chi-\kappa)|t'|} dt'\\
+&= -T \frac{\chi}{(\chi-\kappa)^2} 2*(-1) = 2T \frac{\chi}{(\chi-\kappa)^2}
+\end{align}
+
+Recalling that $\chi-\kappa <0$ and $\chi<0$ so that this quantity is negative. We then have
+
+\begin{align}
+\Braket{:\hat{\Omega}_{\text{bal}}(t,t+T) \hat{\Omega}_{\text{bal}}(t,t+T):} = \epsilon_Q^2 |\alpha|^2 \epsilon_{MM}\epsilon_C \epsilon_P 2\kappa \left(\frac{\chi}{(\chi-\kappa)^2}\right) 2T
+\end{align}
+
+This will appear in the detected signal as
+
+\begin{align}
+e^2 \epsilon_Q^2 |\alpha|^2 \epsilon_{MM}\epsilon_C \epsilon_P \left(\frac{4\kappa \chi}{(\chi-\kappa)^2}\right) \frac{1}{T} = e^2 \epsilon_Q^2 |\alpha|^2 \epsilon_{MM}\epsilon_C \epsilon_P \left(\frac{4\kappa \chi}{(\chi-\kappa)^2}\right) f_{\text{BW}}
+\end{align}
+
+Note how the factors of $T$ have appeared through this different derivations.
+
+We then plug this into the formula for the total detected signal to find
+
+\begin{align}
+\Braket{i(t)^2} = e^2 |\alpha|^2 \epsilon_Q \left( \epsilon \frac{4\kappa \chi}{(\kappa-\chi)^2} f_{\text{BW}} + f_{\text{BW}} \right)
+\end{align}
+
+The first function in the parentheses takes its minimum value when $\chi = -\kappa$ at which point
+
+\begin{align}
+\frac{4\kappa \chi}{(\kappa-\chi)^2} \rightarrow -\frac{4\kappa^2}{(2\kappa)^2} = -1
+\end{align}
+
+So we get that
+
+\begin{align}
+\Braket{i(t)^2} = e^2|\alpha|^2\epsilon_Q\left(\epsilon - 1 \right)f_{\text{BW}}
+\end{align}
+
+Which vanishes for unity detection efficiency. We see that there is an optimal squeezing rate $\chi = -\kappa$. the reason for this is as follows. The relevant comparison is between $\chi$ and $\kappa$. It is possible to get strong squeezing within the cavity by choosing $\chi \gg \kappa$. In this case you can get optimal squeezing within the cavity. However, correlated photons only leak out of the cavity at rate $\kappa$. So in this case $\kappa$ must be very small. This means the measured shot noise will not be dramatically reduced. On the other hand, if $\chi$ is small compared to $\kappa$ then a large amount of noise is driving the parametric amplifier in the cavity so the overall amount of squeezing achieved inside of the cavity is reduced.
+
+We have thus shown how reduced photocurrent variance resulting from squeezed light arises from non-classical, negative values of the normal and time ordered field autocorrelation function of the optical quadratures.
+
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=.75\textwidth]{squeeze1.png}
+	\caption{Squeezing depth versus $\frac{f_{BW}}{\kappa}$ for $\chi = \{-.2, -.4, -.6, -.8, -1\} \times \kappa$ as the blue lines descend}
+\end{figure}
+
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=.75\textwidth]{squeeze2.png}
+	\caption{Squeezing depth versus $\frac{f_{BW}}{\kappa}$ for $\chi = \{-1, -1.5, -2, -3, -4\} \times \kappa$ as the blue lines ascend}
+\end{figure}
+
+\end{document}

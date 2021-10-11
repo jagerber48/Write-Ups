@@ -1,0 +1,259 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Adjoint Formula}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Proof}
+
+Suppose we have Hilbert space $\mathcal{H}$ and the space of linear maps on that space, $\mathbb{L}(\mathcal{H})$.
+Define the commutation operator and notation by
+
+\begin{align}
+\hat{X}(Y) &= \text{ad}_X(Y) = [X,Y] = XY-YX\\
+&= \hat{X}Y = \text{ad}_X Y\\
+\text{Ad}_X(Y) &= X Y X^{-1}\\
+&= \text{Ad}_XY
+\end{align}
+
+We see that both $\hat{X} = \text{ad}_X$ and $\text{Ad}_X$ are elements of $\mathbb{L}(\mathcal{H})$. We define the exponential of an operator map in the usual. Consider an operator map $f: \mathcal{H} \rightarrow \mathcal{H}$, $f \in \mathbb{L}(\mathcal{H})$.
+
+First we recall that we can exponentiate a function by recursively defining 
+
+\begin{align}
+f^n(X) = f(f^{n-1}(X))
+\end{align}
+
+for positive integer $n$. For example, $f^2(X) = f(f(X))$.
+
+We define
+
+\begin{align}
+e^{f} = \sum_{n=0}^{\infty} \frac{1}{n!} f^n
+\end{align}
+
+Note that $e^f \in \mathbb{L}(\mathcal{H})$.
+
+I prove below that $e^{X}e^{Y} = e^{X+Y}$ for $[X,Y]=0$. This implies that $\left(e^X\right)^{-1} = e^{-X}$.
+
+In the remainder of these notes I will prove that
+
+\begin{align}
+\text{Ad}_{e^X} &= e^{\text{ad}_X} = 1 + f + \frac{1}{2!} f^2 + \ldots + \frac{1}{n!} f^n + \ldots\\
+\end{align}
+
+
+Or written otherwise:
+
+\begin{align}
+e^X Y e^{-X} &= e^{\hat{X}}Y =  \sum_{n=0}^{\infty} \frac{1}{n!} \hat{X}^n(Y)\\
+&= Y + [X,Y] + \frac{1}{2!} [X,[X,Y]] + \ldots + \frac{1}{n!}[\underbrace{X,[X,\ldots[X}_{n \text{ times}},Y]\ldots]] + \ldots
+\end{align}
+
+Tor prove this we begin by defining
+
+\begin{align}
+U(t) = e^{X t}
+\end{align}
+
+Then we can see that
+
+\begin{align}
+\ddt{U(t)} = X e^{Xt} = X U
+\end{align}
+
+Define
+
+\begin{align}
+F(t) = U(t) Y U^{-1}(t) = e^{Xt} Y e^{-Xt} = \text{Ad}_{e^{Xt}} (Y)
+\end{align}
+
+Clearly the theorem above states that $F(1) = e^{\text{ad}_X} (Y)$
+
+We will Taylor expand $F(t)$. Consider
+
+\begin{align}
+\ddt{F(t)} &= \ddt{U(t)} Y U^{-1}(t) + U(t) Y \ddt{U^{-1}(t)}\\
+&=  X U(t)YU^{\dag}(t) - U(t)YU^{-1}(t) X\\
+&= X F(t) - F(t) X = [X,F(t)]
+\end{align}
+
+I will prove by induction that
+
+\begin{align}
+\frac{d^n F(t)}{dt^n} = [\underbrace{X,[X,\ldots[X}_{\text{n times}},F(t)],\ldots]]
+\end{align}
+
+This will rely on
+
+\begin{align}
+\ddt{} \big([\underbrace{X,[X,\ldots[X}_{\text{n times}},F(t)],\ldots]] \big) = \Big[\underbrace{X,\Big[X,\ldots\Big[X}_{\text{n times}},\ddt{F(t)}\Big],\ldots\Big]\Big]
+\end{align}
+
+This follows from the fact that $\ddt{} AF(t)B = A \ddt{F(t)} B$ for time independent $A$ and $B$. I have proven the induction base case for $n=1$ above. We then suppose the theorem holds for $n-1$ and consider
+
+\begin{align}
+\frac{d^nF(t)}{dt^n} &= \ddt{} \frac{d^{n-1}F(t)}{dt^{n-1}} = \ddt{} [\underbrace{X,[X,\ldots[X}_{\text{n-1 times}},F(t)],\ldots]]\\
+&= \Big[\underbrace{X,\Big[X,\ldots\Big[X}_{\text{n-1 times}},\ddt{F(t)}\Big],\ldots\Big]\Big]\\
+&= [\underbrace{X,[X,\ldots[X}_{\text{n-1 times}},[X,F(t)]],\ldots]]\\
+&= [\underbrace{X,[X,\ldots[X}_{\text{n times}},F(t)],\ldots]]
+\end{align}
+
+We then Taylor expand $F(t)$ about $t=0$ to find
+
+\begin{align}
+F(t) &= \sum_{n=0}^{\infty} \frac{t^n}{n!} \frac{d^nF(t)}{dt^n}\Bigg|_{t=0}\\
+&= \sum_{n=0}^{\infty} \frac{t^n}{n!} [\underbrace{X,[X,\ldots[X}_{\text{n times}},F(t)],\ldots]]\Bigg|_{t=0}\\
+&=\sum_{n=0}^{\infty} \frac{t^n}{n!} [\underbrace{X,[X,\ldots[X}_{\text{n times}},F(0)],\ldots]]\\
+&=\sum_{n=0}^{\infty} \frac{t^n}{n!} [\underbrace{X,[X,\ldots[X}_{\text{n times}},Y],\ldots]]\\
+&=\sum_{n=0}^{\infty} \frac{t^n\hat{X}^n}{n!} Y 
+\end{align}
+
+We then plug in $t=1$ to find
+
+\begin{align}
+F(1) = \sum_{n=0}^{\infty} \frac{\hat{X}^n}{n!} Y
+\end{align}
+
+This concludes the proof that
+
+\begin{equation}
+\begin{aligned}
+\text{Ad}_{e^X} Y &= e^{\text{ad}_X} Y\\
+e^X Y e^{-X} &= e^{\hat{X}} Y\\
+\text{Ad}_{e^X} &= e^{\text{ad}_X}
+\end{aligned}
+\end{equation}
+
+
+\section{Product of Commuting Exponentials}
+
+First a quick Lemma that for $[X,Y]=0$ we have that $e^{X}e^{Y} = e^{X+Y}$.
+
+\begin{align}
+e^X e^Y &= \left(\sum_{n=0}^{\infty}  \frac{X^n}{n!} \right)\left(\sum_{m=0}^{\infty} \frac{Y^n}{n!}\right) = \sum_{n=0}^{\infty} \sum_{m=0}^n \frac{X^m}{m!} \frac{Y^{n-m}}{(n-m)!}\\
+&= \sum_{n=0}^{\infty}\sum_{m=0}^n \frac{1}{n!} \frac{n!}{m!(n-m)!} X^m Y^{n-m} = \sum_{n=0}^{\infty}\frac{1}{n!}\sum_{m=0}^n \binom{n}{m} X^m Y^{n-m}\\
+&= \sum_{n=0}^{\infty} \frac{(X+Y)^n}{n!} = e^{X+Y}
+\end{align}
+
+The second equality on the first line follows from the Cauchy product formula and the first equality on the last line follows from the binomial theorem. For these theorems to hold for matrix exponentials it is necessary to be able to replace $XY$ with $YX$ so we require that $[X,Y] = 0$. 
+
+Note in particular that
+
+\begin{align}
+e^{X}e^{-X} = e^{X-X} = e^0 = \bv{1}
+\end{align}
+
+so we see that
+
+\begin{align}
+\left(e^{X}\right)^{-1} = e^{-X}
+\end{align}
+
+\section{Cauchy Product}
+
+We want to prove that
+
+\begin{align}
+e^x e^y = \left(\sum_{k=0}^{\infty} \frac{x^k}{k!} \right) \left(\sum_{l=0}^{\infty} \frac{y^l}{l!} \right) = \sum_{n=0}^{\infty} \frac{(x+y)^n}{n!} = e^{x+y}
+\end{align}
+
+We proceed as follows
+
+\begin{align}
+e^x e^y &= \left(\sum_{k=0}^{\infty} \frac{x^k}{k!} \right) \left(\sum_{l=0}^{\infty} \frac{y^l}{l!} \right)\\
+\end{align}
+
+Note that it is a somewhat complicated business to rigorously define the product of two infinite series. However, there is a theorem from Cauchy on double-infinite series that tells us if the two series converge absolutely (which they do in this case) then we don't really have to worry about anything when multiplying the two infinite series. In particular, we can express their product as the Cauchy product in the following way with a guarantee that this new expression will still converge to the previous result.
+
+\begin{align}
+e^x e^y &= \left(\sum_{k=0}^{\infty} \frac{x^k}{k!} \right) \left(\sum_{l=0}^{\infty} \frac{y^l}{l!} \right)\\
+&= \sum_{n=0}^{\infty}\sum_{k+j=n} \frac{1}{k!}\frac{1}{j!} x^k y^j \\
+&= \sum_{n=0}^{\infty} \sum_{k=0}^n \frac{1}{k!}\frac{1}{(n-k)!} x^k y^{n-k}\\
+&= \sum_{n=0}^{\infty}\frac{1}{n!}\sum_{k=0}^n \frac{n!}{k!(n-k)!} x^k y^{n-k}\\
+&= \sum_{n=0}^{\infty} \frac{1}{n!} \sum_{k=0}^n \binom{n}{k} x^k y^{n-k}\\
+&= \sum_{n=0}^{\infty} \frac{(x+y)^n}{n!} = e^{x+y}
+\end{align}
+
+\section{Proof of Binomial Theorem}
+
+Here we prove by induction that
+
+\begin{align}
+(x+y)^n = \sum_{k=0}^n \binom{n}{k} x^k y^{n-k}
+\end{align}
+
+for $n=0$ base case we have
+
+\begin{align}
+(x+y)^0 = 1 = \sum_{k=0}^0 \binom{0}{0} x^0 y^0 = 1
+\end{align}
+
+Now assume the theorem holds for $n$ for the induction hypothesis.
+
+\begin{equation}
+\begin{aligned}
+(x+y)^{n+1} &= (x+y)(x+y)^n\\
+&= (x+y) \sum_{k=0}^n \binom{n}{k} x^k y^{n-k}\\
+&= \sum_{k=0}^n \binom{n}{k} x^{k+1} y^{n-k} + \sum_{k=0}^n \binom{n}{k}x^k y^{n-k+1}\\
+&= x^{n+1} + \sum_{k=0}^{n-1} \binom{n}{k} x^{k+1}y^{n-k} + y^{n+1} +  \sum_{k=1}^n \binom{n}{k} x^k y^{n-k+1}\\
+&= x^{n+1} + y^{n+1} + \sum_{k=1}^n \binom{n}{k-1} x^k y^{n-k+1} + \sum_{k=1}^n \binom{n}{k}x^k y^{n-k+1}\\
+&= x^{n+1} + y^{n+1} + \sum_{k=1}^n \left(\binom{n}{k-1} + \binom{n}{k} \right)x^k y^{n-k+1}\\
+&= \binom{n+1}{n+1}x^{n+1} + \binom{n+1}{0}y^{n+1} + \sum_{k=1}^n \binom{n+1}{k} x^k y^{n+1-k}\\
+&= \sum_{k=0}^{n+1}\binom{n+1}{k}x^k y^{n+1-k}
+\end{aligned}
+\end{equation}
+
+As desired. The second to last line follows from Pascal's rule and the fact that
+
+\begin{align}
+\binom{n+1}{n+1} = \binom{n+1}{0} = 1
+\end{align}
+
+Pascal's Rule:
+
+\begin{equation}
+\begin{aligned}
+\binom{n}{k-1} + \binom{n}{k} &= \frac{n!}{(n-k)!k!} + \frac{n!}{(n-k+1)!(k-1)!}\\
+&= \frac{n!(n-k+1)}{(n-k+1)!k!} + \frac{n!k}{(n-k)!k!}\\
+&= \frac{(n+1)n!}{(n-k+1)!k!}\\
+&= \frac{(n+1)!}{(n+1-k)!k!}\\
+&= \binom{n+1}{k}
+\end{aligned}
+\end{equation}
+
+\end{document}

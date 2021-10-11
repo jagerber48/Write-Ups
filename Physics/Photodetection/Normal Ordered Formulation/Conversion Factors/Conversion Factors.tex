@@ -1,0 +1,458 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\highlightr}[1]{%
+  \colorbox{red!50}{$\displaystyle#1$}}
+\newcommand{\highlightb}[1]{%
+  \colorbox{blue!50}{$\displaystyle#1$}}
+
+\begin{document}
+\title{Signal Conversion Factors}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will work through some simple conversion factors involved in the E3 detection chain. This is mostly a conversion from some of my notes into Jonathan's notation in the matched filters paper. 
+
+\section{Quadrature Operators}
+
+In much of my work I take the convention that
+
+\begin{align}
+X_{JG} &= a^{\dag} + a = 2\text{Re}(a)\\
+P_{JG} &= i(a^{\dag} - a) = 2\text{Im}(a)\\
+a &= \frac{1}{2}\left(X_{JG} + i P_{JG}\right)\\
+a^{\dag} &= \frac{1}{2}\left(X_{JG} - i P_{JG}\right)
+\end{align}
+
+In the matched filters paper Jonathan takes the unitary convention
+
+\begin{align}
+X_{JK} &= \frac{1}{\sqrt{2}}\left(a^{\dag} + a\right) = \sqrt{2}\text{Re}(a)\\
+P_{JK} &= \frac{i}{\sqrt{2}}\left(a^{\dag} - a\right) = \sqrt{2}\text{Im}(a)\\
+a &= \frac{1}{\sqrt{2}}\left(X_{JK} + i P_{JK}\right)\\
+a^{\dag} &= \frac{1}{\sqrt{2}}\left(X_{JK} - i P_{JK}\right)
+\end{align}
+
+So we see that
+
+\begin{align}
+X_{JG} &= \sqrt{2} X_{JK}\\
+P_{JG} &= \sqrt{2} P_{JK}
+\end{align}
+
+In this document I will drop the $JK$ subscript and adopt the unitary convention. I will use the $JG$ subscript when necessary.
+
+\section{Detected Signal}
+In my Kelley-Kleiner write up I derive the following formulas about the measured photocurrent when a probe field ($S$) is measured in a balanced heterodyne setup by beating with a local oscillator.
+
+\begin{align}
+\Braket{i(t)} = &e |\alpha| \epsilon_Q \sqrt{\epsilon_{MM}} \Braket{:X_{S, JG}^{\Delta_{LO}t + \phi_{LO}}(t):}\\
+\Braket{i(t_1)i(t_2)} = &e^2|\alpha|^2 \epsilon_Q^2 \epsilon_{MM} \Braket{:X_{S, JG}^{\Delta_{LO}t_1+\phi_{LO}}(t_1)X_{S, JG}^{\Delta_{LO}t_2 + \phi_{LO}}(t_2):}\\
++ &e^2|\alpha|^2\epsilon_Q \delta(t_2-t_1)
+\end{align}
+
+Here $i(t)$ is the classical measured photocurrent expressed as a random variable. $e$ is the electron charge. $\alpha$ is the complex amplitude of the local oscillator (LO) field, that is $|\alpha|^2=n_{LO}$, the photon number flux of the LO field, related to the optical power in the LO beam. $\epsilon_Q$ is the quantum efficiency of the detector. $\epsilon_{MM}$ is the mode-matching efficiency at the detector between the LO and probe. $X_{S, JG}^{\Delta_{LO} t + \phi_{LO}}(t)$ is a rotating quadrature operator defined shortly. $::$ denotes normal and time ordering.
+
+I define rotated quadrature operators as
+
+\begin{align}
+X^{\theta}_{JG} &= a^{\dag}e^{-i\theta} + a e^{i\theta}\\
+P^{\theta}_{JG} &= i(a^{\dag}e^{-i\theta} - a e^{i \theta}) = X^{\theta-\frac{\pi}{2}}_{JG}
+\end{align}
+
+So one can see that
+
+\begin{align}
+X^0_{JG} &= X_{JG}\\
+P^0_{JG} &= P_{JG}
+\end{align}
+
+Let's consider a homodyne measurement of the $P$ quadrature so that $\Delta_{LO} = 0$ and $\phi_{LO} = -\frac{\pi}{2}$. We then get
+
+\begin{align}
+\braket{i(t)} = &e |\alpha|\epsilon_Q \sqrt{\epsilon_{MM}}\Braket{:P_{S,JG}(t):}\\
+\braket{i(t_1)i(t_2)} = &e^2|\alpha|^2\epsilon_Q^2\epsilon_{MM}\Braket{:P_{S,JG}(t_1)P_{S,JG}(t_2):} + e^2|\alpha|^2\epsilon_Q\delta(t_2-t_1)
+\end{align}
+
+We rescale this into the $JK$ convention:
+
+\begin{align}
+\braket{i(t)} = &e |\alpha|\epsilon_Q  \sqrt{\epsilon_{MM}}\sqrt{2}\Braket{:P_{S}(t):}\\
+\braket{i(t_1)i(t_2)} = &e^2|\alpha|^2\epsilon_Q^2\epsilon_{MM}2\Braket{:P_{S}(t_1)P_{S}(t_2):} + e^2|\alpha|^2\epsilon_Q\delta(t_2-t_1)
+\end{align}
+
+\section{Two-time quadrature operator}
+
+I show below that we can expand
+
+\begin{align}
+:P_{S,JG}(t_1)P_{S,JG}(t_2): &= \\
+&= \frac{1}{2}\left\{P_{S,JG}(t_1), P_{S,JG}(t_2)\right\} + \frac{i}{2}\left[X_{S,JG}(t_{min}), P_{S,JG}(t_{max})\right]\\
+&= \frac{1}{2}\left\{P_{S,JG}(t_1), P_{S,JG}(t_2)\right\} - \delta(t_2-t_1)\\
+&= P_{JG}(t_1)P_{S,JG}(t_2) - \delta(t_2-t_1)
+\end{align}
+
+Rescaling this into the $JK$ convention we find
+
+\begin{align}
+:P(t_1)P(t_2): &= \\
+&= \frac{1}{2}\left\{P_S(t_1), P_S(t_2)\right\} + \frac{i}{2}\left[X_S(t_{min}), P_S(t_{max})\right]\\
+&= \frac{1}{2}\left\{P_S(t_1), P_S(t_2)\right\} - \frac{1}{2}\delta(t_2-t_1)\\
+&= P_S(t_1)P_S(t_2) - \frac{1}{2}\delta(t_2-t_1)
+\end{align}
+
+The second expression will turn out to be the one that best matches the matched filter paper results. Plugging this into the expression for the two-time correlation function we get
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} =& e^2 |\alpha|^2 \epsilon_Q^2 \epsilon_{MM} \Braket{\left\{P_S(t_1), P_S(t_2)\right\}}\\
+&- e^2|\alpha|^2\epsilon_Q^2\epsilon_{MM}\delta(t_2-t_1) + e^2|\alpha|^2\epsilon_Q\delta(t_2-t_1)\\
+=& e^2 |\alpha|^2 \epsilon_Q^2 \epsilon_{MM} \Braket{\left\{P_S(t_1), P_S(t_2)\right\}} + e^2|\alpha|^2 \epsilon_Q(1-\epsilon_Q\epsilon_{MM})\delta(t_2-t_1)
+\end{align}
+
+
+
+\section{Adiabatic approximation}
+
+\begin{align}
+H = -\hbar \Delta c^{\dag}c + \sum_i \hbar \omega_i a^{\dag}_i a_i + \sum_i \hbar \sqrt{\bar{n}}g_i(c^{\dag}+c)(a^{\dag}_i + a_i)
+\end{align}
+
+Setting $\Delta=0$
+
+\begin{align}
+H = \sum_i \hbar \omega_i a^{\dag}_i a_i + \sum_i \hbar \sqrt{\bar{n}}g_i(c^{\dag}+c)(a^{\dag}_i + a_i)
+\end{align}
+
+Equation of motion:
+
+\begin{align}
+\dot{c} &= -\frac{i}{\hbar}\sum_i \hbar \sqrt{\bar{n}}g_i(a^{\dag}_i + a_i)\\
+&= -i \sqrt{2\bar{n}}\sum_i g_i X_i
+\end{align}
+
+Adding in noise drives
+
+\begin{align}
+\dot{c} &= -i \sqrt{2\bar{n}}\sum_i g_i X_i - \kappa c - \sqrt{2\kappa\epsilon_C} c_{G,in} - \sqrt{2\kappa\epsilon_B} c_{B, in}
+\end{align}
+
+Adiabatic elimination:
+
+\begin{align}
+c = -\frac{i \sqrt{2 \bar{n}}}{\kappa}\sum_i g_iX_i - \sqrt{\frac{2\epsilon_C}{\kappa}}c_{G,in} - \sqrt{\frac{2\epsilon_B}{\kappa}}c_{B,in}
+\end{align}
+
+Convert to $P_{cav}$ using $P_{cav} = \frac{i}{\sqrt{2}}(c^{\dag}-c)$
+
+\begin{align}
+P_{cav} &= \frac{i}{\sqrt{2}}\left(\frac{2i\sqrt{2\bar{n}}}{\kappa}\sum_i g_i X_i - \sqrt{\frac{2\epsilon_C}{\kappa}}\left(c_{G,in}^{\dag} - c_{G,in}\right) - \sqrt{\frac{2\epsilon_B}{\kappa}}\left(c_{B,in}^{\dag} - c_{B,in}\right)\right)\\
+&= -\frac{2\sqrt{\bar{n}}}{\kappa}\sum_i g_i X_i - \sqrt{\frac{2\epsilon_C}{\kappa}}P_{G, in} - \sqrt{\frac{2\epsilon_B}{\kappa}}P_{B, in}
+\end{align}
+
+\section{Detected field in terms of cavity field}
+
+The field leaking out of the cavity can be related to the intracavity field through the input output relations.
+
+\begin{align}
+P_{out} = \sqrt{2\kappa\epsilon_C}P_{cav} + P_{G, in}
+\end{align}
+
+$\kappa$ is the cavity half-linewidth and $\epsilon_C$ is the cavity detection efficiency, that is, the fraction of photons which leave the cavity that actually go towards the detector. $P_{in}$ is the white noise correlated input bath field.
+
+After exiting the cavity the light passes through an optical path which has possible losses. The final detected "signal" field is given by
+
+\begin{align}
+P_S = \sqrt{\epsilon_P}P_{out} + \sqrt{1-\epsilon_P}P_{path}
+\end{align}
+
+Where $P_{path}$ is another white noise bath and $\epsilon_P$ is the path detection efficiency. We thus get
+
+\begin{align}
+P_S = \sqrt{\epsilon_C\epsilon_P}\sqrt{2\kappa}P_{cav} + \sqrt{\epsilon_P}P_{G, in} + \sqrt{1-\epsilon_P}P_{path}
+\end{align}
+
+We then must calculate
+
+\begin{align}
+\Braket{\left\{P_S(t_1), P_S(t_2)\right\}}
+\end{align}
+
+$P_{path}$ is uncorrelated with the previous two terms so there are no cross terms. Thus we are left with
+
+\begin{align}
+\Braket{\left\{P_S(t_1), P_S(t_2)\right\}} =& \epsilon_C \epsilon_P 2\kappa \Braket{\left\{P_{cav}(t_1), P_{cav}(t_2)\right\}} \\
+&+ \epsilon_P\sqrt{\epsilon_C}\sqrt{2\kappa}\left(\Braket{\left\{P_{cav}(t_1), P_{G,in}(t_2)\right\}} + \Braket{\left\{P_{G,in}(t_1), P_{cav}(t_2)\right\}}\right)\\
+&+ \epsilon_P \Braket{\left\{P_{G,in}(t_1), P_{G,in}(t_2)\right\}} + (1-\epsilon_P)\Braket{\left\{P_{path}(t_1), P_{path}(t_2)\right\}}
+\end{align}
+
+Note that for the noise drives we have $\Braket{P_N(t_1)P_N(t_2)} = \frac{1}{2}\delta(t_2-t_1)$ and $\Braket{\left\{P_N(t_1)P_N(t_2)\right\}} = \delta(t_2-t_1)$. This gives us
+
+\begin{align}
+\Braket{\left\{P_S(t_1), P_S(t_2)\right\}} =& \epsilon_C \epsilon_P 2\kappa \Braket{\left\{P_{cav}(t_1), P_{cav}(t_2)\right\}} \\
+&+ \epsilon_P\sqrt{\epsilon_C}\sqrt{2\kappa}\left(\Braket{\left\{P_{cav}(t_1), P_{G,in}(t_2)\right\}} + \Braket{\left\{P_{G,in}(t_1), P_{cav}(t_2)\right\}}\right)\\
+&+\delta(t_2-t_1)
+\end{align}
+
+Let's calculate
+
+\begin{align}
+\Braket{P_{cav}(t_1)P_{G,in}(t_2)} = \Braket{-\left(\frac{2\sqrt{\bar{n}}}{\kappa} \sum_i g_i X_i(t_1) + \sqrt{\frac{2\epsilon_C}{\kappa}} P_{G,in}(t_1) + \sqrt{\frac{2\epsilon_B}{\kappa}}P_{B,in}(t_1) \right)P_{G,in}(t_2)}
+\end{align}
+
+Only the central term survives leaving
+
+\begin{align}
+\Braket{P_{cav}(t_1)P_{G,in}(t_2)} = -\sqrt{\frac{2\ep_C}{\kappa}} \frac{1}{2}\delta(t_2-t_1)
+\end{align}
+
+Using this in the above expression we get
+
+\begin{align}
+\Braket{\left\{P_S(t_1), P_S(t_2)\right\}} =& \ep_C \ep_P 2\kappa \Braket{\left\{P_{cav}(t_1), P_{cav}(t_2)\right\}}\\
+&- 4\ep_P \ep_C\delta(t_2-t_1) +  \delta(t_2-t_1)
+\end{align}
+
+Finally looking at
+
+\begin{align}
+\Braket{\left\{P_{cav}(t_1),P_{cav}(t_2)\right\}} &= \frac{4\bar{n}}{\kappa^2}\sum_{ij}g_ig_j \Braket{\left\{X_i(t_1),X_j(t_2)\right\}} + \frac{2\ep_C}{\kappa} \delta(t_2-t_1) + \frac{2\ep_B}{\kappa} \delta(t_2-t_1)\\
+&= \frac{4\bar{n}}{\kappa} \sum_{ij}g_ig_j\Braket{\left\{X_i(t_1), X_j(t_2)\right\}} + \frac{2}{\kappa}\delta(t_2-t_1)
+\end{align}
+
+Plugging this in we find
+
+\begin{align}
+\Braket{\left\{P_S(t_1),P_S(t_2)\right\}} &= \ep_C\ep_P \frac{8\bar{n}}{\kappa}\sum_{ij} g_ig_j\Braket{\left\{X_i(t_1),X_j(t_2)\right\}} + \delta(t_2-t_1)
+\end{align}
+
+\section{Putting it together}
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} =& e^2 |\alpha|^2 \epsilon_Q^2 \epsilon_{MM} \Braket{\left\{P_S(t_1), P_S(t_2)\right\}} + e^2|\alpha|^2 \epsilon_Q(1-\epsilon_Q\epsilon_{MM})\delta(t_2-t_1)
+\end{align}
+
+\begin{align}
+\Braket{\left\{P_S(t_1),P_S(t_2)\right\}} &= \ep_C\ep_P \frac{8\bar{n}}{\kappa}\sum_{ij} g_ig_j\Braket{\left\{X_i(t_1),X_j(t_2)\right\}} + \delta(t_2-t_1)
+\end{align}
+
+So we get that
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} =& e^2|\alpha|^2\ep_Q^2 \ep_{MM} \ep_C\ep_P \frac{8\bar{n}}{\kappa}\sum_{ij}g_ig_j\Braket{\left\{X_i(t_1),X_j(t_2)\right\}}\\
+&+ e^2|\alpha|^2\ep_Q^2 \ep_{MM}\delta(t_2-t_1) + e^2|\alpha|^2\ep_Q(1-\ep_Q\ep_{MM})\delta(t_2-t_1)\\
+&= e^2|\alpha|^2\ep_Q\left(\ep_Q\ep_{MM}\ep_C\ep_P \frac{8\bar{n}}{\kappa}\sum_{ij}g_ig_j\Braket{\left\{X_i(t_1),X_j(t_2)\right\}} + \delta(t_2-t_1)\right)
+\end{align}
+
+We define $\epsilon = \ep_Q\ep_{MM}\ep_C\ep_P$.
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = e^2|\alpha|^2\ep_Q\left(\frac{8\bar{n}\ep}{\kappa}\sum_{ij}g_ig_j \Braket{\left\{X_i(t_1),X_j(t_2)\right\}} + \delta(t_2-t_1) \right)
+\end{align}
+
+We also have that
+
+\begin{align}
+\Braket{P_S(t)} &= \sqrt{\ep_C\ep_P}\sqrt{2\kappa}\Braket{P_{cav}(t)} = -\sqrt{\ep_C\ep_P}\sqrt{2\kappa}\frac{2\sqrt{\bar{n}}}{\kappa}\sum_i g_i \Braket{X_i(t)}\\
+&=-\sqrt{\frac{\ep_C\ep_P 8 \bar{n}}{\kappa}}\sum_i g_i\Braket{X_i(t)}
+\end{align}
+
+Recalling
+
+\begin{align}
+\braket{i(t)} = &e |\alpha|\epsilon_Q  \sqrt{\epsilon_{MM}}\sqrt{2}\Braket{P_{S}(t)}\\
+\end{align}
+
+we find
+
+\begin{align}
+\Braket{i(t)} = -e|\alpha|\sqrt{\ep_Q} \sqrt{\frac{8\bar{n}\ep}{\kappa}} \sum_i \sqrt{2}g_i\Braket{X_i(t)}
+\end{align}
+
+Define
+
+\begin{align}
+S(t) = \frac{1}{e|\alpha|\sqrt{\ep_Q}} \sqrt{\frac{\kappa}{8\bar{n}\ep}} i(t) = \frac{1}{e|\alpha|\sqrt{\ep_Q}} \sqrt{P_{SN}}
+\end{align}
+
+We then have
+
+\begin{align}
+\Braket{S(t)} &= -\sum_i \sqrt{2}g_i\Braket{X_i(t)}\\
+\Braket{S(t_1)S(t_2)} &= \sum_{ij}g_ig_j \Braket{\left\{X_i(t_1), X_j(t_2)\right\}} + P_{SN}\delta(t_2-t_1)
+\end{align}
+
+\section{Calculation}
+
+In this section I work in the JG quadrature operator convention.
+
+\begin{align}
+X^{\phi} &= a^{\dag}e^{-i\phi} + a e^{i\phi}\\
+P^{\phi} &= i(a^{\dag}e^{-i\phi} - a e^{i\phi})\\
+a^{\phi} &= ae^{i\phi} = \frac{1}{2}(X^{\phi} + iP^{\phi})\\
+a^{\dag \phi} &= a^{\dag}e^{-i\phi} = \frac{1}{2}(X^{\phi}-iP^{\phi})
+\end{align}
+
+\begin{align}
+[X, Y] &= XY - YX\\
+XY &= YX + [X, Y]\\
+YX &= XY - [X, Y]\\
+\{X, Y\} &= XY + YX\\
+XY &= \frac{1}{2}\{X, Y\} + \frac{1}{2}[X, Y]
+\end{align}
+
+\subsection{Commutator Anti-Commutator Expansion}
+\subsubsection{$t_1>t_2$}
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): =&\\
+=& :(a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1})(a^{\dag}(t_2)e^{-i\phi_2} + a(t_2)e^{i\phi_2}):\\
+=& :\highlightr{a^{\dag}(t_1)a^{\dag}(t_2)}e^{-i\phi_1}e^{-i\phi_2} + a^{\dag}(t_1)a(t_2)e^{-i\phi_1}e^{i\phi_2}\\
+&+ \highlightr{a(t_1)a^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} + a(t_1)a(t_2)e^{i\phi_1}e^{i\phi_2}:\\
+=& \highlightb{a^{\dag}(t_2)a^{\dag}(t_1)}e^{-i\phi_1}e^{-i\phi_2} + a^{\dag}(t_1)a(t_2)e^{-i\phi_1}e^{i\phi_2}\\
+&+ \highlightb{a^{\dag}(t_2)a(t_1)}e^{i\phi_1}e^{-i\phi_2} + a(t_1)a(t_2)e^{i\phi_1}e^{i\phi_2}\\
+=& \highlightr{a^{\dag}(t_1)a^{\dag}(t_2)}e^{-i\phi_1}e^{-i\phi_2} + a^{\dag}(t_1)a(t_2)e^{-i\phi_1}e^{i\phi_2}\\
+&+ \highlightr{a(t_1)a^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} + a(t_1)a(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ [a^{\dag}(t_2), a^{\dag}(t_1)]e^{-i\phi_1}e^{-i\phi_2} + [a^{\dag}(t_2), a(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& (a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1})(a^{\dag}(t_2)e^{-i\phi_2} + a(t_2)e^{i\phi_2})\\
+&+ [a^{\dag}(t_2)e^{-i\phi_2}, a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1}]\\
+=& X^{\phi_1}(t_1)X^{\phi_2}(t_2) + \frac{1}{2}\left[X^{\phi_2}(t_2) - iP^{\phi_2}(t_2), X^{\phi_1}(t_1)\right]\\
+=& \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} + \frac{1}{2}\left[X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right]\\
+&+\frac{1}{2}\left[X^{\phi_2}(t_2), X^{\phi_1}(t_1)\right] - \frac{i}{2}\left[P^{\phi_2}(t_2), X^{\phi_1}(t_1)\right]\\
+&= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_2}(t_2), X^{\phi_1}(t_1)\right]\\
+&= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_{min}}(t_{min}), X^{\phi_{max}}(t_{max})\right]\\
+\end{align}
+
+\subsubsection{$t_2>t_1$}
+
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): =&\\
+=& :(a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1})(a^{\dag}(t_2)e^{-i\phi_2} + a(t_2)e^{i\phi_2}):\\
+=& :a^{\dag}(t_1)a^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + a^{\dag}(t_1)a(t_2)e^{-i\phi_1}e^{i\phi_2}\\
+&+ \highlightr{a(t_1)a^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} + \highlightr{a(t_1)a(t_2)}e^{i\phi_1}e^{i\phi_2}:\\
+=& a^{\dag}(t_1)a^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + a^{\dag}(t_1)a(t_2)e^{-i\phi_1}e^{i\phi_2}\\
+&+ \highlightb{a^{\dag}(t_2)a(t_1)}e^{i\phi_1}e^{-i\phi_2} + \highlightb{a(t_2)a(t_1)}e^{i\phi_1}e^{i\phi_2}\\
+=& a^{\dag}(t_1)a^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + a^{\dag}(t_1)a(t_2)e^{-i\phi_1}e^{i\phi_2}\\
+&+ \highlightr{a(t_1)a^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} + \highlightr{a(t_1)a(t_2)}e^{i\phi_1}e^{i\phi_2}\\
+&+ [a^{\dag}(t_2), a(t_1)]e^{i\phi_1}e^{-i\phi_2} + [a(t_2), a(t_1)]e^{i\phi_1}e^{i\phi_2}\\
+=& (a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1})(a^{\dag}(t_2)e^{-i\phi_2} + a(t_2)e^{i\phi_2})\\
+&+ [a^{\dag}(t_2)e^{-i\phi_2} + a(t_2)e^{i\phi_2}, a(t_1)e^{i\phi_1}]\\
+=& X^{\phi_1}(t_1)X^{\phi_2}(t_2) + \frac{1}{2}\left[X^{\phi_2}(t_2), X^{\phi_1}(t_1) + i P^{\phi_1}(t_1)\right]\\
+=& \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} + \frac{1}{2}\left[X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right]\\
+&+ \frac{1}{2}\left[X^{\phi_2}(t_2), X^{\phi_1}(t_1)\right] + \frac{i}{2}\left[X^{\phi_2}(t_2), P^{\phi_1}(t_1)\right]\\
+=& \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_1}(t_1), X^{\phi_2}(t_2)\right]\\
+=& \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_{min}}(t_{min}), X^{\phi_{max}}(t_{max})\right]\\
+\end{align}
+
+\subsubsection{Summary}
+
+To summarize:
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): &= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_{min}}(t_{min}), X^{\phi_{max}}(t_{max})\right]\\
+\end{align}
+
+\subsection{Evaluate commutator expressions}
+
+We now plug in the known commutation relations
+
+\begin{align}
+[a(t_1), a(t_2)] &= [a^{\dag}(t_1), a^{\dag}(t_2)] = 0\\
+[a(t_1), a^{\dag}(t_2)] &= \delta(t_2-t_1)
+\end{align}
+
+From this we can derive
+
+\begin{align}
+[X^{\phi_1}(t_1), X^{\phi_2}(t_2)] &= [a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1}, a^{\dag}(t_2)e^{-i\phi_2} + a(t_2)e^{i\phi_2}]\\
+&= (-e^{-i\phi_1}e^{i\phi_2} + e^{i\phi_1}e^{-i\phi_2})\delta(t_2-t_1)\\
+&= 2i\sin(\phi_1-\phi_2) \delta(t_2-t_1)
+\end{align}
+
+\begin{align}
+[X^{\phi_1}(t_1), P^{\phi_2}(t_2)] &= [a^{\dag}(t_1)e^{-i\phi_1} + a(t_1)e^{i\phi_1}, i(a^{\dag}(t_2)e^{-i\phi_2} - a(t_2)e^{i\phi_2})]\\
+&=i(e^{-i\phi_1}e^{i\phi_2} + e^{i\phi_1}e^{-i\phi_2})\delta(t_2-t_1)\\
+&=2i\cos(\phi_1-\phi_2)\delta(t_2-t_1) 
+\end{align}
+
+\subsection{Re-expression}
+
+Reconsider 
+
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): &= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_{min}}(t_{min}), X^{\phi_{max}}(t_{max})\right]\\
+\end{align}
+
+\subsubsection{First re-expression}
+We rewrite the above as
+
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): &= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} + \frac{i}{2}\left[X^{\phi_{max}}(t_{max}), P^{\phi_{min}}(t_{min})\right]\\
+\end{align}
+
+and quickly notice this can be written as
+
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): &= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \cos(\phi_{max} - \phi_{min})\delta(t_2-t_1)\\
+&= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \cos(\phi_1 - \phi_2)\delta(t_2-t_1)\\
+\end{align}
+
+I used the evenness of the cosine function here.
+
+\subsubsection{Second re-expression}
+Note that we have
+
+\begin{align}
+\frac{1}{2}\{X, Y\} = XY - \frac{1}{2}[X,Y]
+\end{align}
+
+So this can be written as
+
+\begin{align}
+&:X^{\phi_1}(t_1)X^{\phi_2}(t_2): =\\
+&= X^{\phi_1}(t_1)X^{\phi_2}(t_2)
+-\frac{1}{2}\left[X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right] - \cos(\phi_{1} - \phi_{2})\delta(t_2-t_1)\\
+&= X^{\phi_1}(t_1)X^{\phi_2}(t_2) - i\sin(\phi_1 - \phi_2)\delta(t_2-t_1) - \cos(\phi_{1} - \phi_{2})\delta(t_2-t_1)\\
+&= X^{\phi_1}(t_1)X^{\phi_2}(t_2) - e^{i\phi_1}e^{-i\phi_2}\delta(t_2-t_1)
+\end{align}
+
+\subsection{Summary}
+
+We have found
+
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): &=\\ 
+&= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[P^{\phi_{min}}(t_{min}), X^{\phi_{max}}(t_{max})\right]\\
+&= \frac{1}{2}\left\{X^{\phi_1}(t_1), X^{\phi_2}(t_2)\right\} - \cos(\phi_{max} - \phi_{min})\delta(t_2-t_1)\\
+&= X^{\phi_1}(t_1)X^{\phi_2}(t_2) - e^{i\phi_1}e^{-i\phi_2}\delta(t_2-t_1)
+\end{align}
+
+\subsection{Specialization}
+
+We specialize to the case that $\phi_1=\phi_2=-\frac{\pi}{2}$ so we get
+
+\begin{align}
+:P(t_1)P(t_2): &= \\
+&= \frac{1}{2}\left\{P(t_1), P(t_2)\right\} + \frac{i}{2}\left[X(t_{min}), P(t_{max})\right]\\
+&= \frac{1}{2}\left\{P(t_1), P(t_2)\right\} - \delta(t_2-t_1)\\
+&= P(t_1)P(t_2) - \delta(t_2-t_1)
+\end{align}
+
+\end{document}

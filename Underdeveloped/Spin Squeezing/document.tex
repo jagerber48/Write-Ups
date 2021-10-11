@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\nn}{\nonumber}
+
+\begin{document}
+\title{Spin Squeezing}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\begin{align}
+H = -\hbar \Delta a^{\dag} a + \hbar G a^{\dag}a S_z
+\end{align}
+
+\begin{align}
+\dot{a} &= i \Delta a -\kappa a - i G a S_z + \sqrt{2\kappa} a_{\text{in}}\\
+\dot{S_x} &= - G a^{\dag} a S_y\\
+\dot{S_y} &= G a^{\dag} a S_x\\
+\dot{S_z} &= 0
+\end{align}
+
+Adiabatic approximation ($\dot{a} = 0$).
+
+\begin{align}
+a(t) &= \sqrt{2\kappa} \left(\kappa - i \Delta + i G S_z(t)\right)^{-1} a_{\text{in}}(t)\\
+a^{\dag}(t) &= \sqrt{2\kappa} \left(\kappa + i \Delta - i G S_z(t)\right)^{-1} a^{\dag}_{\text{in}}(t)\\
+\end{align}
+
+\begin{align}
+a^{\dag}(t) a(t) = 2\kappa \left( \kappa^2 + \left(\Delta - G S_z(t)\right)^2\right)^{-1} \hat{a}^{\dag}_{\text{in}}(t)a_{\text{in}}(t)
+\end{align}
+
+\begin{align}
+\dot{S_x}(t) &= - G 2\kappa \left( \kappa^2 + (\Delta - G S_z(t))^2\right)^{-1} \hat{a}^{\dag}_{\text{in}}(t)a_{\text{in}}(t) S_y(t)\\
+\dot{S_y}(t) &= G 2\kappa \left( \kappa^2 + (\Delta - G S_z(t))^2\right)^{-1} \hat{a}^{\dag}_{\text{in}}(t)a_{\text{in}}(t) S_x(t)\\
+\dot{S_z}(t) &= 0
+\end{align}
+
+\end{document}

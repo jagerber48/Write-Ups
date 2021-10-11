@@ -1,0 +1,736 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{ND}
+\usepackage{tcolorbox}
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+\newtheorem{definition}{Definition}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+
+\begin{document}
+\title{Logic Notes}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section*{Introduction}
+
+In this document I will try to get straight some of my thoughts on formal logic. At the moment the goal is to build up to a metalogic proof, in an extended Lemmon system of logic, that extensions by definition are conservative extensions to a formal theory. A lot of the difficulty comes from 1) the fact that the Lemmon system does not seem to be heavily used in the logic community so there are not really references; when syntactic (as opposed to semantic) proofs are given they often use the Hilbert system and 2) many references use semantic arguments to complete the proof (such as the completeness theorem and model theory generally) and I would like to see a purely syntactical proof.
+
+I am following two references. ``Modern Logic: A Text in Elementary Symbolic Logic'' by Graehme Forbes and ``Lectures in Logic and Set Theory: Volume I'' by George Tourlakis. The former is my reference on Lemon logic and the rules therein while The Tourlakis book is more rigorous and does a cleaner job introducing ideas with the metalanguage or metatheory including the concept of inducting on formulas using the metalanguage. However, Tourlakis uses the Hilbert system and semantic proofs in cases which is why I need to adapt both approaches.
+
+\hrulefill
+\section*{The Language of First Order Logic (LFOL)}
+
+\subsection*{The Lexicon of LFOL:}
+\subsubsection*{Logical Symbols:}
+\begin{itemize}
+\item{\textbf{Variables}: Variable symbols such as $x_1, x_2, v_1,v_n,\ldots$. We will try to use lower case letters from near the end of the alphabet for variables.}
+\item{\textbf{Logical/Propositional Connectives:} The logical connectives and: $\land$, or: $\lor$, implication: $\implies$, equivalence: $\iff$ and not: $\lnot$.}
+\item{\textbf{Quantifiers:} The existential quantifier: $\exists$} and the for all quantifier: $\forall$.
+\item{\textbf{Punctuation Marks:} Parenthesis $($ and $)$.}
+\item{\textbf{Contradiction Symbol:} The contradiction symbol: $\curlywedge$. Note that this symbol is a special case of a $0$-ary predicate. It is indicated as a logical symbol because it will be involved in inference rules.}
+\item{\textbf{Equality Symbol:} The equality symbol $=$. Note that this symbol is a special case of a $2$-ary predicate symbol. It is indicated as a logical symbol because it will be involved in inference rules.}
+\end{itemize}
+
+\subsubsection*{Non-Logical Symbols:}
+\begin{itemize}
+\item{\textbf{Predicate (or Relation) Symbols}: for each arity $n \ge 0$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible.}
+\item{\textbf{Function and Constant Symbols}: for each arity $n \ge 0$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$.}
+\end{itemize}
+
+We denote the set of all symbols in LFOL as $\mathbf{Symb}$.
+
+\hrulefill
+
+Note that we chosen to include all of the logical connectives as logical symbols in the theory. This is in some way redundant as it is possible to express some of the logical connectives in terms of a smaller set. For example, we could have instead taken $(\mc{A} \land \mc{B})$ to be shorthand or an abbreviation for $\lnot((\lnot\mc{A})\lor(\lnot \mc{B}))$. However, we then wouldn't be able to introduce the usual (Lemmon/Forbes style) inference rules for $\land$. We would either need to introduce them in an altered form or somehow derive them the inference rules for $\lor$ and $\lnot$.  While this may be possible to some degree I don't think it is possible for all of the inference rules. In short, I think it is an interesting task to try to cut down on the symbols and inference rules in the theory but I'll consider that to be outside of the scope of what I'm doing here at first.
+
+Also note that Forbes includes constant symbols and $n$-ary predicates but does not have any concept of functions with arity $1$ or greater.
+
+\subsection*{The Syntax of LFOL}
+
+Strings in the language are strings (1-dimensional sequences of symbols of the language. For example ``$x_1 \lnot Q \curlywedge ($'' is a string in the language. Below we will see rules for constructing `sensible' strings or `well-formed-formulas' (Wffs) in the language. Note that for the metalogic proofs it may be useful to write down something like $\mc{A} \equiv ``(\lnot(B\lor C))''$ to indicate that the metalanguage symbol $\mc{A}$ represents the same string as $``(\lnot(B \lor C))''$.
+
+\hrulefill
+\subsubsection*{Terms}
+\begin{itemize}
+\item{\textbf{Variables:} such as $x,y,z$.}
+\item{\textbf{Functions and Constants:} If $f$ is an $n$-ary function and $t_1,t_2,\ldots, t_n$ are terms then $ft_1t_2\ldots t_n$ is also a term. Often we will abuse notation and write this as $f(t_1,
+\ldots,t_n)$ or $f(\vec{t})$.}
+\end{itemize}
+
+We denote the set of all terms as $\mathbf{Term}$.
+
+\hrulefill
+\subsubsection*{Atomic Formulas}
+\begin{itemize}
+\item{\textbf{Predicates:} if $P$ is a $n$-ary predicate and $t_1,t_2,\ldots,t_n$ are terms then $Pt_1t_2\ldots t_n$ is an atomic formula. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\vec{t})$.}
+\item{\textbf{Equality Expressions:} If $t_1$ and $t_2$ are terms then $t_1=t_2$ is an atomic formula.}
+\end{itemize}
+\hrulefill
+\subsubsection*{Well Formed Formulas (Wffs)}
+\begin{itemize}
+\item{\textbf{Atomic Formulas:} All atomic formulas are Wffs.}
+\item{\textbf{Connectives:} If $\mc{A}$ and $\mc{B}$ are Wffs then so are $(\mc{A}\land\mc{B})$, $(\mc{A} \lor \mc{B})$, $(\mc{A}\implies\mc{B})$, and $(\mc{A}\iff\mc{B})$.}
+\item{\textbf{Negation:} If $\mc{A}$ is a Wff then so is $(\lnot\mc{A})$}
+\item{\textbf{Quantification:} if $x$ is a variable and $\mc{A}$ is a Wff which contains $x$ as a substring and which does not contain $(\exists x)$ or $(\forall x)$ as substrings then $((\exists x)\mc{A})$ and $((\forall x)\mathcal{A})$ are Wffs. We say $\mc{A}$ is the scope of $(\exists x)$ or $(\forall x)$.}
+\end{itemize}
+
+We denote the set of all Wffs as $\mathbf{Wff}$.
+
+\hrulefill
+
+The language of first order logic is denoted by
+
+\begin{equation}
+\bc{L} = (\mathbf{Symb},\mathbf{Term},\mathbf{Wff})
+\end{equation}
+
+Terms are understood to be the smallest meaningful elements of the language. A term should be thought of as an ``object'' that can be ``plugged in'' to other expressions, in particular into predicates. 
+
+Atomic Formulas can thought of as expressions which could take on a truth value depending on what is plugged into them\footnote{Though it is not necessary that they \textit{actually} are assigned truth values. Assigning of truth value is the realm of model theory which I am trying to avoid here. It is possible to work entirely syntactically, the description I am giving here to help build intuition for the human thinking about the formal systems!}. For example, if $f(x)=x^2$ is a function then $3$ and $f(5)$ are both terms while $3 = f(5)$ or $3 < f(5)$ are both atomic formulas. Predicates can be thought of as statements \textit{about} objects. This distinction is helpful and it makes one realize that simply writing down a term doesn't really say anything meaningful.. Well formed formulas are atomic formulas strung together in logical ways. Wffs are also statements \textit{about} objects which can be thought of as having truth values, they are just more complex logically than atomic formulas.
+
+We can abbreviate formulas by eliminating some parentheses if the meaning is unambiguous.
+
+\hrulefill
+\begin{itemize}
+\item{\textbf{Parentheses:} ``To minimize the use of brackets in the metanotation we adopt standard \textit{priorities} of connectives: $\forall, \exists,$ and $\lnot$ have the highest, and then we have (in decreasing order of priority) $\land, \lor, \implies, \iff$, and we agree not to use outermost brackets. all \textit{associativities} are \textit{right} - that is if we write $\mc{A} \implies \mc{B} \implies \mc{C}$, then it is a (sloppy) counterpart for $(\mc{A} \implies ( \mc{B} \implies \mc{C}))$.''}
+\end{itemize}
+\hrulefill
+
+I've directly copied the Tourlakis textbook definition for parenthesis abbreviation. Because I probably would have said something wrong if I tried to put it together myself. This rule simply states that we can eliminate parenthesis. Since I am including $\land$, $\implies$, $\iff$ and $\forall$ as logical symbols I do not need abbreviations for them as Tourlakis does.
+
+\subsection{Free and Bound Variables}
+
+
+\hrulefill
+
+\subsubsection*{Free and Bound Variables}
+\begin{itemize}
+\item{\textbf{Free Variables:} an instance of $x$ is free in $\mathcal{A}$ if it does not appear in the scope of a quantifier $\exists x$ or $\forall x$.}
+\item{\textbf{Bound Variables:} an instance of $x$ is bound in $\mathcal{A}$ if it appears in the scope of a quantifier $\exists x$ or $\forall x$.}
+\end{itemize}
+
+\hrulefill
+
+Note that a variable can appear both free and bound in a particular expression, for example $x$ in $(Px \lor ((\exists x)Qx))$, however such choice of variables should be avoided to avoid confusion. Compare this expression to $(Px \lor ((\exists y)Qy))$. It can be shown after the inference rules are introduced that these two expressions are equivalent. However, only one of them is a valid candidate for subsequent quantification with $(\exists x)$ or $(\forall x)$.
+
+Tourlakis also includes a different, longer, inductive definitions for free and bound variables but I think the definition above suffices, especially with the restrictions against double-bound variables.
+
+We will use the notation $\mc{A}(\vec{x})$ to mean that $\vec{x}$ occur in $\mc{A}$ as free variables and that no other free variables appear.
+
+There are definitions for open and closed formulas pertaining to free and bound variables but it seems the references differ on the definitions.
+
+First Forbes. For Forbes, an \textit{open} formula is a formula which includes free variables while a \textit{closed} formula which does not include any free variables. I like these definitions. The idea is that a closed formula is a formula which can take on a truth value while an open formula is still a function of its free variables. To get a truth value you must still `plug something in'. An open formula is something like ``\underline{\hspace{0.75cm}} is tall'' while a closed formula is something like ``Sally is tall''. Forbes does not consider the idea of a closed or open term.
+
+Tourlakis uses a slightly different definition. For Tourlakis, a closed term or formula is also one which contains no free variables. However, Tourlakis calls a term or formula open if it contains no quantifiers. This is slightly confusing because a formula can be both open and closed. 
+
+Forbes' definition for open coincides with Tourlakis' definition of not closed, but the two definitions for open differ. We take the following definition.
+
+\hrulefill
+\begin{itemize}
+\item{\textbf{Open Term or Formula:} An open term or formula is a term or formula which contains at least one free variable. Examples are $x$, $Pxa$, $f(x,b)$ $(Pxa \land ((\exists y) Q(y,f(a,b)))$ with $x,y$ variables, $a,b$ constants, $Q,P$ predicates and $f$ a function.}
+\item{\textbf{Closed Term or Formula:} A closed term or formula is a term or fomula which contains no free variables. Examples are $a$, $f(a,b)$, $Pba$, $(Pba \land ((\exists y)Q(y,f(a,b))))$ with $y$ a variable, $a,b$ constants, $P,Q$ predicates and $f$ a function. Note that a closed formula can contain bound variables.}
+\end{itemize}
+\hrulefill
+
+Two notes on the construction of Wffs using quantification. There are two important ``edge cases'' to consider for quantification. These are the cases of redundant quantification and double binding.
+
+Redundant quantification is when a quantification symbol appear such as $(\exists x)$ but the scope of the quantifiers contains no instances of the quantification variable. For example, consider $\mc{A} \equiv Fxy$ where $F$ is a function and $x$ and $y$ are variables. Then, for variable $z$ we have that
+
+$$
+((\exists z)\mc{A}) \equiv ((\exists z)Fxy)
+$$
+
+is not a Wff because $z$ does not appear in $\mc{A} \equiv Fxy$.
+
+Double binding is when the scope of the quantifier with a given quantification variable, say $x$, contains within it another quantifier which has the same quantification variable. For example consider $\mc{A} \equiv (Pxy \land (\exists x)Gx))$. Then we have that
+
+$$
+((\forall x)(Pxy \land ((\exists x)Gx)))
+$$
+
+is not a Wff because $\mc{A}$ already contains $(\exists x)$ as a substring. This is forbidden because the variable $x$ in $Gx$ is in the scope of two quantifiers. It is ``double-bound''.
+
+We will see later that the statements of the inference rules become a little more complicated when these two cases are excluded from the formation of Wffs.
+
+For Tourlakis both redundant quantification and double binding are allowed. Forbes however forbids both.
+
+\subsection*{Variable/Term Manipulation}
+
+Tourlakis goes through great lengths rigorously defining how we replace variables in an expression. I will repeat that here since it will be helpful for the induction proofs later.
+
+\subsubsection*{Term Replacement}
+
+We need to be particularly careful when we are trying to replace variables by terms in expressions. We would like to define $\mc{A}[x \leftarrow t]$. Intuitively this says to replace all \textit{free} occurrences of variable $x$ by term $t$, with the important proviso that no variables occurring in $t$ are \textit{captured} by any of the quantifiers in $\mc{A}$. This is best explained with an example. Consider
+
+$$
+\mc{A} \equiv (Px \lor ((\exists y)Qxyz))
+$$
+
+Note that $x$ and $z$ appear free while $y$ appears bound.
+We can naively make the following replacements:
+
+\begin{equation}
+\begin{split}
+\mc{A}[x\leftarrow a] &\equiv (Pa \lor ((\exists y)Qayz))\\
+\mc{A}[x\leftarrow z] &\equiv (Pz \lor ((\exists y)Qzyz))\\
+\end{split}
+\end{equation}
+
+But if we try to form $\mc{A}[x\leftarrow y]$ we see that we run into a problem:
+
+\begin{equation}
+\mc{A}[x\leftarrow y] \equiv (Py \lor ((\exists y)Qyyz))
+\end{equation}
+
+A similar problem occurs if we plug in something like $fwy$ where $f$ is a $2$-ary function.
+
+\begin{equation}
+\begin{split}
+\mc{A}[x\leftarrow f(w,y)] &\equiv (Pfwy \lor ((\exists y)Qfwyyz))\\
+&\equiv (P(f(w,y)) \lor ((\exists y)Q(f(w,y),y,z)))\\
+\end{split}
+\end{equation}
+
+The problem is that the $y$ appearing in $y$ or $f(w,y)$ is \textit{captured} by the quantifier $(\exists y)$ when we plug it into $Qxyz$. It can be seen that this changes the structure of the formula and constitutes more than a simple changes of names or `plugging in' of variables/functions. To that end, following Tourlakis, we will more rigorously define the replacement operation, $[x\leftarrow t]$ to prevent such complications.
+
+If $s$ is a term, $x$ is a variable $t$ is a term then we define $s[x\leftarrow t]$ as
+
+\begin{equation}
+s[x\leftarrow t] \equiv \begin{cases}
+a & \text{if } s \equiv a, \text{ a constant symbol}\\
+t & \text{if } s\equiv x\\
+y & \text{if } s \equiv y, \text{ a variable with } y \not\equiv x\\
+fr_1[x\leftarrow t]\ldots r_n[x\leftarrow t] & \text{if } s\equiv fr_1\ldots r_n
+\end{cases}
+\end{equation}
+
+Here $f$ is an $n$-ary function symbol and $r_1, \ldots, r_n$ are terms.
+
+Now we consider $[x\leftarrow t]$ for formulas. $P$ is an $n$-ary predicate, $s$ and $r$ are terms, $x$ is a variable, $t$ is a term, $\mc{A}, \mc{B},$ and $\mc{C}$ are Wffs.
+
+\begin{equation}
+\mc{A}[x\leftarrow t] \equiv \begin{cases}
+s[x\leftarrow t] = r[x\leftarrow t] & \text{if } \mc{A}\equiv s=r\\
+Pr_1[x\leftarrow t]\ldots r_n[x\leftarrow t] & \text{if } \mc{A}\equiv Pr_1\ldots r_n\\
+(\mc{B}[x\leftarrow t] \ast \mc{C}[x\leftarrow t]) & \text{if } \mc{A} \equiv (\mc{B} \ast \mc{C})\\
+(\lnot (\mc{B}[x\leftarrow t])) & \text{if } \mc{A} \equiv (\lnot \mc{B})\\
+((\mc{Q} y)(\mc{B}[x\leftarrow t])) & \text{if } \mc{A} \equiv ((\mc{Q} y)\mc{B}) \text{ and $y\not \equiv x$}\\
+ & \text{and $y$ does not occur in $t$ }\\
+ \mc{A} & \text{if } \mc{A} \equiv ((Q y)\mc{B}) \text{ and $y\equiv x$}
+\end{cases}
+\end{equation}
+
+Here $\ast$ stand for any connective: $\land$, $\lor$, $\implies$, or $\iff$ and $\mathcal{Q}$ stands for any quantifier: $\exists$ or $\forall$.
+
+I would say that each instance of replacement is relatively straight forward. The only trickiness comes in the last two cases when quantifiers are included. Basically the final case says that we only make replacements on \textit{free} variables, that is, if a variables appears bound as part of the expression $\mc{A}$ we never replace it.
+The second to last case ensures that there is no \textit{capturing} of the replaced variables. If $y$ does not appear in $t$ then we go ahead and replace $x$ by $t$ in $\mc{B}$ as we would otherwise. However, if $y$ does occur in $t$ then making such a replacement would result in those occurrences of $y$ being captured by the quantifier and the meaning of the formula would be changed.
+
+if $\mc{A}[x\leftarrow t]$ is defined by any of the rules above then we say ``\textit{$t$ is substitutable for $x$ in $\mc{A}$}'' or ``\textit{$t$ is free for $x$ in $\mc{A}$}''.
+
+\subsubsection*{Double Replacement}
+
+Here I will prove (under some conditions I guess?) that $\mc{A}[x\leftarrow t][y\leftarrow s] \equiv \mc{A}[x\leftarrow t[y\leftarrow s]]$.
+
+
+\newpage
+
+\section{Inference Rules}
+
+\hrulefill
+\begin{ND}[Rule of $A$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{$A$}
+\end{ND}
+Any Wff can be assumed at any time
+
+\hrulefill
+\begin{ND}[Rule of $\land I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}$}{}
+\ndljg{Y}{(k)}{$\mc{B}$}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{A}\land\mc{B})$}{$j,k,\land I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\land E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\land\mc{B})$}{}
+\ndljg{X}{(k)}{$\mc{A}$}{$j,\land E$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{X}{(k)}{$\mc{B}$}{$j,\land E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lor I$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{ }
+\ndljg{j}{(k)}{$(\mc{A} \lor \mc{B})$}{$j,\lor I$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{j}{(k)}{$(\mc{B} \lor \mc{A})$}{$j,\lor I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lor E$][][][][.6\linewidth]
+\ndljg{X}{(g)}{$(\mc{A}\lor\mc{B})$}{}
+\ndljg{h}{(h)}{$\mc{\mathcal{A}}$}{$A$}
+\ndljg{Y}{(i)}{$\mc{C}$}{}
+\ndljg{j}{(j)}{$\mc{B}$}{$A$}
+\ndljg{Z}{(k)}{$\mc{C}$}{}
+\ndljg{X\cup Y/h \cup Z/j}{(l)}{$\mc{C}$}{$g,h,i,j,k,\lor E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\implies I$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{$A$}
+\ndljg{X}{(k)}{$\mc{B}$}{}
+\ndljg{X/j}{(l)}{$(\mc{A}\implies \mc{B})$}{$j,k,\implies I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\implies E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\implies\mc{B})$}{}
+\ndljg{Y}{(k)}{$\mc{A}$}{}
+\ndljg{X\cup Y}{(l)}{$\mc{B}$}{$j,k,\implies E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\iff I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\implies\mc{B})$}{}
+\ndljg{Y}{(k)}{$(\mc{B}\implies\mc{A})$}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{A}\iff \mc{B})$}{$j,k,\iff I$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{B}\iff \mc{A})$}{$j,k,\iff I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\iff E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\iff\mc{B})$}{}
+\ndljg{X}{(k)}{$(\mc{A}\implies\mc{B})$}{$j,\iff E$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{X}{(k)}{$(\mc{B}\implies\mc{A})$}{$j,\iff E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lnot I$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{$A$}
+\ndljg{X}{(k)}{$\curlywedge$}{ }
+\ndljg{X/j}{(l)}{$(\lnot \mc{A})$}{$j,k,\lnot I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lnot E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\lnot\mc{A})$}{}
+\ndljg{Y}{(k)}{$\mc{A}$}{ }
+\ndljg{X\cup Y}{(l)}{$\curlywedge$}{$j,k,\lnot E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $DN$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\lnot(\lnot\mathcal{A}))$}{}
+\ndljg{X}{(k)}{$\mathcal{A}$}{$j,DN$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\exists I $][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}[v\leftarrow t]$}{}
+\ndljg{X}{(k)}{$((\exists v)\mc{A})$}{$j,\exists I$}
+\end{ND}
+
+$v$ is a variable which appears free (but not bound) in $\mc{A}$. $t$ is a closed term.
+
+\hrulefill
+\begin{ND}[Rule of $\exists E$][][][][.6\linewidth]
+\ndljg{X}{(i)}{$((\exists x)\mc{A})$}{}
+\ndljg{j}{(j)}{$\mc{A}[x\leftarrow t]$}{$A$}
+\ndljg{Y}{(k)}{$\mc{B}$}{}
+\ndljg{X\cup Y/j}{(l)}{$\mc{B}$}{$i,j,k,\exists E$}
+\end{ND}
+$t$ is a closed term which does not appear in $\mc{A}, \mc{B}$ or any of the lines $Y$ other than $j$.
+
+\hrulefill
+\begin{ND}[Rule of $\forall I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}[v\leftarrow t]$}{}
+\ndljg{X}{(k)}{$((\forall v)\mc{A})$}{$j,\forall I$}
+\end{ND}
+
+$v$ is a variable which appears free (but not bound) in $\mc{A}$. $t$ is a closed term which does not appear\footnote{The requirement that $t$ does not appear in $\mc{A}$ ensures that all occurrences of $t$ are replaced by $v$ after the quantifier is introduced.} in $\mc{A}$ or any of the lines $X$.
+
+
+
+\hrulefill
+\begin{ND}[Rule of $\forall E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$((\forall x)\mathcal{A})$}{}
+\ndljg{X}{(k)}{$\mathcal{A}[x\leftarrow t]$}{$j,\forall E$}
+\end{ND}
+$t$ is a closed term.
+
+\hrulefill
+\begin{ND}[Rule of $=I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$t=t$}{$=I$}
+\end{ND}
+$t$ is a closed term
+
+\hrulefill
+\begin{ND}[Rule of $=E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$t_1=t_2$}{}
+\ndljg{Y}{(k)}{$\mc{A}[v\leftarrow t_1]$}{}
+\ndljg{X\cup Y}{(l)}{$\mc{A}[v \leftarrow t_2]$}{$j,k,=E$}
+\end{ND}
+$t_1$ and $t_2$ are closed terms and $v$ appears free in $\mc{A}$.
+
+\hrulefill
+
+We can call the set of all inference rules $\bc{I}$.
+
+Here I have followed most of Forbes' inference rules, however I have modified, in particular, the quantifier introduction rules in a way which makes their state in terms of Tourlakis' notion of substitution much more clear. I think this improvement should help with the subsequent proofs.
+
+\section*{Theories and Extensions}
+
+Let $\gamma \subset \mathbf{Wff}$ be a set of formulas in $\mc{L}$. We will call these formulas axioms and take them as premises in what is to come. If we start out with premises $\Gamma$ and we are able to derive, using the rules of inferences, $\bc{I}$, above, another Wff, $\mc{A}\in\textbf{Wff}$ then we say that $\mc{A}$ is a $\Gamma$-Theorem. The set of all $\Gamma$-Theorems is denoted by $\mathbf{Thm}_{\Gamma,\bc{I}}$. If $\mc{A} \in \mathbf{Thm}_{\Gamma,\bc{I}}$ then we say $\mc{A}$ syntactically follows from, or follows from the axioms $\bv{\Gamma}$ and we write
+
+\begin{equation}
+\begin{split}
+\Gamma &\vdash \mc{A}
+\end{split}
+\end{equation}
+
+
+We can define a mathematical theory as
+
+\begin{equation}
+\bc{T} = (\bv{\mc{L}}, \bc{I}, \Gamma)
+\end{equation}
+
+The set $\mathbf{Thm}_{\Gamma,\bc{I}}$ are the set of theorems of $\bc{T}$. If $\mc{A} \in \textbf{Thm}_{\Gamma,\bc{I}}$ we say
+
+\begin{equation}
+\vdash_{\bc{T}} \mc{A}
+\end{equation}
+
+Often it is clear from context what set of inference rules $\bc{I}$ is being used so we can drop that index and simply write $\textbf{Thm}_{\Gamma}$.
+
+
+\subsection*{Extension of a Theory}
+
+Consider two theories
+
+\begin{equation}
+\begin{split}
+\bc{T} &= (\bv{\mc{L}},\bc{I},\Gamma)\\
+\bc{T}' &= (\bv{\mc{L}}',\bc{I},\Gamma')
+\end{split}
+\end{equation}
+
+With
+
+\begin{equation}
+\begin{split}
+\bv{\mc{L}} &= (\textbf{Symb},\textbf{Term},\textbf{Wff})\\
+\bv{\mc{L}'} &= (\textbf{Symb}',\textbf{Term}',\textbf{Wff}')
+\end{split}
+\end{equation}
+
+Suppose that $\textbf{Symb} \subset \textbf{Symb}'$. This means, assuming the two languages use the same rules of syntax, that anything expressible in $\bv{\mc{L}}$ is expressible in $\bv{\mc{L}}'$.
+
+We then say that $\bc{T}'$ is an \textit{extension} of $\bc{T}$ (symbolized as $\bc{T} \le \bc{T}'$) if $\Gamma \subset \Gamma'$. 
+
+$\bc{T}'$ is a \textit{conservative extension} of $\bc{T}$ if $\bc{T}'$ is an extension of $\bc{T}$ and
+
+$$
+\textbf{Thm}_{\Gamma'} \cap \textbf{Wff} = \textbf{Thm}_{\Gamma}
+$$
+
+In words this says, first, that for all formula in $\mc{A} \in \textbf{Wff}$ we have that $\vdash_{\bc{T}} \mc{A}$ implies that $\vdash_{\bc{T}'} \mc{A}$. This is because $\textbf{Thm}_{\Gamma}\subset \textbf{Thm}_{\Gamma'}$. However, it also says that any theorem of $\bc{T}'$ which is expressible in $\bv{\mc{L}}$ (that is $\textbf{Thm}_{\Gamma'} \cap \textbf{Wff}$) is also a theorem of $\bc{T}$. If $\bc{T}'$ is a conservative extension of $\bc{T}$ then the two theories agree on any formulas which are expressible in the first language, $\bv{\mc{L}}$. This is why we say the extension is conservative, it doesn't add any \textit{new} features to the previous theory, just some new \textit{symbols}. Said more succinctly, if for all $\mc{A} \in \textbf{Wff}$ we have that $\vdash_{\bc{T}} \mc{A}$ exactly when $\vdash_{\bc{T}'} \mc{A}$ then $\bc{T}'$ is a conservative extension of $\bc{T}$.
+
+\subsection{Extension by Definition}
+
+We are now coming to the idea of an extension by definition. The idea of a \textit{definition} is that we want to define a new symbol to capture a complex expression in a theory so that in the future we do not need to write down proofs with so many symbols from the bare language. We see that then from the above discussion that since a definition introduces a new symbol it forces us to work in a new language. In addition, it is also necessary to add an axiom to the new theory which describes the behavior of the new symbol. 
+
+The goal in this document is to give a definition for extensions by definition in LFOL and use the inference rules laid out above to prove that extensions by definition are conservative extensions.
+
+We can introduce two sorts of non-logical symbols into a theory. Either a predicate symbol or a function symbol. There will be different rules for each.
+
+In the following we abbreviate $x_1,\ldots,x_n$ as $\vec{x}$.
+
+Suppose we have a theory $\bc{T} = (\bv{\mc{L}},\bc{I},\Gamma)$ which we will extend by definition into a new theory $\bc{T}' = (\bv{\mc{L}}',\bc{I},\Gamma')$. We will extend the theory one definition at a time always. If $\bc{T}_1$ is a conservative extension of $\bc{T}_0$ and $\bc{T}_n$ is a conservative extension of $\bc{T}_{n-1}$ then it is not too hard to prove by induction that $\bc{T}_n$ is also a conservative extension of $\bc{T}_0$. This means we are justified in extending the theory one definition at a time.
+
+\subsubsection*{New Predicate}
+
+Suppose there is Wff $\mc{Q}$ whose only free variables are $x_1\ldots x_n$ denoted by $\vec{x}$. To add a new $n$-ary predicate to the theory we append the $n$-ary predicate symbol $P$ to the set of symbols $\mathbf{Symb}$ to construct $\mathbf{Symb}' = \mathbf{Symb}\cup \{P\}$ for $\bv{\mc{L}}'$.
+
+We introduce the axiom
+
+\begin{equation}
+\textbf{def} \equiv ((\forall x)(P\vec{x} \iff \mc{Q}(\vec{x})))
+\end{equation}
+
+and define $\Gamma' = \Gamma \cup \{\textbf{def}\} \}$
+
+The notation $\mc{Q}(\vec{x})$ indicates that $\mc{Q}$ is a Wff whose only free variables are $\vec{x}$.
+
+\subsubsection*{New Function or Constant}
+
+ To add a new $n$-ary function to the theory we append the function symbol $f$ to the set of symbols $\textbf{Symb}$ to construct $\textbf{Symb}' = \textbf{Symb}\cup\{f\}$ for $\bv{\mc{L}}$.
+
+We introduce the axiom
+
+\begin{equation}
+\textbf{def} \equiv \forall \vec{x} \forall y(y=f(\vec{x})\iff \mc{Q}(\vec{x},y))
+\end{equation}
+
+and define $\Gamma' = \Gamma \cup \{\textbf{def}\}$.
+
+In addition we require that the formula
+
+\begin{equation}
+\Gamma \vdash (\forall \vec{x})(\exists! y) \mc{Q}(\vec{x},y) \equiv K
+\end{equation}
+
+is a theorem of $\bc{T}$.
+
+Unique quantification here is defined as follows. Suppose $y$ appears free in $\mc{A}$.
+
+\begin{equation}
+((\exists!y)\mc{A}) \equiv ((\exists y)(\mc{A} \land ((\forall z)\mc{A}[y\leftarrow z] \implies y=z)))
+\end{equation}
+
+The intuitive reason we require $\Gamma \vdash K$ is because if we did not then it would be possible for $f(\vec{x})$ to refer to multiple different 'objects' so it would not be entirely unambiguous how to interpret a Wff involving $f$. More rigorously, we will see that this formula $K$ will be necessary in proving that the new theory $\bc{T}'$ is in fact a conservative extension of $\bc{T}$.
+
+\section{Definition Translation}
+
+To prove extensions by definition are conservative we will need the notion of the translation of a formula from $\bv{\mc{L}}'$ into $\bv{\mc{L}}$. Since $\bv{\mc{L}}'$ contains more symbols than $\bv{\mc{L}}$ it is of course not possible to express all formulas in $\bv{\mc{L}}'$ in language $\bv{\mc{L}}$, but the idea is that for every $\phi$ of $\bv{\mc{L}}'$ there is a sentence $\phi^\sharp$ in $\bv{\mc{L}}$ with the property that $\vdash_{\bc{T}'}\phi$ if and only if $\vdash_{\bc{T}}\phi^{\sharp}$. This is the sense in which $\phi$ and $\phi^{\sharp}$ are equivalent, even though they may be different strings.
+
+That task is then to define $\phi^{\sharp}$ for a given $\phi$ as well as to prove that if $\vdash_{\bc{T}'}\phi$ that $\vdash_{\bc{T}}\phi^{\sharp}$. Note that the converse is easy to prove. Also note that once we have proven this then it will follow immediately that $\bc{T}'$ is a conservative extension of $\bc{T}$ because we can apply the above rule to a sentence $\phi \in \textbf{Wff}$ which would mean $\phi^{\sharp} \equiv \phi$.
+
+First we define the translation of a sentence in the case that $\bc{T}'$ extends $\bc{T}$ by adding the preposition $P$ and axiom $\textbf{def}$ above for prepositions.
+
+We define $\phi^{\sharp}$ recursively on the structure of the Wff for $\phi$. 
+
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic preposition and $\mc{A} \equiv P\vec{x}[\vec{x}\leftarrow \vec{t}]$ then $\mc{A}^{\sharp} \equiv \mc{Q}[\vec{x}\leftarrow \vec{t}]$. Otherwise $\mc{A}^{\sharp} \equiv \mc{A}$.}
+\item{$(\mc{A}\land \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \land \mc{B}^{\sharp})$}
+\item{$(\mc{A} \lor \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \lor \mc{B}^{\sharp})$}
+\item{$(\mc{A} \implies \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \implies \mc{B}^{\sharp})$}
+\item{$(\mc{A}\iff \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \iff \mc{B}^{\sharp})$}
+\item{$(\lnot \mc{A})^{\sharp} \equiv (\lnot \mc{A}^{\sharp})$}
+\item{$((\exists x)\mc{A})^{\sharp} \equiv ((\exists v)(\mc{A}[x\leftarrow v])^{\sharp})$ where $v$ is the first unused variable.}
+\item{$((\forall x)\mc{A})^{\sharp} \equiv ((\forall v)(\mc{A}[x\leftarrow v])^{\sharp})$ where $v$ is the first unused variable.}
+\item{$(t_1=t_2)^{\sharp} \equiv t_1=t_2$}
+\end{itemize}
+
+\subsection*{Translating Formulas with Variable Changes}
+
+
+
+
+$(\mc{A}[x\leftarrow y])^{\sharp}$
+
+vs.
+
+$(\mc{A}^{\sharp})[x\leftarrow y]$
+
+Variable substitution defined above should be thought of as free free variable substitution. No attempt is made to change any bound variables. Any free variable can be substituted as
+
+
+\section*{Translation proof for New Predicate}
+
+I would like to prove that if $\vdash_{\bc{T}'}\phi$ that $\vdash_{\bc{T}}\phi^{\sharp}$. To do this I will induct on proof steps in a Lemmon style proof. I will do this by performing metatheorems on lines of Lemmon style proofs. What I will prove is the following.
+
+Suppose that the following line appears in a Lemmon style derivation:
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(k)}{$\phi$}{$R$}
+\end{ND}
+
+for any rule $R$.
+Suppose also that $\textbf{Def}$, the definition axiom, appears on line $d$. It then follows that it is possible to derive
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X^{\sharp}/d}{(l)}{$\phi^{\sharp}$}{$R^{\sharp}$}
+\end{ND}
+
+Where for each $i\in X$ with $\psi_i$ appearing on line $i$ we have a corresponding $j \in X^{\sharp}$ with $\psi^{\sharp}$ appearing on line $j$ and no additional elements in $X^{\sharp}$. There is no constraint on $R^{\sharp}$.
+
+I will prove this by inducting on the line number on which $\phi$ appears.
+
+\subsection*{Base Case}
+
+Suppose that $\phi$ appears on line 1 of a derivation. This could have happened if 1) $\phi \in \Gamma'$ and was introduced as a premise, 2) $\phi$ was introduced as an assumption using rule $A$ (and depends only on line 1, or 3) $\phi \equiv t=t$ for some term $t$ and was introduced by $=I$. We work out each case. Note that in each case the derived statement $\phi$ depends one line 1 and no other lines
+
+\subsubsection*{$\phi \in \Gamma'$ arising as premise}
+
+If $\phi \in \Gamma'$ then either $\phi \in \Gamma$ or $\phi \equiv \textbf{def} (\equiv P\vec{x} \iff \mc{Q}(\vec{x}))$. If $\phi \in \Gamma \subset \textbf{Wff}$ then $\phi^{\sharp} \equiv \phi$ and it is possible to derive $\phi^{\sharp} \in \Gamma$ as a premise using $\bc{T}$. We see that $\phi^{\sharp}$ would depend on line 1.
+
+If $\phi\equiv \textbf{def}\equiv(P\vec{x}\iff \mc{Q}(\vec{x}))$ then $\phi^{\sharp} \equiv (\mc{Q}(\vec{x})\iff\mc{Q}(\vec{x}))$. This statement is a tautology which can be derived depending on no lines in $\mc{T}$! This is exactly what is needed since in this case we have that $X=\{1\}$ and $d=1$ so $X/d = X/1 = \{\}$.
+
+\subsubsection*{$\phi$ Assumed}
+
+if $\phi$ was assumed at line 1 then we could equivalently assume $\phi^{\sharp}$ at line 1 using $\bc{T}$.
+
+\subsubsection*{Equality Introduction}
+
+If $\phi\equiv t=t$ for some term $t$ then it is impossible for any predicates to appear so $\phi \equiv \phi^{\sharp}$ so $\phi^{\sharp}$ also could have been derived in one line using $=I$ in $bc{T}$.
+
+\subsection{Induction Step}
+
+For the induction step we assume that the theorem holds for lines $1\ldots n-1$. That is, if the following line appears with $k < n$
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(k)}{$\phi$}{$R$}
+\end{ND}
+
+then we assume it is possible to derive
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X^{\sharp}/d}{(l)}{$\phi^{\sharp}$}{$R^{\sharp}$}
+\end{ND}
+
+With $X^{\sharp}$ defined as above. The goal then, is to prove that the same holds for $k=n$. I will do this by ``adding the last step of the proof in by hand''. That is, if the derivation of $\phi$ in $\bc{T}'$ is $n$ steps long then the inductions hypothesis guarantees that all of the lines through $n-1$ can be derived in $\bc{T}$. The goal is to then use a final inference rule to derive $\phi^{\sharp}$ in $\bc{T}$
+
+Unfortunately we need to break out into cases for each possible final rule used in the proof of $\phi$.
+
+\hrulefill
+
+\subsubsection{Rule of $A$}
+
+If the last line of the proof for $\phi$ is an assumption introduction then it only depends on line $n$ and $\phi^{\sharp}$ can simply be assumed in $\bc{T}$.
+
+\hrulefill
+
+\subsection{Rule of $\land I$}
+
+If the last rule is $\land I$ then we have
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}$}{}
+\ndljg{Y}{(k)}{$\mc{B}$}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{A}\land\mc{B})$}{$j,k,\land I$}
+\end{ND}
+
+The induction hypothesis gives us
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X^{\sharp}/d}{(j^{\sharp})}{$\mc{A}^{\sharp}$}{}
+\ndljg{Y^{\sharp}/d}{(k^{\sharp})}{$\mc{B}^{\sharp}$}{}
+\end{ND}
+
+From which we see can easily derive
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{(X^{\sharp/d}\cup Y^{\sharp/d})}{(l^{\sharp})}{$(\mc{A}^{\sharp}\land\mc{B}^{\sharp})$}{$j^{\sharp},k^{\sharp},\land I$}
+\end{ND}
+
+and we note that $(\mc{A}^{\sharp}\land\mc{B}^{\sharp})\equiv (\mc{A}\land\mc{B})^{\sharp})\equiv \phi^{\sharp}$ and $(X^{\sharp}/d\cup Y^{\sharp}/d) = (X\cup Y)^{\sharp}/d$.
+
+
+\hrulefill
+
+\section*{Translation proof for New Predicate}
+
+I will now prove, using the definition of $\phi^{\sharp}$ above that if $\vdash_{\bc{T}'}\phi$ that $\vdash_{\bc{T}}\phi^{\sharp}$. We will induct on the length of the proof for $\vdash{\bc{T}'}\phi$.
+
+\subsubsection*{Base Case}
+First suppose that $\vdash_{\bc{T}'}\phi$ in 0 steps. This means that $\phi \in \Gamma'$. This means either $\phi \in \Gamma$ or $\phi \equiv \textbf{Def}$. 
+
+If $\phi \in \Gamma$ then $P$ does not appear in $\phi$ since $\Gamma \subset \textbf{Wff}$ so $\phi^{\sharp} \equiv \phi$. Since $\phi \equiv \phi^{\sharp} \in \Gamma$ we have that $\vdash_{\bc{T}}\phi^{\sharp}$ as desired.
+
+If $\phi \equiv \textbf{Def} \equiv (P\vec{x} \iff \mc{Q}(\vec{x}))$ then $\phi^{\sharp} \equiv (\mc{Q}(\vec{x}) \iff \mc{Q}(\vec{x}))$ which is a tautology (which can be proven from $\bc{I}$) so we again have that $\vdash_{\bc{T}}\phi^{\sharp}$ as desired.
+
+\subsubsection*{Induction Step}
+We now suppose that for all $\psi\in \textbf{Wff}'$ that if $\psi$ appears on line $n-1$ or lower of any derivation depending on lines $X$ that it is possible to provide a derivation in $\bc{T}$ which results in $\psi^{\sharp}$ depending on lines $X^{\sharp}$ where each of the lines appearing in $X^{\sharp}$ is the translated version of the corresponding line appearing in $X$.
+
+The goal then is to show that if $\phi$ appears on line $n$ of a derivation and depends on $\Gamma'$ (or more generally $X$) that it is possible to provide a derivation in $\bc{T}$ which results in $\phi^{\sharp}$  depending on lines $(\Gamma')^{\sharp}$
+
+$n-1$ or fewer steps then $\vdash_{\bc{T}}\psi^{\sharp}$. Now suppose that $\vdash_{\bc{T}'}\phi$ in $n$ steps. The goal is to show that $\vdash_{\bc{T}}\phi^{\sharp}$.
+
+The strategy here will be to ``deconstruct'' and translate the last step of the proof. Essentially the induction hypothesis says that for if any intermediate line (step $<n$) of the proof for $\phi$ reads as $\psi$ then we assume we can prove $\psi^{\sharp}$ in $\bc{T}$. The question is then from all of the translated lines if it is possible to derive the translated final line $\phi^{\sharp}$.
+
+It shouldn't be too hard to prove since there is only one line of the proof which we need to complete. Unfortunately, the final line of the proof for $\phi$ could use any of the many induction rules so to be rigorous we would need to provide a proof for each possible induction. I'll start on that project now and see how it goes...
+
+\hrulefill
+\subsubsection{Rule of $A$}
+The last line of the proof $\phi_{\bc{T}'}$ cannot be an assumption of $\phi$ because that would only show $\Gamma,\phi \vdash \phi$ since the assumption line dependence would not yet be discharged so we need not consider this case.
+
+\hrulefill
+
+\subsubsection*{Rule of $\land I$}
+Suppose the last line of the proof follows from an $\land I$ on previous lines $\mc{A}$ and $\mc{B}$ resulting in $\phi \equiv (\mc{A} \land \mc{B})$ so that $\phi^{\sharp} \equiv (\mc{A} \land \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp}\land \mc{B}^{\sharp})$ Then, by induction hypothesis, we have that $\vdash_{\bc{T}} \mc{A}^{\sharp}, \mc{B}^{\sharp}$ so we can use $\land I$ to prove $(\mc{A}^{\sharp} \land \mc{B}^{\sharp}) \equiv \phi^{\sharp}$ so that $\vdash_{\bc{T}} \phi^{\sharp}$ as needed.
+
+\hrulefill
+
+\subsubsection*{Rule of $\land E$}
+Suppose the last line of the proof follows from a $\land E$ on previous line $(\mc{A} \land \mc{B})$ resulting in $\mc{A}\equiv\phi$ (without loss of generality since $((\mc{A} \land \mc{B}) \iff (\mc{B} \land \mc{A}))$) so that $\phi^{\sharp} \equiv \mc{A}^{\sharp}$. Then, by the induction hypothesis we have that $\vdash_{\bc{T}}(\mc{A}\land\mc{B})^{\sharp}\equiv (\mc{A}^{\sharp} \land \mc{B}^{\sharp})$ and we can derive using $\land E$ $\mc{A}^{\sharp} \equiv \phi^{\sharp}$ so that $\vdash_{\bc{T}} \phi^{\sharp}$ as needed.
+
+\hrulefill
+
+\subsubsection*{Rule of $\lor I$}
+Suppose the last line of the proof follows from a $\lor I$ on previous line $\mc{A}$ resulting in $(\mc{A} \lor \mc{B})$ (without loss of generality since $((\mc{A}\lor \mc{B})\iff(\mc{B} \lor \mc{A}))$) so that $\phi^{\sharp} \equiv (\mc{A} \lor \mc{B}) \equiv (\mc{A}^{\sharp} \lor \mc{B}^{\sharp})$. Then, by the induction hypothesis we have that $\vdash_{\bc{T}}\mc{A}^{\sharp}$ and we can derive using $\lor I$ $(\mc{A}^{\sharp} \lor \mc{B}^{\sharp}) \equiv \phi^{\sharp}$ so that $\vdash_{\bc{T}}\phi^{\sharp}$ as needed.
+
+\hrulefill
+
+\subsubsection*{Rule of $\lor E$}
+
+Now things get a little more tricky I think.. Suppose the last line of the proof for $\vdash_{\bc{T}'} \phi$ is of the form
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(g)}{$(\mc{A}\lor \mc{B})$}{}
+\ndljg{h}{(h)}{$\mc{A}$}{$A$}
+\ndljg{Y}{(i)}{$\mc{C}$}{}
+\ndljg{j}{(j)}{$\mc{B}$}{$A$}
+\ndljg{Z}{(k)}{$\mc{C}$}{}
+\ndljg{X\cup Y/h \cup Z/j}{(l)}{$\mc{C}\equiv\phi$}{$g,h,i,j,k,\lor E$}
+\end{ND}
+
+We can see that since $(\mc{A} \lor \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \lor \mc{B}^{\sharp}$ that the final line of this rule would follow if each of the intermediate lines were translated using ${}^{\sharp}$ so we see that since $\bc{T}$ can prove any of the intermediate lines by the induction hypothesis that we also have $\vdash_{\bc{T}'} \phi^{\sharp}$ as needed.
+
+\section{Conservative Extension Proof for New Predicate}
+
+In this section I will prove that the extension by definition which arises when adding a new predicate is a conservative extension.
+
+Suppose $\bc{T}'$ is an extension by definition of $\bc{T}$ which arose by adding the new predicate symbol $P$. It is clear that for $\phi \in \textbf{Wff}$ if $\Gamma \vdash \phi$ then $\Gamma' \vdash \phi$. The question is if $\Gamma' \vdash \phi$ does $\Gamma \vdash \phi$? The problem is that the proof for $\Gamma' \vdash \phi$ in $\bc{T}'$ may involve many instances of the new symbol $P$. It is not then a priori obvious that a proof could be constructed purely in the language $\bv{\mc{L}}$. Here I will show that it is in fact possible to construct such a proof.
+
+Suppose $\phi \in \textbf{Wff}$ and $\Gamma' \vdash \phi$. We must prove $\Gamma \vdash \phi$. Suppose the proof of $\Gamma' \vdash \phi$ consists of $n$ steps. We will induct on the length $n$ of this proof. 
+
+If the proof $\Gamma' \vdash \phi$ is $0$ steps then this means that $\phi \in \Gamma'$ and since $\phi \in \textbf{Wff}$ this means that $\phi \in \Gamma$ as well. This means we also have a 0-step proof that $\Gamma \vdash \phi$.
+
+Now assume that for all $\psi \in \textbf{Wff}$ that if $\Gamma' \vdash \psi$ with a proof of length $n-1$ that we are able to supply a proof that $\Gamma \vdash \psi$. The goal is to show  if $\Gamma' \vdash \phi$ with a proof of length $n$ that ew are able to supply a proof of $\Gamma \vdash \phi$. Basically the logic is to use the fact that we can 
+
+
+%\section{Tourlakis Free and Bound Variables}
+
+%\hrulefill
+%\subsection*{Free and Bound Variables}
+%\subsubsection*{Free Variables}
+%\begin{itemize}
+%\item{Variable $x$ appears free in term $t$ or atomic formula $\mc{A}$ if $x$ appears in $t$ or $\mc{A}$ as a substring}
+%\item{Variable $x$ appears free in $(\mc{A} \land \mc{B})$, $(\mc{A} \lor \mc{B})$, $(\mc{A}\implies \mc{B})$, or $(\mc{A}\iff \mc{B})$ if $x$ appears free in at least one of $\mc{A}$ or $\mc{B}$.}
+%\item{Variable $x$ appears free in $(\lnot \mc{A})$ if $x$ appears free in $\mc{A}$.}
+%\item{Variable $x$ appears free in $((\exists y)\mc{A})$ or $((\forall y)\mc{A})$ if $x$ appears free in $\mc{A}$ and $x \not\equiv y$}
+%\end{itemize}
+%\subsubsection*{Bound Variables}
+%\begin{itemize}
+%\item{There are no bound variables in terms or atomic formulas}
+%\item{Variable $x$ appears bound in $(\mc{A} \land \mc{B})$, $(\mc{A} \lor \mc{B})$, $(\mc{A}\implies \mc{B})$, or $(\mc{A}\iff \mc{B})$ if $x$ appears bound in at least one of $\mc{A}$ or $\mc{B}$.}
+%\item{Variable $x$ appears bound in $(\lnot \mc{A})$ if $x$ appears bound in $\mc{A}$.}
+%\item{Variable $x$ appears bound in $((\exists y)\mc{A})$ or $((\forall y)\mc{A})$ if $x\equiv y$.}
+%\end{itemize}
+%\hrulefill
+
+\end{document}
+
+

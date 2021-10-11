@@ -1,0 +1,237 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{Central Limit Theorem}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+Here we will derive the basic properties of a Gaussian distributed random variable. We work to build up the Gaussian probability density function.
+
+\section{Normal Distribution}
+First consider
+
+\begin{align}
+f_X(x) = N e^{-x^2}
+\end{align}
+
+with $N$ a normalization constant. We know (see Fourier Transform write up) the integral of this function to be
+
+\begin{align}
+\int_{x=-\infty}^{+\infty} f_X(x) dx = N \sqrt{\pi} = 1
+\end{align}
+
+by normalization of probability. So we see that $N = \sqrt{\frac{1}{\pi}}$.
+
+We consider a random variable $X$ which is has $f(x)$ as its probability density function. We can calculate its mean and variance
+
+\begin{align}
+\Braket{X} &= \int xf_X(x) dx=0
+\end{align}
+
+by since $x$ is an odd function and $f_X(x)$ is an even function. We can then calculate the variance
+
+\begin{align}
+\Braket{\Delta X^2} &= \Braket{X^2} - \Braket{X}^2 = \Braket{X^2} = \sigma^2\\
+&= \int x^2 f_X(x) = N\int x^2 e^{-x^2}\\
+&= -N \frac{\partial}{\partial a} \int e^{-x^2} dx = -N \frac{\partial}{\partial a} \sqrt{\frac{\pi}{a}} = -N \left(-\frac{1}{2}\right) \frac{\sqrt{\pi}}{a^{\frac{3}{2}}}\\
+&= \frac{1}{2} \sqrt{\frac{a}{\pi}} \sqrt{\frac{\pi}{a}} \frac{1}{a} = \frac{1}{2a}
+\end{align}
+
+so we see $a = \frac{1}{2\sigma^2}$. We plug this in to find
+
+\begin{align}
+f_X(x) = P(X=x) = \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{1}{2}\left(\frac{x}{\sigma}\right)^2}
+\end{align}
+
+We can now define a new random variable $Y = X + \mu$ which will satisfy
+
+\begin{align}
+\Braket{Y} &= \Braket{X} + \mu = \mu\\
+\Braket{\Delta Y^2} &= \Braket{Y^2} - \Braket{Y}^2 = \Braket{X^2} + 2\mu\Braket{X} + \mu^2 - \mu^2\\
+&= \Braket{X^2} = \sigma^2
+\end{align}
+
+We can find the probability density function as
+
+\begin{align}
+f_Y(y) &= P(Y=y) = P(X+\mu=y) = P(X=y-\mu) = f_X(y-\mu)\\
+&= \frac{1}{\sqrt{2\pi} \sigma} e^{-\frac{1}{2}\left(\frac{y-\mu}{\sigma} \right)^2}
+\end{align}
+
+We have thus found the probability density function of a Gaussian random variable with mean $\mu$ and variance $\sigma^2$. In this case we say $Y \sim \mathcal{N}(\mu,\sigma^2)$.
+
+\section{Distribution for function of Random Variables}
+
+We calculate the distribution for a random variables which is the sum of other random variables.
+
+\begin{align}
+Z = X + Y
+\end{align}
+
+Recall the relationship between the probability density function and cumulative distribution function
+
+\begin{align}
+F_X(x) &= P(X<x) = \int_{x'=-\infty}^x f(x')dx'\\
+f_X(x) &= P(X=x) = \frac{\partial F_X(x')}{\partial x'}\Bigg\vert_{x'=x}
+\end{align}
+
+We then have
+
+\begin{align}
+F_Z(z) &= P(Z<z) = P(X+Y < z) = \int\int_{x+y<z} f_{XY}(x,y) dx dy\\
+&= \int_{y=-\infty}^{+\infty}\int_{x=-\infty}^{z-y} f_{XY}(x,y)dxdy
+\end{align}
+
+Where $f_{XY}(x,y) = P(X=x \cap Y=y)$ is the joint distribution for $X$ and $Y$.
+
+Recall from probability theory that
+
+\begin{align}
+P(A \cap B) = P(B)P(A\vert B)
+\end{align}
+
+Also recall that for independent events $P(A\vert B) = P(A)$ so we get
+
+\begin{align}
+P(A \cap B) = P(A)P(B)
+\end{align}
+
+Applying this above we find
+
+\begin{align}
+F_Z(z) = \int_{y=-\infty}^{+\infty}\int_{x=-\infty}^{z-y}f_X(x)f_Y(y)dxdy = \int_{y=-\infty}^{+\infty}F_X(z-y)f_Y(y)dy
+\end{align}
+
+We then have
+
+\begin{align}
+f_Z(z) &= \frac{\partial F_Z(z')}{\partial z'}\Bigg\vert_{z'=z} = \int_{y=-\infty}^{+\infty}\frac{\partial F_X(z'-y)}{\partial z'}\Bigg \vert_{z'=z-y}f_Y(y) dy\\
+&= \int_{y=-\infty}^{+\infty} f_X(z-y)f_Y(y) dy = (f_X \ast f_Y)(z)
+\end{align}
+
+This process could be repeated inductively to determine the probability density function for a sum of many random variables $Z = \sum_{i=1}^n X_i$
+
+\begin{align}
+f_Z(z) = \left(f_{X_1} \ast \ldots \ast f_{X_n}\right)(z)
+\end{align}
+
+At this point it is helpful to apply the Fourier transform convolution theorem (See Fourier Transform write up) to convert these convolutions into multiplication. We have
+
+\begin{align}
+\mathcal{FT}[f_Z(z)](k) = \prod_{i=1}^n \mathcal{FT}[f_{X_i}(x)](k)
+\end{align}
+
+\begin{align}
+f_Z(z) = \mathcal{FT}^{-1}\left[\prod_{i=1}^n \mathcal{FT}[f_{X_i}(x)](k) \right](z)
+\end{align}
+
+This will save us from having to perform many convolutions, and instead we will only have to worry about multiplications.
+
+\section{Central Limit Theorem}
+
+Consider independent random variables $\{X_1 \ldots X_n\}$ which all have mean $\mu$ and variance $\sigma^2$. These variables need not be normally distributed. Define
+
+\begin{align}
+Z = \sum_{i=1}^n X_i
+\end{align}
+
+The central limit theorem states that as $n$ becomes large $\Braket{Z} \rightarrow n\mu$ and $ \Braket{\Delta Z^2} \rightarrow n\sigma^2$. 
+
+Let $Y_i = \left(\frac{X_i - \mu}{\sqrt{n}\sigma}\right)$ so that for each $Y_i$ we have $\Braket{Y_i} = 0$ and $\Braket{\Delta Y_i^2} = \frac{1}{n}$. We will see the motivation for the introduction of the $\sqrt{n}$ shortly. We then have
+
+\begin{align}
+Z &= \sum_{i=1}^n (\sqrt{n}\sigma Y_i + \mu) = \sqrt{n}\sigma\sum_{i=1}^n Y_i + n \mu\\
+&= \sqrt{n}\sigma \tilde{Z} + n \mu
+\end{align}
+
+We then have
+
+\begin{align}
+\Braket{Z} &= n\mu\\
+\Braket{\Delta Z^2} &= n\sigma^2 \sum_{i=1}^n \Braket{\Delta Y_i^2} = n\sigma^2 n\frac{1}{n} = n\sigma^2
+\end{align}
+
+Now to show that the probability density function of $Z$ approaches that of a normal distribution. Consider
+
+\begin{align}
+\mathcal{FT}[f_{Y_i}(y)](k) &= \int e^{-2\pi i yk}f_{Y_i}(y) dy\\
+&= \sum_{j=0}^{\infty} \int f_{Y_i}(y) \frac{(-2\pi i ky)^j}{j!} dy\\
+&= \sum_{j=0}^{\infty} \frac{(-2 \pi i k)^j}{j!}\int f_{Y_i}(y) y^j dy\\
+&= \sum_{j=0}^{\infty} \frac{(-2 \pi i k)^j}{j!} \Braket{Y^j}\\
+&= 1 - \frac{2 \pi^2 k^2}{n} + \mathcal{O}\left(\frac{1}{n^{\frac{3}{2}}}\right)
+\end{align}
+
+To calculate the probability density function of $\tilde{Z} = \sum_{i=1}^n Y_i$, $f_z(Z)$, we must take $n$ factors of the above expression for the Fourier transform of $f_{Y_i}(y)$ and multiply together to get
+
+\begin{align}
+\prod_{i=1}^n \mathcal{FT}[f_{Y_i}(y)](k)&\approx \left( 1 - \frac{2 \pi^2 k^2}{n} + \mathcal{O}\left(\frac{1}{n^{\frac{3}{2}}}\right) \right)^n\\
+&\approx  \left( 1 - \frac{2 \pi^2 k^2}{n} \right)^n\\
+&\approx e^{-2 \pi^2 k^2}
+\end{align}
+
+We know from the Fourier transform write up that $e^{-\pi k^2}$ is its own Fourier transform. The function we have above is the same as $e^{-\pi k^2}$ with $k$ scaled to $k \rightarrow \sqrt{2\pi} k$. By the scaling property of the Fourier Transform we get
+
+In the Fourier Transform write up it is shown that this function is its own Fourier transform. So we get
+
+\begin{align}
+f_{\tilde{Z}}(z) &= \mathcal{FT}^{-1}\left[\prod_{i=1}^n \mathcal{FT}[f_{Y_i}(y)](k) \right](z)\\
+&= \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2} x^2}
+\end{align}
+
+This is a normal distribution with $\mu = 0$ and $\sigma = 1$. That is $\tilde{Z} \sim \mathcal{N}(0,1)$.
+
+We can calculate $f_{Z}(z)$ from this by
+
+\begin{align}
+F_Z(z) &= P(Z<z) = P(\sqrt{n} \sigma \tilde{Z} + n \mu < z) = P\left( \tilde{Z} < \frac{z-n\mu}{\sqrt{n} \sigma} \right)\\
+&= F_{\tilde{z}}\left(\frac{z-n\mu}{\sqrt{n}\sigma} \right)
+\end{align}
+
+\begin{align}
+f_{Z}(z) &= \frac{\partial}{\partial z'}\Bigg \vert_{z'=z} F_{Z}(z') =  \frac{\partial}{\partial z'}\Bigg \vert_{z'=z}F_{\tilde{z}}\left(\frac{z'-n\mu}{\sqrt{n}\sigma} \right)\\
+&= \frac{1}{\sqrt{n \sigma}} f_{\tilde{Z}}(z) = \frac{1}{\sqrt{2\pi} \sqrt{n} \sigma} e^{-\frac{1}{2}\left(\frac{z-n\mu}{\sqrt{n}\sigma} \right)^2}
+\end{align}
+
+We thus see that $Z \sim \mathcal{N}(n\mu, n\sigma^2)$
+
+Consider the average of the random variables $X_1 \ldots X_i$.
+
+\begin{align}
+\bar{X} = \frac{1}{n} \sum_{i=1}^{n} X_i = \frac{1}{n} Z
+\end{align}
+
+By similar manipulations as before we get that
+
+\begin{align}
+f_{\bar{X}}(x) = \frac{1}{\sqrt{2\pi}\frac{\sigma}{\sqrt{n}}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\frac{\sigma}{\sqrt{n}}} \right)^2}
+\end{align}
+
+so that $\bar{X} \sim \mathcal{N}\left(\mu, \frac{\sigma}{n}\right)$ If we consider $\bar{X}$ to be the average of $n$ measurements then we see that $\bar{X}$, as an estimator for the mean, is distributed as a normal distribution with mean $\mu$ and standard deviation $\frac{\sigma}{\sqrt{n}}$. We can summarize
+
+\begin{align}
+Z &= \sum_{i=1}^n X_i \sim \mathcal{N}(n\mu, n \sigma^2)\\
+\tilde{Z} &= \frac{1}{\sqrt{n} \sigma}\sum_{i=1}^n \left(X_i - \mu \right) \sim \mathcal{N}(0,1)\\
+\bar{X} &= \frac{1}{n} \sum_{i=1}^n X_i \sim \mathcal{N}\left(\mu, \frac{\sigma}{\sqrt{n}}\right)
+\end{align}
+
+\end{document}

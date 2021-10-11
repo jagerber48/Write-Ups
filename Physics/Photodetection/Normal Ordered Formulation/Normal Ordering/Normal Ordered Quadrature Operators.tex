@@ -1,0 +1,595 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\highlightr}[1]{%
+  \colorbox{red!50}{$\displaystyle#1$}}
+  \newcommand{\highlightb}[1]{%
+    \colorbox{blue!50}{$\displaystyle#1$}}
+
+\begin{document}
+\title{Normal Ordered Quadrature Operators}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In other write ups I have shown how, in our system, the statistics of our measured photocurrent depend on the statistics of the photon beam incident on the photodetector. In short, second order moments of the photocurrent depend on normal and time ordered products of the quadrature operators of the incident photon field such as:
+
+\begin{align}
+\braket{:\hat{P}(t_1)\hat{P}(t_2):}
+\end{align}
+
+$\hat{P} = 2\text{Im}(\ahat) = i(\adag-\ahat)$
+
+In this write up I will show how to calculate this and other normal ordered expectation value.
+
+\section{Normal ordering Ambiguity?}
+At first I had a confusion regarding normal ordering and a potential ambiguity. I'll outline that here just to clear it up.
+Consider
+
+\begin{align}
+\ahat = \frac{1}{\sqrt{2}}(\hat{c}-\hat{d}^{\dag})
+\end{align}
+
+$\ahat$ and $\hat{c}$ are bosonic annihilation operators for some modes and $\hat{d}^{\dag}$ is a creation operator for some mode. The different operators commute with each other but individually obey the usual bosonic commutation relations. The $\frac{1}{\sqrt{2}}$ and minus sign ensure that $\ahat$ satisfies the right commutation relations if $\hat{c}$ and $\hat{d}$ do.
+
+We then have 
+
+\begin{align}
+\adag\ahat = \frac{1}{2}(\hat{c}^{\dag}\hat{c} + \hat{d}\hat{d}^{\dag} - \hat{d}\hat{c} -\hat{c}^{\dag}\hat{d}^{\dag})
+\end{align}
+
+We also have
+
+\begin{align}
+\ahat\adag = \frac{1}{2}(\hat{c}\hat{c}^{\dag}+\hat{d}^{\dag} \hat{d} - \hat{c}\hat{d} - \hat{d}^{\dag} \hat{c}^{\dag})
+\end{align}
+
+But now consider applying normal ordering, $::$, to both sides of this last equation.
+
+\begin{align}
+\text{LHS} &= :\ahat\adag: = \adag\ahat = \frac{1}{2}(\hat{c}^{\dag}\hat{c} + \hat{d}\hat{d}^{\dag} - \hat{d}\hat{c} -\hat{c}^{\dag}\hat{d}^{\dag})\\
+\text{RHS} &= \frac{1}{2}:(\hat{c}\hat{c}^{\dag}+\hat{d}^{\dag} \hat{d} - \hat{c}\hat{d} - \hat{d}^{\dag} \hat{c}^{\dag}): = \frac{1}{2}(\hat{c}^{\dag} \hat{c}+\hat{d}^{\dag}\hat{d} - \hat{c}\hat{d} - \hat{d}^{\dag}\hat{c}^{\dag})
+\end{align}
+
+But we compare the RHS of this expression to the RHS of the above expression for $\adag\ahat$ and we see that they are different by a few commutation relations. There is some ambiguity here. The question then is what do we mean when we write down $:\adag\ahat:$, is it the LHS or the RHS expression?
+
+The resolution of this ambiguity is that the definition of normal ordering needs to specify which operators are to be normal ordered. So for example, in this case, we might say that $::$ means put the $\ahat$ operators in normal order. In which case the correct expression to write would be 
+
+\begin{align}
+:\ahat\adag: = \adag\ahat = \frac{1}{2}(\hat{c}^{\dag}\hat{c} + \hat{d}\hat{d}^{\dag} - \hat{d}\hat{c} -\hat{c}^{\dag}\hat{d}^{\dag})
+\end{align}
+
+The $\hat{d}$ operators are not normal ordered but that is OK because that wasn't in our prescription of what $::$ means. 
+
+
+\section{Glauber Photodetection and Normal Ordering}
+Why is this relevant to the discussion of photocurrent? Well, consider the operator $\hat{P}$. It is a linear combination of $\ahat$ and $\adag$ so if we are normal ordering it you would think we just normal order the $\ahat$ operators. However, general optomechanics principles (including my time-domain linear amplifier write up) tell us that as the optical field is coupled the oscillator, the position of the oscillator will be imprinted onto the light. That is, $\hat{P}$ will have some component which is proportional to $\hat{X}_m = \hat{b}^{\dag}+\hat{b}$, the oscillator position variable. In this sort of system where the light field is linearly coupled to another bosonic mode, the question then arises should we normal order the $\ahat$ or $\hat{b}$ operators?
+
+I am quite certain the answer is that we normal order the $\ahat$ operators. To figure out why we need to consider Glauber photodetection theory. Consider the photocurrent $i(t)$. I'll also define the photon intensity $\hat{I}(t)\propto\adag(t)\ahat(t)$. At the moment I'll leave it vague as to whether $i(t)$ is a classical or quantum variable. We will consider second moments of the photocurrent such as $\braket{i(t_1)i(t_2)}$. Classical photodetection theory would tell us something like
+
+\begin{align}
+\braket{i(t_1)i(t_2)} \stackrel{wrong}{\propto} \braket{\hat{I}(t_1)\hat{I}(t_2)} \propto \braket{\adag(t_1)\ahat(t_1)\adag(t_2)\ahat(t_2)}
+\end{align}
+
+This classical theory says the photocurrent statistics are just linearly proportional to the intensity statistics. Glauber, on the other hand, tells us that photodetection results from matter absorbing a photon and transitioning to a new state. The matter starts out in state $\ket{i}$ and transitions to $\ket{f}$. When we ask questions about second moments of the photocurrent we are asking questions about correlations between two different photoelectrons. Perhaps we're asking for the probabity to measure a photoelectron at $t_1$ and $t_2$, that is $\braket{i(t_1)i(t_2)}$. For there to be two different photoelectrons to consider the matter must have absorbed two photons which means the final state is connected to the initial state by
+
+\begin{align}
+\bra{f}\ahat(t_2)\ahat(t_1)\ket{i}
+\end{align}
+
+Fermi's golden rule tells us that if the system starts in state $\ket{i}$, the probability for it to transition to a state where photoelectrons ended up being emitted at these two times is
+
+\begin{align}
+\sum_{f} |\bra{f}\ahat(t_2)\ahat(t_1)\ket{i}|^2 &= \\
+&= \bra{i} \adag(t_1)\adag(t_2)\ahat(t_2)\ahat(t_1)\ket{i}\\
+&= \braket{\adag(t_1)\adag(t_2)\ahat(t_2)\ahat(t_1)}\\
+&= \braket{:\hat{I}(t_1)\hat{I}(t_2):}
+\end{align}
+
+where $::$ indicates normal ordering of the $\ahat$ operators as well as time ordering. Time ordering means that, for example, in the creation operators the times are increasing and in the annihilation operators times are decreasing.
+
+This all has been the usual explanation of normal ordering reproduced in many places including Glauber's seminal paper.
+
+All of this lends credence to the idea that the $\ahat$ operators really are the operators to normal order. There is one more insight I realized that makes me more certain of this which I'll take you through next. 
+
+What is the big problem with trying to use $\braket{\hat{I}(t_1)\hat{I}(t_2)}$ to calculate the photocurrent? The problem is that, while $\hat{I}$ is a Hermitian operator (and thus a physical observable with real expectation value,) the product of $\hat{I}(t_1)\hat{I}(t_2)$ may not necessarily be Hermitian. In particular, if the two operators don't commute then the product is not Hermitian. This means $\braket{\hat{I}(t_1)\hat{I}(t_2)}$ is not necessarily safe to write down as the expectation value of a real observable such as the auto-correlation of the measured photocurrent. 
+However, in Glauber's theory we see that the probability is extracted by squaring a quantum transition amplitude. The transition amplitude may be complex but when we square it (take complex amplitude) we are gauranteed a number which is real valued and able to be interpreted (Born rule) as a probability. The net result of this squaring is that we end up with a normal and time ordered product of photon operators. Note that the products we encounter in Glauber theory necessarily result operators which are Hermitian. The creation part of the operator is the hermitian conjugate of the annihilation part.
+
+Anyways, all of this to say that the normal and time ordering of the products comes from applying the Born rule and also (trivially?) simultaneously produces an operator which is Hermitian. I am struck by the idea that this is the point where the quantum signal carried by the photon field is converted into a classical signal transmitted in the photocurrent.
+
+To come back to the main point, because of all of this Glauber theory I think it makes a lot of sense to say that, yes, the photon bosonic operators are the privileged ones in this case to get the normal ordering operation. They are privileged because it is the photon boson operator (not the mechanical boson operator, for example) which drives the transition in the detector.
+
+\subsection{$\hat{I}(t_1)\hat{I}(t_2)$ Not Hermitian}
+
+Consider
+
+\begin{align}
+\hat{I}(t_1)\hat{I}(t_2) = \hat{a}^{\dag}(t_1)\hat{a}(t_1) \hat{a}^{\dag}(t_2)\hat{a}(t_2)
+\end{align}
+
+The Hermitian Conjugate of this operator is 
+
+\begin{align}
+\hat{I}(t_2)\hat{I}(t_1) = \hat{a}^{\dag}(t_2)\hat{a}(t_2) \hat{a}^{\dag}(t_1)\hat{a}(t_1)
+\end{align}
+
+If the product operator is Hermitian then the difference of these two operators should be zero. Let's perform the commutation relations to determine the value of that difference.
+
+\begin{align*}
+\hat{I}(t_1)\hat{I}(t_2) &= \hat{a}^{\dag}(t_1)\hat{a}(t_1) \hat{a}^{\dag}(t_2)\hat{a}(t_2)\\
+&= \hat{a}^{\dag}(t_1)(\hat{a}^{\dag}(t_2)\hat{a}(t_1) + [\hat{a}(t_1),\hat{a}^{\dag}(t_2)])\hat{a}(t_2)\\
+&= \hat{a}^{\dag}(t_1) \hat{a}^{\dag}(t_2)\hat{a}(t_1) \hat{a}(t_2) + \hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}^{\dag}(t_2)]\hat{a}(t_2)\\
+&= (\hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1) + [\hat{a}^{\dag}(t_1),\hat{a}^{\dag}(t_2)])(\hat{a}(t_2)\hat{a}(t_1) + [\hat{a}(t_1),\hat{a}(t_2)])\\
+&+ \hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}^{\dag}(t_2)]\hat{a}(t_2)\\
+&\\
+&= \hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1)\hat{a}(t_2)\hat{a}(t_1)\\
+&+ [\hat{a}^{\dag}(t_1),\hat{a}^{\dag}(t_2)] \hat{a}(t_2)\hat{a}(t_1)\\
+&+ \hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}(t_2)]\\
+&+ \hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}^{\dag}(t_2)]\hat{a}(t_2)\\
+&\\
+&= \hat{a}^{\dag}(t_2)(\hat{a}(t_2)\hat{a}^{\dag}(t_1) + [\hat{a}^{\dag}(t_1),\hat{a}(t_2)])\hat{a}(t_1)\\
+&+ [\hat{a}^{\dag}(t_1),\hat{a}^{\dag}(t_2)] \hat{a}(t_2)\hat{a}(t_1)\\
+&+ \hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}(t_2)]\\
+&+ \hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}^{\dag}(t_2)]\hat{a}(t_2)\\
+&\\
+&= \hat{a}^{\dag}(t_2)\hat{a}(t_2)\hat{a}^{\dag}(t_1)\hat{a}(t_1)\\
+&+ [\hat{a}^{\dag}(t_1),\hat{a}^{\dag}(t_2)] \hat{a}(t_2)\hat{a}(t_1)\\
+&+ \hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}(t_2)]\\
+&+ \hat{a}^{\dag}(t_1)[\hat{a}(t_1),\hat{a}^{\dag}(t_2)]\hat{a}(t_2)\\
+&+\hat{a}^{\dag}(t_2)[\hat{a}^{\dag}(t_1),\hat{a}(t_2)]\hat{a}(t_1)
+\end{align*}
+
+Note at this point that if we applied the usual commutation relations: $[\hat{a}(t_1),\hat{a}(t_2)] = [\hat{a}^{\dag}(t_1),\hat{a}^{\dag}(t_2)] = 0]$ and $[\hat{a}(t_1),\hat{a}^{\dag}(t_2)] = \delta(t_1-t_2)$ then the final four terms would drop away to zero and we would see that the combination $\hat{I}(t_1)\hat{I}(t_2)$ is in fact Hermitian.
+
+However one can imagine circumstances in which these usual commutation relations for the Heisenberg picture photon operators must be modified. For example, considering the photon field in the cavity we have $\hat{a}(t) \sim \hat{b}(t)$ where $\hat{b}(t)$ is the position boson operator. At $t=0$ we have $\hat{a}(0) \sim \hat{b}(0)$. However, as $\hat{b}(t)$ rotates in phase space, there will be a later time when $\hat{b}(t_0) \sim \hat{b}^{\dag}(0)$ such that $\hat{a}(t_0) \sim \hat{b}(t_0) \sim \hat{b}^{\dag}(0)$. We then ask about $[\hat{a}(t_0),\hat{a}(0)] \sim [\hat{b}^{\dag}(0),\hat{b}(0)]$. Under the usual commutation relations we would expect this quantity to be $0$ since it is $\hat{a}(t)$ evaluated at different times. However, We see that due to the time evolution of the system, these two terms are proportional to terms which do not commute at $t=0$. When the light exits the cavity it can take these new commutation relations with it.
+
+
+\section{Normal Ordered Quadrature Operators}
+Now let's get back to the question at hand. How do we calculate
+
+\begin{align}
+\braket{:\hat{P}(t_1)\hat{P}(t_2):}
+\end{align}
+
+Again, we're interested in this quantity because it appears in the expression for balanced heterodyne detection. We work out the normal ordering. I'll assume that $t_2>t_1$. Next I will assume $t_1>t_2$ to see what, if anything, changes.
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): &=\\
+&= (-1)\braket{:(\adag(t_1)-\ahat(t_1))(\adag(t_2)-\ahat(t_2)):}\\
+&=-\adag(t_1)\adag(t_2) - \ahat(t_2)\ahat(t_1) + \adag(t_2)\ahat(t_1)+\adag(t_1)\ahat(t_2)
+\end{align}
+
+We compare this to the non-normal ordered product
+
+\begin{align}
+\hat{P}(t_1)\hat{P}(t_2)&=
+-\adag(t_1)\adag(t_2) - \ahat(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2) + \adag(t_1)\ahat(t_2)
+\end{align}
+
+We note $\ahat(t_2)\ahat(t_1) = \ahat(t_1)\ahat(t_2)+[\ahat(t_2),\ahat(t_1)]$ and $\adag(t_2)\ahat(t_1) = \ahat(t_1)\adag(t_2)+[\adag(t_2),\ahat(t_1)]$
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): &= \hat{P}(t_1)\hat{P}(t_2) + [\adag(t_2)-\ahat(t_2),\ahat(t_1)]\\
+&=\hat{P}(t_1)\hat{P}(t_2) - \frac{i}{2}[\hat{P}(t_2),\hat{X}(t_1)+i\hat{P}(t_1)]
+\end{align}
+
+Note that many approaches at this point suppose that $[\ahat(t_1),\adag(t_2)] = \delta(t_1-t_2)$ and $[\ahat(t_1),\ahat(t_2)] = 0$. However, I don't want to make that supposition here because $\ahat$ depends on the position and momentum of the mechanical oscillator at different times and those  operators have non-trivial commutation relations so it's just not immediately obvious to me that these usual commutation relations should apply (see above discussion).
+
+One more expansion
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): &=\\
+& \frac{1}{2}\left(\hat{P}(t_1)\hat{P}(t_2) + \hat{P}(t_2)\hat{P}(t_1)\right)-\frac{i}{2}\left(\hat{P}(t_2)\hat{X}(t_1)-\hat{X}(t_1)\hat{P}(t_2)\right)\\
+&= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{P}(t_2),\hat{X}(t_1)\right]\right)
+\end{align}
+
+I find this to be really cool. The first term is the symmetrized part of the operator $\hat{P}(t_1)\hat{P}(t_2)$, or the ``real'' part of that operator. The second term is the ``imaginary'' part of the operator $\hat{P}(t_2)\hat{X}(t_1)$. We see that the overall operator is hermitian as desired.
+
+For reference I'll just note that if I had taken the usual $\delta(t_1-t_2)$ commutation relations the answer would have been
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): = \hat{P}(t_1)\hat{P}(t_2) + \delta(t_1-t_2)
+\end{align}
+
+It is possible to show that $\hat{P}(t)$ commutes with itself at all times if we assume the delta correlation function so the product is already Hermitian.
+
+Now for the case $t_1>t_2$.
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): &=\\
+&= (-1)\braket{:(\adag(t_1)-\ahat(t_1))(\adag(t_2)-\ahat(t_2)):}\\
+&=-\adag(t_2)\adag(t_1) - \ahat(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1)+\adag(t_1)\ahat(t_2)
+\end{align}
+
+\begin{align}
+\hat{P}(t_1)\hat{P}(t_2)&=
+-\adag(t_1)\adag(t_2) - \ahat(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2) + \adag(t_1)\ahat(t_2)
+\end{align}
+
+\begin{align}\adag(t_2)\adag(t_1) = \adag(t_1)\adag(t_2)+[\adag(t_2),\adag(t_1)]\\
+\adag(t_2)\ahat(t_1) = \ahat(t_1)\adag(t_2)+[\adag(t_2),\ahat(t_1)]
+\end{align}
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): &= \hat{P}(t_1)\hat{P}(t_2) + [\adag(t_2), \ahat(t_1)-\adag(t_1)]\\
+&= \hat{P}(t_1)\hat{P}(t_2) + \frac{i}{2}[\hat{X}(t_2)-i \hat{P}(t_2),\hat{P}(t_1)]\\
+&= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{X}(t_2),\hat{P}(t_1)\right]\right)
+\end{align}
+
+We can summarize the two results to find
+
+\begin{align}
+:\hat{P}(t_1)\hat{P}(t_2): = \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{X}(t_{min}),\hat{P}(t_{max})\right]\right)
+\end{align}
+
+We see that, as expected for a classical variable, this expression is Hermitian and does not depend on whether $t_1$ or $t_2$ is greater.
+
+I will also be interested in working out $:\hat{X}(t_1)\hat{X}(t_2):$, $:\hat{X}(t_1)\hat{P}(t_2):$ and $:\hat{P}(t_1)\hat{X}(t_2):$ for both cases $t_1>t_2$ and $t_2>t_1$. This will be tedious so buckle up.
+
+\pagebreak
+
+\subsection{1}
+
+Now $:\hat{X}(t_1)\hat{X}(t_2):$ with $t_2>t_1$.
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= :(\adag(t_1)+\ahat(t_1))(\adag(t_2)+\ahat(t_2)):\\
+&= \adag(t_1)\adag(t_2) + \ahat(t_2)\ahat(t_1) + \adag(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1)
+\end{align}
+
+\begin{align}
+\hat{X}(t_1)\hat{X}(t_2) = \adag(t_1)\adag(t_2) + \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2)
+\end{align}
+
+\begin{align}
+\ahat(t_2)\ahat(t_1) &= \ahat(t_1)\ahat(t_2) + \left[\ahat(t_2),\ahat(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \hat{X}(t_1)\hat{X}(t_2) + \left[\adag(t_2) + \ahat(t_2), \ahat(t_1)\right]\\
+&= \hat{X}(t_1)\hat{X}(t_2) + \frac{1}{2} \left[\hat{X}(t_2), \hat{X}(t_1) + i \hat{P}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_2),\hat{P}(t_1)\right]\right)
+\end{align}
+
+\pagebreak
+
+\subsection{1*}
+
+Now $:\hat{X}(t_1)\hat{X}(t_2):$ with $t_1>t_2$.
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= :(\adag(t_1)+\ahat(t_1))(\adag(t_2)+\ahat(t_2)):\\
+&= \adag(t_2)\adag(t_1) + \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1)
+\end{align}
+
+\begin{align}
+\hat{X}(t_1)\hat{X}(t_2) = \adag(t_1)\adag(t_2) + \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2)
+\end{align}
+
+\begin{align}
+\adag(t_2)\adag(t_1) &= \adag(t_1)\adag(t_2) + \left[\adag(t_2),\adag(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \hat{X}(t_1)\hat{X}(t_2) + \left[\adag(t_2),\adag(t_1) + \ahat(t_1)\right]\\
+&= \hat{X}(t_1)\hat{X}(t_2) + \frac{1}{2} \left[\hat{X}(t_2)-i\hat{P}(t_2),\hat{X}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_1),\hat{P}(t_2)\right]\right)
+\end{align}
+
+We summarize with
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): = \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_{max}),\hat{P}(t_{min})\right]\right)
+\end{align}
+
+
+\pagebreak
+
+\subsection{2}
+
+Now $:\hat{X}(t_1)\hat{P}(t_2):$ with $t_2>t_1$.
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= i:(\adag(t_1)+\ahat(t_1))(\adag(t_2)-\ahat(t_2)):\\
+&= i(\adag(t_1)\adag(t_2) - \ahat(t_2)\ahat(t_1) - \adag(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1))
+\end{align}
+
+\begin{align}
+\hat{X}(t_1)\hat{P}(t_2) = i(\adag(t_1)\adag(t_2) - \ahat(t_1)\ahat(t_2) - \adag(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2))
+\end{align}
+
+\begin{align}
+\ahat(t_2)\ahat(t_1) &= \ahat(t_1)\ahat(t_2) + \left[\ahat(t_2),\ahat(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= \hat{X}(t_1)\hat{P}(t_2) + i\left[\adag(t_2) - \ahat(t_2), \ahat(t_1)\right]\\
+&= \hat{X}(t_1)\hat{P}(t_2) + \frac{1}{2} \left[\hat{P}(t_2), \hat{X}(t_1) + i \hat{P}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{P}(t_2),\hat{P}(t_1)\right]\right)
+\end{align}
+
+\pagebreak
+
+\subsection{2*}
+
+Now $:\hat{X}(t_1)\hat{P}(t_2):$ with $t_1>t_2$.
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= i:(\adag(t_1)+\ahat(t_1))(\adag(t_2)-\ahat(t_2)):\\
+&= i(\adag(t_2)\adag(t_1) - \ahat(t_1)\ahat(t_2) - \adag(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1))
+\end{align}
+
+\begin{align}
+\hat{X}(t_1)\hat{P}(t_2) = i(\adag(t_1)\adag(t_2) - \ahat(t_1)\ahat(t_2) - \adag(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2))
+\end{align}
+
+\begin{align}
+\adag(t_2)\adag(t_1) &= \adag(t_1)\adag(t_2) + \left[\adag(t_2),\adag(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= \hat{X}(t_1)\hat{P}(t_2) + i\left[\adag(t_2),\adag(t_1) + \ahat(t_1)\right]\\
+&= \hat{X}(t_1)\hat{P}(t_2) + \frac{i}{2} \left[\hat{X}(t_2)-i\hat{P}(t_2),\hat{X}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{X}(t_2),\hat{X}(t_1)\right]\right)
+\end{align}
+
+\pagebreak
+
+\subsection{3}
+
+Now $:\hat{P}(t_1)\hat{X}(t_2):$ with $t_2>t_1$.
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= i:(\adag(t_1)-\ahat(t_1))(\adag(t_2)+\ahat(t_2)):\\
+&= i(\adag(t_1)\adag(t_2) - \ahat(t_2)\ahat(t_1) + \adag(t_1)\ahat(t_2) - \adag(t_2)\ahat(t_1))
+\end{align}
+
+\begin{align}
+\hat{P}(t_1)\hat{X}(t_2) = i(\adag(t_1)\adag(t_2) - \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) - \ahat(t_1)\adag(t_2))
+\end{align}
+
+\begin{align}
+\ahat(t_2)\ahat(t_1) &= \ahat(t_1)\ahat(t_2) + \left[\ahat(t_2),\ahat(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= \hat{P}(t_1)\hat{X}(t_2) - i\left[\adag(t_2) + \ahat(t_2), \ahat(t_1)\right]\\
+&= \hat{P}(t_1)\hat{X}(t_2) - \frac{i}{2} \left[\hat{X}(t_2), \hat{X}(t_1) + i \hat{P}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} - i \left[\hat{X}(t_2),\hat{X}(t_1)\right]\right)
+\end{align}
+
+\pagebreak
+
+\subsection{3*}
+
+Now $:\hat{P}(t_1)\hat{X}(t_2):$ with $t_1>t_2$.
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= i:(\adag(t_1)-\ahat(t_1))(\adag(t_2)+\ahat(t_2)):\\
+&= i(\adag(t_2)\adag(t_1) - \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) - \adag(t_2)\ahat(t_1))
+\end{align}
+
+\begin{align}
+\hat{P}(t_1)\hat{X}(t_2) = i(\adag(t_1)\adag(t_2) - \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) - \ahat(t_1)\adag(t_2))
+\end{align}
+
+\begin{align}
+\adag(t_2)\adag(t_1) &= \adag(t_1)\adag(t_2) + \left[\adag(t_2),\adag(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= \hat{P}(t_1)\hat{X}(t_2) + i\left[\adag(t_2),\adag(t_1) - \ahat(t_1)\right]\\
+&= \hat{P}(t_1)\hat{X}(t_2) + \frac{1}{2} \left[\hat{X}(t_2)-i\hat{P}(t_2),\hat{P}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} - i \left[\hat{P}(t_2),\hat{P}(t_1)\right]\right)
+\end{align}
+
+\pagebreak
+
+Now to summarize all of these.
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_{max}),\hat{P}(t_{min})\right]\right)\\
+:\hat{P}(t_1)\hat{P}(t_2): &= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{X}(t_{min}),\hat{P}(t_{max})\right]\right)
+\end{align}
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= :\hat{X}(t_2)\hat{P}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_1),\hat{X}(t_2)\right]\right), &\text{for } t_2>t_1\\
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{P}(t_1),\hat{P}(t_2)\right]\right), &\text{for } t_1>t_2
+\end{cases}
+\end{align}
+
+Also note (by trivially swapping indices)
+
+\begin{align}
+:\hat{P}(t_2)\hat{X}(t_1): &= :\hat{X}(t_1)\hat{P}(t_2):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{P}(t_2),\hat{X}(t_1)\right\} + i \left[\hat{X}(t_2),\hat{X}(t_1)\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{P}(t_2),\hat{X}(t_1)\right\} + i \left[\hat{P}(t_2),\hat{P}(t_1)\right]\right), &\text{for } t_2>t_1
+\end{cases}
+\end{align}
+
+Note the for all of the normal ordered operators we have $:\hat{A}\hat{B}: = :\hat{B}\hat{A}:$. The normal ordering gives us the property that we can swap the order of the two terms. This means it is possible to set $f(\hat{A},\hat{B}) = :\hat{A}\hat{B}:$ where the function $f$ is meant to represent a \textit{classical} quantity. See the example of heterodyne detection in the next section.
+
+Let me rewrite this in a more symmetric form which will be more useful for later. 
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_{max}),\hat{P}(t_{min})\right]\right)\\
+:\hat{P}(t_1)\hat{P}(t_2): &= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{P}(t_{max}),\hat{X}(t_{min})\right]\right)
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= :\hat{P}(t_2)\hat{X}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]\right), &\text{for } t_2>t_1
+\end{cases}
+\end{align}
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= :\hat{X}(t_2)\hat{P}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} - i \left[\hat{X}(t_\text{max}),\hat{X}(t_{\text{min}})\right]\right), &\text{for } t_2>t_1\\
+\end{cases}
+\end{align}
+
+Note that in the examples I've come up with the cross terms, $\hat{X}(t_1)\hat{P}(t_2)$ and $\hat{P}(t_1)\hat{X}(t_2)$ always come in a pair as a sum or different so I write out those combination here.
+
+\begin{align}
+&:\hat{X}(t_1)\hat{P}(t_2) + \hat{P}(t_1)\hat{X}(t_2):\\
+&=\frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&+\frac{1}{2}\begin{cases}
+-i\left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right] +i\left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right],& \text{for } t_1>t_2\\
+-i\left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right] +i\left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right],& \text{for } t_2>t_1
+\end{cases}
+\end{align}
+
+so
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2) &+ \hat{P}(t_1)\hat{X}(t_2):\\
+&= \frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&-i\frac{1}{2}\left(\left[\hat{X}(t_\text{max}),\hat{X}(t_\text{min})\right] -\left[\hat{P}(t_\text{max}),\hat{P}(t_\text{min})\right]\right)
+\end{align}
+
+And the difference
+\begin{align}
+&:\hat{X}(t_1)\hat{P}(t_2) - \hat{P}(t_1)\hat{X}(t_2):\\
+&=\frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&+\frac{1}{2}\begin{cases}
+-i\left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right] -i\left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right],& \text{for } t_1>t_2\\
+i\left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right] +i\left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right],& \text{for } t_2>t_1
+\end{cases}
+\end{align}
+
+so
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2) &- \hat{P}(t_1)\hat{X}(t_2):\\
+&= \frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&-i\frac{1}{2}\left(\left[\hat{X}(t_1),\hat{X}(t_2)\right] +\left[\hat{P}(t_1),\hat{P}(t_2)\right]\right)
+\end{align}
+
+\clearpage
+
+\section{Normal Ordered Quadrature Operators Summary}
+I'll summarize the main results on a single page for easy future reference
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_{max}),\hat{P}(t_{min})\right]\right)\\
+:\hat{P}(t_1)\hat{P}(t_2): &= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{P}(t_{max}),\hat{X}(t_{min})\right]\right)
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= :\hat{P}(t_2)\hat{X}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]\right), &\text{for } t_2>t_1
+\end{cases}
+\end{align}
+
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= :\hat{X}(t_2)\hat{P}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} - i \left[\hat{X}(t_\text{max}),\hat{X}(t_{\text{min}})\right]\right), &\text{for } t_2>t_1\\
+\end{cases}
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2) &+ \hat{P}(t_1)\hat{X}(t_2):\\
+&= \frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&-i\frac{1}{2}\left(\left[\hat{X}(t_\text{max}),\hat{X}(t_\text{min})\right] -\left[\hat{P}(t_\text{max}),\hat{P}(t_\text{min})\right]\right)
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2) &- \hat{P}(t_1)\hat{X}(t_2):\\
+&= \frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&-i\frac{1}{2}\left(\left[\hat{X}(t_1),\hat{X}(t_2)\right] +\left[\hat{P}(t_1),\hat{P}(t_2)\right]\right)
+\end{align}
+
+\clearpage
+
+\section{Shortcut Calculation}
+
+\begin{align}
+\hat{X}^{\phi} &= \hat{a}^{\dag}e^{-i\phi} + \hat{a} e^{i\phi}\\
+\hat{X}^{\phi-\frac{\pi}{2}} &= i\left(\hat{a}^{\dag}e^{-i\phi} - \hat{a} e^{i\phi}\right)
+\end{align}
+
+We want to calculate, generally,
+
+\begin{align}
+&:\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2):\\
+=&:\left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right) :\\
+=&:\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}(t_2)}e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} :\\
+=&\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + \highlightb{\hat{a}(t_2)\hat{a}(t_1)}e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightb{\hat{a}^{\dag}(t_2)\hat{a}(t_1)}e^{i\phi_1}e^{-i\phi_2} \\
+=&\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}(t_2)}e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} \\
+&+ [\hat{a}(t_2),\hat{a}(t_1)] e^{i\phi_1}e^{i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right)\\
+&+ [\hat{a}(t_2),\hat{a}(t_1)] e^{i\phi_1}e^{i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) + \left[X^{\phi_2}(t_2),\frac{1}{2}\left(X^{\phi_1}(t_1)+iX^{\phi_1-\frac{\pi}{2}}(t_1) \right)\right]\\
+=& \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) - \frac{1}{2}\left[X^{\phi_1}(t_1),\hat{X}^{\phi_2}(t_2) \right] - \frac{i}{2}\left[X^{\phi_1-\frac{\pi}{2}}(t_1),X^{\phi_2}(t_2)\right]\\
+&= \frac{1}{2}\left\{\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[X^{\phi_1-\frac{\pi}{2}}(t_1),X^{\phi_2}(t_2)\right]
+\end{align}
+
+
+\begin{align}
+&:\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2):\\
+=&:\left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right) :\\
+=&:\highlightr{\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)}e^{-i\phi_1}e^{-i\phi_2} + \hat{a}(t_1)\hat{a}(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} :\\
+=&\highlightb{\hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1)}e^{-i\phi_1}e^{-i\phi_2} + \hat{a}(t_1)\hat{a}(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightb{\hat{a}^{\dag}(t_2)\hat{a}(t_1)}e^{i\phi_1}e^{-i\phi_2} \\
+=&\highlightr{\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)}e^{-i\phi_1}e^{-i\phi_2} + \hat{a}(t_1)\hat{a}(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} \\
+&+ [\hat{a}^{\dag}(t_2),\hat{a}^{\dag}(t_1)] e^{-i\phi_1}e^{-i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right)\\
+&+ [\hat{a}^{\dag}(t_2),\hat{a}^{\dag}(t_1)] e^{-i\phi_1}e^{-i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) + \frac{1}{2}\left[X^{\phi_2}(t_2)-iX^{\phi_2-\frac{\pi}{2}}(t_2),X^{\phi_1}(t_1)\right]\\
+=&  \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) - \frac{1}{2}\left[X^{\phi_1}(t_1),X^{\phi_2}(t_2)\right] + \frac{i}{2}\left[X^{\phi_1}(t_1),X^{\phi_2-\frac{\pi}{2}}\right]\\
+=& \frac{1}{2}\left\{\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2)\right\} + \frac{i}{2}\left[X^{\phi_1}(t_1),X^{\phi_2-\frac{\pi}{2}}\right]
+\end{align}
+
+\end{document}

@@ -1,0 +1,220 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Lorentzian Fourier Transform}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Here we will calculate the Fourier and Inverse Fourier transforms of Lorentzian functions and exponential function. We use the Fourier Transform conventions
+
+\begin{align}
+\tilde{g}(f) &= \int_{t=-\infty}^{+\infty} e^{i 2 \pi f t} g(t) dt\\
+g(t) &= \int_{f = -\infty}^{+\infty} e^{-i 2 \pi f t} \tilde{g}(f) df
+\end{align}
+
+\section{Causal One-Sided Decaying Exponential}
+First we calculate the Fourier transform of one and two sided exponentials. Let
+
+\begin{align}
+g_c(t) = e^{a t} \theta(t)
+\end{align}
+
+With $\text{Re}(a) <0$ to ensure the exponential is decaying. For example, often we have
+
+\begin{align}
+a = -i\omega_0 - \frac{\Gamma}{2}
+\end{align}
+
+We can calculate the Fourier Transform
+
+\begin{align}
+\tilde{g}_c(f) &= \int_{t=0}^{+\infty} e^{i2 \pi f t} e^{a t} dt\\
+&= \frac{e^{(i 2 \pi f + a)t}}{-i 2 \pi f + a}\Bigg\rvert_{t=0}^{+\infty} = -\frac{1}{i 2 \pi f + a}
+\end{align}
+
+Which relies on $\text{Re}(a)<0$ to ensure the upper bound term vanishes. Thus we see that the Fourier Transform of a one-sided decaying exponential is a complex Lorentzian.
+
+Now, for practice, we work out the Inverse Fourier Transform of this complex Lorentzian to see that we get the one sided decaying exponential. That is we are calculating
+
+\begin{align}
+g_c(t) = \int_{f=-\infty}^{+\infty} \frac{-e^{-i2\pi ft}}{i2\pi f + a} df
+\end{align}
+
+We will calculate this integral using contour integration and complex analysis. Thought of as a function in the complex plane with argument $f$, the numerator of the integrand is analytic while the denominator has a pole as $f = i\frac{a}{2\pi}$. We must introduce a contour for the contour integration. One leg of the contour runs from $-\infty$ to $+\infty$ along the real line. The other is an infinite semicircle in either the upper or lower half plane, whichever will cause the integrand to go to zero.
+
+We first consider the case the $t<0$. Consider then $-i 2 \pi f t$. We want the contour to be such that this quantity has a large negative real part.
+
+\begin{align}
+\text{Re}(-i 2 \pi f t) &= \frac{1}{2}(-i 2 \pi f t + i 2 \pi f^* t) = 2\pi t \frac{i}{2}(f^*-f) = 2 \pi t \text{Im}(f) < 0\\
+\text{Im}(f) > 0
+\end{align}
+
+Since $t<0$. This says that we should close the contour in the upper half plane. The question then is if the function contains any poles in the upper half plane. I noted that there was a pole at $f = i \frac{a}{2\pi}$
+
+\begin{align}
+\text{Im}\left(i \frac{a}{2\pi}\right) = \frac{i}{2}\left(-i \frac{a^*}{2\pi} - i \frac{a}{2\pi} \right) = \frac{1}{2\pi} \frac{1}{2}(a + a^*) = \frac{1}{2 \pi} \text{Re}(a) < 0
+\end{align}
+
+So we see that this pole in fact lies in the lower half plane. This means that in the upper half plane there are no poles so the contour integral comes out to 0.
+
+\begin{align}
+g_c(t) = 0 \hspace{1 in} \text{for } t<0
+\end{align}
+
+as expected
+
+Now for the case $t>0$ we would find that we must close the contour in the lower half plane which means we now include the pole. We must find the residue of 
+
+\begin{align}
+\frac{-e^{-i2\pi ft}}{i2\pi f + a} = -\frac{1}{i 2 \pi} \frac{e^{-i 2 \pi f t}}{f - i \frac{a}{2\pi}}
+\end{align}
+
+We see the residue is then
+
+\begin{align}
+- \frac{e^{-i 2 \pi i \frac{a}{2\pi} t}}{i2\pi} = -\frac{e^{at}}{i2\pi}
+\end{align}
+
+By the residue theorem we can then calculate
+
+\begin{align}
+g_c(t) = -2\pi i (-1)\frac{e^{at}}{i2\pi} = e^{at} \hspace{1 in} \text{for } t>0
+\end{align}
+
+Putting the two results together we get
+
+\begin{align}
+g_c(t) = e^{at} \theta(t)
+\end{align}
+
+As expected
+
+\section{Anti-Causal One-Sided Decaying Exponential}
+
+We now work out the anti-causal decaying exponential.
+
+\begin{align}
+g_a(t) = e^{-a^* t} \theta(-t)
+\end{align}
+
+Note that $\text{Re}(a)<0$ still holds.
+We calculate the Fourier Transform.
+
+\begin{align}
+\tilde{g}_a
+(f) &= \int_{t=-\infty}^{+\infty} e^{i 2\pi f t} e^{-a^*t} \theta(-t) dt = \int_{t=-\infty}^{0} e^{i 2\pi f t} e^{-a^*t} dt\\
+&= \frac{e^{\left(i 2 \pi f  - a^*\right)t}}{i 2 \pi f - a^*}\Bigg \rvert_{t=-\infty}^0 = \frac{1}{i 2\pi f - a^*}
+\end{align}
+
+Again for practice we work out the inverse Fourier Transform using contour integration. We want to work out the inverse Fourier Transform
+
+\begin{align}
+g_a(t) = \int_{f=-\infty}^{+\infty} \frac{e^{-i 2\pi f t}}{i 2\pi f - a^*} df
+\end{align}
+
+We first work this out for $t>0$. First we need to determine whether to close the contour in the upper or lower half plane. We should have $\text{Re}(-i2 \pi f t) < 0$
+
+\begin{align}
+\text{Re}(-i2\pi f t) &= \frac{1}{2}\left(-i 2 \pi f t + i 2 \pi f^* t \right) = 2 \pi t \frac{i}{2}(f^* - f)\\
+&= 2\pi t \text{Im}(f)  < 0 
+\end{align}
+
+So $\text{Im}(f)<0$. We must close the contour in the lower half plane. The pole of the integrand is at $ f= -i \frac{a^*}{2\pi}$.
+
+\begin{align}
+\text{Im}\left(-i\frac{a^*}{2\pi}\right) = -\frac{1}{2\pi} \frac{i}{2}\left(-ia - i a^* \right) = -\frac{1}{2\pi}\frac{1}{2}\left(a + a^*\right) = -\frac{1}{2\pi} \text{Re}(a) > 0
+\end{align}
+
+So the pole lies in the upper half plane. This means the contour in the lower half plane contains no poles so 
+
+\begin{align}
+g_a(t) = 0 \hspace{1 in} \text{for } t>0
+\end{align}
+
+We then work out the case for $t<0$. We must close the contour in the upper half plane now which means we contain the pole at $f = -i \frac{a^*}{2\pi}$. We calculate the residue of the integrand.
+
+\begin{align}
+\frac{e^{-i 2\pi f t}}{i 2\pi f - a^*} = \frac{1}{i2\pi} \frac{e^{-i2 \pi ft}}{f - \frac{a^*}{i2\pi}}
+\end{align}
+
+The residue is then
+
+\begin{align}
+\frac{e^{-i 2 \pi \frac{a^*}{i 2 \pi} t}}{i 2 \pi} = \frac{e^{-a^*t}}{i 2 \pi}
+\end{align}
+
+
+By the residue theorem we then have
+
+\begin{align}
+g_a(t) = \frac{i 2 \pi}{i 2 \pi} e^{-a^* t} \text{for } t<0
+\end{align}
+
+Putting it together we get
+
+\begin{align}
+g_a(t) = e^{-a^*t}\theta(-t)
+\end{align}
+
+as expected.
+
+\section{Two-Sided Decaying Exponential}
+
+We now consider the two-sided decaying exponential
+
+\begin{align}
+g_t(t) = g_a(t) + g_c(t) = e^{at}\theta(t) + e^{-a^*t}\theta(-t)
+\end{align}
+
+Since this is just the sum of two terms the Fourier Transform is the sum of the individual Fourier Transforms.
+
+\begin{align}
+\tilde{g}_t(f) &= \frac{1}{i 2 \pi f - a^*} - \frac{1}{i 2 \pi f + a} = \frac{(i 2 \pi f + a) - (i 2 \pi f - a^*)}{(i 2 \pi f - a^*)(i 2 \pi f + a)}\\
+&= \frac{a + a^*}{(i 2\pi f - a^*)(i 2 \pi f + a)}
+\end{align}
+
+This isn't so clear as written. To do the inverse Fourier Transform we just need to note that there is a pole in both the upper and lower half plane and proceed as before.
+
+\section{Decaying Oscillator}
+
+We'll now summarize the formulas for the case where
+
+\begin{align}
+a = -i 2\pi f_0 - \frac{\Gamma}{2}
+\end{align}
+
+\begin{align}
+g_c(t) = e^{\left(-i 2\pi f_0 - \frac{\Gamma}{2}\right) t}\theta(t) &\leftrightarrow \tilde{g}_c(f) = - \frac{1}{i (2\pi f-2 \pi f_0) - \frac{\Gamma}{2}}\\\\
+g_a(t) = e^{\left(-i 2\pi f_0 + \frac{\Gamma}{2}\right) t}\theta(-t) &\leftrightarrow \tilde{g}_c(f) = \frac{1}{i (2\pi f-2 \pi f_0) + \frac{\Gamma}{2}}\\
+g_t(t) = e^{-i 2 \pi f_0 t - \frac{\Gamma}{2} \lvert t \rvert} &\leftrightarrow \tilde{g}_t(f) =  \frac{\Gamma}{(2\pi f - 2\pi f_0)^2 + \left(\frac{\Gamma}{2}\right)^2}
+\end{align}
+
+
+\end{document}

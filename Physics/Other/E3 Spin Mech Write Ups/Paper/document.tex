@@ -1,0 +1,202 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\nn}{\nonumber}
+
+\begin{document}
+\title{Matched Filter Paper}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Single Oscillator}
+\subsection{Optomechanical Dynamics}
+We consider the linearized optomechanical Hamiltonian
+
+\begin{align}
+\hat{H} = \hbar \Delta \hat{a}^{\dag}\hat{a} + \hbar \Omega \hat{b}^{\dag}\hat{b} - \hbar G \left(\hat{a}^{\dag} + \hat{a}\right)\left(\hat{b}^{\dag} + \hat{b}\right)
+\end{align}
+
+$\hat{a}$ and $\hat{b}$ are bosonic operators for the cavity field and mechanical oscillator respectively. $\Delta = \omega_d - \omega_c$ is the detuning between the field driving the cavity and the cavity resonance frequency, $\Omega$ is the frequency of the mechanical oscillator and $\hat{G}$ is the optomechanical coupling strength. When considering the coupling of the cavity field and mechanical oscillator to Markovian baths, this Hamiltonian gives rise to the following Heisenberg-Langevin equations of motion.
+
+\begin{align}
+\dot{\hat{a}} &= i \Delta \hat{a} - \kappa \hat{a} + iG\left(\hat{b}^{\dag} + \hat{b}\right)+ \sqrt{2\kappa} \hat{\xi}_a\\
+\dot{\hat{b}} &= -i \Omega \hat{b} - \frac{\Gamma}{2} \hat{b} + iG \left(\hat{a}^{\dag}+\hat{a}\right)+ \sqrt{\Gamma} \hat{\xi}_b \nonumber
+\end{align}
+
+$\kappa$ is the half linewidth of the cavity and $\Gamma$ is the linewidth of the mechanical oscillator. $\hat{\xi}_i$ are noise input fields driving the two modes. 
+
+The noise drives are characterized by the following
+
+\begin{align}
+\braket{\hat{\xi}_i(t)} &= 0\\
+\braket{\hat{\xi}_i(t_1) \hat{\xi}_j(t_2)} &= 0 \nn\\
+\Braket{\hat{\xi}^{\dag}_i(t_1) \hat{\xi}_j(t_2)} &= n_i \delta_{ij} \delta(t_1-t_2) \nn\\
+\left[\hat{\xi}_i(t_1),\hat{\xi}^{\dag}_j(t_2) \right] &= \delta_{ij} \delta(t_1-t_2) \nn
+\end{align}
+
+$n_i$ is the occupation of the $i^{\text{th}}$ bath. We will take $n_a =0$ to model the case when the cavity field is at optical frequencies so that its reservoir is effectively zero temperature.
+We will consider the case of probing on resonance, in which case $\Delta = 0$. In the unresolved sideband regime, $\kappa \gg \Omega$, we can adiabatically eliminate the cavity field by setting $\dot{\hat{a}} = 0$. We find
+
+\begin{align}
+\label{eq:lang}
+\hat{a} &= i \frac{G}{\kappa}\left(\hat{b}^{\dag} + \hat{b}\right) + \sqrt{\frac{2}{\kappa}} \hat{\xi}_a\\
+\hat{b} &= -i\Omega \hat{b} - \frac{\Gamma}{2} \hat{b} + \sqrt{\Gamma} \hat{\xi}_b + i G \sqrt{\frac{2}{\kappa}} \left(\hat{\xi}^{\dag}_a + \hat{\xi}_a\right) \nn
+\end{align}
+
+We can convert between a complex bosonic operator representation of the oscillators and noise drives and a hermitian quadrature operator representation with the following conversions.
+
+\begin{align}
+\hat{X}_{\alpha} = \hat{\alpha}^{\dag} + \hat{\alpha}\\
+\hat{P}_{\alpha} = i\left(\hat{\alpha}^{\dag} - \hat{\alpha}\right) \nn\\
+\hat{\eta}^{\text{AM}}_{\alpha} = \hat{\xi}_{\alpha}^{\dag} + \hat{\xi}_{\alpha} \nn\\
+\hat{\eta}^{\text{PM}}_{\alpha} = i\left(\hat{\xi}_{\alpha}^{\dag} - \hat{\xi}_{\alpha}\right) \nn
+\end{align}
+
+Where $\alpha$ indexes over $a$ and $b$.
+
+We see in Eq. (\ref{eq:lang}) that the mechanical position, $\hat{X}_b$, is imprinted on the cavity field and that amplitude fluctuations of light, $\hat{\eta}^{\text{AM}}_a$, act an additional noise drive on the mechanical oscillator. This additional driving term is the back action noise which arises due to optical radiation pressure forces acting on the mechanical oscillator. We can combine these two noise drives into $\hat{\xi}_{\text{tot}} = \sqrt{\Gamma} \hat{\xi}_b + i G \sqrt{\frac{2}{\kappa}} \left(\hat{\xi}^{\dag}_a + \hat{\xi}_a\right)$. The equation of motion for the mechanical oscillator can be integrated to find
+
+\begin{align}
+\hat{b}(t) =\tilde{r}(t)\hat{b}(0) + \int_{t'=0}^t \tilde{r}(t-t') \hat{\xi}_{\text{tot}}(t') dt'
+\end{align}
+
+Where $\tilde{r}(t) = e^{\left(-i \Omega - \frac{\Gamma}{2}\right)t}$ is the impulse response function of the oscillator. We can rewrite this in terms of the position of the mechanical oscillator.
+
+\begin{align}
+\hat{X}_b(t) = \sum_i \left[ r_i(t) \hat{v}_i(0) + \int_{t'=0}^t r_i(t-t') \hat{\eta}_i(t') dt' \right]
+\end{align}
+
+Where we have introduced the vectors
+
+\begin{align}
+\bv{r} &= e^{-\frac{\Gamma}{2} t}\begin{bmatrix}
+\cos\left(\Omega t\right)\\
+\sin\left(\Omega t\right)
+\end{bmatrix} &
+\hat{\bv{v}}(t) &= \begin{bmatrix}
+\hat{X}_b(t)\\
+\hat{P}_b(t)\\
+\end{bmatrix} &
+\hat{\bv{\eta}}(t) &= \begin{bmatrix}
+\eta^{\text{AM}}_b \\
+\eta^{\text{PM}}_b \\
+\end{bmatrix}
+\end{align}
+
+We calculate the mean and two time correlation function for the mechanical position.
+
+\begin{align}
+\Braket{\hat{X}_b(t)} &= \sum_{i} r_i(t)\Braket{\hat{v}_i(0)}\\
+\Braket{\hat{X}_b(t_1)\hat{X}_b(t_2)} &= \sum_{i,j} r_i(t_1) r_j(t_2) \Braket{\hat{v}_i(0)\hat{v}_j(0)} \nn \\
+&+\sum_{i,j} \int_{t'=0}^{t_1} \int_{t''=0}^{t_2} r_i(t_1-t')r_j(t_2-t'') \Braket{\hat{\eta}_i(t')\hat{\eta}_j(t'')} dt'dt'' \nn 
+\end{align}
+
+We have used the facts that $\Braket{\hat{\bv{\eta}}} = 0$ and that $\hat{\bv{v}}(t)$ is uncorrelated with $\hat{\bv{\eta}}(t)$ when the latter is evaluated at earlier times. The first term of the two time correlation function arises from the coherent evolution of the two oscillators. The second term is a noise term which arises due to noise fluctuations being imprinted onto the oscillator. These fluctuations act to increase the variance of the oscillators position. This increase in variance can be interpreted as heating of the oscillator. The formula for the two-time correlation function can be further simplified by introducing the noise correlation matrix, $\bv{N}$.
+
+\begin{align}
+\Braket{\hat{\bv{\eta}}(t_1)\hat{\bv{\eta}}^T(t_2)} = \bv{N}\delta(t_1-t_2) = \begin{bmatrix}
+\Gamma(2 n_b + 1) + 4 \frac{G^2}{\kappa} & i \Gamma\\
+-i \Gamma & \Gamma(2n_b+1) + 4 \frac{G^2}{\kappa}
+\end{bmatrix}
+ \times \delta(t_1-t_2)
+\end{align}
+(Factors of 2 questions?? is $4\frac{G^2}{\kappa}$ correct?)
+(If $\Gamma$ is pulled out of the matrix then the diagonal terms are $2n_b +1 + C$ with $C$ the cooperativity.
+
+The terms in this expression involving $\Gamma$ arise from the thermal noise drive on the mechanical oscillator. The terms involving $G$ arise from the backaction of the cavity field acting on the mechanical oscillator.
+We then have
+
+\begin{align}
+\Braket{\hat{X}_b(t)} &= \sum_{i} r_i(t)\Braket{\hat{v}_i(0)}\\
+\Braket{\hat{X}_b(t_1)\hat{X}_b(t_2)} &= \sum_{i,j} r_i(t_1) r_j(t_2) \Braket{\hat{v}_i(0)\hat{v}_j(0)} \nn \\
+&+\sum_{i,j} \int_{t'=0}^{\text{min}(t_1,t_2)} r_i(t_1-t')r_j(t_2-t') N_{ij} dt' \nn 
+\end{align}
+
+\subsection{Signal Filtering}
+Returning to Eq. (\ref{eq:lang}), we see that the mechanical position is imprinted onto the phase quadrature of the light field.
+
+\begin{align}
+\hat{P}_a = 2 \frac{G}{\kappa} \hat{X}_b + \frac{2}{\kappa} \hat{\eta}^{\text{PM}}_a
+\end{align}
+
+By measuring the light field which exits the cavity using a heterodyne detector we can measure the phase quadrature of light and extract a signal which carries a record of the position of the mechanical oscillator.
+
+\begin{align}
+S(t) = A \hat{X}_b(t) + \sqrt{\frac{S_{\text{SN}}}{2}} \eta_{\text{SN}}(t)
+\end{align}
+
+Where $A = \sqrt{\frac{2 S_{\text{SN}} \epsilon}{\kappa}}G$ is the optomechanical signal gain. $\epsilon$ is the detection efficiency and $S_{\text{SN}}$ is the detector power spectral density shot noise level, set by the strength of the heterodyne local oscillator. $\xi_{\text{SN}}(t)$ is the shot noise characterized by $\Braket{\eta_{\text{SN}}(t_1)\eta_{\text{SN}}(t_2)} = \delta(t_1-t_2)$
+
+Quantum states can be characterized by the statistics of the observables describing those states. In particular, Gaussian states can be specified entirely by the means and covariances of the observables describing a system. To estimate the statistics of the mechanical oscillator state at the beginning of a measurement time, $t=0$, of total length $T$ we can apply filters to the signal which are matched to the response functions $r_i(t)$ of the oscillator. In this way we can extract estimates of $\Braket{\hat{X}_b(0)}$ and $\Braket{\hat{P}_b(0)}$ as follows.
+
+\begin{align}
+q_i = \int_{t'=0}^T m_i(t') S(t') dt'
+\end{align}
+
+Here $q_i$ is the $i^{\text{th}}$ pre-corrected filter output and $m_i(t)$ is the $i^{\text{th}}$ filter. In general $m_i(t)$ is arbitrary, however, for certain filtering problems an optimal filter (maximum signal-to-noise for finite sample size?) is obtained by setting $m_i(t) = r_i(t)$. An analysis of the general optimality of this filter scheme is beyond the scope of this work.
+
+By repeating the measurement many times and averaging we obtain
+
+\begin{align}
+\Braket{q_i} = \sum_j A \int_{t'=0}^T m_i(t') r_j(t') dt' \Braket{\hat{v}_j(0)} = \sum_{i,j} M_{ij} \Braket{\hat{v}_j(0)}
+\end{align}
+
+Where have introduced the two-index filter-response function overlap tensor, $M_{ij}$. By inverting this formula we can determine
+
+\begin{align}
+\braket{\hat{v}_i(0)} = \sum_{i,j} M^{-1}_{ij} \Braket{q_j}
+\end{align}
+
+Thus we see that the corrected filter output, $\sum_{i,j} M_{ij}^{-1} q_j$ is an estimator for the oscillator's initial position or momentum. For intuition regarding the necessity of this correction consider the case when $m_i(t) = r_i(t)$. If the filter functions were orthonormal $M_{ij} \rightarrow \delta_{ij}$ and this correction would be unnecessary. However, in the case that the functions are not orthogonal it can be seen that signal arising from $\Braket{\hat{v}_j(0)}$ will show up, in proportion to the overlap between $m_i(t)$ and $m_j(t)$ on pre-corrected filter output $q_i$. This inversion corrects for this overlap. In frequency space this can be explained by observing that since the filters have finite width it is possible for them to have some overlap in frequency space, thus resulting in filter cross-talk (Perhaps this frequency space analysis makes more sense when considering multiple filters at different frequencies).
+
+In addition to calculating the oscillator mean value we can also use this filtering procedure to estimate the initial covariance matrix describing the mechanical oscillator.
+
+\begin{align}
+\Braket{q_i q_j} = \int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{S(t_1)S(t_2)} dt_1 dt_2
+\end{align}
+
+We expand the two-time autocorrelation function for the signal.
+
+\begin{align}
+=& \sum_{i,j,k,l} \int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1) m_j(t_2) r_k(t_1) r_l(t_2) \Braket{\hat{v}_k(0) \hat{v}_l(0)} dt_1 dt_2\\
+&+ \sum_{i,j,k,l} \int_{t_1=0}^T \int_{t_2=0}^T  \int_{t'=0}^{\text{min}(t_1,t_2)} m_i(t_1) m_j(t_2) r_k(t_1-t') r_l(t_2-t') N_{kl} dt' dt_1 dt_2 \nn\\
+&+ \sum_i \int_{t'=0}^T m_i(t')m_j(t') dt' \nn \\
+&= M_{ijkl} \Braket{\hat{v}_k(0) \hat{v}_l(0)} +  T_{ijkl}N_{kl} + K_{ij} \nn
+\end{align}
+
+We see there are three terms in the expansion of the filter output. The first term contains the quantity of interest, $\Braket{\hat{v}_k(0) \hat{v}_l(0)}$. 
+The second term arises from contributions of the noise fluctuations to the oscillator's motion over time being picked up by the filters. 
+The final term arises from separate filters, $m_i(t)$ and $m_j(t)$ having sensitivity to the same shot noise due to their non-zero overlap. This reveals that even if there is measured cavity field present this filtering procedure will still result in non-zero covariances between $q_i$ and $q_j$ in contrast to the naive expectation for shot noise.
+
+By finding a tensor $L_{ijmn}$ with the property that $L_{ijmn}M_{ijkl} = \delta_{mk} \delta_{nl}$ it is possible to invert this expression to solve for the oscillator covariance of interest.
+
+\begin{align}
+\Braket{\hat{v}_m(0) \hat{v}_n(0)} = L_{ijmn}\Braket{q_i q_j} - L_{ijmn} T_{ijkl} N_{kl} - L_{ijmn}K_{ij}
+\end{align}
+
+By applying the correction $L_{ijmn}$ and subtracting the terms arising from thermal noise, back action, and shot noise we have obtained an estimate for $\Braket{\hat{v}_m(0) \hat{v}_n(0)}$. Note that if $m_i(t) = r_i(t)$ we have $M_{ij} = K_{ij}$.
+
+\end{document}

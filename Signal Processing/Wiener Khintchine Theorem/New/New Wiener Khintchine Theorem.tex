@@ -1,0 +1,70 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{New Wiener-Khintchine Theorem}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will explain and prove the Einstein-Wiener-Khintchine theorem.
+
+\section{Preliminaries}
+
+First a few preliminary notes on statistics and random variables. Throughout these notes I will take care to distinguish between random processes, realizations of random processes, expectations of random variables, ensemble averages of realizations, time averages of realizations, and estimators for statistics of random variables.
+
+First, random processes such as $\bv{X}(t)$ will be denoted by boldface. Realizations of random processes will be denoted by $X(t)$ without the bolding. $\bv{X}(t)$ should be thought of as a the theoretical random process which has a set of possible outcomes and probability distributions governing the statistics for those outcomes whereas $X(t)$ should be thought of as a 'realization' or experimental measurement of the random process $\bv{X}(t)$.
+
+Consider a random process $\bv{X}(t)$. The expectation value is given by:
+
+\begin{align}
+E[\bv{X}(t)] = \int_{x=-\infty}^{+\infty} P(X(t)=x) x dx = \int_{x=-\infty}^{+\infty} f_{\bv{X}(t)}(x) x dx
+\end{align}
+
+The expectation value thus depends on the underlying probability distribution for the function. Note that the expectation value is a \textit{purely theoretical} quantity. Often we will try to \textit{estimate} the expectation value from empirical data. This can be useful because we may, on the one hand, have a theoretical model for a physical process $\bv{X}(t)$ and we may, on the other hand, have some data related to measuring $X(t)$. We can then theoretically calculate expectations of $\bv{X}(t)$ from our theory and construct estimators for the expectations from the data $X(t)$. We can then compare the two to get a sense for how good well our theory describes the data.
+
+It will be useful to consider windowed random processes described by
+
+\begin{align}
+\bv{X}_{t_0}(t) = 
+\begin{cases}
+\bv{X}(t) &\text{ for } |t|\le t_0\\
+0 &\text { for } |t|> t_0
+\end{cases}
+\end{align}
+
+The time average of a finite time-window for a realization of a random process is given by
+
+\begin{align}
+\bar{X}_{t_0} = \frac{1}{2t_0}\int_{t=-t_0}^{+t_0} X(t) dt = \frac{1}{2t_0}\int_{t=-\infty}^{+\infty}X_{t_0}(t)dt
+\end{align}
+
+If $N$ realizations $X_i(t)$ of a random process $\bv{X}(t)$ are measured then we can define the ensemble average as
+
+\begin{align}
+\Braket{X(t)}_N = \frac{1}{N} \sum_{i=1}^N X_i(t)
+\end{align}
+
+
+\end{document}

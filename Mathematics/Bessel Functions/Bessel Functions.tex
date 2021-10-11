@@ -1,0 +1,446 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\bv}[1]{\mathbf{#1}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{Bessel Functions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this write up I'll summarize for myself some derivations and basic properties regarding Bessel functions.
+
+The first important point is that Bessel functions are solutions, $y(x)$ of the differential equation
+
+\begin{align}
+x^2 y'' + x y' +(x^2-\nu^2)y = 0
+\end{align}
+
+Since this is a second order differential equation we expect two linearly independent solutions. We'll start our search for solutions using the method of Frobenius which I'll explain and introduce quickly.
+
+\section{Method of Frobenius}
+
+This section follows ``Frobenius Series Solutions'' by Tsogtgerel Gantumur at http://www.math.mcgill.ca/gantumur/math315w14/downloads/frobenius.pdf
+
+Consider the differential equation
+
+\begin{align}
+y'' + P(x) y' + Q(x) y = 0
+\end{align}
+
+We might expect to solve this by using a Taylor expansion of $y(x)$. This will work if the Taylor expansion is performed around a point $x_0$ where the function and differential equation are well-behaved - in particular where $P(x)$ and $Q(x)$ are continuous. Such a point is called an ordinary point of the differential equation. However, if $P(x)$ or $Q(x)$ are singular at $x_0$ we may expect difficulties in the Taylor expansion about  $x_0$ to solve the differential equation. Such points $x_0$ are called singular points of the differential equation. The method of Frobenius will allow us to use Taylor expansions to solve differential equations using Taylor expansions in the neighborhood of some singular points.
+
+Consider the following differential equation:
+
+\begin{align}
+(x-\alpha)^2 y'' + (x-\alpha) P y' + Q y = 0
+\end{align}
+
+with $P$ and $Q$ constant. Note that $\alpha$ is a singular point of this differential equation. However, this is one of the first differential equations encountered in a course on differential equations and we know how to find it's solution everywhere, even near the singular point. The solution is
+
+\begin{align}
+y(x) = (x-\alpha)^r
+\end{align}
+
+Where $r$ is determined as follows. Plugging the solution into the differential equation we find
+
+\begin{align}
+&(x-\alpha)^2 (r)(r-1)(x-\alpha)^{r-2} + (x-\alpha) P r (x-\alpha)^{r-1} + Q (x-\alpha)^r = 0 \\
+&\implies r^2 +(P-1)r + Q = 0
+\end{align}
+
+So we see that $r$ is a root of the above polynomial.
+
+Now consider the more general differential equation:
+
+\begin{align}
+\label{gen_eqn}
+(x-\alpha)^2 a(x) y'' + (x-\alpha) b(x) y' + c(x) y = 0
+\end{align}
+
+Where $a(x), b(x),$ and $c(x)$ are polynomials. We see that $\alpha$ is again a singular point of the equation. However, here is the central insight of the method of Frobenius. Consider the following related but different differential equation:
+
+\begin{align}
+\label{restrict_eqn}
+(x-\alpha)^2 a(\alpha) y'' + (x-\alpha) b(\alpha) y' + c(\alpha) y = 0
+\end{align}
+
+This differential equation is of the form above with $P = \frac{b(\alpha)}{a(\alpha)}$ and $Q = \frac{c(\alpha)}{a(\alpha)}$. So it is solved by
+
+\begin{align}
+\label{ans_guess}
+y(x) = (x-\alpha)^r
+\end{align}
+
+with $r$ solving
+
+\begin{align}
+r^2 + \left(\frac{b(\alpha)}{a(\alpha)} - 1\right) + \frac{c(\alpha)}{a(\alpha)} = 0
+\end{align}
+
+We will refer to this equation as the indicial equation for the differential equation. The key point is that (\ref{ans_guess}) does not solve (\ref{gen_eqn}) since it solves (\ref{restrict_eqn}), the more restricted version where we evaluate $a(x), b(x), \text{and} c(x)$ and $x=\alpha$. However, in the neighborhood of $x=\alpha$, since $a(x), b(x), \text{and} c(x)$ are all smooth polynomials, we should expect that (\ref{ans_guess}) is close to the solution of (\ref{gen_eqn}). In fact, we will guess that the solution to (\ref{gen_eqn}) is simply (\ref{ans_guess}) multiplied by a smooth function with a Taylor expansion, $f(x)$. That is, it may differ, but it won't differ in any singular way. We guess
+
+\begin{align}
+y(x) = (x-\alpha)^r f(x)  = (x-\alpha)^r \sum_{k=0}^{\infty} a_k (x-\alpha)^k
+\end{align}
+
+A theorem not proven in my reference proves that this approach works. One can imagine the reliance of the proof on the fact that all of $a(x), b(x), c(x), \text{and} f(x)$ vary smoothly in the neighborhood of $\alpha$ (in fact everywhere) and have Taylor expansions.
+
+\section{Method of Frobenius to solve Bessel differential equation}
+
+We apply the method of Frobenius to Bessel's equation. Here I follow ``Bessel Equations and Bessel Functions'' at http://www2.fiu.edu/~meziani/NOTE11.pdf
+
+\begin{align}
+x^2 y'' + x y' + (x^2-\nu^2)y = 0
+\end{align}
+
+We note that $\alpha = 0, a(\alpha) = 1, b(\alpha) = 1, c(\alpha) = -\nu^2$ and the indicial equation is
+
+\begin{align}
+r^2 - \nu^2 = 0
+\end{align}
+
+so we see that $r = \pm \nu$. Suppose without loss of generality that $\nu >0$. If $\nu<0$. There is no loss of generality because if $\nu$ is negative the original Bessel differential equation is the same as if $\nu$ were positive.First we look at $r = \nu$. This will give us one solution. To find a second solution we will look at $r = -\nu$. However we will encounter some difficulty for the case when $\nu \in \mathbb{Z}^+$ (if $\nu$ is a positive integer.)
+
+After having solved the indicial equation we guess at a solution with derivatives
+
+\begin{align}
+y(x) &= x^{\nu} \sum_{k=0}^{\infty} a_k x^k = \sum_{k=0}^{\infty} a_k x^{\nu+k}\\
+y'(x) &= \sum_{k=0}^{\infty} a_k (\nu+k) x^{\nu+k-1}\\
+y''(x) &= \sum_{k=0}^{\infty} a_k (\nu+k)(\nu+k-1) x^{\nu+k-2}
+\end{align}
+
+We plug these into the Bessel equation
+
+\begin{align}
+0 &= \sum_{k=0}^{\infty}\left[ a_k(\nu+k)(\nu+k-1) x^{\nu+k} + a_k(\nu+k)x^{\nu+k} + a_k(x^2-\nu^2)x^{\nu+k}\right]\\
+&= \sum_{k=0}^{\infty} a_k ((\nu+k)^2 - \nu^2) x^{\nu+k} + \sum_{k=2}^{\infty} a_{k-2} x^{\nu+k}\\
+&= 0*a_0 + a_1(1 + 2 \nu) x^{\nu+1} + \sum_{k=2}^{\infty}\left[a_k(k(k + 2 \nu)) + a_{k-2} \right] x^{\nu+k} = 0 
+\end{align}
+
+We see that $a_0$ is unconstrained. $a_0$ will represent an overall scaling constant which doesn't affect whether the function solves the differential equation or not. However, we see that $a_1$ must equal $0$. We also see that
+
+\begin{align}
+a_k = \frac{-a_{k-2}}{k(k+2\nu)}
+\end{align}
+
+Since $a_1 = 0$ it follows that $a_k = 0$ for all odd $k$. We thus work out the formulae for even indices.
+
+\begin{align}
+a_{2k} = \frac{-a_{2k-2}}{2k(2k+2\nu)} = \frac{-a_{2k-2}}{2^2k(\nu+k)}
+\end{align}
+
+I'll use induction to whittle away at this recursive definition. Intuitively, as we move up the ladder of $a_{2k}$ we get a factor of $-1$ in the numerator, $2^2$ in the denominator, and also a factor of $k$ and $(k+\nu)$ in the denominator. We summarize this as:
+
+Claim:
+
+\begin{align}
+a_{2k} = a_0 \frac{(-1)^k}{2^{2k}}\frac{1}{k!} \left(\prod_{l=1}^k \frac{1}{\nu+l}\right)
+\end{align}
+
+Proof:
+$k=1$ case. We know from the recursive formula above that
+
+\begin{align}
+a_2 = \frac{-a_0}{2^2(1)(\nu+1)}
+\end{align}
+
+This satisfies the formula in the claim
+
+Assume claim holds true for $k$. Then by the recursive formula:
+
+\begin{align}
+a_{2(k+1)} &= \frac{-a_{2k}}{2^2 (k+1)(\nu+k+1)} = a_0 \frac{(-1)^k}{2^{2k}}\frac{1}{k!} \left(\prod_{l=1}^k \frac{1}{\nu+l}\right) \frac{-1}{2^2 (k+1)(\nu+k+1)}\\
+&= a_0 \frac{(-1)^{k+1}}{2^{2(k+1)}}\frac{1}{(k+1)!}\left(\prod_{l=1}^{k+1} \frac{1}{\nu+l}\right) 
+\end{align}
+
+This is the formula expected for the claim so the claim is true by induction.
+
+\subsection{Aside on the Gamma function}
+For non-integer $\nu$ the solution to the Bessel function is defined in terms of Gamma functions which are related to factorial functions. A brief introduction to the $\Gamma$ function here.
+
+\begin{align}
+\Gamma(\nu) = \int_0^{\infty} e^{-t} t^{\nu-1} dt
+\end{align}
+
+Note that $t^{\nu-1} = \frac{1}{\nu}\frac{d}{dt} t^{\nu}$ for $\nu \neq 0 \text{ or } 1$ so
+
+\begin{align}
+\nu \Gamma(\nu) = \int_0^{\infty} e^{-t} \frac{d}{dt} t^{\nu} dt
+\end{align}
+
+Integrating by parts
+
+\begin{align}
+\nu\Gamma(\nu)= e^{-t} t^{\nu}\big|_{t=0}^{\infty} + \int_{0}^{\infty} e^{-t}t^{\nu} dt = \Gamma(\nu-1)\\
+\Gamma(\nu+1) = \nu \Gamma(\nu)
+\end{align}
+
+Note 
+\begin{align}
+\Gamma(1) = \int_0^{\infty} e^{-t} t dt = -e^{-t}t\big|_{t=0}^{\infty} - \int_{0}^{\infty} e^{-t} dt = -e^{-t}\big|_{t=0}^{\infty} = 1
+\end{align}
+
+We see the resemblance then between $\Gamma$ and the factorial operation. In fact we claim and prove by induction that for $n \in \mathbb{N}$ 
+\begin{align}
+\text{claim: } \Gamma(n+1) = n!
+\end{align}
+for positive integer $n$.
+Proof:
+$n=0$ case:
+\begin{align}
+\Gamma(0+1) = 1 = 0!
+\end{align}
+
+Assume claim and work on $n+1$ case
+\begin{align}
+\Gamma((n+1)+1) = (n+1)\Gamma(n+1) = (n+1)n! = (n+1)!
+\end{align}
+
+as desired so $\Gamma(n+1) = n!$ by induction.
+
+The next induction proof is that for $k \in \mathbb{N}$ that
+
+\begin{align}
+\Gamma(\nu+k+1) = \left(\prod_{l=1}^{k}(\nu+l) \right) \Gamma(\nu+1)
+\end{align}
+
+$k=1$ case
+
+\begin{align}
+\Gamma(\nu+1+1) = (\nu+1) \Gamma(\nu+1)
+\end{align}
+
+Assume claim and work on $k+1$ case:
+
+\begin{align}
+\Gamma(\nu+(k+1)+1) &= (\nu+k+1)\Gamma(\nu+k+1)\\
+&= (\nu+k+1) \left(\prod_{l=1}^k (\nu+l)\right)\Gamma(\nu+1)\\
+&= \left(\prod_{l=1}^{k+1} (\nu+l)\right)\Gamma(\nu+1)
+\end{align}
+
+as desired. This implies that
+
+\begin{align}
+\left(\prod_{l=1}^{k} \frac{1}{\nu+l}\right) = \frac{\Gamma(\nu+1)}{\Gamma(\nu+k+1)}
+\end{align}
+
+Consider $0 < \epsilon < 1$.
+
+\begin{align}
+\Gamma(1+\epsilon) = \epsilon \Gamma(\epsilon)\\
+\Gamma(\epsilon) = \frac{\Gamma(1+\epsilon)}{\epsilon}
+\end{align}
+
+$\Gamma(\nu)$ is analytic in the Neighborhood of $\nu = 1$ so $\Gamma(1+\epsilon) \approx 1)$. However the $\frac{1}{\epsilon}$ is not defined and $\epsilon = 0$ and in fact represent a simple pole at $\epsilon = 0$.
+
+Consider now $n=k \in \mathbb{N}$ with $\nu+1 = -n+\epsilon$ and $0<\epsilon<1$. We can write
+
+\begin{align}
+\Gamma(-n + \epsilon) &= \Gamma(\epsilon) \left(\prod_{l=1}^n \frac{1}{-n+\epsilon-1+l}\right)\\
+&=  \frac{1}{\epsilon}  \Gamma(\epsilon +1) \left(\prod_{l=1}^n \frac{1}{-n+\epsilon-1+l}\right)\\
+\end{align}
+
+The $\frac{1}{\epsilon}$ part of this function is not defined at $\epsilon = 0$. However the rest of the function, when evaluated at $\epsilon = 0$ can be written as
+
+\begin{align}
+\prod_{l=1}^n \frac{-1}{n+1-l} = (-1)^n \prod_{l=1}^n \frac{1}{n-l+1} = \frac{(-1)^n}{n!}
+\end{align}
+
+Recalling a bit of complex analysis we that for each positive integer, $n \in \mathbb{N}$ that $\Gamma(\nu)$ has a simple pole at $\nu = -n$. We can calculate the residue
+
+\begin{align}
+\text{Res}(\Gamma(\nu),-n) = \lim_{\epsilon \rightarrow 0} \epsilon \Gamma(-n + \epsilon) = \Gamma(1)\frac{(-1)^n}{n!} = \frac{(-1)^n}{n!}
+\end{align}
+
+
+\subsubsection{Definition of Bessel function}
+
+The power expansion coefficients we found earlier were:
+
+\begin{align}
+a_{2k} = a_0 \frac{(-1)^k}{2^{2k}}\frac{1}{k!} \left(\prod_{l=1}^k \frac{1}{\nu+l}\right)
+\end{align}
+
+Plugging in the Gamma function formulas:
+
+\begin{align}
+a_{2k} = a_0 \frac{(-1)^k}{2^{2k}}\frac{\Gamma(\nu+1)}{\Gamma(k+1)\Gamma(\nu+k+1)}
+\end{align}
+
+We plug this into the expression for $y(x)$ that solves the Bessel differential equation.
+
+\begin{align}
+y(x) &= \sum_{k=0}^{\infty} a_{2k} x^{\nu+2k} = x^{\nu}\sum_{k=0}^{\infty}a_{2k}x^{2k}\\
+&= x^{\nu} a_0 \Gamma(\nu+1)\sum_{k=0}^{\infty} \frac{(-1)^k}{\Gamma(k+1)\Gamma(\nu+k+1)}\left(\frac{x}{2}\right)^{2k}
+\end{align}
+
+Let $a_0 = \frac{1}{2^\nu \Gamma(\nu+1)}$ so that
+
+\begin{align}
+y(x) = J_{\nu}(x) &= \left(\frac{x}{2}\right)^{\nu} \sum_{k=0}^{\infty}\frac{(-1)^k}{\Gamma(k+1)\Gamma(\nu+k+1)}\left(\frac{x}{2}\right)^{2k}\\
+&= \left(\frac{x}{2}\right)^{\nu} \sum_{k=0}^{\infty}\frac{(-1)^k}{k!\Gamma(\nu+k+1)}\left(\frac{x}{2}\right)^{2k}\\
+\end{align}
+
+This is the expression for the Bessel function of the first kind of order $\nu$.
+
+\section{Bessel Functions of the Second Kind}
+
+So far I have found one solution to the Bessel equation by looking at the positive root $r=+\nu$. To find a second solution we can look at the root $r=-\nu$. Naively we get the same answer as before but with $\nu\rightarrow -\nu$.
+
+\begin{align}
+y(x) = J_{-\nu}(x)
+= \left(\frac{x}{2}\right)^{-\nu} \sum_{k=0}^{\infty}\frac{(-1)^k}{\Gamma(k+1)\Gamma(-\nu+k+1)}\left(\frac{x}{2}\right)^{2k}\\
+\end{align}
+
+This formula is valid for $\nu \notin \mathbb{N}$, however when $\nu \in \mathbb{N}$ the derivation breaks down. In particular, the derivation breaks down because it makes heavy use of the formula $\Gamma(\nu+1) = \nu \Gamma(\nu)$ which is only valid for $\nu>0$. However, for $\nu = n$ we can consider the limit $\lim_{\epsilon \rightarrow 0}Y_{n+\epsilon}(x)$
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0}J_{-(n+\epsilon)}(x) = \lim_{\epsilon \rightarrow 0} \left(\frac{x}{2}\right)^{-(n+\epsilon)} \sum_{k=0}^{\infty} \frac{(-1)^{k}}{\Gamma(k+1) \Gamma(-(n+\epsilon) + k +1))} \left(\frac{x}{2}\right)^{2k}
+\end{align}
+
+When we take the $\lim_{\epsilon \rightarrow 0}$ the Gamma function blows up for any values of $k$ for which $k-n +1 \le 0$, meaning those terms can be removed from the sum. The first non suppressed term of the sum will be $k=n$.
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0}J_{-(n+\epsilon)}(x) = \left(\frac{x}{2}\right)^{-n} \sum_{k=n}^{\infty} \frac{(-1)^k}{\Gamma(k+1) \Gamma(-n + k +1)} \left(\frac{x}{2}\right)^{2k}
+\end{align}
+
+Shuffling indices by $k \rightarrow k+n$:
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0}J_{-(n+\epsilon)}(x) &= \left(\frac{x}{2}\right)^{-n} \sum_{k=0}^{\infty} \frac{(-1)^{k+n}}{\Gamma(n+k+1) \Gamma(-n + n + k +1)} \left(\frac{x}{2}\right)^{2(k+n)}\\
+&= (-1)^{n}\left(\frac{x}{2}\right)^{+n} \sum_{k=0}^{\infty} \frac{(-1)^{k}}{\Gamma(k+1) \Gamma(n+k+1)} \left(\frac{x}{2}\right)^{2k} \\
+&= (-1)^{n} J_{n}(x)
+\end{align}
+
+So we can see that while $J_{+\nu}(x)$ and $J_{-\nu(x)}$ provide two independent solutions to the differential equation for $\nu \notin \mathbb{N}$, if $\nu \in \mathbb{N}$ then $J_{n}(x)$ and $J_{-n}(x)$ are not dependent solutions to the differential equation. This means that we still need one more solution to the differential equation to fully solve the equation.
+
+Note that $(-1)^n = \cos(n\pi)$. Consider
+
+\begin{align}
+\cos(\nu \pi) J_{\nu}(x) - J_{-\nu}(x)
+\end{align}
+
+if we take the limit $\nu\rightarrow n$ this expression vanishes. We can try to make it not vanish by dividing it by a function which also vanishes when $\nu \rightarrow n$. Let's choose $\sin(\nu \pi)$.
+
+\begin{align}
+Y_{\nu}(x) = \frac{\cos(\nu \pi) J_{\nu}(x) - J_{-\nu}(x)}{\sin(\nu \pi)}
+\end{align}
+
+This function is not defined for $\nu \in \mathbb{N}$ but we can define
+
+\begin{align}
+Y_{n}(x) = \lim_{\nu \rightarrow n}Y_{\nu}(x)
+\end{align}
+
+Apparently it can be shown that $Y_{\nu}$ is a solution to Bessel's differential equation and is independent from $J_{\nu}(x)$. One of my references cites R. Courant and D. Hilbert, \textit{Method of Mathematical Physics,} vol.2 and H. Sagan, \textit{Boundary and Eigenvalue Problems of Mathematical Physics}.
+
+By finding $J_{\nu}(x)$ and $Y_{\nu}(x)$ we have solved Bessel's differential equation.
+
+\section{Bessel Integral}
+
+I will prove, for $n \in \mathbb{N}$ that
+
+\begin{align}
+J_n(x) = \frac{1}{2\pi}\int_{-\pi}^{\pi} e^{i(x \text{sin}(\theta) - n\theta)} d \theta
+\end{align}
+
+Consider
+
+\begin{align}
+g_x(z) = \sum_{n=-\infty}^{+\infty} J_n(x) z^n
+\end{align}
+
+That is, $J_n(x)$ are the coefficients for a power series in $z$. $g_x(z)$ is called the generating function of $J_{n}(x)$.
+
+\begin{align}
+g_x(z) = \sum_{n=-\infty}^{+\infty} \left(\sum_{k=0}^{\infty} \frac{(-1)^k}{k! (n+k)!} \left(\frac{x}{2}\right)^n \left(\frac{x}{2}\right)^{2k} \right)z^n
+\end{align}
+
+let $m=k+n$
+
+\begin{align}
+g_{x}(z) &= \sum_{n=-\infty}^{+\infty} \sum_{k-m = n, m,k\ge 0} \frac{(-1)^k \left(\frac{x}{2}\right)^{m+k}}{k!m!} z^{m-k}\\
+&= \left(\sum_{m=0}^{\infty} \frac{1}{m!}\left(\frac{x}{2} z\right)^m\right)\left(\sum_{k=0}^{\infty} \frac{1}{k!} \left(-\frac{x}{2} \frac{1}{z}\right)^k\right)\\
+&= e^{\frac{x}{2}\left(z-\frac{1}{z}\right)} = e^{\frac{x}{2} z} e^{-\frac{x}{2} \frac{1}{z}}
+\end{align}
+
+We prove some intermediate results. 
+
+Let $z = e^{i \theta}$ so that $\frac{1}{z} = e^{-i\theta}$. Then 
+
+\begin{align}
+g_x\left(e^{i\theta}\right) = e^{i x \sin(\theta)} = \sum_{n=-\infty}^{+\infty} J_n(x) e^{inx}
+\end{align}
+
+\begin{align}
+g_x(e^{i\theta}) &= \int_{\theta = -\pi}^{\pi} e^{ix \sin(\theta)} e^{-i m \theta} d\theta = \sum_{n=-\infty}^{\infty}J_n(x)\int_{\theta = -\pi}^{\pi} e^{i(n-m)\theta} d\theta\\
+&= \sum_{n=-\infty}^{+\infty} J_n(x) \frac{\delta_{nm}}{2\pi} = \frac{J_n(x)}{2\pi}
+\end{align}
+
+This proves that
+
+\begin{align}
+J_n(x) = \frac{1}{2\pi} \int_{\theta = -\pi}^{\pi} e^{i(x\sin(\theta) - n \theta)} d\theta
+\end{align}
+
+Note for $n=0$ we have
+
+\begin{align}
+J_0(x) = \frac{1}{2\pi} \int_{\theta = -\pi}^{\pi} e^{ix\sin(\theta)} d\theta
+\end{align}
+
+But, since the integrand is period in $2\pi$ and is integrated over a full period we can add an arbitrary constant to the phase. This means we can write
+
+\begin{align}
+J_0(x) = \frac{1}{2\pi} \int_{\theta = -\pi}^{\pi} e^{ix\sin(\theta)} d\theta = \frac{1}{2\pi} \int_{\theta = -\pi}^{\pi} e^{ix\cos(\theta)} d\theta
+\end{align}
+
+\section{Another Identity}
+
+Another identify which is useful. We want to calculate
+
+\begin{align}
+\int x J_0(x) dx
+\end{align}
+
+Begin with
+
+\begin{align}
+J_n(x) = \left(\frac{x}{2}\right)^n\sum_{k=0}^{\infty} \frac{(-1)^k\left(\frac{x}{2}\right)^{2k}}{k!(k+n)!}
+\end{align}
+
+then calculate
+
+\begin{align}
+xJ_0(x) = z \sum_{k=0}^{\infty} \frac{(-1)^k\left(\frac{x}{2}\right)^{2k}}{(k!)^2}
+\end{align}
+
+and integrate
+
+\begin{align}
+\int xJ_0(x) dx &= \sum_{k=0}^{\infty} \frac{(-1)^k}{2^{2k} (k!)^2}\int x^{2k+1} dx = \sum_{k=0}^{\infty} \frac{(-1)^k}{2^{2k}k!k!} \frac{1}{2k+2} x^{2k+2}\\
+&= x \left(\frac{x}{2}\right)^1\sum_{k=0}^{\infty} \frac{(-1)^k \left(\frac{x}{2}\right)^{2k}}{(k+1)!k!} = xJ_1(x)
+\end{align}
+
+\end{document}

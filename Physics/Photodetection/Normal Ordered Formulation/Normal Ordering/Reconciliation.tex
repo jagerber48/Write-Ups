@@ -1,0 +1,309 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\highlightr}[1]{%
+  \colorbox{red!50}{$\displaystyle#1$}}
+  \newcommand{\highlightb}[1]{%
+    \colorbox{blue!50}{$\displaystyle#1$}}
+
+\begin{document}
+\title{Linear System and Photodetection}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I derive the statistics of the cavity output mode for a multimode linear system in the cavity using the vacuum fluctuation accounting formalism for photodetection. This in contrast to cases in the past when I have strictly used the Kelley-Kleiner normal ordering formalism.
+
+\section{General Linear System Dynamics}
+
+Consider a linear quantum system composed of $N$ bosonic modes described by Hermitian quadrature operators:
+
+\begin{align}
+\bv{v} = 
+\begin{bmatrix}
+\hat{X}_1\\\hat{P}_1\\
+\vdots\\
+\hat{X}_N\\\hat{P}_N
+\end{bmatrix}
+\end{align}
+
+Here  $\hat{X}_i = \frac{1}{\sqrt{2}}\left(\hat{a}_i^{\dag} + \hat{a} \right)$ and $\hat{P}_i = \frac{1}{\sqrt{2}}\left(\hat{a}_i^{\dag} - \hat{a}_i \right)$. $\hat{a}_i$ and $\hat{a}_i^{\dag}$ have bosonic commutation relations.
+
+Suppose the dynamics of this system is described by the following linear Heisenberg equations of motion:
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{M}\bv{v}(t) - \bv{\eta}(t)
+\end{align}
+
+Here $\bv{M}$ is a $2n \times 2n$ matrix describing the dynamics and $\bv{\eta}(t)$ is a vector describing thermal (or more general) input noise sources (ref: Gardiner/Collett input output paper).
+
+\begin{align}
+\bv{\eta} = 
+\begin{bmatrix}
+\sqrt{\Gamma_1}\hat{X}_1^{in}\\\sqrt{\Gamma_1}\hat{P}_1^{in}\\
+\vdots\\
+\sqrt{\Gamma_N}\hat{X}_N^{in}\\\sqrt{\Gamma_N}\hat{P}_N^{in}
+\end{bmatrix}
+\end{align}
+
+These operators satisfy
+
+\begin{align}
+\Braket{\hat{X}_i^{in}(t_1)\hat{X}_j^{in}(t_2)} &=  \Braket{\hat{P}_i^{in}(t_1)\hat{P}_j^{in}(t_2)} = \delta_{ij} \left(\bar{n}_i+\frac{1}{2}\right)\delta(t_1-t_2)\\
+\Braket{\hat{X}_i^{in}(t_1)\hat{P}_j^{in}(t_2)} &= \frac{i}{2}\delta(t_1-t_2)\delta_{ij}\\
+\left[\hat{X}_i^{in}(t_1)\hat{P}_j^{in}(t_2)\right] &= \frac{i}{2}\delta(t_1-t_2)\delta_{ij}\\
+\end{align}
+
+These noise correlation functions can be summarized by
+
+\begin{align}
+\bv{\eta}\bv{\eta}^{\dag} = \bv{\Gamma}\delta(t_1-t_2)
+\end{align}
+
+Where $\bv{\Gamma}$ is a block diagonal matrix where each block looks like
+
+\begin{align}
+\bv{\gamma}_i = &\Gamma_i
+\begin{bmatrix}
+\bar{n}_i+\frac{1}{2} && i\\
+-i && \bar{n}_i+\frac{1}{2}
+\end{bmatrix}\\
+\bv{\Gamma} &= 
+\begin{bmatrix}
+\bv{\gamma}_1 && &&\\
+ && \ddots && \\
+ && && \bv{\gamma}_N
+\end{bmatrix}
+\end{align}
+
+The solution to the equations of motion can be found by solving the differential equation for $\bv{v}(t)$ using standard techniques for linear differential equations:
+
+\begin{align}
+\bv{v}(t) = e^{\bv{M} t}\left(\bv{v}(0) - \int_{t'=0}^{t} e^{-\bv{M}t'}\bv{\eta}(t') dt' \right)
+\end{align}
+
+If we can diagonalize $\bv{M}$ then we can write $\bv{M} = \bv{P}\bv{D}\bv{P}^{-1}$ with $\bv{D}$ diagonal. The diagonal elements of $\bv{D}$ are the eigenvalues $d_i$ of $\bv{M}$ and the columns of $\bv{P}$ are the corresponding eigenvectors. In this case we have
+
+\begin{align}
+e^{\bv{M}t} = \bv{\chi}(t) = \bv{P}e^{\bv{D}t}\bv{P}^{-1}
+\end{align}
+
+This expansion is convenient because the expansion into coordinates is easily facilitated:
+
+\begin{align}
+\left(e^{\bv{M}t}\right)_{ik} = \chi_{ik}(t) = \sum_{j=1}^{2N} P_{ij} e^{d_j t} P^{-1}_{jk} = \sum_{j=1}^{2N} e^{d_j t} \tau_{ijk}
+\end{align}
+
+Here I've defined the 3 dimensional array (summation \textbf{not} implied)
+
+\begin{align}
+\tau_{ijk} = P_{ij}P^{-1}_{jk}
+\end{align}
+
+This is a mode overlap tensor. It tells us how strongly the presence of initial occupation of operator $v_l(0)$ contributes to oscillation at frequency $d_j$ of the operator $v_i(t)$. Given this we can expand
+
+\begin{align}
+v_i(t) = \sum_{j,k=1}^{2N}\left[\tau_{ijk}e^{d_j t}\left(v_k(0) - \int_{t'=0}^t e^{-d_j t'} \eta_k(t')dt' \right)\right]
+\end{align}
+
+
+
+\section{Photodetection}
+
+In this section I will consider photodetection of the field leaking out of the cavity. I will suppose that the $N^{th}$ bosonic mode is the intracavity field which we will detect. I will also for now assume that the detector is configured to measure the phase quadrature of the output field so that the detected signal will be related to $\hat{P}_N$. However, this scheme could be generalized to heterodyne measurements which measure both $\hat{X}_N$ and $\hat{P}_N$ and it could also be generalized to measurements of multiple intracavity modes, for example, two different polarizations of light in the cavity.
+
+I will give two analyses. In one analysis I will assume perfect detection efficiency along the whole detection chain. In the second analysis I will painstakingly include each inefficiency in the detection chain.
+
+\section{Perfect Detection Efficiency}
+
+The picture I have in mind includes a cavity in which the different observables $\bv{v}(t)$ are evolving. The observable we will ultimately measures is $\hat{P}_N$. Since $\hat{P}_N$ is driven by an input field $\hat{P}_N^{in}$ there is also a corresponding output field given by
+
+\begin{align}
+\hat{P}_N^{out}(t) = \sqrt{2\kappa}\hat{P}_N(t) + \hat{P}_N^{in}(t)
+\end{align}
+
+This signal is then sent towards a homo/heterodyne detector where it is mixed with a local oscillator which has complex amplitude $\alpha = |\alpha|e^{i\phi_{LO}}$ where the power in the local oscillator is given by $P_{LO} = \hbar \omega|\alpha|^2$ and the phase $\phi_{LO}$ is chosen so that a homodyne detector is sensitive to the phase quadrature of light.
+
+Generally the photocurrent measured by a (perfectly efficient) homodyne detector measuring signal field $\hat{P}_{det}$ is given by
+
+\begin{align}
+\hat{i}(t) = e|\alpha| \sqrt{2}\hat{P}_{det}(t)
+\end{align}
+
+In this case we have $\hat{P}_{det}(t) = \hat{P}_N^{out}(t)$ so
+
+\begin{align}
+\hat{i}(t) = e|\alpha|\sqrt{2} \left(\sqrt{2\kappa} \hat{P}_N(t) + \hat{P}_N^{in}(t)\right)
+\end{align}
+
+Note that $\hat{P}_N(t) = v_{2N}(t)$. Generally, and for notational convenience we could suppose that the measured field receives the index $\beta$ so that $\hat{P}_N(t) = v_{2N}(t) = v_{\beta}(t)$. We can then expand the measured field in terms of the intracavity operators:
+
+\begin{align}
+\hat{i}(t) = e|\alpha|\sqrt{2}\left(\sqrt{2\kappa} \tau_{\beta jk}e^{d_j t} v_k(0) - \sqrt{2\kappa} \tau_{\beta jk}\int_{t'=0}^t e^{d_j(t-t')} \eta_k(t')dt' + \sqrt{\frac{1}{2\kappa}}\eta_\beta(t) \right)
+\end{align}
+
+Here summation is implied over $j$ and $k$. There are three terms. The first term is the signal term. It contains information about $v_k(0)$ which is of interest. The second term captures noise on the intracavity operators which has arisen from the various noise baths. The final term can be though of as the input fluctuations which drive $\hat{P}_N$ which promptly reflect off of the cavity mirror rather than entering into the cavity.
+
+Notice that the two noise terms are not necessarily uncorrelated. This is because $\xi_{\beta} = \xi_{2N} = \hat{P}_{N}^{in}$ is correlated with the $\hat{P}_{N}^{in}$ and $\hat{X}_N^{in}$ terms in the first (integral) noise term.
+
+\section{Inclusion of Detection Inefficiencies}
+
+There are 4 detection inefficiencies I will consider. Cavity out-coupling efficiency, path efficiency, homodyne mode matching efficiency and detector quantum efficiency.
+
+\subsection{Cavity Out-Coupling Efficiency}
+
+There are multiple sources of loss in the cavity. We consider transmission at each mirrors, $T_1$ and $T_2$ and losses at each mirror $L_1$ and $L_2$. Each source of loss contributes a fraction to the total linewidth. If we are measuring the light transmitted out mirror 2 then we have
+
+\begin{align}
+\kappa_G &= \frac{T_2}{T_1+T_2+L_1+L_3} \kappa = \epsilon_C\kappa\\
+\kappa_B &= \frac{T_1+L_1+L_2}{T_1+T_2+L_1+L_3} \kappa
+\end{align}
+
+$\kappa_G$ is the good cavity loss which leads to detection. $\kappa_B$ is the bad cavity loss where photons are never recovered. Each of these loss channels is associated with a noise driving field. In fact we have
+
+\begin{align}
+\sqrt{\Gamma_{2N}}\hat{P}_N^{in} &= \sqrt{2\kappa} \hat{P}_N^{in}=\\
+&=\sqrt{2\kappa_{T_1}}\hat{P}_{T_1}^{in}+\sqrt{2\kappa_{T2}}\hat{P}_{T_2}^{in}+\sqrt{2\kappa_{L_1}}\hat{P}_{L_1}^{in}+\sqrt{2\kappa_{L_2}}\hat{P}_{L_2}^{in}
+\end{align}
+
+Because these 4 input fields are uncorrelated the replacement by $\sqrt{2\kappa}\hat{P}_N^{in}$ is justified.
+
+We saw above that the detected signal had two noise terms. One from the noise driving the cavity system and one from the promptly reflected fluctuations from at the cavity mirror. In the detected signal these two terms are not necessarily uncorrelated and so can beat together to create features in second order statistics of the measured signal.
+
+For this case the output field will be related to $\hat{P}_{T_2}^{in}$ rather than $\hat{P}_N^{in}$. In particular, we will have
+
+\begin{align}
+\hat{P}_{cav,out}(t) &= \hat{P}_{T_2}^{out}(t) = \sqrt{2\kappa_G}\hat{P}_N(t) + P_{T_2}^{in}(t)\\
+&= \sqrt{2\kappa}\sqrt{\epsilon_C} \hat{P}_N(t) + \hat{P}_{T_2}^{in}(t)
+\end{align}
+
+\subsection{Path Losses}
+
+The next detection inefficiency in the detection chain is path losses due to scattering or absorption on optics on the way from the cavity output to the local oscillator combination point for the homodyne detection
+
+We can wrap all of these losses into a single beamsplitter. We write
+
+\begin{align}
+\hat{P}_{det}(t) &= \sqrt{\epsilon_L}\hat{P}_{cav,out}(t) + \sqrt{1-\epsilon_L}\hat{\xi}_L(t)\\
+&= \sqrt{2\kappa}\sqrt{\epsilon_C\epsilon_L}\hat{P}_N(t) + \sqrt{\epsilon_L}\hat{P}_{T_2}^{in}(t) + \sqrt{1-\epsilon_L}\hat{\xi}_L(t)\\
+\end{align}
+
+\subsection{Mode Matching and Quantum Efficiency Losses in Homodyne Detection}
+
+For a homodyne detector configured to measure the phase quadrature of light as above but now including mode matching and quantum efficiency losses with incident signal field $\hat{P}_{det}(t)$ the measured photocurrent is given by
+
+\begin{align}
+\hat{i}(t) = e|\alpha|\sqrt{\epsilon_Q}\sqrt{2}\left(\sqrt{\epsilon_{MM}\epsilon_Q}\hat{P}_{det}(t) + \sqrt{1-\epsilon_{MM}\epsilon_Q}\hat{\xi}_H(t) \right)
+\end{align}
+
+I won't derive this here but I state that it roughly follow from thinking of mode matching losses like another loss port which attenuates power from the signal beam while the quantum efficiency is a loss port which affects both the signal beam and LO beam.
+
+\subsection{Putting it All Together}
+
+We can put this together to find
+
+\begin{align}
+\hat{i}(t) &= e|\alpha|\sqrt{\epsilon_Q} \sqrt{2}\Big[\sqrt{2\kappa}\sqrt{\epsilon_C\epsilon_L\epsilon_{MM}\epsilon_Q}\hat{P}_N(t)\\
+&+ \sqrt{\epsilon_L\epsilon_{MM}\epsilon_Q}\hat{P}_{T_2}^{in}(t) + \sqrt{\epsilon_{MM}\epsilon_Q}\sqrt{1-\epsilon_L}\hat{\xi}_L(t) + \sqrt{1-\epsilon_{MM}\epsilon_Q}\hat{\xi}_H(t) \Big]
+\end{align}
+
+We can define $\epsilon = \epsilon_L \epsilon_{MM} \epsilon_Q$, combine the last two terms which are uncorrelated, and reintroduce $\kappa_G$ to find
+
+\begin{align}
+\hat{i}(t) = e|\alpha|\sqrt{\epsilon_Q}\sqrt{2}\left(\sqrt{2\kappa_G \epsilon} \hat{P}_N(t) + \sqrt{\epsilon}\hat{P}_{T_2}^{in}(t) + \sqrt{1-\epsilon}\hat{\xi}_P(t) \right)
+\end{align}
+
+$\hat{\xi}_P$ represents the total partition noise arising from the different detection inefficiencies.
+We see that this expression reduces to the previous one if we take $\epsilon_Q = \epsilon = 1$ and $\kappa = \kappa_G$.
+
+We can expand this as above using
+
+\begin{align}
+\hat{P}_N(t) = v_{\beta}(t) = \tau_{\beta j k} e^{d_j t} v_k(0) - \tau_{\beta jk} \int_{t'=0}^{t} e^{d_j(t-t')}\eta_k(t') dt'
+\end{align}
+
+\begin{align}
+\hat{i}(t) = e|\alpha| \sqrt{\epsilon_Q}\sqrt{2}\Bigg[&\sqrt{2\kappa_G \epsilon} \tau_{\beta j k}e^{d_j t}v_k(0)\\
+& - \sqrt{2\kappa_G \epsilon} \tau_{\beta jk} \int_{t'=0}^{t}e^{d_j(t-t')}\eta_k(t') dt' + \sqrt{\epsilon}\hat{P}_{T_2}^{in}(t) + \sqrt{1-\epsilon}\hat{\xi}_P(t) \Bigg]
+\end{align}
+
+The first line represents the signal and the second line represents three different sources of noise. Note that the first and second noise terms are correlated because $\xi_{2N} = P_{N}^{in}(t')$ and $\xi_{2N-1} = \hat{X}_N^{in}(t)$ which include terms related to $P_{T_2}^{in}(t)$ and $X_{T_2}^{in}(t)$ which are correlated with $\hat{P}_{T_2}^{in}(t)$. However, note that $\xi_{2N} = \xi_{\beta}$ is not equal to $\hat{P}_{T_2}^{in}$ if $\kappa_B$ is non-zero.
+
+\section{Adiabatic Elimination, Zero Detuning}
+
+Here I will show how this expression reduces in the case that we can make an adiabatic elimination for the cavity mode evolution.
+
+For a multimode dispersively coupled optomechanical system the Heisenberg equation of motion for the phase quadrature of light is given by
+
+\begin{align}
+\dot{\hat{P}}_N(t) = +\Delta \hat{X}_N - \kappa \hat{P}_N(t) + 2 \sqrt{\bar{n}} \sum_{i=1}^{N-1} g_i \hat{X}_i - \sqrt{2\kappa_G} \hat{P}_N^{in}(t) - \sqrt{2\kappa_B}\hat{P}_{other}^{in}(t)
+\end{align}
+
+Here $\kappa_G+\kappa_B = \kappa$. I've allowed for sources of loss other than out the detection port with $\hat{P}_N^{other}(t)$. If $\kappa$ is the fastest timescale in the problem then we can adiabatically eliminate by setting $\dot{\hat{P}}_N = 0$. Also setting $\Delta = 0$ we find
+
+\begin{align}
+\hat{P}_N(t) = \frac{2\sqrt{\bar{n}}}{\kappa} g_i \hat{X}_i(t) - \frac{1}{\kappa}\sqrt{2\kappa_G}\hat{P}_{T_2}^{in}(t) - \frac{1}{\kappa}\sqrt{2\kappa_B}\hat{P}_{other}^{in}(t)
+\end{align}
+
+We can plug this into the formula above for the detected photocurrent to find
+
+\begin{align}
+\hat{i}(t) =& e|\alpha|\sqrt{\epsilon_Q}\sqrt{2}\Bigg[\sqrt{\frac{8\bar{n}}{\kappa}}\sqrt{\epsilon\frac{\kappa_G}{\kappa}}g_i \hat{X}_i(t) + \left(\sqrt{\epsilon} - 2\frac{\kappa_G}{\kappa} \sqrt{\epsilon}\right)\hat{P}_{T_2}^{in}(t)\\
+&-2\frac{\sqrt{\kappa_B\kappa_G}}{\kappa}\sqrt{\epsilon}\hat{P}_{other}^{in}(t) + \sqrt{1-\epsilon}\hat{\xi}_P(t)\Bigg]
+\end{align}
+
+Note the three noise terms are uncorrelated. If we calculate the two-time correlation function of these three terms the total contribution will be given by the following combination of constants multiplied by $\frac{1}{2}\delta(t-t')$:
+
+\begin{align}
+\epsilon\left(1-2\frac{\kappa_G}{\kappa}\right)^2 + 4 \epsilon \frac{\kappa_B \kappa_G}{\kappa^2} + 1-\epsilon &= \epsilon \left(1 + 4 \frac{\kappa_G^2}{\kappa^2} + 4 \frac{\kappa_G \kappa_B}{\kappa^2} - 4\frac{\kappa_G}{\kappa} \right) + 1-\epsilon\\
+&= 1 + 4\epsilon\frac{\kappa_G}{\kappa}\left(\frac{\kappa_G + \kappa_B}{\kappa} - 1 \right) = 1
+\end{align}
+
+since $\kappa_G + \kappa_B = \kappa$. We can thus combine all of these noise terms into one noise term $\hat{\xi}_T$ with $\Braket{\hat{\xi}_T(t_1)\hat{\xi}_T(t_2)} = \frac{1}{2}\delta(t-t')$.
+
+The detected photocurrent then reduces to (recalling $\frac{\kappa_G}{\kappa} = \epsilon_C)$
+
+\begin{align}
+\hat{i}(t) &= e|\alpha|\sqrt{\epsilon_Q}\sqrt{2}\Bigg[\sqrt{\frac{8\bar{n} \epsilon \epsilon_C}{\kappa}}g_i \hat{X}_i(t) + \hat{\xi}_{T}(t) \Bigg]\\
+\end{align}
+
+ If we define $\hat{\xi}_{SN} = \sqrt{2} \hat{\xi}_T$ so that $\Braket{\hat{\xi}_{SN}(t_1)\hat{\xi}_{SN}(t_2)} = \delta(t_1-t_2)$ (with no $\frac{1}{2}$ arising from the definition of quadrature operators) then we can write
+
+\begin{align}
+\hat{i}(t) = e|\alpha|\sqrt{\epsilon_Q}\sqrt{\frac{8\bar{n}\epsilon}{\kappa}}\left[\sqrt{2}g_i\hat{X}_i(t) + \sqrt{\frac{\kappa}{8\bar{n}\epsilon}}\hat{\xi}_{SN}(t)\right]
+\end{align}
+
+Let $P_{SN} = \frac{\kappa}{8\bar{n}\epsilon\epsilon_C}$ and define
+
+\begin{align}
+\hat{S}(t) &= \left(e |\alpha|\sqrt{\epsilon_Q}\sqrt{\frac{8\bar{n}\epsilon\epsilon_C}{\kappa}}\right)^{-1}\hat{i}(t)\\
+&= \sqrt{2}g_i\hat{X}_i(t) + \sqrt{P_{SN}}\hat{\xi}_{SN}(t)
+\end{align}
+
+In perfect agreement with the formula in the matched filter draft.
+
+\end{document}

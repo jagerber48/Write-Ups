@@ -1,0 +1,1118 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\bibliographystyle{plain}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{physics}
+\usepackage{empheq}
+\usepackage{tensor}
+\usepackage{xfrac}
+\usepackage{hyperref}
+
+\newcommand{\pll}{\parallel}
+\newcommand{\pardiv}[2][]{\frac{\partial #1}{\partial #2}}
+\newcommand{\vecnab}{\vec{\nabla}}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+ 
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\title{Bogoliubov Transformations and Coupled Oscillators}%replace X with the appropriate number
+\author{Justin Gerber}
+\date{\today}
+
+\maketitle
+
+Here I will give an introduction to Bogoliubov transformations and their application to the positive-negative mass coupled oscillators E3 is investigating at the moment. I will be following pretty closely the introduction of arXiv:0908.0787 ``Theory of transformation for the diagonalization of quadratic Hamiltonians". Some of the ideas later in the write up come from R. Rossignoli and A. M. Kowalski
+Phys. Rev. A 72, 032101 ``Complex modes in quadratic bosonic forms''. Finally, some of the comments on this stack exchange post http://physics.stackexchange.com/questions/53158/validity-of-bogoliubov-transformation 
+\\from user ``Qmechanic'' were helpful.
+
+\section{Quadratic Hamiltonian}
+The Bogoliubov transformation takes a Hamiltonian, $\hat{\mathcal{H}}$ written in terms of one set of bosonic (or fermionic) operators, $c = (c_1, ... c_n)$ and their hermitian conjugates $c^{\dag}$ and transforms it into another set of bosonic operators $d = (d_1, ... d_n)$. Note that I'm omitting hats on the operators for brevity and that $c$ and $d$ represent vectors of operators. We are interested in such a transformation because the original bosonic operators, $c$ may be coupled in the Hamiltonian. The hope is that by performing the proper Bogoliubov transformation we will have a Hamiltonian which consists only of uncoupled modes. I will restrict to bosonic operators, leaving out fermionic operators.
+
+If the Hamiltonian is purely quadratic in the bosonic operators then we can cover all two operator combinations (combinations of indices as well as conjugations) by defining
+\begin{equation}\Psi = 
+\begin{bmatrix}
+c \\
+c^{\dag T}
+\end{bmatrix} = 
+\begin{bmatrix}
+c_1\\
+...\\
+c_n\\
+[c_1^{\dagger}, ... c_n^{\dagger}]^T
+\end{bmatrix}
+\end{equation}
+
+and putting this vector into a quadratic form with matrix $M$.
+
+\begin{equation} \label{origham} \hat{\mathcal{H}} = \frac{1}{2} \Psi^{\dag} M \Psi - \frac{1}{2} \text{Tr}(\alpha) \end{equation} 
+Where
+\begin{equation}
+M = 
+\begin{bmatrix}
+\alpha & \gamma\\
+\gamma^{\dag} & \alpha^T
+\end{bmatrix}
+\end{equation}
+$\alpha$ and $\gamma$ are $n \times n$ matrices.
+Note that upon expansions of the first term there will be many redundant terms such as non-normal ordered terms and normal ordered terms and also terms with reversed indices. To ensure that 1) the Hamiltonian $\hat{\mathcal{H}}$ is hermitian and 2) these redundant terms are treated symmetrically we impose the constraints that:
+\begin{equation} \alpha = \alpha^{\dagger} \hspace{1 in} \gamma = \gamma^T \end{equation}
+That is $\alpha$ is hermitian and $\gamma$ is symmetric. These conditions imply that the matrix $M$ is also hermitian, i.e. $M = M^{\dagger}$. I point out that the superscript $^T$ indicates the matrix transpose and $^\dagger$ indicates hermitian conjugation, i.e. matrix transpose composed with complex conjugation. This distinction will be important later (in contrast to what is usually the case in quantum mechanics!). The second term $\frac{1}{2}\text{Tr}(\alpha)$ arises due to the fact that the expression resulting from expanding the first term will not be normal ordered. If you apply the proper commutations to make the first term normal ordered you will find this second term is canceled.
+
+We can also express the commutation relations in matrix form. Define $\hat{A}\cdot\hat{B} = [\hat{A},\hat{B}]$, then we have, under usual matrix multiplication:
+\begin{equation}
+\label{Psicomrel}
+\Psi \cdot \Psi^{\dagger} = 
+\begin{bmatrix}
+I && 0\\
+0 && -I
+\end{bmatrix} = \eta \end{equation}
+
+I'll point out here that this $-I$ in the bottom right block will be the cause of a lot of the complexity in what follows. Interestingly, for fermionic operators that minus sign turns into a plus sign so that $\eta = I$. This is one of the major differences between the two theories. The take away from this equation is that since $\Psi$ satisfies this equation we know that the $\{c_1, ... c_n\}$ operators satisfy all of the usual boson commutation relations, i.e. they are bosonic operators.
+
+
+\section{General Bogoliubov Transformation for Bosons}
+The idea behind the Bogoliubov transformation is to perform a linear combination amongst the existing bosonic operators, $\{c_1, ... c_n\}$ to get a new set of operators  $\{d_1, ... d_n\}$ which satisfy two conditions. The first condition is that the new operators should be boson operators in that they satisfy the usual boson commutation relations. The second condition is that the Hamiltonian should be diagonal in these new operators, with the physical implication being that these new `Bogoliubov modes' will now be uncoupled modes whose behaviors can be analyzed individually. We transform interacting bosons into non-interacting bosons.
+
+We encapsulate this mathematically by introducing the new operators $\{d_1, ... d_n\}$ and the vector 
+\begin{equation}\Phi = 
+\begin{bmatrix}
+d \\
+d^{\dag T}
+\end{bmatrix} = 
+\begin{bmatrix}
+d_1\\
+...\\
+d_n\\
+[d_1^{\dagger}, ... d_n^{\dagger}]^T
+\end{bmatrix}
+\end{equation}
+
+We define a transformation matrix $T$ which transforms between the $c$ operators and $d$ operators by:
+\begin{equation} \Psi = T \Phi\end{equation}
+
+To impose the first constraint, that the new operators are bosonic, we demand that:
+\begin{equation} \Phi \cdot \Phi^\dag = \eta\end{equation}
+
+We plug this into Eq. \ref{Psicomrel} to find
+
+\begin{equation} \label{etaeq} \Psi \cdot \Psi^{\dagger} = T \Phi \cdot \Phi^{\dagger} T^{\dagger} = T \eta T^{\dagger} = \eta \end{equation}
+
+In other words, if $T$ satisfies $T \eta T^{\dagger} = \eta$ then the operators $\{d_1, ... d_n\}$ satisfy the bosonic commutation relations and are thus bosonic operators.
+
+The second condition is that the Hamiltonian is (quadratic) diagonal in the new operators. We express this mathematically by revisiting Eq. \ref{origham} (and dropping constant terms as they won't make a physical difference in this case).
+\begin{equation}
+\label{Nham}
+\hat{\mathcal{H}} = \frac{1}{2} \Psi^{\dagger} M \Psi = \Phi^{\dagger}T^{\dagger} M T \Phi = \Phi^{\dagger} N \Phi
+\end{equation}
+
+It is clear that if $N$ is a diagonal matrix then $\hat{\mathcal{H}}$ will be diagonal in the bosonic operators $\{d_1, ... d_n\}$. Note that $N=N^{\dag}$ is hermitian.
+
+I want to point a distinction which confused me for some time. What we are doing here is \textit{different} than what we usually do when we diagonalize a matrix. Normally the procedure for diagonalizing a matrix $G$ is to find the eigenvalues of $G$ (typically by finding the determinant of $G-\lambda I$) and then using these to find the eigenvectors of $G$. We typically stop here and say we've ``diagonalized $G$'' but I'll just remind you that we can actually write down a diagonal matrix and what the procedure is for that. First you make a matrix out of the eigenvectors of $G$ (each eigenvector represented as a column vector).
+\begin{equation}
+P = \begin{bmatrix}
+\vline && && \vline\\
+e_1 && \cdots && e_n\\
+\vline && && \vline
+\end{bmatrix}
+\end{equation}
+Then if you sandwich $G$ by this matrix in the following way:
+\begin{equation}
+P^{-1}GP = \begin{bmatrix}
+\lambda_1 && &&\\
+&& \ddots && \\
+&& && \lambda_n
+\end{bmatrix} = D
+\end{equation} 
+You end up with a diagonal matrix $D$ which has the corresponding eigenvalues on the diagonal. I'll also remind you that if the matrix $G$ is hermitian (like $M$ is) then $P$ will be unitary ($P^{\dagger} = P^{-1}$ or alternatively $PP^{\dagger} = I)$.
+
+However, in our case, instead of $D$ we end up with the matrix $N$ which is $M$ conjugated by $T$ and $T^{\dagger}$ \textit{rather than} being conjugated by $T$ and $T^{-1}$. Also note that $T$ is not necessarily unitary. Instead of satisfying $TT^{\dagger} = I$ we have the condition from Eq. \ref{etaeq} which is $T \eta T^{\dagger} = \eta$. Note that if we were dealing with fermions then $T$ would be unitary. This means that \textit{if} we are able to find a transformation $T$ such that it satisfies Eq. \ref{etaeq} and Eq. \ref{Nham} with $N$ diagonal that we should not in general expect those diagonal elements to be the eigenvalues of the original matrix $M$. In other words (in the case of bosons) there is a slight difference between performing a Bogoliubov transformation and diagonalizing the representative matrix for the quadratic Hamiltonian.
+
+However (again), the question might arise ``what happens if we do just go ahead and diagonalize the matrix $M$?'' That is a valid thing to do. You will end up with a unitary transformation matrix $T$ which will transform the original bosonic operators into a new set of operators. However, in general a unitary matrix $P$ will not satisfy Eq. \ref{etaeq} (unless the transformation is trivial.) This means that the new operators resulting from $\Phi = T^{-1}\Psi$ will \textbf{not} be bosonic operators. If you wish you can work with this, but the commutation relation operations for bosonic operators are very nice so we like to stick with those commutation relations. In particular they allow for the notion of raising and lowering operators and number states.
+
+
+\section{Specifying to Positive and Negative Mass Oscillator}
+We will now sacrifice some generality because we don't need it all to describe our physical situation and it will allow us to perform some helpful tricks. 
+\subsection{Positive Mass}
+We first work through the case of two positive mass coupled oscillators to cut our teeth on the theory.
+\begin{equation}\hat{\mathcal{H}} = \frac{\Delta}{2} a^{\dagger}a - \frac{\Delta}{2} b^{\dagger}b + \frac{\Omega}{2}a^{\dagger}b + \frac{\Omega}{2} a b^{\dagger}\end{equation}
+
+This Hamiltonian arises (as in Dan's negative mass instability writeup) from looking at the Hamiltonian for two coupled oscillators expressed in bosonic operators, neglecting the off-resonant or fast-rotating terms ($a^{\dagger}b^{\dagger}$ and $ab$ in this case), moving into a frame rotating at rate $\omega_0$, the average frequency of the two oscillators, and setting $\hbar =1$.
+If we followed exactly the formalism I laid out above we would need a $4\times4$ matrix to express this Hamiltonian, however, since we have neglected some of the terms using the rotating wave approximation it turns out we can express this Hamiltonian with a $2\times2$ matrix by defining:
+\begin{equation}
+\Psi = 
+\begin{bmatrix}
+a\\b
+\end{bmatrix}
+\end{equation}
+then we have (again, possibly dropping constant terms)
+\begin{equation}
+\hat{\mathcal{H}} = \Psi^{\dagger} M \Psi = \frac{1}{2}[a^{\dagger}, b^{\dagger}] 
+\begin{bmatrix}
+\Delta && \Omega\\
+\Omega && -\Delta
+\end{bmatrix}
+\begin{bmatrix}
+a\\b
+\end{bmatrix}
+\end{equation}
+
+Note that in this simplified case we have $\Psi \cdot \Psi^{\dag} = I$ as opposed to $\eta$ to ensure the operators are bosonic. This is because $\Psi$ does not contain conjugated operators. This means that taking a Bogoliubov transformation is actually the same as diagonalizing the matrix $M$ in the usual sense. This problem is the usual two state Rabi problem. $M$ can be diagonalized by the unitary rotation matrix:
+\begin{equation}
+\label{trig}
+T =
+\begin{bmatrix}
+\cos{\theta} && \sin{\theta}\\
+-\sin{\theta} && \cos{\theta}
+\end{bmatrix}
+\end{equation}
+I won't go through the detail of this problem here but for reference it is solved if $\tan{2\theta} = -\frac{\Omega}{\Delta}$ and the eigenvalues are $\epsilon_{\pm} = \pm \frac{1}{2}\sqrt{\Delta^2 +\Omega^2}$. Some people probably wouldn't even call this a Bogoliubov transformation but I think it is helpful as a specification of the more general theory.
+\subsection{Negative mass}
+We make two changes to get the Hamiltonian for the negative mass case. First the $-\Delta$ on the $b^{\dag}b$ term loses its minus sign. This is because the negative mass oscillator has oscillates at negative frequency (this is essentially what we mean by negative mass oscillator, at least in Hamiltonian language) and also we now keep the $a^\dag b^\dag$ and $ab$ terms and drop the $a^\dag b$ and $a b^\dag$ terms. This is because which terms couple off-resonant states has swapped between the two sets of combinations. We find
+\begin{equation}\hat{\mathcal{H}} = \frac{\Delta}{2} a^{\dagger}a + \frac{\Delta}{2} b^\dag b + \frac{\Omega}{2} a^\dag b^{\dag} + \frac{\Omega}{2} ab\end{equation}
+Because of the particular combinations of operators that appear we can't choose the same vector $\Psi$ as we did in the positive mass case so we will end up with more of a proper Bogoliubov transformation to describe our Hamiltonian.
+\begin{equation}
+\Psi = 
+\begin{bmatrix}
+a\\b^{\dag}
+\end{bmatrix}
+\end{equation}
+
+In this case we are now back to the situation where $\Psi \cdot \Psi^{\dag} = \eta$ so the typical diagonalization procedure will not solve the problem here.
+
+
+\begin{equation}
+\hat{\mathcal{H}} = \Psi^{\dagger} M \Psi = \frac{1}{2}[a^{\dagger}, b] 
+\begin{bmatrix}
+\Delta && \Omega\\
+\Omega && \Delta
+\end{bmatrix}
+\begin{bmatrix}
+a\\b^{\dagger}
+\end{bmatrix}
+\end{equation}
+
+
+We define $\Phi$:
+\begin{equation}
+\Phi = \begin{bmatrix}
+c\\d^{\dagger}
+\end{bmatrix} 
+\end{equation}
+with $T \Phi = \Psi$. So that 
+
+\begin{equation}
+\hat{\mathcal{H}} = \Phi^{\dagger} T^{\dag}MT \Phi = \Phi^{\dag}N \Phi
+\end{equation}
+
+
+The goal now is to find $T$ such that $T \eta T^{\dagger} = \eta$ and $T^{\dagger}MT=N$ is diagonal. First I'll note that it is possible to show that if $T\eta T^{\dag} = \eta$ then in full generality $T$ can be expressed as (see Appendix B):
+\begin{equation}
+\label{nonunit}
+T=\begin{bmatrix}
+u && v\\
+e^{i \phi} v^* && e^{i \phi} u^*
+\end{bmatrix}
+\end{equation}
+With the constraint that $\abs{u}^2 - \abs{v}^2 =1$. The ``trick''is to see what we can get away with by assuming $\phi = 0$ and that $u$ and $v$ are real. In this case, we can use the trick that any two real numbers $u$ and $v$ which satisfy $\abs{u}^2 - \abs{v}^2$ can be written as $u = \cosh(\theta)$ and $v = \sinh(\theta)$ for some (real) angle $\theta$. Under this specification we have (compare to Eq. \ref{trig}):
+\begin{equation}
+\label{sinheq}
+T = \begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\end{equation}
+Note that all of the entries here are real so we have that $T = T^T = T^{\dag}$.
+In this form $T$ is guaranteed to satisfy $T \eta T^{\dag} = \eta$ so what is left is to choose $\theta$ so that $T^{\dagger}MT=N$ is diagonal. 
+
+For reference
+\begin{equation}
+T^{-1} = 
+\begin{bmatrix}
+\cosh(\theta) && -\sinh(\theta)\\
+-\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\end{equation}
+
+With the form of $T$ we can now explicitly write down the form of $N$
+\begin{align}
+\label{longeq}
+N &= T^{\dagger}MT = 
+\begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\begin{bmatrix}
+\Delta && \Omega\\
+\Omega && \Delta
+\end{bmatrix}
+\begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+(\cosh^2(\theta)+\sinh^2(\theta))\Delta + 2\cosh(\theta)\sinh(\theta)\Omega&& 
+(\cosh^2(\theta)+\sinh^2(\theta))\Omega + 2\cosh(\theta)\sinh(\theta)\Delta\\
+(\cosh^2(\theta)+\sinh^2(\theta))\Omega + 2\cosh(\theta)\sinh(\theta)\Delta && 
+(\cosh^2(\theta)+\sinh^2(\theta))\Delta + 2\cosh(\theta)\sinh(\theta)\Omega
+\end{bmatrix}
+\end{align}
+
+We want $N$ to be diagonal so we demand the off-diagonal elements are $0$. This means
+
+\begin{equation}
+\label{tanheq}
+\frac{2\cosh(\theta)\sinh(\theta)}{\cosh^2(\theta)+\sinh^2(\theta)} = \tanh(2\theta) = -\frac{\Omega}{\Delta}
+\end{equation}
+
+Using a hyperbolic trig identity. Again note the similarity to the Rabi problem. The two on diagonal elements are equal and we call their value $\omega$.
+
+\begin{align}
+\omega &=\bigg[(\cosh^2(\theta)+\sinh^2(\theta))\Delta + 2\cosh(\theta)\sinh(\theta)\Omega\bigg] \\
+&=\bigg[\cosh(2\theta) \Delta + \sinh(2\theta)\Omega\bigg]\\
+&= \bigg[\cosh(\text{arctanh}( -\frac{\Omega}{\Delta}))\Delta +\sinh(\text{arctanh}( -\frac{\Omega}{\Delta})) \Omega\bigg]
+\end{align}
+
+We find from Wikipedia that 
+\[\cosh(\text{arctanh}( -\frac{\Omega}{\Delta})) = \frac{1}{\sqrt{1-(-\frac{\Omega}{\Delta})^2}} = \frac{\Delta}{\sqrt{\Delta^2 - \Omega^2}}\]
+\[\sinh(\text{arctanh}( -\frac{\Omega}{\Delta})) = \frac{-\frac{\Omega}{\Delta}}{\sqrt{1-( -\frac{\Omega}{\Delta})^2}} = \frac{-\Omega}{\sqrt{\Delta^2 - \Omega^2}}\]
+
+So we find
+
+\begin{equation}
+\omega = \frac{\Delta^2 - \Omega^2}{\sqrt{\Delta^2-\Omega^2}} = \sqrt{\Delta^2-\Omega^2}
+\end{equation}
+
+Thus we find that for this particular choice of $\theta$
+
+\begin{equation}
+N = \begin{bmatrix}
+\sqrt{\Delta^2-\Omega^2} && 0\\
+0 && \sqrt{\Delta^2-\Omega^2}
+\end{bmatrix}
+\end{equation}
+
+Also note that
+\begin{equation}
+T^{-1} = \begin{bmatrix}
+	\cosh(\theta) && -\sinh(\theta)\\
+	-\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\end{equation}
+
+We can then use $\Phi = T^{-1}\Psi$ to find
+\begin{align}
+c &= \cosh(\theta) a -\sinh(\theta) b^{\dag}\\
+d^{\dag} &= -\sinh(\theta) a + \cosh(\theta) b^{\dag}
+\end{align}
+
+and putting it all together recalling the factor of two in the definition of the Hamiltonian in terms of matrices, we have
+
+\begin{align}
+\hat{\mathcal{H}} &= \frac{\Delta}{2} a^{\dagger}a + \frac{\Delta}{2} b^\dag b + \frac{\Omega}{2} a^\dag b^{\dag} + \frac{\Omega}{2} ab\\
+&= \frac{1}{2} \sqrt{\Delta^2-\Omega^2} c^{\dag}c + \frac{1}{2} \sqrt{\Delta^2-\Omega^2} d^{\dag}d
+\end{align}
+
+This is the Hamiltonian expressed in terms of non-interacting boson modes. I'll note here that we could have chosen the other branch of the multi-valued $\text{arctanh}$ function which would have resulted in $N\rightarrow-N$. I'm still confused why we don't have $+\omega$ and $-\omega$ appearing simultaneously, I think it has something to do with intuition about bogoliubov modes, but at the moment it seems like both modes are either damped or both modes or amplified.
+
+\section{Instability}
+
+This all works for the region when $\Omega < \abs{\Delta}$. However, In the region $\Omega>\abs{\Delta}$ (i.e. stronger coupling between the oscillators) there seems to be an issue. $\sqrt{\Delta^2-\Omega^2}$ becomes imaginary under those conditions. However $c^{\dag}c$ and $d^{\dag}d$ are both presumably hermitian operators. This means a hermitian expression is equal to a non-hermitian expression. Clearly something has gone wrong.
+
+The error can be traced back to Eq. \ref{sinheq} and Eq. \ref{tanheq}. First I'll remind you that the range of $\tanh(2\theta)$ is $(-1,1)$ for real $\theta$. But notice that in Eq. \ref{tanheq} we equate $\tanh(2\theta)$ with something outside of that range if $\Omega>\abs{\Delta}$. This is ok for hyperbolic trig functions. It turns out that $\tanh(2\theta)$ can meet that requirement if $\theta$ is allowed to be complex or imaginary. However, Eq. \ref{sinheq} was written down with the assumption that $\theta$ was real. If $\theta$ becomes imaginary then it is no longer true that $\sinh(\theta) = \sinh(\theta)^*$, i.e. it is no longer real valued. In this case it is no longer the case that $T=T^{\dag}$ which was used in Eq. \ref{longeq}.  This all means that the given expression for $T$ no longer fits the general form so that $T \eta T^{\dag}= \eta$ which means that the operators resulting from this analysis do not satisfy bosonic commutation relations when the parameters are in the unstable region. Again, this is a problem because we want to have the nice bosonic commutation relations so that we can apply our usual intuitions.
+
+The first hope is to look at Eq. \ref{sinheq} and realize that it was over-constraining the general form of a matrix that satisfies $T \eta T^{\dag} = \eta$ which is specified in Eq. \ref{nonunit} and hope that if we go back to the more general form for $T$ maybe we can find a transformation that has the properties we desire. However, it can be shown that there in the region $\Omega > \abs{\Delta}$ that there is no matrix $T$ which will satisfy the bosonic commutation relations \text{and} diagonalize the Hamiltonian matrix. The proof is as follows:
+
+First we show that $\text{det}(N) = \text{det}(M) = \Delta^2-\Omega^2$.
+\begin{equation}
+\text{det}(N) = \text{det}(T^{\dag}MT) = \text{det}(T^{\dag})\text{det}(M)\text{det}(T) = e^{-i\phi} \text{det}(M) e^{i\phi} = \text{det}(M) =  \Delta^2-\Omega^2
+\end{equation}
+
+Where $\phi$ is from the general definition of $T$ in Eq. \ref{nonunit}.
+
+$N$ is a hermitian matrix so we can write it as 
+\begin{equation}
+N = \begin{bmatrix}
+A && B\\
+B^* && A
+\end{bmatrix}
+\end{equation}
+
+with $A$ real. In the problem we would $N$ to be diagonal so that means we should have $B=0$. In that case we write
+\begin{equation}
+0 \le A^2 = \text{det}(N) = \Delta^2 -\Omega^2
+\end{equation}
+which implies that $\Omega \le \abs{\Delta}$. The problem becomes highly degenerate if $\Omega = \abs{\Delta}$ because then $A=0$ which means that $N=0$ so the diagonalization fails very badly.
+
+Suffice it to say that this proof shows it is impossible to perform the Bogoliubov transformation for our Hamiltonian if $\Omega \ge \abs{\Delta}$.
+
+\section{Non-hermitian conjugate pair operators}
+The first equation which was actually wrong in the previous analysis was Eq. \ref{longeq} because the right hand side of the first line assumed $T = T^{\dag}$ which is not true if we allow $\theta$ to be complex as we must if we want to satisfy Eq. \ref{tanheq} for $\Omega > \abs{\Delta}$. One thing we can do to allow the mathematics to work out is to continue to use Eq. \ref{sinheq} to define $T$ but to replace the hermitian conjugation in Eq. \ref{longeq} with the matrix transpose and write
+$N = T^{T}MT$
+If we do that then all of the subsequent math checks out. 
+Note that we can show that $T \eta T^T = \eta$ (Appendix B) so we know that the transformation will preserve the bosonic commutation relations.
+However we have to back up a few steps to see the consequences of this change. We had the equation
+\begin{equation}
+\hat{\mathcal{H}} = \Psi^{\dag}M\Psi =  \Phi^{\dagger} T^{\dag}MT \Phi = \Phi^{\dag}N \Phi
+\end{equation}
+But now with the redefinition of $N$ we need to figure out how to replace $T^{\dag}$ with $T^T$. We define a new operator
+\begin{equation}
+\Phi = 
+\begin{bmatrix}
+c\\\bar{d}
+\end{bmatrix}
+\end{equation}
+Which is defined by
+\begin{equation}
+\label{phieq1}
+\Psi = T \Phi \hspace{.25in} \Rightarrow \hspace{.25in} \Phi = T^{-1}\Psi
+\end{equation}
+
+The bar notation is defined by this transformation. As we will see that in general $\bar{d}\neq d^{\dag}$, though in cases when a Bogoliubov transformation is possible we will have equality. This bar will take the place of hermitian conjugation and we will explore the differences which emerge in the theory. We also define $\bar{\Phi}$ by
+\begin{equation}
+\label{phibareq}
+\Psi^{\dag} = \bar{\Phi} T^{T} \Rightarrow \bar{\Phi} = \Psi^{\dag} (T^{T})^{-1} = [\bar{c}, d]
+\end{equation}
+
+Note that the 4 equations expressed in Eqs. \ref{phieq1} and \ref{phibareq} define $c$, $\bar{c}$, $d$, and $\bar{d}$. This is in contrast to the earlier definition of $\Phi$ which only needed two equations to define $c$, $c^{\dag}$, $d$, and $d^{\dag}$ since the definition of hermitian conjugation takes the place of the other two equations. 
+
+With these definitions we can see that
+\begin{equation}
+\hat{\mathcal{H}} = \Psi^{\dag}M\Psi = \bar{\Phi}T^T M T \Phi = \bar{\Phi}N\Phi
+\end{equation}
+
+At this point all of the analysis from Eq. \ref{longeq} on is now correct again since for that definition of $T$ we \textit{do} still have that $T=T^T$.
+
+Following that analysis through replacing the daggers by bars we find the non-interacting Hamiltonian
+\begin{align}
+\hat{\mathcal{H}} &= \frac{\Delta}{2} a^{\dagger}a + \frac{\Delta}{2} b^\dag b + \frac{\Omega}{2} a^\dag b^{\dag} + \frac{\Omega}{2} ab\\
+&= \frac{1}{2} \sqrt{\Delta^2-\Omega^2} \bar{c}c + \frac{1}{2} \sqrt{\Delta^2-\Omega^2} \bar{d}d
+\end{align}
+
+\subsection{Some properties of the operators}
+
+These are strange operators so let's play with them a little to try to understand them. First, I will emphasize the fact that they obey the usual bosonic commutation relations.
+\begin{equation}
+\Phi \cdot \bar{\Phi} = T^{-1}\Psi \cdot \Psi^{\dag} (T^T)^{-1} = T^{-1} \eta T^{-1}
+\end{equation}
+
+Since $T=T^T$ But, it can also easily be shown that the $T$ we have chosen satisfies $T\eta T^{T} = \eta$ which implies $T^{-1} \eta = \eta T^{T} = \eta T$ so that
+\begin{equation}
+\label{phicom}
+\Phi \cdot \bar{\Phi} = \eta T T^{-1} = \eta
+\end{equation}
+which implies that $[c,\bar{c}]=[d,\bar{d}] = 1$ and that all other combinations have zero commutator. These commutation relations give us hope that we can sensibly define raising and lower operations and ``number'' states for these operators which will allow us to transfer a lot of our intuition from regular bosons or harmonic oscillators.
+
+Though it isn't necessary for what we're working with we can also work out $\Phi^{\dag}$.
+\begin{align}
+&\Phi = T^{-1} \Psi\\
+&\bar{\Phi} = (T^T)^{-1}\Psi^{\dag}\\
+&\Phi^{\dag} = \Psi^{\dag} (T^{-1})^{\dag} = \bar{\Phi} T^T (T^{\dag})^{-1}
+\end{align}
+
+Recalling $(T^{-1})^{\dag} = (T^{\dag})^{-1}$. So we can see that $\Phi^{\dag}$ is not equal to $\bar{\Phi}$ to the extent that $T^T (T^{\dag})^{-1}$ is not equal to $I$, the identity. Actually one (or Mathematica) can show that 
+\begin{equation}
+T^T (T^{\dag})^{-1} = 
+\begin{bmatrix}
+\cos(2 \Im(\theta)) && i \sin(2\Im(\theta))\\
+i \sin(2\Im(\theta)) && \cos(2 \Im(\theta))
+\end{bmatrix}
+\end{equation}
+
+This equation reduces to the identity if $\Im(\theta)=0$ as expected. I'll note here that in our case if $\tanh(2 \theta) = -\frac{\Omega}{\Delta}$ with $\Omega > \abs{\Delta}$ then $\Im(\theta) =\Im\left(\frac{1}{2}\text{arctanh}\left(\frac{-\Omega}{\Delta}\right)\right) = \pm \frac{\pi}{4}$ depending on whether $\Delta$ is positive or negative. See Fig. 1.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.75\textwidth]{tanh.jpg}
+\caption{Real and Imaginary parts of $\text{arctanh}(x)$. Vertical axis in units of $\pi$.}
+\end{figure}
+
+Working in the region where $\Im(\theta) = +\frac{\pi}{4}$ we have
+\begin{equation}
+\Phi^{\dag} = [c^{\dag}, \bar{d}^{\dag}] = [\bar{c},d] \begin{bmatrix}0&&i\\i&&0\end{bmatrix} = [id,i\bar{c}]
+\end{equation}
+From which we can derive
+\begin{align*}
+c = -id^{\dag} && \bar{c} = -i\bar{d}^{\dag}\\
+c^{\dag} = id && \bar{c}^{\dag} = i\bar{d}
+\end{align*}
+
+So we see that actual hermitian conjugation intermixes $c$ and $d$.
+
+Another interesting question is how comparable $\bar{c}c$ is to a usual number operator such as $n_a = a^{\dag}a$. First off, since in general $\bar{c}\neq c^{\dag}$ we know that in general $\bar{c}c$ is not hermitian. Typically hermitian operators are nice because we know that they have real eigenvalues whose eigenvectors are orthogonal. Does something comparable hold for our operators? It turns out that there is a more general class of operators than hermitian operators, known as normal operators, which also have orthogonal eigenspaces (Appendix D), however they don't necessarily have real eigenvalues. A normal operator is one which commutes with its hermitian conjugate.
+\begin{equation}
+AA^{\dag} = A^{\dag}A
+\end{equation}
+
+Let's see if $\bar{c}c$ is normal.
+\begin{equation}
+\bar{c}c (\bar{c}c)^{\dag} = \bar{c}c c^{\dag} \bar{c}^{\dag} =
+\bar{c}c (id) (i \bar{d}) = (id)(i\bar{d})\bar{c}c = c^{\dag}\bar{c}^{\dag}\bar{c}c = (\bar{c}c)^{\dag} \bar{c}c
+\end{equation}
+Since the $c$'s and $d$'s commute according to Eq. \ref{phicom}. so $\bar{c}c$ is a normal operator which means its eigenvectors are orthogonal (phew, we'd be in trouble otherwise!)
+
+\subsection{Raising and lowering operators}
+With the information in hand that $\bar{c}c$ has orthogonal eigenvectors and the fact that $[c,\bar{c}] = 1$ we can go ahead and start deriving their properties as raising and lowering operators.
+
+Suppose $\ket{\alpha}$ is an eigenvector of $\bar{c}c$. We'll allow $\alpha$ to be complex. In this case I don't think we'll find any further restriction on $\alpha$. In the usual case we go through some algebra to find that $\alpha$ must be a non-negative integer, but the requirements of those proofs break down in this case.
+\begin{equation}
+\bar{c}c \ket{\alpha} = \alpha \ket{\alpha}
+\end{equation}
+We derive the lowering property:
+\begin{equation}
+\bar{c}c (c\ket{\alpha}) = (c \bar{c}-1)c \ket{\alpha} = (c \bar{c} c -c)\ket{\alpha} = c (\alpha-1) \ket{\alpha} = (\alpha-1) (c \ket{\alpha})
+\end{equation}
+so we see that $c \ket{\alpha}$ is an eigenvector of $\bar{c}c$ with eigenvalue $\alpha-1$. This means we can call $c$ a lowering operator.
+
+\begin{equation}
+\bar{c}c (\bar{c}\ket{\alpha}) = \bar{c}(\bar{c}c +1) \ket{\alpha} = \bar{c}(\alpha+1) \ket{\alpha} = (\alpha+1)(\bar{c}\ket{\alpha})
+\end{equation}
+
+so we see that $\bar{c}\ket{\alpha}$ is an eigenvector of $\bar{c}c$ with eigenvalue $\alpha+1$ so $\bar{c}$ is a raising operator.
+\begin{align}
+c\ket{\alpha} = C^-_{\alpha}\ket{\alpha-1} \\
+\bar{c}\ket{\alpha} = C^+_{\alpha}\ket{\alpha+1}
+\end{align}
+
+Where $C^-_{\alpha}$ and $C^+_{\alpha}$ are constants to ensure the kets $\ket{\alpha}$ represent normalized states.
+
+The next step is usually to calculate values for $C_{\alpha}^-$ and $C_{\alpha}^+$ but the method that I know to do that involves taking the hermitian conjugate of the respective variables to determine the norm of these coefficients. That step isn't valid in this case so I don't know what to do. In particular I don't know how $\bar{c}$ acts when it is acting to the left rather than to the right. What is $(\bar{c}^{\dag}\ket{\alpha})^{\dag}$? My next ideas are to use the relationship to the $d$ and $\bar{d}$ operators but that certainly seems to be bringing in a bit more complication than for the usual raising and lowering operators.
+
+\section{Parametric Amplifier}
+After making the previous sections to this writeup I realized that there is a simple way to tweak these transformations to give a textbook parametric amplifier Hamiltonian. This is advantageous because parametric amplifiers are actually \textit{in} textbooks whereas complex, non-hermitian conjugate quasi-bosonic operators are not in textbooks. So rather than reinventing the wheel let's just transform into a parametric amplifier and let the textbooks take over from there.
+The parametric amplifier Hamiltonian looks like
+\begin{equation}
+\hat{\mathcal{H}}_{PA} = \chi (c^{\dag}d^{\dag} + cd)
+\end{equation}
+We could represent this with a matrix by:
+\begin{equation}
+\hat{\mathcal{H}}_{PA} = \Phi^{\dag}
+\begin{bmatrix}
+0 && \chi\\
+\chi && 0
+\end{bmatrix}
+\Phi = \Phi^{\dag} N' \Phi
+\end{equation}
+
+Where $\Phi$ is defined as previously and $N'$ now represents an off-diagonal matrix rather than a diagonal matrix. Now as before we will seek a transformation $T$ which transforms the $\Psi$ into $\Phi$ but which also turns $M$ into $N'$ instead of $N$. We also still want to preserve bosonic commutation relations. This means that we will continue to use Eq. \ref{sinheq} to define $T$
+
+\begin{equation}
+T = \begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\end{equation}
+
+We return to Eq. \ref{longeq} but replace $N$ with $N'$.
+
+\begin{align}
+N' &= T^{\dagger}MT = 
+\frac{1}{2}
+\begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\begin{bmatrix}
+\Delta && \Omega\\
+\Omega && \Delta
+\end{bmatrix}
+\begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}\\
+&=
+\frac{1}{2}
+\begin{bmatrix}
+(\cosh^2(\theta)+\sinh^2(\theta))\Delta + 2\cosh(\theta)\sinh(\theta)\Omega&& 
+(\cosh^2(\theta)+\sinh^2(\theta))\Omega + 2\cosh(\theta)\sinh(\theta)\Delta\\
+(\cosh^2(\theta)+\sinh^2(\theta))\Omega + 2\cosh(\theta)\sinh(\theta)\Delta && 
+(\cosh^2(\theta)+\sinh^2(\theta))\Delta + 2\cosh(\theta)\sinh(\theta)\Omega
+\end{bmatrix}
+\end{align}
+
+Above the next step was to set the off-diagonal elements to $0$ so that we impose the condition that $N$ is diagonal. This lead to the constraint that $\tanh(2\theta) = -\frac{\Omega}{\Delta}$. Now we are going to set the on-diagonal elements to $0$. It turns out that this leads to the constraint that 
+\[\tanh(2\theta) = -\frac{\Delta}{\Omega}\]
+
+We just get the reciprocal of the previous relations. This is great because it means that this new transformation will work exactly in the region ($\Omega>\Delta$) where the previous transformation broke down!
+
+Similarly, by swapping $\Omega$ and $\Delta$ we find that 
+
+\[\omega = \frac{1}{2} \sqrt{\Omega^2-\Delta^2}\]
+
+A positive and real quantity. This yields
+
+\begin{align}
+\hat{\mathcal{H}} &= \frac{\Delta}{2} a^{\dagger}a + \frac{\Delta}{2} b^\dag b + \frac{\Omega}{2} a^\dag b^{\dag} + \frac{\Omega}{2} ab\\
+&= \frac{1}{2} \sqrt{\Omega^2-\Delta^2} c^{\dag}d^{\dag} + \frac{1}{2} \sqrt{\Omega^2-\Delta^2} cd\\
+&= \frac{1}{2} \sqrt{\Omega^2-\Delta^2} (c^{\dag}d^{\dag} + cd)
+\end{align}
+
+We see that $\chi$, the parametric amplifier strength is equal to $\chi =\frac{1}{2}\sqrt{\Omega^2-\Delta^2}$.
+
+\section{Phase Conventions}
+
+Initially I could have written down a more general Hamiltonian than I have written here.
+
+\[
+\hat{\mathcal{H}} = \frac{\Delta}{2}a^{\dag}a + \frac{\Delta}{2}b^{\dag}b + \frac{\Omega^*}{2} a^{\dag} b^{\dag} + \frac{\Omega}{2} ab
+\]
+
+I've allowed the coupling constant $\Omega = |\Omega|e^{i \phi_{\Omega}}$ to be complex. This more general equation can be brought into the form originally stated in two ways. One way is to simply state that $\Omega$ is real. This way makes assumptions about the physical system at hand. The second way is to apply a phase rotation to one of the bosonic systems relative to the other system i.e. $b' = b e^{i\phi_b}$, $a'= a$. This second way doesn't make any assumptions about your physical system but you no need to be careful because the $X=b^{\dag}+b$ you may have thought of measuring before the transformation is not the same as $X' = b^{'\dag}+b'$ you might think of measuring after the transformation. That is, you need to be careful about establishing the correspondence between the operators you measure on your physical system and the operators you write down in the Hamiltonian which purportedly describes the physical system you are measuring.
+
+For reference I'll just write down a bit of matrix formalism to implement this second method of rotating out the phase of $\Omega$.
+We redefine
+
+\[
+M = \begin{bmatrix}
+\Delta && \Omega^*\\
+\Omega && \Delta
+\end{bmatrix}
+\]
+
+So
+\[
+\hat{\mathcal{H}} = \Psi^{\dag}M\Psi
+\]
+
+We define the matrix which will implement the phase rotation.
+\[
+L = \begin{bmatrix}
+1 && 0\\
+0 && e^{i\phi_L}
+\end{bmatrix}
+=
+\begin{bmatrix}
+1&&0\\
+0&&l
+\end{bmatrix}
+\]
+
+Note $L L^{\dag} = L^{\dag} L = I$. so $L = (L^{\dag})^{-1}$ is unitary.
+
+\[
+\tilde{M} = L^{\dag}ML = \begin{bmatrix}
+\Delta && \Omega^* l\\
+\Omega l^* && \Delta
+\end{bmatrix}
+\]
+
+$\Omega l^* = |\Omega| e^{i(\phi_{\Omega} - \phi_L)}$ so if we choose $\phi_{\Omega} = \phi_L$ we remove the phase so that
+
+\[
+\tilde{M} = \begin{bmatrix}
+\Delta && |\Omega|\\
+|\Omega| && \Delta
+\end{bmatrix}
+\]
+
+If this was our matrix we could apply the exact same transformation matrix $T$ as above to diagonalize (or off-diagonalize) the Hamiltonian. Let's see how to achieve this.
+
+\begin{align*}
+\hat{\mathcal{H}} &= \frac{1}{2} \Psi^{\dag}M\Psi\\
+&=\frac{1}{2}\Psi^{\dag}LL^{\dag}MLL^{\dag}\Psi\\
+&=\frac{1}{2}\Psi^{\dag}L\tilde{M}L^{\dag}\Psi\\
+\end{align*}
+
+So we define
+\[ \tilde{\Psi} = L^{\dag} \Psi = \begin{bmatrix} a\\b^{\dag}e^{-i\phi_L}\end{bmatrix}\]
+
+so
+\begin{equation}
+\hat{\mathcal{H}} = \frac{1}{2}\tilde{\Psi}^{\dag}\tilde{M}\tilde{\Psi}
+\end{equation}
+
+From here we proceed as before by defining $\tilde{\Psi} = T \Phi$ as before which ultimately leads to the result that $N = T^{\dag}\tilde{M}T = \begin{bmatrix}0&&\omega\\\omega&&0\end{bmatrix}$ with $\omega = \sqrt{|\Omega|^2-\Delta^2}$ in the unstable region $|\Omega|>\Delta$ with the obvious swaps for the stable region.
+
+\section{Matrix Transformations between bases}
+
+Lets see how to transform from position operators in the $a$ and $b$ basis into position operators in the $c$ and $d$ basis. First we write down the position operators in the $a$ and $b$ basis. Note $X_{\alpha} = \alpha^{\dag}+\alpha$ and $P_{\alpha} = i(\alpha^{\dag}-\alpha)$ where $\alpha$ can stand for $a$, $b$, $c$, or $d$.
+
+\begin{align*}
+X_1 &= 
+\begin{bmatrix}
+a^{\dag}+a\\
+b^{\dag}+b
+\end{bmatrix}
+= \Psi^*+\Psi\\
+P_1 &=
+\begin{bmatrix}
+i(a^{\dag}-a)\\
+i(b^{\dag}-b)
+\end{bmatrix}
+=\eta i(\Psi^*-\Psi)
+\end{align*}
+Where I have defined $\Psi^* = (\Psi^{\dag})^T$. The $\eta$ is necessary to correct the sign of the $b$ combination. The sign is reversed for $b$ since $\Psi = \begin{bmatrix}a\\b^{\dag}\end{bmatrix}$.
+
+Similarly we can define $\tilde{X}_1$ and $\tilde{P}_2$ by
+\begin{align}
+\tilde{X_1} &= \tilde{\Psi}^*+\tilde{\Psi}\\
+\tilde{P_1} &= \eta i (\tilde{\Psi}^*-\tilde{\Psi})
+\end{align} $c$ and $d$:
+\begin{align}
+X_2 &= \Phi^*+\Phi\\
+P_2 &= \eta i(\Phi^*-\Phi)
+\end{align}
+
+We have the relations
+\begin{align*}
+\Phi &= T^{-1} \tilde{\Psi}\\
+\Phi^* &= T^{-1} \tilde{\Psi}^*
+\end{align*}
+
+So this leads straightforwardly to
+
+\begin{align*}
+X_2 = T^{-1}(\Psi^*+\Psi) = T^{-1} \tilde{X_1}\\
+P_2 = i \eta T^{-1} (\Psi^* - \Psi) =   T \eta i (\Psi^*-\Psi) = T\tilde{P_1}
+\end{align*}
+Where we recall that $\eta T^{-1} = T \eta$ since $T\eta T = \eta$.
+so that
+\begin{equation}
+\begin{bmatrix}
+X_2\\P_2
+\end{bmatrix}
+=
+\begin{bmatrix}
+T^{-1} && 0\\
+0 && T
+\end{bmatrix}
+\begin{bmatrix}
+\tilde{X_1}\\\tilde{X_2}
+\end{bmatrix}
+\end{equation}
+
+Or written out more explicitly and painstakingly:
+
+\begin{equation}
+\begin{bmatrix}
+X_c\\X_d\\P_c\\P_d
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cosh(\theta) && -\sinh(\theta) && 0 && 0\\
+-\sinh(\theta) && \cosh(\theta) && 0 && 0\\
+0 && 0 && \cosh(\theta) && \sinh(\theta)\\
+0 && 0 && \sinh(\theta) && \cosh(\theta)\\
+\end{bmatrix}
+\begin{bmatrix}
+\tilde{X}_a\\\tilde{X}_b\\\tilde{P}_a\\\tilde{P}_b
+\end{bmatrix}
+\end{equation}
+
+And for consistency with how things are written in the Matlab analysis script we reorder the elements of the input and output vector by swapping the middle two values so that the order is $X_c$, $P_c$, $X_d$, $P_d$. This results in swapping the middle two columns and then the middle two rows.
+
+\begin{equation}
+\begin{bmatrix}
+X_c\\P_c\\X_d\\P_d
+\end{bmatrix}
+=
+\begin{bmatrix}
+\cosh(\theta) && 0 && -\sinh(\theta) && 0\\
+0 && \cosh(\theta) && 0 && \sinh(\theta)\\
+-\sinh(\theta) && 0 && \cosh(\theta) && 0\\
+0 && \sinh(\theta) && 0 && \cosh(\theta)
+\end{bmatrix}
+\begin{bmatrix}
+\tilde{X}_a\\\tilde{P}_a\\\tilde{X}_b\\\tilde{P}_b
+\end{bmatrix}
+\end{equation}
+
+For kicks we can use this matrix formalism to work out the $\tilde{X}_{\alpha}$ in terms of the $X_{\alpha}$. This is not the best way to do it since we know we are just performing a quadrature phase rotation on the $b$ subspace, but I'll do it this way anyways for, like I said, kicks.
+
+\begin{align*}
+\tilde{X}_1 &= L \Psi^* + L^*\Psi\\
+\tilde{P}_1 &= \eta i(L\Psi^* - L^*\Psi)
+\end{align*}
+
+Remembering that $L^*=L^{\dag}$. We can invert the equations for $X_1$ and $P_1$ (no tilde) to find
+
+\begin{align*}
+\Psi &= \frac{1}{2}(X_1 + i \eta P_1)\\
+\Psi^* &= \frac{1}{2}(X_1 - i \eta P_1)\\
+\end{align*}
+
+Where I have used the fact that $\eta^{-1}=\eta$. Plugging this back into the equation for $\tilde{X_1}$ and $\tilde{P_1}$ above we find
+
+\begin{align*}
+\tilde{X_1} &= \text{Re}(L)X_1 +\eta\text{Im}(L)P_1\\
+\tilde{P_1} &= -\eta\text{Im}(L)X_1 + \text{Re}(L)P_1
+\end{align*}
+
+Again writing this out for the analysis script:
+
+\begin{equation}
+\begin{bmatrix}
+\tilde{X}_a\\\tilde{X}_b\\\tilde{P}_a\\\tilde{P}_b
+\end{bmatrix}
+=
+\begin{bmatrix}
+\text{Re}(L) && \eta\text{Im}(L)\\
+-\eta\text{Im}(L) && \text{Re}(L)
+\end{bmatrix}
+\begin{bmatrix}
+X_a\\X_b\\P_a\\P_b
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+\begin{bmatrix}
+\tilde{X}_a\\\tilde{X}_b\\\tilde{P}_a\\\tilde{P}_b
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 && 0 && 0 && 0\\
+0 && \cos(\phi_L) && 0 && -\sin(\phi_L)\\
+0 && 0 && 1 && 0\\
+0 && \sin(\phi_L) && 0 && \cos(\phi_L)
+\end{bmatrix}
+\begin{bmatrix}
+X_a\\X_b\\P_a\\P_b
+\end{bmatrix}
+\end{equation}
+
+Reordering:
+
+\begin{equation}
+\begin{bmatrix}
+\tilde{X}_a\\\tilde{P}_a\\\tilde{X}_b\\\tilde{P}_b
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 && 0 && 0 && 0\\
+0 && 1 && 0 && 0\\
+0 && 0 && \cos(\phi_L) && -\sin(\phi_L)\\
+0 && 0 && \sin(\phi_L) && \cos(\phi_L)
+\end{bmatrix}
+\begin{bmatrix}
+X_a\\P_a\\X_b\\P_b
+\end{bmatrix}
+\end{equation}
+
+Like I said, this would have been obvious by just realizing we are performing a phase rotation on the $b$ quadratures. We can define two 4x4 matrices
+
+\begin{equation}
+L_4 = 
+\begin{bmatrix}
+1 && 0 && 0 && 0\\
+0 && 1 && 0 && 0\\
+0 && 0 && \cos(\phi_L) && -\sin(\phi_L)\\
+0 && 0 && \sin(\phi_L) && \cos(\phi_L)
+\end{bmatrix}
+\end{equation}
+
+
+\begin{equation}
+T_4 =
+\begin{bmatrix}
+\cosh(\theta) && 0 && -\sinh(\theta) && 0\\
+0 && \cosh(\theta) && 0 && -\sinh(\theta)\\
+-\sinh(\theta) && 0 && \cosh(\theta) && 0\\
+0 && -\sinh(\theta) && 0 && \cosh(\theta)
+\end{bmatrix}
+\end{equation}
+
+We can then perform the total transformation by 
+
+\begin{equation}
+\begin{bmatrix}
+X_c\\P_c\\X_d\\P_d
+\end{bmatrix}
+=
+T_4 L_4
+\begin{bmatrix}
+X_a\\P_a\\X_b\\P_b
+\end{bmatrix}
+\end{equation}
+
+\section{Appendices}
+I'll just write down a couple few lines proofs of some of the claims made above.
+
+\subsection{Appendix A}% - $TT^{\dag} = I$}
+General form for a 2x2 unitary operator, elements of $U(2)$. ${a,b,c,d}$ are complex numbers now.
+\begin{equation}
+TT^{\dag} = I
+\end{equation}
+\begin{equation}
+\begin{bmatrix}
+a && b\\
+c && d
+\end{bmatrix}
+\begin{bmatrix}
+a^* && c^*\\
+b^* && d^*
+\end{bmatrix}=
+\begin{bmatrix}
+1 && 0\\
+0 && 1
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+=\begin{bmatrix}
+\abs{a}^2 + \abs{b}^2 && ac^*+bd^*\\
+a^*c +b^*d && \abs{c}^2+\abs{d}^2
+\end{bmatrix}=
+\begin{bmatrix}
+1 && 0\\
+0 && 1
+\end{bmatrix}
+\end{equation}
+\begin{align}
+\label{eqconj}
+a^*c = -b^*d\\
+\frac{\abs{a}}{\abs{b}} = \frac{\abs{d}}{\abs{c}} = \kappa \\
+\end{align}
+\begin{align}
+a = \kappa A e^{i \phi_a} && b = A e^{i \phi_b}\\
+c =  B e^{i \phi_c} && d = \kappa B e^{i \phi_d}
+\end{align}
+\begin{align}
+\abs{a}^2+\abs{b}^2 = \abs{c}^2 + \abs{d}^2 = 1\\
+= A^2 (\kappa^2 + 1) = B^2(\kappa^2 + 1)\\
+\end{align}
+$A,B>0$ with $A$ and $B$ Real.
+\begin{align}
+\Rightarrow A = B
+\end{align}
+So we have
+\begin{align}
+T=
+\begin{bmatrix}
+\kappa A e^{i\phi_a} && A e^{i \phi_b}\\
+A e^{i \phi_c} && \kappa A e^{i \phi_d}
+\end{bmatrix}
+\end{align}
+From Eq. \ref{eqconj}
+\begin{align}
+e^{i(\phi_c-\phi_a)} = -e^{i(\phi_d-\phi_b)}
+\end{align}
+let $u=\kappa A e^{i\phi_a}$ and $v=Ae^{i\phi_b}$ then
+\begin{align}
+T=
+\begin{bmatrix}
+u && v\\
+v^* e^{-i(\phi_c+\phi_b)} && u^* e^{-i(\phi_d+\phi_a)}
+\end{bmatrix}\\
+=
+\begin{bmatrix}
+u && v\\
+-v^*e^{i \phi} && u^* e^{i\phi}
+\end{bmatrix}
+\end{align}
+
+with $\phi = -(\phi_d+\phi_a)=-(\phi_c+\phi_b)$ and the constraint that $\abs{u}^2 + \abs{v}^2 = 1$. In some situations you can constrain this to be entirely real so that $\phi=0$, $u=\cos(\theta)$ and $v = \sin(\theta)$ so that
+\begin{align}
+T=\begin{bmatrix}
+\cos(\theta) && \sin(\theta)\\
+-\sin(\theta) && \cos(\theta)
+\end{bmatrix}
+\end{align}
+
+\subsection{Appendix B}% - $T\eta T^{\dag} = \eta$}
+General form for a 2x2 unitary operator satisfying the condition for bosonic commutation relations. Apparently elements of this group from the Lie group $U(1,1)$ and we say that $\eta$ is the metric for $(1,1)$ Minkowski space.
+\begin{equation}
+T\eta T^{\dag} = \eta
+\end{equation}
+\begin{equation}
+\begin{bmatrix}
+a && b\\
+c && d
+\end{bmatrix}
+\begin{bmatrix}
+1 && 0\\
+0 && -1
+\end{bmatrix}
+\begin{bmatrix}
+a^* && c^*\\
+b^* && d^*
+\end{bmatrix}=
+\begin{bmatrix}
+1 && 0\\
+0 && -1
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+=\begin{bmatrix}
+\abs{a}^2 - \abs{b}^2 && ac^*-bd^*\\
+a^*c -b^*d && \abs{c}^2-\abs{d}^2
+\end{bmatrix}=
+\begin{bmatrix}
+1 && 0\\
+0 && -1
+\end{bmatrix}
+\end{equation}
+\begin{align}
+\label{eqconj2}
+a^*c = b^*d\\
+\frac{\abs{a}}{\abs{b}} = \frac{\abs{d}}{\abs{c}} = \kappa \\
+\end{align}
+\begin{align}
+a = \kappa A e^{i \phi_a} && b = A e^{i \phi_b}\\
+c =  B e^{i \phi_c} && d = \kappa B e^{i \phi_d}
+\end{align}
+\begin{align}
+\abs{a}^2-\abs{b}^2 = -(\abs{c}^2 - \abs{d}^2) = 1\\
+= A^2 (\kappa^2 - 1) = B^2(\kappa^2 -1)\\
+\end{align}
+$A,B>0$ with $A$ and $B$ Real.
+\begin{align}
+\Rightarrow A = B
+\end{align}
+So we have
+\begin{align}
+T=
+\begin{bmatrix}
+\kappa A e^{i\phi_a} && A e^{i \phi_b}\\
+A e^{i \phi_c} && \kappa A e^{i \phi_d}
+\end{bmatrix}
+\end{align}
+From Eq. \ref{eqconj2}
+\begin{align}
+e^{i(\phi_c-\phi_a)} = e^{i(\phi_d-\phi_b)}
+\end{align}
+let $u=\kappa A e^{i\phi_a}$ and $v=Ae^{i\phi_b}$ then
+\begin{align}
+T=
+\begin{bmatrix}
+u && v\\
+v^* e^{-i(\phi_c+\phi_b)} && u^* e^{-i(\phi_d+\phi_a)}
+\end{bmatrix}\\
+=
+\begin{bmatrix}
+u && v\\
+v^*e^{i \phi} && u^* e^{i\phi}
+\end{bmatrix}
+\end{align}
+
+with $\phi = -(\phi_d+\phi_a)=-(\phi_c+\phi_b)$ and the constraint that $\abs{u}^2 - \abs{v}^2 = 1$. In some situations (i.e. above) you can constrain this to be entirely real so that $\phi=0$, $u=\cosh(\theta)$ and $v = \sinh(\theta)$ so that
+\begin{align}
+T=\begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\end{align}
+
+\subsection{Appendix C}% - $T\eta T^T = \eta$}
+Once again for operators satisfying the bosonic commutation relation with the transpose instead. Almost the same as above but with less complex stuff (I'm copying and pasting).
+\begin{equation}
+T\eta T^T = \eta
+\end{equation}
+\begin{equation}
+\begin{bmatrix}
+a && b\\
+c && d
+\end{bmatrix}
+\begin{bmatrix}
+1 && 0\\
+0 && -1
+\end{bmatrix}
+\begin{bmatrix}
+a && c\\
+b && d
+\end{bmatrix}=
+\begin{bmatrix}
+1 && 0\\
+0 && -1
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+=\begin{bmatrix}
+a^2 - b^2 && ac-bd\\
+ac -bd && c^2-d^2
+\end{bmatrix}=
+\begin{bmatrix}
+1 && 0\\
+0 && -1
+\end{bmatrix}
+\end{equation}
+\begin{align}
+\label{eqconj3}
+ac = bd\\
+\frac{a}{b} = \frac{d}{c} = \kappa \\
+\end{align}
+$\kappa$ might be complex now but the phases of the numbers are related now.
+\begin{align}
+a = \kappa A e^{i \phi_a} && b = A e^{i \phi_a}\\
+c =  B e^{i \phi_d} && d = \kappa B e^{i \phi_d}
+\end{align}
+\begin{align}
+a^2-b^2 = -(c^2 - d^2) = 1\\
+\kappa^2 A^2 e^{i2\phi_a} -A^2 e^{i2\phi_b} = -(B^2e^{2i\phi_d}-\kappa^2B^2e^{i2\phi_d})\\
+\end{align}
+$A,B>0$ with $A$ and $B$ Real.
+\begin{align}
+\Rightarrow A^2e^{i2\phi_a}(\kappa^2-1) = B^2e^{i2\phi_d}(\kappa^2-1)\Rightarrow A = B
+\end{align}
+by taking the magnitude of both sides to eliminate the phase. This in turn implies $\phi_a=\phi_d$.
+
+So we have
+\begin{align}
+T=
+\begin{bmatrix}
+\kappa A e^{i\phi_a} && A e^{i \phi_a}\\
+A e^{i \phi_a} && \kappa A e^{i \phi_a}
+\end{bmatrix}
+\end{align}
+
+let $u=\kappa A e^{i\phi_a}$ and $v=Ae^{i\phi_a}$ then
+\begin{align}
+T=
+\begin{bmatrix}
+u && v\\
+v&& u
+\end{bmatrix}\\
+\end{align}
+
+with the constraint that $\abs{u}^2 - \abs{v}^2 = 1$. In some situations (i.e. above) you can constrain this to be entirely real so that $\phi=0$, $u=\cosh(\theta)$ and $v = \sinh(\theta)$ so that
+\begin{align}
+T=\begin{bmatrix}
+\cosh(\theta) && \sinh(\theta)\\
+\sinh(\theta) && \cosh(\theta)
+\end{bmatrix}
+\end{align}
+So we see that this matrix does in fact satisfy the necessary constraint for it to preserve the bosonic commutation relations.
+
+\subsection{Appendix D - Normal operators have orthogonal eigenspaces}
+Proof that eigenvectors of normal operators with different eigenvalues are orthogonal. From https://proofwiki.org/wiki/Eigenvalues\_of\_Normal\_Operator\_have\_Orthogonal\_Eigenspaces
+
+Let $A$ be a normal operator so that $AA^{\dag} = A^{\dag}A$.
+
+first we show that if $\ket{v}$ is an eigenvector of $A$ with eigenvalue $\lambda$ then it is also an eigenvector of $A^{\dag}$ with eigenvalue $\lambda^*$.
+
+\begin{align}
+&A\ket{v} = \lambda \ket{v}\\
+&(A-\lambda I)\ket{v} = 0\\
+&\Rightarrow \norm{(A-\lambda I)\ket{v}} = \bra{v}(A^{\dag}-\lambda^*I)(A-\lambda I)\ket{v}=0\\
+&=\bra{v}(A-\lambda)(A^{\dag}-\lambda^* I)\ket{v} =0 = \norm{(A^{\dag}-\lambda^* I)\ket{v}}\\
+&\Rightarrow (A^{\dag}-\lambda^* I)\ket{v}=0\\
+&A^{\dag} \ket{v} = \lambda^* \ket{v}
+\end{align}
+
+Now to prove that if $A\ket{v_1} = \lambda_1\ket{v_1}$ and $A\ket{v_2} = \lambda_2\ket{v_2}$ with $\lambda_1\neq\lambda_2$ that $\braket{v_1,v_2}=0$
+\begin{align}
+&\bra{v_1}A\ket{v_2} = \bra{v_1}(A\ket{v_2}) = \lambda_2 \bra{v_1}\ket{v_2}\\ 
+&= (\bra{v_1} A) \ket{v_2} = (A^{\dag} \ket{v_1})^{\dag} \ket{v_2}\\
+&(\lambda_1^* \ket{v_1})^{\dag} \ket{v_2} = \lambda_1 \bra{v_1}\ket{v_2}
+\end{align}
+So
+\begin{equation}
+\lambda_1 \bra{v_1}\ket{v_2} = \lambda_2 \bra{v_1}\ket{v_2}
+\end{equation}
+but $\lambda_1 \neq \lambda_2$ so $\bra{v_1}\ket{v_2}=0$.
+
+
+
+\end{document}

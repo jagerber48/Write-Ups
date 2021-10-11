@@ -1,0 +1,162 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\usepackage[
+sorting=none,
+style=numeric
+]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\makeatletter
+\newcommand{\vast}{\bBigg@{4}}
+\newcommand{\Vast}{\bBigg@{5}}
+\makeatother
+
+
+\begin{document}
+
+\begin{align}
+&\mathcal{P'}(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v)\\
+&= \Braket{\prod_{r=1}^d \prod_{s=1}^v \left(\prod_{k \in A_s^r} y_k \prod_{l \in [N]\setminus A_s^r} (1-y_l) \right)}\\
+&= \Braket{\prod_{r=1}^d \prod_{s=1}^v \left( \sum_{j=0}^{N-m_s^r} \frac{(-1)^j}{j!} \sum_{B \in ([N] \setminus A_s^r)_j^P} \prod_{k \in A_s^r \cup B} y_k \right)}\\
+&= \vast( \left(\sum_{j_1^1 =0}^{N-m_1^1} \sum_{B_1^1 \in ([N]\setminus A_1^1)_{j_1^1}^P} \frac{(-1)^{j_1^1}}{j_1^1!}
+\ldots 
+\sum_{j_1^d =0}^{N-m_1^d} \sum_{B_1^d \in ([N]\setminus A_1^d)_{j_1^d}^P} \frac{(-1)^{j_1^d}}{j_1^d!}\right)\\
+&\ldots\\
+&\left(\sum_{j_v^1 =0}^{N-m_v^1} \sum_{B_v^1 \in ([N]\setminus A_v^1)_{j_v^1}^P} \frac{(-1)^{j_v^1}}{j_v^1!}
+\ldots 
+\sum_{j_v^d =0}^{N-m_v^d} \sum_{B_v^d \in ([N]\setminus A_v^d)_{j_v^d}^P} \frac{(-1)^{j_v^d}}{j_v^d!} \right) \vast)\\
+&\Braket{\prod_{r=1}^d \prod_{s=1}^v \prod_{k \in  A_s^r\cup B_s^r} y_k}\\
+&= \vast( \left(\sum_{j_1^1 =0}^{N-m_1^1} \sum_{B_1^1 \in ([N]\setminus A_1^1)_{j_1^1}^P} \frac{(-1)^{j_1^1}}{j_1^1!}
+\ldots 
+\sum_{j_1^d =0}^{N-m_1^d} \sum_{B_1^d \in ([N]\setminus A_1^d)_{j_1^d}^P} \frac{(-1)^{j_1^d}}{j_1^d!}\right)\\
+&\ldots\\
+&\left(\sum_{j_v^1 =0}^{N-m_v^1} \sum_{B_v^1 \in ([N]\setminus A_v^1)_{j_v^1}^P} \frac{(-1)^{j_v^1}}{j_v^1!}
+\ldots 
+\sum_{j_v^d =0}^{N-m_v^d} \sum_{B_v^d \in ([N]\setminus A_v^d)_{j_v^d}^P} \frac{(-1)^{j_v^d}}{j_v^d!} \right) \vast)\\
+&\mathcal{P}(A_1^1 \cup B_1^1, \ldots, A_1^d \cup B_1^d, \tau_1 ; \ldots ; A_v^1 \cup B_v^1, \ldots,A_v^d \cup B_v^d,\tau_v)\\
+\end{align}
+
+
+\begin{align}
+&P(m_1^1,\ldots,m_1^d,\tau_1; \ldots ; m_v^1, \ldots, m_v^d, \tau_v) =\\
+&\left(\left(\sum_{A_1^1 \in ([N])_{m_1^1}^C} \ldots \sum_{A_1^d \in ([N])_{m_1^d}^C}\right) \ldots \left(\sum_{A_v^1 \in ([N])_{m_v^1}^C} \ldots \sum_{A_v^d \in ([N])_{m_v^d}^C}\right)\right)\\
+&\mathcal{P'}(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v)\\
+&=\left(\left(\sum_{A_1^1 \in ([N])_{m_1^1}^P} \frac{1}{m_1^1!} \ldots \sum_{A_1^d \in ([N])_{m_1^d}^P} \frac{1}{m_1^d!} \right) \ldots \left(\sum_{A_v^1 \in ([N])_{m_v^1}^P} \frac{1}{m_v^1!}  \ldots \sum_{A_v^d \in ([N])_{m_v^d}^P}\frac{1}{m_v^d!} \right)\right)\\
+&\mathcal{P'}(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v)\\
+&= \vast( \left(\sum_{j_1^1 =0}^{N-m_1^1} \sum_{A_1^1 \in ([N])_{m_1^1}^P} \sum_{B_1^1 \in ([N]\setminus A_1^1)_{j_1^1}^P} \frac{(-1)^{j_1^1}}{m_1^1! j_1^1!}
+\ldots 
+\sum_{j_1^d =0}^{N-m_1^d}  \sum_{A_1^d \in ([N])_{m_1^d}^P} \sum_{B_1^d \in ([N]\setminus A_1^d)_{j_1^d}^P} \frac{(-1)^{j_1^d}}{m_1^d! j_1^d!}\right)\\
+&\ldots\\
+&\left(\sum_{j_v^1 =0}^{N-m_v^1}  \sum_{A_v^1 \in ([N])_{m_v^1}^P} \sum_{B_v^1 \in ([N]\setminus A_v^1)_{j_v^1}^P} \frac{(-1)^{j_v^1}}{m_v^1! j_v^1!}
+\ldots 
+\sum_{j_v^d =0}^{N-m_v^d}  \sum_{A_v^d \in ([N])_{m_v^d}^P} \sum_{B_v^d \in ([N]\setminus A_v^d)_{j_v^d}^P} \frac{(-1)^{j_v^d}}{m_v^d! j_v^d!} \right) \vast)\\
+&\mathcal{P}(A_1^1 \cup B_1^1, \ldots, A_1^d \cup B_1^d, \tau_1 ; \ldots ; A_v^1 \cup B_v^1, \ldots,A_v^d \cup B_v^d,\tau_v)\\
+&= \vast( \left(\sum_{j_1^1 =0}^{N-m_1^1} \sum_{A_1^1 \in ([N])_{m_1^1+j_1^1}^P} \frac{(-1)^{j_1^1}}{m_1^1! j_1^1!}
+\ldots 
+\sum_{j_1^d =0}^{N-m_1^d}  \sum_{A_1^d \in ([N])_{m_1^d+j_1^d}^P} \frac{(-1)^{j_1^d}}{m_1^d! j_1^d!}\right)\\
+&\ldots\\
+&\left(\sum_{j_v^1 =0}^{N-m_v^1}  \sum_{A_v^1 \in ([N])_{m_v^1+j_v^1}^P}  \frac{(-1)^{j_v^1}}{m_v^1! j_v^1!}
+\ldots 
+\sum_{j_v^d =0}^{N-m_v^d}  \sum_{A_v^d \in ([N])_{m_v^d+j_v^d}^P}  \frac{(-1)^{j_v^d}}{m_v^d! j_v^d!} \right) \vast)\\
+&\mathcal{P}(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v)\\
+\end{align}
+
+\begin{align}
+&\mathcal{P}(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v) =\\
+&w(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v) \left((\Delta t)^{m_1^1+j_1^1}\ldots (\Delta t)^{m_1^d+j_1^d} \right) \ldots \left((\Delta t)^{m_v^1+j_v^1}\ldots (\Delta t)^{m_v^d+j_v^d} \right)\\
+\end{align}
+
+\begin{align}
+&w(A_1^1, \ldots, A_1^d, \tau_1 ; \ldots ; A_v^1, \ldots,A_v^d,\tau_v)\\
+&=w\Bigg(t^{(1)}_{i^{(1,1,1)}},\ldots,t^{(1)}_{i^{\left((1,1,m_1^1+j_1^1\right)}} 
+;\ldots; t^{(1)}_{i^{(1,d,1)}},\ldots,t^{(1)}_{i^{\left(1,d,m_1^d+j_1^d\right)}}
+\big\vert \ldots\\
+&\ldots \big\vert
+t^{(v)}_{i^{(v,1,1)}},\ldots,t^{(v)}_{i^{\left(v,1,m_v^1+j_v^1\right)}}
+;\ldots; t^{(v)}_{i^{(v,d,1)}},\ldots,t^{(v)}_{i^{\left(v,d,m_v^d+j_v^d\right)}}
+\Bigg)
+\end{align}
+	
+\begin{align}
+&P(m_1^1,\ldots,m_1^d,\tau_1; \ldots ; m_v^1, \ldots, m_v^d, \tau_v) =\\
+&\left(\left(\sum_{j_1^1=0}^{N-m_1^1}\frac{(-1)^{j_1^1}}{m_1^1!j_1^1!} 
+\ldots \sum_{j_1^d=0}^{N-m_1^d}\frac{(-1)^{j_1^d}}{m_1^d!j_1^d!} \right) 
+\ldots
+\left(\sum_{j_v^1=0}^{N-m_v^1}\frac{(-1)^{j_v^1}}{m_v^1!j_v^1!} 
+\ldots \sum_{j_v^d=0}^{N-m_v^d}\frac{(-1)^{j_v^d}}{m_v^d!j_v^d!} \right) \right)\\
+&\vast(\left(\int_{t^{(1,1,1)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T} \ldots \int_{t^{\left(1,1,m_1^1+j_1^1\right)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T}\right) \ldots \left(\int_{t^{(1,d,1)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T} \ldots \int_{t^{\left(1,d,m_1^d+j_1^d\right)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T}\right)\\
+&\ldots\\
+&\left(\int_{t^{(v,1,1)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T} \ldots \int_{t^{\left(v,1,m_v^1+j_v^1\right)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T}\right) \ldots \left(\int_{t^{(v,d,1)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T} \ldots \int_{t^{\left(v,d, m_v^d+j_v^d\right)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T}\right)\vast)\\
+&w\Bigg(t^{(1,1,1)}\ldots t^{\left(1,1,m_1^1+j_1^1\right)};\ldots;t^{(1,d,1)}\ldots t^{\left(1,d,m_1^d+j_1^d\right)}\Big| \ldots\\
+&\ldots \Big| t^{(v,1,1)}\ldots t^{\left(v,1,m_v^1+j_v^1\right)};\ldots;t^{(v,d,1)}\ldots t^{\left(v,d,m_v^d+j_v^d\right)}\Bigg)\\
+&\left( \left(dt^{(1,1,1)} \ldots dt^{\left(1,1,m_1^1+j_1^1\right)}\right) \ldots \left(dt^{(1,d,1)} \ldots dt^{\left(1,d,m_1^d+j_1^d\right)}\right) \right)\\
+&\ldots\\
+&\left( \left(dt^{(v,1,1)} \ldots dt^{\left(v,1,m_v^1+j_v^1\right)}\right) \ldots \left(dt^{(v,d,1)} \ldots dt^{\left(v,d,m_v^d+j_v^d\right)}\right) \right)\\
+\end{align}	
+
+\begin{align}
+&P(m_1^1,\ldots,m_1^d,\tau_1; \ldots ; m_v^1, \ldots, m_v^d, \tau_v) =\\
+&\Vast\langle: \left(\left(\sum_{j_1^1=0}^{N-m_1^1}\frac{(-1)^{j_1^1}}{m_1^1!j_1^1!} 
+\ldots \sum_{j_1^d=0}^{N-m_1^d}\frac{(-1)^{j_1^d}}{m_1^d!j_1^d!} \right) 
+\ldots
+\left(\sum_{j_v^1=0}^{N-m_v^1}\frac{(-1)^{j_v^1}}{m_v^1!j_v^1!} 
+\ldots \sum_{j_v^d=0}^{N-m_v^d}\frac{(-1)^{j_v^d}}{m_v^d!j_v^d!} \right) \right)\\
+&\vast(\left(\int_{t^{(1,1,1)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T} \ldots \int_{t^{\left(1,1,m_1^1+j_1^1\right)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T}\right) \ldots \left(\int_{t^{(1,d,1)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T} \ldots \int_{t^{\left(1,d,m_1^d+j_1^d\right)} = t^{(1)}_0}^{t_0^{(1)}+\Delta T}\right)\\
+&\ldots\\
+&\left(\int_{t^{(v,1,1)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T} \ldots \int_{t^{\left(v,1,m_v^1+j_v^1\right)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T}\right) \ldots \left(\int_{t^{(v,d,1)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T} \ldots \int_{t^{\left(v,d, m_v^d+j_v^d\right)} = t^{(v)}_0}^{t_0^{(v)}+\Delta T}\right)\vast)\\
+&\Bigg(\left(\left(\ep_Q\hat{n}_1(t^{(1,1,1)})\ldots \ep_Q\hat{n}_1(t^{\left(1,1,m_1^1+j_1^1\right)})\right) \ldots \left(\ep_Q\hat{n}_d(t^{(1,d,1)})\ldots \ep_Q\hat{n}_d(t^{\left(1,d,m_1^d+j_1^d\right)})\right)\right)\\
+&\ldots \left(\left(\ep_Q \hat{n}_1(t^{(v,1,1)})\ldots \ep_Q\hat{n}_1(t^{\left(v,1,m_v^1+j_v^1\right)})\right) \ldots \left(\ep_Q\hat{n}_d(t^{\left(v,d,1\right)})\ldots \ep_Q\hat{n}_d(t^{\left(v,d,m_v^d+j_v^d\right)})\right)\right)\Bigg)\\
+&\left( \left(dt^{(1,1,1)} \ldots dt^{\left(1,1,m_1^1+j_1^1\right)}\right) \ldots \left(dt^{(1,d,1)} \ldots dt^{\left(1,d,m_1^d+j_1^d\right)}\right) \right)\\
+&\ldots\\
+&\left( \left(dt^{(v,1,1)} \ldots dt^{\left(v,1,m_v^1+j_v^1\right)}\right) \ldots \left(dt^{(v,d,1)} \ldots dt^{\left(v,d,m_v^d+j_v^d\right)}\right) \right):\Vast\rangle\\
+\end{align}	
+
+Magically we can factorize the sum under the normal ordering.
+
+\begin{align}
+&P(m_1^1,\ldots,m_1^d,\tau_1; \ldots ; m_v^1, \ldots, m_v^d, \tau_v) =\\
+&\Vast\langle : 
+\left(\sum_{j_1^1=0}^{N-m_1^1}\frac{(-1)^{j_1^1}}{m_1^1!j_1^1!} \left(\ep_Q\int_{t'=t_0^{(1)}}^{t_0^{(1)}+\Delta T}  \hat{n}_1(t') dt'\right)^{m_1^1+j_1^1}
+\ldots
+\sum_{j_1^d=0}^{N-m_1^d}\frac{(-1)^{j_1^d}}{m_1^d!j_1^d!} \left(\ep_Q\int_{t'=t_0^{(1)}}^{t_0^{(1)}+\Delta T}  \hat{n}_d(t') dt'\right)^{m_1^d+j_1^d}\right)\\
+&\ldots\\
+&\left(\sum_{j_v^1=0}^{N-m_v^1}\frac{(-1)^{j_v^1}}{m_v^1!j_v^1!} \left(\ep_Q\int_{t'=t_0^{(v)}}^{t_0^{(v)}+\Delta T}  \hat{n}_1(t') dt'\right)^{m_v^1+j_v^1}
+\ldots
+\sum_{j_v^d=0}^{N-m_v^d}\frac{(-1)^{j_v^d}}{m_v^d!j_v^d!} \left(\ep_Q\int_{t'=t_0^{(v)}}^{t_0^{(v)}+\Delta T}  \hat{n}_d(t') dt'\right)^{m_v^d+j_v^d}\right):\Vast \rangle\\
+&= \vast \langle \prod_{r=1}^d \prod_{s=1}^v \sum_{j_s^r=0}^{N-m_s^r}\frac{(-1)^{j_s^r}}{m_s^r!j_s^r!} \left(\ep_Q\int_{t'=t_0^{(s)}}^{t_0^{(s)}+\Delta T} \hat{n}_r(t')dt'\right)^{m_s^r+j_s^r} :\vast\rangle
+\end{align}
+
+\begin{align}
+\hat{\Omega}_r(t_0^{(q)},t_0^{(q)}+\Delta T) = \ep_Q\int_{t'=t_0^{(q)}}^{t_0^{(q)}+\Delta T}\hat{n}_r(t')dt'
+\end{align}
+
+\begin{align}
+&P(m_1^1,\ldots,m_1^d,\tau_1; \ldots ; m_v^1, \ldots, m_v^d, \tau_v) =\\
+&= \vast \langle : \prod_{r=1}^d \prod_{s=1}^v \sum_{j_s^r=0}^{N-m_s^r}\frac{(-1)^{j_s^r}}{m_s^r!j_s^r!} \left(\hat{\Omega}(t_0^{(s)},t_0^{(s)}+\Delta T)\right)^{m_s^r+j_s^r} :\vast\rangle\\
+&= \vast \langle: \prod_{r=1}^d \prod_{s=1}^v \frac{\left(\hat{\Omega}_r(t_0^{(s)},t_0^{(s)}+\Delta T)\right)^{m_s^r}}{m_s^r!} e^{-\hat{\Omega}_r(t_0^{(s)},t_0^{(s)}+\Delta T)} :\vast \rangle
+\end{align}
+		
+\end{document}

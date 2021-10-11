@@ -1,0 +1,1085 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Time Evolution In Quantum Mechanics}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will provide a unified perspective on unitary time-evolution in quantum mechanics and the transformations between various `pictures' or `frames' in which the time evolutions of quantum systems are typically calculated.
+
+\section{Operators on Hilbert Space}
+
+Consider a physical system described by Hilbert space $\mathcal{H}$ which has the corresponding physical observables $\mathcal{A} = \{A^i\}$ which have eigenvalues $a^i_j$. For each operator the eigenvalue $a^i_j$ may be $N^i_j$-fold degenerate with $N^i_j \ge 1$. We can define the projection operator onto the subspace
+
+\begin{align}
+\Pi^i_j = \sum_{k=1}^{N^i_j} \ketbra{a^i_j,k}{a^i_j,k}
+\end{align}
+
+$i$ indexes the operator we are working with, $j$ indicates which eigenvalue we are working with and $k$ indicates a particular eigenvector in the degenerate eigenspace. Each $\Ket{a^i_j,k}$ satisfies
+
+\begin{align}
+A^i \Ket{a^i_j,k} &= a^i_j \Ket{a^i_j,k}\\
+\Braket{a^i_j,k|a^i_l,m} &= \delta_{jl}\delta_{km}
+\end{align}
+
+Each operator can be expanded as
+
+\begin{align}
+A^i = \sum_j a^i_j \Pi^i_j
+\end{align}
+
+\section{Quantum Mechanical Predictions and the Born Rule}
+
+How do we use quantum mechanics to make predictions about the physical world?
+Quantum mechanics is a statistical theory so it doesn't allow us to predict exactly what value will be measured in a particular experiment but it does allow us to predict statistics of measurement outputs.
+These predictions are made using the Born rule which is postulated as one of the fundamental axioms of quantum mechanics.
+I will present the Born rule beginning in the most simple case and I will slowly generalize the rule to a form more general than is typically presented but the meaning will hopefully be clear.
+
+\subsection{Single Operator, Non-Degenerate Eigenvalues}
+In the simplest form the Born rule says that if a system is in state $\ket{\psi}$ and we have an operator $A$ with non-degenerate eigenvalues $\{a_j\}$ then the probability of observing or measuring an outcome of $a_j$ is given by
+
+\begin{align}
+P(A = a_j) = \left|\braket{a_j|\psi}\right|^2 = \braket{\psi|a_j}\braket{a_j|\psi} = \bra{\psi}\Pi_j \ket{\psi}
+\end{align}
+
+\subsection{Single Operator, Degenerate Eigenvalues}
+In the case that the eigenvalues $a_j$ are degenerate we have
+
+\begin{align}
+P(A = a_j) = \sum_k \left|\braket{a_j|\psi}\right|^2 = \sum_k \braket{\psi|a_j, k}\braket{a_j, k|\psi} = \bra{\psi}\Pi_j \ket{\psi}
+\end{align}
+
+\subsection{Multiple Operators}
+Here we have shown how to calculate probabilities for an individual operator to be observed to take on particular values.
+Quantum mechanics importantly also allows us to predict probabilities for joint observations of multiple observables.
+However, there is a caveat that those observables must be commuting.
+
+Consider a set of mutually commuting observables $\mathcal{Q} = \{Q^i\}$ such that
+
+\begin{align}
+[Q^i, Q^j] = 0
+\end{align}
+
+In that case we can find a basis which is a simultaneous eigenbasis for all of the $Q^i$ labeled as $\ket{q^1_{j_1}, \ldots, q^N_{j_N}, k_{j_1,\ldots, j_N}}$ where $k_{j_1,\ldots,j_N}$ indicates a possible degeneracy of the simultaneous eigenvalues.
+The probability of simultaneously observing a set of operators to take on a particular set of eigenvalues is given by
+
+\begin{align}
+P(Q^1=q^1_{j_1}, \ldots, Q^N_{j_N} = q^N_{j_N}) =& \sum_{k_{j_1,\ldots,j_N}} \left|\braket{q^1_{j_1}, \ldots, q^N_{j_N}, k_{j_1,\ldots,j_N} | \psi}\right|^2 \nonumber\\
+=&\sum_k \braket{\psi | q^1_{j_1}, \ldots, q^N_{j_N}, k_{j_1,\ldots,j_N}}\braket{q^1_{j_1}, \ldots, q^N_{j_N}, k_{j_1,\ldots,j_N} | \psi} \nonumber\\
+=& \bra{\psi}\Pi^{1,\ldots, N}_{j_1,\ldots,j_N}\ket{\psi}
+\end{align}
+
+Where we have defined
+
+\begin{align}
+\Pi^{1,\ldots, N}_{j_1, \ldots j_N} = \sum_{k} \ket{q^1_{j_1}, \ldots, q^N_{j_N}, k_{j_1,\ldots,j_N}}\bra{q^1_{j_1}, \ldots, q^N_{j_N}, k_{j_1,\ldots,j_N}}
+\end{align}
+
+Here we have worked in terms of a simultaneous projection operator $\Pi^{1,\ldots,N}_{j_1,\ldots,j_N}$. 
+We can also consider independent eigenbases of particular operators (which may not be simultaneous eigenbases of all operators in the case that eigenvalues exhibit degeneracy) labeled as $\ket{q^1_{j_1}, k^1_{j_1} }, \ldots \ket{q^N_{j_N}, k^N_{j_N}}$.
+We can write down corresponding projection operators
+
+\begin{align}
+\Pi^i_{j_i} = \sum_{k^i_{j_i}} \ket{q^i_{j_i}, k^i_{j_i}}\bra{q^i_{j_i},k^i_{j_i}}
+\end{align}
+
+It can be shown that $[Q^i, Q^l]=0$ if and only if for all $j_i, j_l$ that
+
+\begin{align}
+[\Pi^i_{j_i}, \Pi^l_{j_l}] = 0
+\end{align}
+
+It can also be seen that $\Pi^{1, \ldots, N}_{j_1, \ldots, j_N}$ can be written as
+
+\begin{align}
+\Pi^{1, \ldots, N}_{j_1, \ldots, j_N} = \Pi^1_{j_1}\ldots \Pi^N_{j_N} = \prod_i \Pi^i_{j_i}
+\end{align}
+
+So that we have
+
+\begin{align}
+\label{bornmultiop}
+P(Q^1=q^1_{j_1}, \ldots, Q^N=q^N_{j_N}) = \bra{\psi}\Pi^1_{j_1} \ldots \Pi^N_{j_N}\ket{\psi}
+\end{align}
+
+We will work with expressions of the above form.
+
+\subsection{Joint Hilbert Space} 
+I will also note that Eq. (\ref{bornmultiop}) is valid unaltered not only for the case of simultaneous measurement of multiple operators but also for the case when the Hilbert space is partitioned into a number of smaller Hilbert spaces
+
+\begin{align}
+\mathcal{H} = \bigotimes_i \mathcal{H}_i
+\end{align}
+
+\subsection{Application to Non-Commuting Observables?}
+It is slightly tempting to take Eq. (\ref{bornmultiop}) and allow it to apply for eigenprojection operators from non-commuting observables. 
+For example suppose $[A,B]\neq 0$.
+We might propose
+
+\begin{align}
+P(A=a, B=b) \overset{?}{=} \bra{\psi}\Pi^A_a\Pi^B_b\ket{\psi}
+\end{align}
+
+However, since $[A,B]\neq 0$ it is necessarily the case that there are some values of $a$ and $b$ such that $[\Pi^A_a, \Pi^B_b] \neq 0$.
+Then the question is which of 
+
+
+\begin{align}
+P(A=a, B=b) \overset{?}{=}& \bra{\psi}\Pi^A_a\Pi^B_b\ket{\psi} \nonumber\\
+P(A=a, B=b) \overset{?}{=}& \bra{\psi}\Pi^B_b\Pi^A_a\ket{\psi}
+\end{align}
+
+should we take as the probability?
+The answer is that no such probability function can be given for non-commuting observables.
+We will see another problem with attempting to define statistics for simultaneous measurements of non-commuting observables shortly.
+For now we must simply resign ourselves to the statement that quantum mechanics only allows us to assign probabilities to the simultaneous observation of sets of \textit{mutually commuting} observables.
+
+\subsection{Expectation Values}
+
+Returning now to sets of commuting observables.
+Given these probability functions we can now calculate statistics or expectation values of observations of observables and combinations of observables. 
+Suppose $f$ is a polynomial function of the $Q^i$.
+
+\begin{align}
+f(Q^1, \ldots, Q^N) = \sum_{i,n} \alpha^i_n (Q^i)^n =& \sum_{i,n, j_i} \alpha^i_n (q^i_{j_i}\Pi^i_{j_i})^n \nonumber\\
+=& \sum_{i, n, j_i} \alpha^i_n (q^i_{j_i})^n \Pi^i_{j_i}
+\end{align}
+
+We can then consider the expected value of an observation of $f(Q^1, \ldots, Q^N)$ as
+
+\begin{align}
+E[f(Q^1, \ldots, Q^N)] =& \sum_{i, n, j_i}\alpha^i_n (q^i_{j_i})^n  P(Q^1=q^1_{j_1},\ldots, Q^N=q^N_{j_N}) \nonumber\\
+=& \sum_{i, n, j_i} \alpha^i_n (q^i_{j_i})^n\bra{\psi}\Pi^1_{j_1} \ldots \Pi^N_{j_N} \ket{\psi} \nonumber\\
+=& \bra{\psi}f(Q^1,\ldots,Q^N)\ket{\psi}
+\end{align}
+
+The last line follows due to the following argument. Pick $k\neq i$.
+The summation looks like
+
+\begin{align}
+= \bra{\psi} \sum_i \sum_n \sum_{j_1}\ldots \sum_{j_i}\ldots \sum_{j_k} \ldots \sum_{j_N} \alpha_n^i (q_{j_i}^i)^n \Pi^1_{j_1} \ldots\Pi^i_{j_i} \ldots \Pi^k_{j_k}\ldots \Pi^N_{j_N} \ket{\psi}
+\end{align}
+
+This can be rewritten as
+
+\begin{align}
+= \bra{\psi}\sum_i \sum_n \sum_{j_i} \alpha_n^i (q^i_{j_i})^n \left(\sum_{j_1} \Pi_{j_1}^1\right) \ldots \Pi_{j_i}^i \ldots \left(\sum_{j_k}\Pi_{j_k}^k\right) \ldots \left(\sum_{j_N} \Pi_{j_N}^N\right) \ket{\psi}
+\end{align}
+
+Each of the factors $\sum_{j_k}\Pi_{j_k}^k = 1$ so
+
+\begin{align}
+= \bra{\psi}\sum_{i, n, j_i} \alpha_n^i (q_{j_i}^i)^n \Pi_{j_i}^i \ket {\psi} = \bra{\psi}f(Q^1,\ldots, Q^N)\ket{\psi}
+\end{align}
+
+For example, if we are interested in the expected value of a particular observable $A$ we have
+
+\begin{align}
+\label{BornOpForm}
+\Braket{A} \equiv E[A] = \bra{\psi}A\ket{\psi}
+\end{align}
+
+Note that $f(Q^1,\ldots, Q^N)$ can in fact be interpreted as a particular single observable with a spectrum possibly different than each of $Q^i$ but some spectrum nonetheless and the simple one operator expression applies equally well.
+
+\subsection{Expectation Values to Calculate Probabilities}
+Note also that we can choose $A = \Pi^i_{j_i}$ and see that
+
+\begin{align}
+\Braket{\Pi^i_{j_i}} = \bra{\psi} \Pi^i_j \ket{\psi} = P(Q^i=q^i_{j_i})
+\end{align}
+
+or we can take $A = \Pi^1_{j_1}\ldots \Pi^N_{j_N}$ to get the joint probability:
+
+\begin{align}
+\Braket{\Pi^1_{j_1}\ldots \Pi^N_{j_N}} = \bra{\psi}\Pi^1_{j_1}\ldots\Pi^N_{j_N}\ket{\psi} = P(Q^1=q^1_{j_1},\ldots,Q^N=q^N_{j_N})
+\end{align}
+
+So we see that given the expression for expectation values of operators we can in turn calculate the Born rule in terms of probabilities.
+This means that we can turn the argument on it's head and take Eq. (\ref{BornOpForm}) as the fundamental definition of the Born rule and allow the probability statements to be subsequently derived.
+This is the approach that will be followed in this document.
+
+The reason for taking Eq. (\ref{BornOpForm}) as the fundamental expression of the Born rule is because it treats the states and the operators on equal footing.
+This symmetry will allow us to give a general statement describing time-evolution in quantum mechanics and it will allow us to understand the transformations between various pictures in quantum mechanics in a straightforward way.
+
+
+\section{Time Evolution}
+
+Above I have described how the Born rule can be used to calculate probabilities and statistics for the observation of sets of commuting observables such as $\mathcal{Q}$.
+This was calculated for an observation performed at a particular moment in the time when the system could be described as being in state $\ket{\psi}$.
+
+In addition to calculating statistics at particular moments in time it is possible, using another postulate of quantum mechanics, to calculate the time evolution of observation probabilities and statistics.
+This is the postulate of unitary time evolution.
+
+We first introduce the notion of a unitary time-evolution operator.
+A unitary time evolution operator is an operator $T = T(t_2, t_1)$ which satisfies
+
+\begin{align}
+T^{\dag}(t_2,t_1)T(t_2,t_1) &= T(t_2, t_1)T^{\dag}(t_2, t_1) = \bv{1}\\
+T(t_2,t_1)T(t_1,t_0) &= T(t_2,t_0)\\
+T(t,t) & = \bv{1}
+\end{align}
+
+The first condition states that $T(t_1, t_1)$ is unitary.
+Note that for any $t_1$ and $t_2$ and origin of time $t_0$ we have
+
+\begin{align}
+T(t_2, t_1) = T(t_2, t_0)T^{\dag}(t_1, t_0)
+\end{align}
+
+So we can let $T = T(t) = T(t, t_0)$ in which case we have
+
+\begin{align}
+T(t_2, t_1) = T(t_2)T^{\dag}(t_1)
+\end{align}
+
+For any particular quantum system $T$ must be specified or determined based on physical considerations. We will see that $T$ is related to the Hamiltonian, $H$, for a particular system.
+
+The Born rule can be updated to include time evolution in the following way according to the postulates of quantum mechanics. We assume that at time $t_0$ the system is in state $\ket{\psi_0}$.
+
+\begin{align}
+\Braket{A}_t = \bra{\psi_0} T^{\dag}(t) A_0 T(t) \ket{\psi_0} = \bra{\psi_0}T^{\dag}A_0 T\ket{\psi_0}
+\end{align}
+
+Here $A$ on the left hand side can be thought of as a physical observable quantity while $A_0$ is the mathematical element of the theory representing it.
+Here $A_0$ is characterized by having no \textit{implicit} time dependence.
+This is in contrast to, for example, the Heisenberg representation of $A$ which does include implicit time dependence.
+
+We see that to fully specify a physical system we must specify a Hilbert space, $\mathcal{H}$, the relevant set of physical observables and their corresponding operators acting on the Hilbert space, $\{A^i\}$, the time-evolution operator for the system, $T(t_2,t_1)$, and the initial state $\ket{\psi_0}$. From this setup and the time-dependent Born rule above we can make any prediction that quantum mechanics is able to make\footnote{See the below aside on $C^*$-algebras where I point out that it is actually possible to first specify the physical observables and corresponding mathematical objects and then, from those, extract the relevant Hilbert space. Below I explain why this is more physically satisfying to me.}.
+
+We thus see that to make quantum mechanical predictions we are tasked with the problem of calculating quantities such as
+
+\begin{align}
+\bra{\psi_0}T^{\dag} A_0 T \ket{\psi_0}
+\end{align}
+
+The rest of this document will be an exposition of different methods for calculating this above quantity.
+
+\section{Reduction to Linear Algebra}
+
+We see above that quantum mechanics makes predictions through the Born rule which requires the calculation of quantities like
+
+\begin{align}
+\bra{\psi_0}T^{\dag}A_0T \ket{\psi_0}
+\end{align}
+
+This expression is given in terms of kets and operators but the overall expression is a scalar. The goal is to calculate this scalar in terms of other known quantities specified at the outset of the problem.
+
+Here I will lay out a general approach for converting this expression into a scalar. I argue most quantum problems can be cast into the form I am now about to describe.
+
+Suppose that there is a complete orthonormal basis $\{\ket{q_i}\}$ with $\braket{q_i|q_j} = \delta_{ij}$. We will call this the calculation basis. We then of course have a resolution of the identity
+
+\begin{align}
+\sum_{i} \ketbra{q_i}{q_i} &= \bv{1}
+\end{align}
+
+Where here the operator $\ketbra{q_i}{q_j}$ is defined by
+
+\begin{align}
+\left(\ketbra{q_i}{q_j}\right) \ket{\psi} = \ket{q_i} 
+\left(\braket{q_j|\psi}\right)
+\end{align}
+
+Here the object in parentheses on the LHS is an operator and the second object is a ket and on the RHS the first object is a ket while the second in parentheses is a scalar.
+
+
+We can then express any ket $\ket{\psi}$ as
+
+\begin{align}
+\ket{\psi} = \sum_{i} \ket{q_i} \braket{q_i|\psi} = \sum_i c_i \ket{q_i}
+\end{align}
+
+If the constants $c_i = \braket{q_i|\psi}$ are known or calculable then we say that we know how to express $\ket{\psi}$ in the $\{\ket{q_i}\}$ basis, or if it is understood from context that the $\{\ket{q_i}\}$ basis is the calculation basis, we can say more succinctly that $\ket{\psi}$ is \textit{known}.
+
+I will introduce a bit of abstract notation to tidy things up a bit. I define a row vector of kets and its adjoint which is a column vector of bras:
+
+\begin{align}
+\bv{q} &= \begin{bmatrix}\ket{q_1},\ldots,\ket{q_N}\end{bmatrix} \nonumber \\
+\bv{q}^{\dag} &= \begin{bmatrix}\bra{q_1}\\\vdots\\\bra{q_N}\end{bmatrix}
+\end{align}
+
+Orthonormality of the $\{\ket{q_i}\}$ is expressed by
+
+\begin{align}
+\bv{q}^{\dag}\bv{q} = 
+\begin{bmatrix}
+\braket{q_1|q_1} && \cdots && \braket{q_1|q_N}\\
+\vdots && \ddots && \vdots \\
+\braket{q_N|q_1} && \cdots && \braket{q_N|q_N}
+\end{bmatrix} = \bv{1}
+\end{align}
+
+Where $\bv{1}$ is an $N\times N$ diagonal matrix.
+Completeness of the $\{\ket{q_i}\}$ is expressed by
+
+\begin{align}
+\bv{q}\bv{q}^{\dag} = \sum_i \ket{q_i}\bra{q_i} = \bv{1}
+\end{align}
+
+Where here $\bv{1}$ is the identity operator on the Hilbert space.
+Despite the confusion we will leave the notation as is.
+
+Given this new notation we can write
+
+\begin{align}
+\ket{\psi} = \bv{q}\bv{c}
+\end{align}
+
+Where $\bv{c}$ is a column vector consisting of the coefficients $\{c_i\}$.
+
+\begin{align}
+\bv{c} = \begin{bmatrix}
+c_1\\ \vdots\\ c_n
+\end{bmatrix} = 
+\begin{bmatrix}
+\braket{q_1|\psi}\\ \vdots \\ \braket{q_N|\psi} 
+\end{bmatrix}
+= \bv{q}^{\dag} \ket{\psi}
+\end{align}
+
+Similarly, it is possible to expand operators with respect to this basis. Consider an arbitrary operator $O$. 
+
+\begin{align}
+O =& \bv{q}\bv{q}^{\dag}A\bv{q}\bv{q}^{\dag} \nonumber \\
+=& \bv{q} \begin{bmatrix}
+\bra{q_1}O\ket{q_1} && \cdots && \bra{q_1}O\ket{q_N}\\
+\vdots && \ddots && \vdots \\
+\bra{q_N}O\ket{q_1} && \cdots && \bra{q_N}O\ket{q_N}
+\end{bmatrix}\bv{q}^{\dag} \nonumber\\
+=& \bv{q} \bv{o}\bv{q}^{\dag} \nonumber\\
+=& \sum_{ij} \ket{q_i} \bra{q_i} O \ket{q_j} \bra{q_j} \nonumber\\
+=& \sum_{ij} o_{ij} \ket{q_i}\bra{q_j}
+\end{align}
+
+Just like for the kets, if the $o_{ij} = \bra{q_i}O\ket{q_j}$ are known then we say that we know how to express $O$ in the $\{q_i\}$ basis or simply that $O$ is \textit{known}. We will also say that $O$ is known if we are able to express it as a \textit{simple} expression in terms of other operators which are known. For example, if $A$ and $B$ are known then $C=A+B$ is also known.
+
+Note for example, in the special case that $\{\ket{q_i}\}$ is the eigenbasis corresponding to $O$ with eigenvalues $\{q_i\}$ we simply have that $o_{ij} = q_i\delta_{ij}$.
+
+However, it might often be the case that we have a problem involving two operators which don't commute such as $X$ and $P$. In that case it is impossible to find a basis which is a simultaneous eigenbasis of both. In that case to `know' both $X$ and $P$ it is required to have a common basis into which the eigenbases for both $X$ and $P$ can be transformed. The common basis could, for example, be the eigenbasis of either $X$ or $P$. If such a basis and transformation is known then that it guarantees we can find $x_{ij}$ and $p_{ij}$ in this basis as needed.
+
+We see that if $\ket{\psi} = \bv{q}\bv{c}$, $\ket{\phi} = \bv{q}\bv{b}$, and $O = \bv{q}\bv{o}\bv{q}^{\dag}$ are all known then we can calculate the transition matrix element expression given by
+
+\begin{align}
+\bra{\phi}O\ket{\psi} =& \bv{b}^{\dag}\bv{q}^{\dag}\bv{q}\bv{o}\bv{q}^{\dag}\bv{q}\bv{c} = \bv{b}^{\dag}\bv{o}\bv{c} \nonumber \\
+=& \sum_{ij} b_i^*o_{ij}c_j
+\end{align}
+
+In particular the Born rule expressions above are calculated when $\bv{\phi} = \bv{\psi}$. 
+We thus see that when the kets and operators are expressed in a known basis it is a simple matter of linear algebra to determine the scalar valued Born rule expressions.
+
+\section{Overview}
+
+Thus far I have shown 1) that predictions in quantum mechanics follow from calculating quantities of the form
+
+\begin{align}
+\label{eqborn}
+\bra{\psi_0}T^{\dag}A_0T\ket{\psi_0}
+\end{align}
+
+And 2) that quantities of the form
+
+\begin{align}
+\bra{\psi}O\ket{\psi}
+\end{align}
+
+can be easily calculated by matrix multiplication if $\ket{\psi}$ and $O$ are known in the sense that we are able to express them in terms of a common computation basis.
+
+The typical problem setup is that we are tasked with calculating something like Eq. (\ref{eqborn}) in the case when $A_0$ and $\ket{\psi_0}$ are known but $T$ is not necessarily known.
+
+I will outline 4 approaches forward which are used in practice.
+
+\begin{itemize}
+\item{Schrodinger Picture: In the Schrodinger picture we focus on the combination $\ket{\psi^{(S)}} = T\ket{\psi_0}$. By differentiating with respect to time we are able to come up with a differential equation involving $\ket{\psi^{(S)}}$ and the Hamiltonian (which will be defined shortly) $H^{(S)}$. This differential equation can be solved so that $T\ket{\psi_0}$ can then be expressed entirely in terms of the computation basis and thus become known.}
+\item{Heisenberg Picture: In the Heisenberg picture we focus on the combination $Q^{i,(H)} = T^{\dag}Q^i_0 T$ for each operator in the problem. By differentiating with respect to time we are able to come up with a set of coupled differential equations involving the $Q^{i,(H)}$ and the Hamiltonian $H^{(H)}$. If these differential equations can be solved then it means the $Q^{i, (H)}$ can be expressed in terms of the $Q^i_0$ which are known. In that case we can again express the $Q^{i,(H)}$ entirely in terms of the computation basis so we have again completed the problem.}
+\end{itemize}
+
+The next two approaches are relevant when the unitary time evolution operator $T$ is able to be factorized into unitary time evolution operators as, $T=BC$. 
+Typically one of these time-evolutions $B$ or $C$ is in some sense `simple' or previously solved while the other one is in some way complex. 
+The idea is to separate the problem out into two parts, an easy part and a hard part.
+This is beneficial because it might be slightly easier to solve the hard part of the problem when it is not being interfered with by the easy part, then, once the hard part is solved, the solution to the easy part can simply be applied subsequently. 
+This will hopefully become clear below.
+
+\begin{itemize}
+\item{ket interaction picture: In the ket interaction picture the time evolution operator is factorized as $T=BC$ with $B$ a previously solved for time dynamics and $C$ and difficult/unsolved dynamics. We must calculate $\bra{\psi_0}C^{\dag}B^{\dag}A_0BC\ket{\psi_0}$. In this approach we first focus on $C\ket{\psi_0}$. As in the Schrodinger approach we differentiate to find a Schrodinger equation like differential equation for $\ket{\psi^{(KI)}} = C\ket{\psi_0}$ which we solve to ultimately express it in terms of the calculation basis. Once that is done we can note one of two things. We can either note that since $B$ is previously solved for $B^{\dag}A_0B$ is known so the problem is solved (the corresponding language here is we have put the complicated dynamics on the ket and shunted the simple dynamics onto the operators) or we can apply the known time dynamics $B$ again onto the kets to find $B\ket{\psi^{(KI)}} = BC\ket{\psi_0}$ so that the whole expression is known.}
+\item{operator interaction picture: In the operator interaction picture we take the same approach as in the ket interaction picture of breaking the problem into two parts. Now we have $T=BC$ where $B$ is the complicated dynamics and $C$ is the simple dynamics. As in the Heisenberg approach we focus on $B^{\dag}Q^i_0B$ and differentiate to get a set of coupled differential equations for the $Q^{i, (OI)} = B^{\dag}Q^i_0B$. Once these differential equations are solved then the $Q^{i, (OI)}$ can be expressed as some function of the $Q^i_0$ meaning they are then known. Just like in the ket interaction picture there are now two options. Recognizing that $C$ is a solved dynamics we can either calculate $C\ket{\psi_0}$ (Thus putting the complicated dynamics on the operators and the simple dynamics on the kets) or the solved dynamics $C$ can be applied to the $Q^{i, (OI)}$ to calculate $C^{\dag}Q^{i, OI}C = C^{\dag}B^{\dag}Q^i_0BC$ so that the whole expression becomes known. NOTE: the operator interaction picture is rarely if ever discussed in any literature. In certain optomechanics and otherwise quantum optics literature in which authors work with operator equations of motion (Heisenberg or Langevin, for example) one will see usages of this operator interaction picture or rotating frame but it is never discussed at the abstract level presented here, and it is especially not presented in analogy to the ket interaction picture.}
+\end{itemize}
+
+In the explanation for both of the interaction pictures I indicate that there are two options going forward after the complicated dynamics is solved.
+I will mention two things regarding this.
+First of all, in practice, once the complicated dynamics is solved the calculation typically ends and the transformation under the simple dynamics is assumed.
+So there is sort of a third option for each of the interaction pictures which is to simply stop the calculation part way through in this way.
+The second thing I would like to note is that many references (when discussing the ket interaction picture in particular) utilize the language of "putting part of the dynamics on the kets and part of the dynamics on the operators". 
+However, rarely to the references actually show any manipulations involving putting the simple dynamics onto the operators. More typically what will happen, if anything, is that the simple dynamics which had been rotated out will in fact be re-applied to the kets in a step of `returning to the lab frame'. 
+I think that the ket interaction picture is actually better characterized by breaking the ket-focused calculation into two steps than by splitting the dynamics between the operators and kets.
+
+\section{Time-Independent Kets and Operators}
+
+
+I have been at times confused regarding the different frames or pictures of quantum mechanics (Schrodinger, Heisenberg etc.) Part of this confusion stems from the fact that in typical presentations it seems like there is one ``true'' picture (typically the Schrodinger picture) from which all other pictures are derived. But this is somehow inconsistent with the idea that all pictures are equivalent.
+
+The advantage of the formula given above:
+
+\begin{align}
+\bra{\psi_0}T^{\dag}A_0T\ket{\psi_0}
+\end{align}
+
+is that it is in some sense frame independent. It is presented in a way such that the ket, $\ket{\psi_0}$ does not depend on time and the operator, $A_0$ also does not have any implicit time dependence. Note that it is possible for $A_0$ to have explicit time dependence. For example, in this notation the operator $X$ would not have any time dependence (implicit or explicit) but $X e^{i\omega t}$ would have explicit time dependence but still no implicit time dependence.
+
+I will call these time-independent kets and operators static kets and operators and refer to working with these objects as working in the static frame.
+
+\section{Time Derivatives of Unitary Time Evolution Operators}
+First we introduce the concept of a unitary transformation of a Hilbert space $\mathcal{H}$.
+
+Recall first that a unitary transformation is defined a transformation which satisfies
+
+\begin{align}
+U^{\dag}U = UU^{\dag} = \bv{1}
+\end{align}
+
+A unitary transformation, or change of basis, on a Hilbert space $\mathcal{H}$ is a transformation on the space affected by
+
+\begin{align}
+\ket{\tilde{\psi}} &= U\ket{\psi_0}\\
+\tilde{A} &= UA_0U^{\dag}
+\end{align}
+
+Here $\ket{\psi_0}$ is a ket in the original space and $A_0$ is an operator on the original space.
+$\ket{\tilde{\psi}}$ and $\tilde{A}$ are the unitary transformed versions of the original kets and operators.
+
+Note that this transformation has the property that it preserves inner products in the following way:
+
+\begin{align}
+\bra{\tilde{\psi}}\tilde{A}\ket{\tilde{\psi}} = \bra{\psi_0}U^{\dag}UA_0U^{\dag}U\ket{\psi_0} = \bra{\psi_0}A_0\ket{\psi_0}
+\end{align}
+
+When an operator appears in the from
+
+\begin{align}
+\tilde{A} = UA_0 U^{\dag}
+\end{align}
+
+We say that $\tilde{A}$ arises from the conjugation of $A_0$ by $U$.
+That is a unitary change of basis is achieved by acting $U$ on the kets and conjugating operators by $U$.
+In the course of this text it will be useful to notate transformation of a ket by $U$ and conjugation of an operator by $U^{\dag}$ as
+
+\begin{align}
+\ket{\psi_U} =& U\ket{\psi_0}\\
+(A)_U =& U^{\dag}A_0U
+\end{align}
+
+\subsection{Hermitian Generator}
+
+We now consider unitary transformations $U(t)$ which depend continuously on a parameter $t$.
+
+\begin{align}
+UU^{\dag} &= \bv{1} \nonumber\\
+\frac{dUU^{\dag}}{dt} &= \frac{dU}{dt} U^{\dag} + U\frac{dU^{\dag}}{dt} = 0 \nonumber\\
+&= \frac{dU}{dt}U^{\dag} + \left(\frac{dU}{dt}U^{\dag}\right)^{\dag} = 0 \nonumber\\
+\frac{dU}{dt}U^{\dag} &= -\left(\frac{dU}{dt}U^{\dag}\right)^{\dag}
+\end{align}
+
+This means that the operator $\frac{dU}{dt}U^{\dag}$ is anti-Hermitian (it is equal to the negative of its Hermitian conjugate).
+Analogously we have
+
+\begin{align}
+U^{\dag}U =& \bv{1} \nonumber\\
+d\frac{U^{\dag}U}{dt} =& \frac{dU^{\dag}}{dt}U + U^{\dag}\frac{dU}{dt} = 0 \nonumber \\
+=& \left(U^{\dag}\frac{dU}{dt}\right)^{\dag} + U^{\dag}\frac{dU}{dt} = 0 \nonumber\\
+U^{\dag}\frac{dU}{dt} =& -\left(U^{\dag}\frac{dU}{dt}\right)^{\dag}
+\end{align}
+
+Meaning that $U^{\dag}\frac{dU}{dt}$ is also anti-Hermitian.
+
+Noting the anti-Hermiticity of these combinations we are motivated to define the Hermitian operators
+
+\begin{align}
+H_U^{(S)} =& i\frac{dU}{dt}U^{\dag} \nonumber\\
+\frac{dU}{dt} =& -i H_U^{(S)} U
+\end{align}
+
+and
+
+\begin{align}
+H_U^{(H)} =& iU^{\dag}\frac{dU}{dt} \nonumber\\
+\frac{dU}{dt} =& -i UH_U^{(H)}
+\end{align}
+
+The sign of $i$ in these definitions is conventionally chosen for agreement with the usual Schrodinger and Heisenberg equations of motion which we will derive subsequently.
+
+Note that
+
+\begin{align}
+H_U^{(H)} = U^{\dag}H_U^{(S)}U = \left(H_U^{(S)}\right)_U
+\end{align}
+
+We say that $H_U^{(S)}$ or $H_U^{(H)}$ generates the dynamics $U$.
+
+Here I want to give a note regarding time-dependent and time-independent Hamiltonians.
+In the Schrodinger picture we work with operators which do not have implicit time-dependence.
+We often talk about Hamiltonians which are time-dependent or time-independent.
+
+
+Note that these equations are valid whether $H_U^{(S)}$ is time-dependent or not.
+If $H_U^{(S)}$ is time-independent then $H_U^{(S)}$ commutes with $U$ and we can integrate the differential equation for $U$ to find
+
+\begin{align}
+\frac{dU}{dt} &= -iH_U^{(S)} U \nonumber \\
+e^{+iH_U^{(S)} t} \left(\frac{dU}{dt} +iH_U^{(S)} U\right) &= \frac{d}{dt}\left[e^{+iH_U^{(S)} t}U\right] = 0 \nonumber\\
+\int_{t'=0}^t \frac{d}{dt'}\left[e^{+iH_U^{(S)} t'}U(t')\right]  dt' &= 0\\
+e^{+iH_U^{(S)} t}U - \bv{1} &= 0\\
+U &= e^{-iH_U^{(S)} t}
+\end{align}
+
+Note that the reverse produce rule equality relies on $\frac{dH_U^{(S)}}{dt} =0$.
+We have also used that, for operator $X$, that $\left(e^X\right)^{-1} = e^{-X}$.
+From this we can see that if $H_U^{(S)}$ is time-independent then $H_U^{(S)}$ commutes with $U$.
+In general is $H_U^{(S)}$ is time-dependent then it will not commute with itself and different times and it will not commute with $U$.
+It is possible, however, to write $U$ as a time-ordered exponential function of $H_U^{(S)}$ as opposed to a simple exponential.
+
+\section{Schrodinger Picture}
+
+In the Schrodinger picture the Born expression $\bra{\psi_0}T^{\dag}A_0 T\ket{\psi_0}$ is calculated by attempting to determine $T\ket{\psi_0}$.
+
+We define the Schrodinger picture ket as
+
+\begin{align}
+\ket{\psi^{(S)}} = \ket{\psi_T} = T\ket{\psi_0}
+\end{align}
+
+The operators in the Schrodinger picture are the same as the static operators, $A^{(S)} = A_0$.
+
+The main approach to calculating $T\ket{\psi_0}$ is through the Schrodinger equation which we derive by taking a time derivative.
+
+\begin{align}
+\frac{d \ket{\psi_T}}{dt} =& \frac{dT}{dt} \ket{\psi_0} \nonumber\\
+=& -iH_T^{(S)}T\ket{\psi_0} = -iH_T^{(S)}\ket{\psi_T}
+\end{align}
+
+So we derive the Schrodinger equation
+
+\begin{align}
+\frac{d \ket{\psi_T}}{dt} = -iH_T^{(S)}\ket{\psi_T}
+\end{align}
+
+In the case that $H_T^{ (S)}$ is time-independent we can solve this as follows.
+We drop subscripts and superscripts.
+
+\begin{align}
+\frac{d\ket{\psi}}{dt} =& -iH\ket{\psi} \nonumber\\
+\frac{d}{dt}\left(\bv{q}^{\dag}\ket{\psi}\right) =& -i\bv{q}^{\dag}H\bv{q}\bv{q}^{\dag}\bv{\ket{\psi}} \nonumber\\
+\frac{d\bv{c}}{dt} =& -i \bv{h} \bv{c}
+\end{align}
+
+Where $(\bv{h})_{ij} = \bra{q_i}H\ket{q_j}$.
+This system of differential equations has the solution (again for time-independent $\bv{h}$) of
+
+\begin{align}
+\bv{c}(t) = e^{-i\bv{h}t}\bv{c}(0)
+\end{align}
+
+The matrix exponential is most easily calculated by diagonalizing $\bv{h}$ so that
+
+\begin{align}
+\bv{h} = \bv{P} \bv{D} \bv{P}^{\dag}
+\end{align}
+
+Where the hermitian matrix $\bv{h}$ is diagonalized by the unitary matrix $\bv{P}$.
+The matrix exponential is then given by
+
+\begin{align}
+e^{-i\bv{h}t} =& \bv{P}e^{-i\bv{D}t}\bv{P}^{\dag} \nonumber\\
+\left(e^{-i\bv{h}t}\right)_{ij} =& \sum_{kl}P_{ik}e^{-iD_{kl} t}\left(\bv{P}^{\dag}\right)_{lj} \nonumber\\
+=& \sum_k P_{ik} e^{-id_k t} P_{jk}^*
+\end{align}
+
+All of this can then be put together to calculate $\ket{\psi(t)} = \bv{q}\bv{c}(t)$.
+Note that the brunt of the computation effort comes in diagonalizing the matrix $\bv{h}$.
+
+In the case that the Hamiltonian is time-dependent one approach is to directly work with the time evolution operator $T$ and expand it as a time-ordered exponential, that is a Dyson series.
+See forthcoming appendix for more details about this calculation.
+
+
+\section{Heisenberg Picture}
+
+In the Heisenberg picture the Born expression $\bra{\psi_0}T^{\dag}A_0T\ket{\psi_0}$ is calculated by determining $T^{\dag}A_0T$. 
+We consider an arbitrary operator $O$.
+
+\begin{align}
+O^{(H)} &= O_T =  T^{\dag}O_0T
+\end{align}
+
+The kets in the Heisenberg picture are the same as the static kets, $\ket{\psi^{(H)}} = \ket{\psi_0}$.
+We can calculate the time dependence
+
+\begin{align}
+\frac{dO_T}{dt} =& \frac{dT^{\dag}}{dt}O_0 T + T^{\dag}O_0 \frac{dT}{dt} + T^{\dag}\frac{\partial O_0}{\partial t}T \nonumber\\
+=& iH_T^{(H)}T^{\dag}O_0T -iT^{\dag}O_0TH_T^{(H)} + \frac{\partial O_H}{\partial t} \nonumber\\
+=& -i O_T H_T^{(H)} + iH_T^{(H)}O_T + \frac{\partial O_H}{\partial t} \nonumber\\
+=& -i[O_T, H_T^{(H)}] + \frac{\partial O_H}{\partial t}
+\end{align}
+
+So we see we have derived the Heisenberg equation of motion
+
+\begin{align}
+\frac{dO_T}{dt} = -i[O_T, H_T^{(H)}] + \frac{\partial O_H}{\partial t}
+\end{align}
+
+In general we may need an infinite set of Heisenberg equations of motion to solve for the motion of one operator.
+However, in many cases we only need a set of a few coupled differential equations to solve the problem.
+Suppose the differential equation can be set up and solved for a set of (known) operators $\{Q^i\}$. 
+Then the solution is of the form
+
+\begin{align}
+Q^i_T = f_{Q^i, T}(Q^1_0, \ldots, Q^N_0, t)
+\end{align}
+
+Since the individual $Q^i_0$ are known the $Q^i_T$ are in turn known and the problem is solved.
+
+Let's consider the expression
+
+\begin{align}
+[O_T, H_T^{(H)}]
+\end{align}
+
+Is it reasonable that we should expect to know how to calculate this commutator?
+In general the answer is yes.
+I will show the logic here.
+
+\begin{align}
+[O_T, H_T^{(H)}] =& [O_T, \left(H_T^{(S)}\right)_T] \nonumber\\
+=&[T^{\dag}O_0T, T^{\dag}H_T^{(S)}T] \nonumber\\
+=&T^{\dag}[O_0, H_T^{(S)}]T
+\end{align}
+
+We see that to calculated the Heisenberg picture commutator we can first calculate the commutator of the static operator with the Schrodinger Hamiltonian and then converting into the Heisenberg picture.
+Typically problems are posed in a way such that the Schrodinger Hamiltonian is expressed in terms of static operators meaning we must calculate the commutator of $O_0$ with other static operators which is something we can generally do.
+
+\section{Decomposition of Time-Evolution Operator as a Product}
+
+In this section, in preparation for the treatment of a variety of interaction pictures, we consider situations in which a particular time evolution operator can be decomposed as a product
+
+\begin{align}
+T = AB
+\end{align}
+
+We might expect such a situation to arise when the Hamiltonian is a sum of two other Hamiltonians.
+
+\begin{align}
+\label{doubleham}
+H_T^{(S)} = H_X^{(S)} + H_Y^{(S)}
+\end{align}
+
+Let us assume the Hamiltonian is in fact given by Eq. (\ref{doubleham}). 
+We now ask how $A$ and $B$ might be related to $H_X^{(S)}$ and $H_Y^{(S)}$.
+
+We calculate
+
+\begin{align}
+i\frac{dT}{dt}T^{\dag} =& i\frac{dA}{dt}BB^{\dag}A^{\dag} + iA\frac{dB}{dt}B^{\dag}A^{\dag} \nonumber\\
+H_T^{(S)} =& H_A^{(S)} + AH_B^{(S)}A^{\dag}
+\end{align}
+
+Let us choose $H_A^{(S)} = H_X^{(S)}$ so that $A=X$.
+We then see that 
+
+\begin{align}
+H_Y^{(S)} =& AH_B^{(S)}A^{\dag} \nonumber\\
+H_B^{(S)} =& A^{\dag}H_Y^{(S)}A = X^{\dag}H_Y^{(S)}A
+\end{align}
+
+Let us define an operator $\tilde{Y}=B$.
+The notation $\tilde{Y}$ indicates that the generator (or Hamiltonian) corresponding to $\tilde{Y}$ is related to $H_Y$, however, it involves a conjugation by $X$.
+
+We then have
+
+\begin{align}
+T = X\tilde{Y}
+\end{align}
+
+It will be useful later (in particular for the operator interaction pictures) to notice
+
+\begin{align}
+T = X\tilde{Y} = \tilde{Y}\tilde{Y^{\dag}}X\tilde{Y} = \tilde{Y}(X)_{\tilde{Y}}
+\end{align}
+
+Summarizing
+
+\begin{align}
+T =& AB = X\tilde{Y} = \tilde{Y}(X)_{\tilde{Y}} \nonumber\\
+H_T^{(S)} =& H_X^{(S)} + H_Y^{(S)} = H_A^{(S)} + AH_B^{(S)}A^{\dag} \nonumber\\
+A =& X \nonumber\\
+B =& \tilde{Y} \nonumber\\
+H_A^{(S)} =& H_X^{(S)} \nonumber\\
+H_B^{(S)} =& H_{\tilde{Y}}^{(S)} = \left(H_Y^{(S)}\right)_X = X^{\dag}H_Y^{(S)}X \nonumber\\
+\end{align}
+
+I will note that in practice, and in what follows, it is typically the case that the time evolution generated by $H_X^{(S)}$ is somehow simple or previously solved for while the time evolution generated by $H_Y^{(S)}$ is somehow complicated.
+We will see below that the splitting of $T$ into two parts, $X$ and $\tilde{Y}$ or $\tilde{Y}$ and $(X)_{\tilde{Y}}$ allows us to break the problem into two parts.
+One part which has to do with $X$ and one part which has to do with $\tilde{Y}$.
+
+The benefit of this splitting of the problem will be ideally two-fold.
+First, it may be organizationally simpler to focus on one thing at a time.
+Second, and more importantly, the other half of the problem involving $\tilde{Y}$ is now generated by $H_{\tilde{Y}}^{(S)}$ instead of $H_Y^{(S)}$.
+In certain cases the time evolution under this transformed Hamiltonian can in fact be simpler than the time dynamics under the original Hamiltonian $H_Y^{(S)}$.
+This will hopefully be made more clear in an example at the end of this document.
+
+\section{Ket Interaction Pictures}
+
+Again, the Born rule type expressions we must calculated are of the form
+
+\begin{align}
+\braket{A}_t = \bra{\psi_0}T^{\dag}A_0T\ket{\psi_0}
+\end{align}
+
+In the case that $T = X\tilde{Y}$ we have
+
+\begin{align}
+\braket{A}_t = \bra{\psi_0}\tilde{Y}^{\dag}X^{\dag}A_0X\tilde{Y}\ket{\psi_0}
+\end{align}
+
+In the Schrodinger picture we grouped $T$ with $\ket{\psi_0}$ to create a new, time-evolving ket $\ket{\psi^{(S)}} = \ket{\psi_T}$.
+We then derived a differential Schrodinger equation for $\ket{\psi_T}$ which could be solved to solve the problem.
+In this way we say that we ascribe all of the time dependence, $T$, to the kets in the problem.
+
+In the ket-centric interaction pictures the first step to ascribe part of the time dynamics to the kets.
+In particular we ascribe the time dynamics of $\tilde{Y}$ to the kets at first.
+
+\begin{align}
+\ket{\psi^{(KI)}} = \ket{\psi_{\tilde{Y}}} = \tilde{Y}\ket{\psi_0}
+\end{align}
+
+We can then similarly derive a Schrodinger-like equation for $\ket{\psi_{\tilde{Y}}}$.
+
+\begin{align}
+\frac{d\ket{\psi_{\tilde{Y}}}}{dt} =& \frac{d\tilde{Y}}{dt} \ket{\psi_0} \nonumber\\
+=& -iH_{\tilde{Y}}^{(S)} \tilde{Y}\ket{\psi_0} \nonumber\\
+=& -iH_{\tilde{Y}}^{(S)} \ket{\psi_{\tilde{Y}}}\\
+=& -iX^{\dag}H_Y^{(S)}X\ket{\psi_{\tilde{Y}}}
+\end{align}
+
+So we see that $\ket{\psi_{\tilde{Y}}}$ evolves exactly like a Schrodinger picture ket under the Hamiltonian $H_{\tilde{Y}}^{(S)} = X^{\dag}H_Y^{(S)}X$.
+Note that ideally the Hamiltonian $H_{\tilde{Y}}^{(S)}$ will be in some way simpler than the Hamiltonian $H_Y^{(S)}$.
+If not then there doesn't seem to be an advantage to working in the interaction picture over just directly working in the Schrodinger picture.
+In the example below we will see that if the Hamiltonian is partitioned appropriately we can, for example, use the conjugation by $X$ in $H_{\tilde{Y}}^{(S)}$ to convert an initially time-dependent $H_Y^{(S)}$ into a time independent $H_{\tilde{Y}}^{(S)}$.
+
+\fbox{\begin{minipage}{0.8\linewidth}
+Note there is a confusing point of notation here.
+The superscript $(S)$ on the Hamiltonian operators should be understood to be shorthand for the following for any unitary operator $U$ appearing in the subscript
+
+\begin{align}
+H_U^{(S)} = i\frac{dU}{dt}U^{\dag}
+\end{align}
+
+The superscript does NOT mean that it is Hamiltonian which appears in the Schrodinger picture for whatever problem is at hand.
+For example, in this problem the Schrodinger picture Hamiltonian would be $H_T^{(S)} \neq H_{\tilde{Y}}^{(S)}$.
+The superscript typically means that the operators which make up the Hamiltonian are static operators in that they do not have implicit time dependence.
+\end{minipage}}
+
+Returning to the point at hand, if we are able to solve the modified Schrodinger equation
+
+\begin{align}
+\frac{d\ket{\psi_{\tilde{Y}}}}{dt} = iH_{\tilde{Y}}^{(S)} \ket{\psi_{\tilde{Y}}}
+\end{align}
+
+Then we have completed the first step of solving a problem in the ket interaction picture.
+
+At this point there are three possible approaches.
+
+\begin{itemize}
+\item{The first approach which is often motivated in quantum mechanics texts is to ascribe the rest of the time dynamics under $X$ to the operators. That is we consider $A_X = X^{\dag}A_0X$. Since $X$ is simple we presume the operator to be known. In that case we are left with calculating $\bra{\psi_{\tilde{Y}}}A_X\ket{\psi_{\tilde{Y}}}$. Such a calculation constitutes the completion of the problem. In this case we say that the ket interaction pictures puts the complicated or interesting dynamics onto the kets}
+\item{The second approach is to, after having solved for $\ket{\psi_{\tilde{Y}}}$, to apply the time dynamics $X$ again to the ket $\ket{\psi_{\tilde{Y}}}$. This is done easily. When we say a ket such as $\ket{\psi_{\tilde{Y}}}$ is known we mean that we know how to express it in terms of some computation basis $\{\ket{q_i}\}$. When we say time evolution $X$ is known we mean that we know how to express $X$ in terms of this computation basis (equivalently we know how $X$ acts on elements of the computation basis). Thus if $\ket{\psi_{\tilde{Y}}}$ and $X$ are known we can calculate $X\ket{\psi_{\tilde{Y}}} = X\tilde{Y}\ket{\psi_0} = T\ket{\psi_0} = \ket{\psi_T} = \ket{\psi^{(S)}}$ and subsequently calculate $\bra{\psi^{(S)}}A_0\ket{\psi^{(S)}}$. When phrased this way this approach looks like the Schrodinger picture. However, it is of course slightly different because the problem has been broken into the two step with the important point that the breaking into two steps may mean dealing with a $H_{\tilde{Y}}^{(S)}$ which is more tractable than the original $H_Y^{(S)}$. The second step of reapplying $X$ is sometimes referred to as `rotating back into the lab frame'.}
+\item{The third approach is to simply stop the problem after $\ket{\psi_{\tilde{Y}}}$. Since the dynamics under $X$ are already known the ideas is that there is no more intuition about a problem to be gained by applying the dynamics to the operators or rotating the kets back into the lab frame to explicitly calculate a Born rule expression. The problem can be analyzed in the interaction picture and left at that.}
+\end{itemize}
+
+In practice I would say many references motivate the interaction picture using the language I presented in the first approach. 
+Most references actually take the approach spelled out in the third approach I've outlined and do not explicitly calculated Born rule elements.
+If a reference does want to close the loop and solve the `total problem' and not just leave things in the interaction picture it typically uses the second approach of `rotating the kets back into the lab frame'.
+It is thus a little confusing that many references utilize language from the first approach but that very few if any references actually solve problems in this way.
+
+\section{Operator Interaction Pictures}
+
+Here I will present what I call the operator interaction picture.
+In the formalism presented so far it is clear that this operator interaction picture is the exact counterpart to the ket interaction picture in the same way the Heisenberg picture is the counterpart to the Schrodinger picture.
+However, it is worth pointing out that very few, if any, references make explicit reference to an operator interaction picture, especially at the abstract level presented here.
+
+The Born rule expression with time evolution operator $T=X\tilde{Y} = \tilde{Y}(X)_{\tilde{Y}}$ is
+
+\begin{align}
+\braket{A}_t = \bra{\psi_0}(X)_{\tilde{Y}}^{\dag} \tilde{Y}^{\dag} A_0 \tilde{Y} (X)_{\tilde{Y}}\ket{\psi_0}
+\end{align}
+
+In the ket interaction picture the first step was solving for the time evolution of the kets under $\tilde{Y}$. 
+In the operator interaction picture the first step is solving for the time evolution of the operators under $\tilde{Y}$.
+For each operator $O^i_0$ we have
+
+\begin{align}
+O^{i, (OI)} = \left(O^i\right)_{\tilde{Y}} = \tilde{Y}^{\dag}O^i_0\tilde{Y}
+\end{align}
+
+We can differentiate this to get a Heisenberg-like equation of motion for the operators under $H_{\tilde{Y}}^{(H)}$
+
+\begin{align}
+\frac{d\left(O^i\right)_{\tilde{Y}}}{dt} = -i\left[\left(O^i\right)_{\tilde{Y}}, H_{\tilde{Y}}^{(H)}\right] + \frac{\partial \left(O^i\right)_{\tilde{Y}}}{\partial t}
+\end{align}
+
+Note there is a similar notational confusion to be avoided with $H_{\tilde{Y}}^{(H)}$ here as there was for $H_{\tilde{Y}}^{(S)}$ in the ket interaction picture.
+The set of all of these equations for the different operators constitutes a coupled set of differential equations.
+If these equations can be solved for some operators then we have
+
+\begin{align}
+\left(O^i\right)_{\tilde{Y}} = f_{O^i, \tilde{Y}}\left(O^1_0, \ldots, O^N_0, t\right)
+\end{align}
+
+Since the $O^i_0$ are assumed to be known (can be expressed in the computation basis) such an expression means that $O^{i, OI} = \left(O^i\right)_{\tilde{Y}}$ is also known completing the first step in the operator interaction picture.
+
+We can consider three approaches for the second half of the problem just like in the ket interaction picture.
+
+\begin{itemize}
+\item{The first approach to the second step of the problem is to put the remaining dynamics under $\left(X\right)_{\tilde{Y}}$ onto the kets and calculate $(X)_{\tilde{Y}}\ket{\psi_0}$. Unfortunately this seems like a very strange time evolution for the kets to me. The idea is that $\tilde{Y}$ is the complicated dynamics and $X$ is the simple dynamics. This means I would have expected the kets to evolve directly under $X$, but this is not necessarily the case. The Hamiltonian which generates $(X)_{\tilde{Y}}$ includes 3 terms which do not cancel unless $[X, \tilde{Y}]=0$.  This approach does not seem useful which is an unfortunately asymmetry with the ket interaction picture use.}
+\item{The second approach is to put the `simple' dynamics again onto the operators. The simple dynamics are now captured by $(X)_{\tilde{Y}}$. We would say that $(X)_{\tilde{Y}}$ is the representation of $X$ in the operator interaction frame. We are then tasked with calculating $O^{i,(H)} = \left(O^i\right)_T = (X)_{\tilde{Y}}^{\dag}\left(O^i\right)_{\tilde{Y}}(X)_{\tilde{Y}}$. We calculate this by noting it is equal to $\left(X^{\dag}O^i_0X\right)_{\tilde{Y}}$ which we can calculate as $\left(f_{O^i,X}\left(O^1_0,\ldots,O^N_0,t\right)\right)_{\tilde{Y}} = f_{O^i,X}\left(\left(O^1_0\right)_{\tilde{Y}},\ldots,\left(O^N_0\right)_{\tilde{Y}}, t\right)$ which can finally be expanded as \\$O^{i,(H)}= f_{O^i, X}\left(f_{O^1, \tilde{Y}}\left(O^1_0, \ldots, O^N_0, t\right),\ldots ,f_{O^N,\tilde{Y}}\left(O^1_0, \ldots, O^N_0, t\right), t\right)$. In the example below it may become more clear how this transformation constitutes moving out of the rotating frame.}
+\item{The final approach, just like for the ket interaction picture, is to simply solve the dynamics under $\tilde{Y}$ and leave the problem at that. Again, the idea is that since the dynamics under $X$ are well understood there is not much to be gained by time-evolving the kets under it or by rotating back into the rotating frame. The notion of analyzing the problem only in the rotating frame exists in classical as well as quantum mechanics.}
+\end{itemize}
+
+The closest we get to what I call the operator interaction picture is when certain authors are working out dynamics utilizing operator equations of motion such as Heisenberg or Langevin equations of motion and then `move into a rotation frame'. 
+
+\section{Moving Between Different Pictures}
+
+So far I have shown how to transform from the `static picture' into a number of different pictures. Here I will summarize these transformations as well as how to transform from some of the non-static pictures into other pictures.
+
+First I'll summarize the definition of the kets and operators in each of the pictures then I will highlight some of the transformation between pictures.
+
+First the kets
+
+\begin{align}
+\ket{\psi^{(S)}} =& T\ket{\psi_0} \nonumber\\
+\ket{\psi^{(H)}} =& \ket{\psi_0} \nonumber\\
+\ket{\psi^{(KI)}} =& \tilde{Y}\ket{\psi_0} \nonumber\\
+\ket{\psi^{(OI)}} =& \left(X\right)_{\tilde{Y}} \ket{\psi_0}
+\end{align}
+
+Next the operators
+
+\begin{align}
+A^{(S)} =& A_0 \nonumber\\
+A^{(H)} =& T^{\dag}A_0T \nonumber\\
+A^{(KI)} =& X^{\dag}A_0X \nonumber\\
+A^{(OI)} =& \tilde{Y}^{\dag}A_0\tilde{Y}
+\end{align}
+
+It is clear that to move between the Schrodinger and Heisenberg pictures you simply multiply the kets by $T$ or $T^{\dag}$ and conjugate the operators by $T$ or $T^{\dag}$.
+
+We can see plainly that one moves kets from the Schrodinger to ket interaction picture by stripping off the $X$ dynamics:
+
+\begin{align}
+\ket{\psi^{(KI)}} = X^{\dag}\ket{\psi^{(S)}}
+\end{align}
+
+Likewise for moving operators from the Heisenberg to operator interaction picture
+
+\begin{align}
+A^{(OI)} = (X)_{\tilde{Y}}A^{(H)}(X)_{\tilde{Y}}^{\dag}
+\end{align}
+
+Note that $(X)_{\tilde{Y}} = (X)_{X\tilde{Y}} = (X)_T = X^{(H)}$ so we can write this as
+
+\begin{align}
+A^{(OI)} = X^{(H)}A^{(H)}\left(X^{(H)}\right)^{\dag}
+\end{align}
+
+We see that we take the Heisenberg operator and strip off the time dependence under $X$ by conjugating by the Heisenberg version of $X$.
+
+\section{A Note on Implicit and Explicit Time Dependence of Operators}
+
+In the unitary time evolution of operators such as in the Heisenberg picture we have an expression
+
+\begin{align}
+\frac{dA_T}{dt} = -i\left[A_T, H_T^{(H)}\right] + \left(\frac{d A_0}{d}\right)_T
+\end{align}
+
+We focus on the final term which is often written as
+
+\begin{align}
+\left(\frac{d A_0}{d}\right)_T = \frac{\partial A_T}{\partial t}
+\end{align}
+
+I find this notation a bit confusing so I just want to explicate here more precisely what it means.
+
+In most cases we do have $\ddt{A_0} = 0$, however, this is not always the case. For example, we could have $A_0 = X_0 t$ in which case $\ddt{A_0} = X_0 \neq 0$. Here the goal is to distinguish between the types of cases when $A_0$ is ``simply'' an operator and the cases when $A_0$ has some implicit time dependence and figure out how to transform the object in generality.
+
+To understand this we must step back and consider that the operators we are writing down here may themselves be expressed in terms of other operators.
+To express this idea we consider a function of $N$ operators and a time parameter.
+
+\begin{align}
+A = A(\alpha^1, \ldots, \alpha^N, s)
+\end{align}
+
+Note that here the $\alpha^i$ are not particular operators, but rather placeholders where operators can be plugged in to result in an operator. 
+
+Let's now express $A_0$ in terms of this function $A$.
+We write
+
+\begin{align}
+A_0 = A(O_0^i, \ldots, O_0^N, t)
+\end{align}
+
+We have plugged in the static operators on which $A_0$ depends as well as time.
+If we take a time derivative we get
+
+\begin{align}
+\ddt{A_0} = \left[\frac{\partial A}{\partial \alpha^1} \ddt{\alpha^1}+\ldots+\frac{\partial A}{\partial \alpha^N} \ddt{\alpha^N} + \frac{\partial{A}}{\partial s}\ddt{s}\right]_{\alpha^i = O^i_0,s = t}
+\end{align}
+
+Above we indicated that $A_0$ should have no \textit{implicit} time dependence if it is in the static frame. This condition is equivalent to $\left[\ddt{\alpha^i}\right]_{\alpha^i=O^i_0} = \ddt{O^i_0}= 0$. That is, each of the $O^i_0$ is time independent and all time-dependence for $A_0$ is carried \textit{explicitly}.
+
+\begin{align}
+\ddt{A_0} = \left[\frac{\partial A}{\partial s} \ddt{s} \right]_{\alpha^i=O_0^i,s=t} = \left[\ppt{A}\right]_{\alpha^i=O_0^i}
+\end{align}
+
+I think it is a slight abuse of notation but it seems customary to have
+
+\begin{align}
+\ppt{A_0} = \left[\ppt{A} \right]_{\alpha^i=O^i_0}
+\end{align}
+
+In which case we see that
+
+\begin{align}
+\ddt{A_0} = \ppt{A_0}
+\end{align}
+
+is the signature that $A_0$ has no implicit time dependence.
+
+We can now define 
+
+\begin{align}
+A_T = T^{\dag} A_0 T = T^{\dag} A(O_0^1,\ldots,O_0^N,t) T = A(O_T^1,\ldots, O_T^N,t)
+\end{align}
+
+as above we can define $\ppt{A_T}$.
+
+\begin{align}
+\ppt{A_T} = \left[\frac{\partial A}{\partial s} \ddt{s}\right]_{\alpha^i=O_T^i,s=t} = \left[\ppt{A} \right]_{\alpha^i = O_T^i}
+\end{align}
+
+But we note that
+
+\begin{align}
+\ppt{A_T} = \left[\ppt{A} \right]_{\alpha^i=O_T^i} = T^{\dag} \left[\ppt{A} \right]_{\alpha^i = O_0^i} T = T^{\dag} \ppt{A_0} T = \left(\ppt{A_0}\right)_T
+\end{align}
+
+This follows because $\ppt{A_0}$ is a polynomial function of $O_0^i$ so we can transform it term by term into $\ppt{A_T}$ by conjugating by $T^{\dag}$.
+
+Putting this altogether we see
+
+\begin{align}
+T^{\dag}\ddt{A_0}T = T^{\dag}\ppt{A_0}T = \ppt{A_T}
+\end{align}
+
+So that
+
+\begin{align}
+\ddt{A_P} = -i[A_T,H_T^{(H)}] + \ppt{A_T}
+\end{align}
+
+\section{Commuting projections}
+
+Here we prove that $[A, B]$ if and only if $[\Pi^A_i, \Pi^B_j] = 0$ for all $i, j$.
+
+\begin{align}
+A =& \sum_i a_i \Pi^A_i \nonumber\\
+B =& \sum_j b_j \Pi^B_j
+\end{align}
+
+First assume $[\Pi^A_i, \Pi^B_j] = 0$ then
+
+\begin{align}
+[A, B] &= \left[\sum_i a_i \Pi^A_i, \sum_j b_j \Pi^B_j\right]\\
+&= \sum_{i, j} a_i b_j [\Pi^A_i, \Pi^B_j] = 0
+\end{align}
+
+For the converse it would be nice if we could express the $\Pi^A_i$ and $\Pi^B_j$ in terms of polynomials of $A$ and $B$. 
+Surprisingly (to me) this can be done.
+
+Consider
+
+\begin{align}
+A - \mu \bv{1} =& \sum_i a_i \Pi^A_i - \sum_i \mu \Pi^A_i \nonumber\\
+=& \sum_i (a_i - \mu) \Pi^A_i
+\end{align}
+
+This expression is valid for any value of $\mu$.
+But, note that if $\mu = a_j$ then the term include $\Pi^A_j$ vanishes.
+Thus
+
+\begin{align}
+A - a_j \bv{1} = \sum_i (a_i - a_j) \Pi^A_i
+\end{align}
+
+is a sum of terms which \textbf{do not include} $\Pi^A_j$.
+Consider then the expression
+
+\begin{align}
+\prod_{j \neq i} A- a_j \bv{1} = \prod_{j \neq i} \sum_k (a_k - a_j) \Pi^A_k
+\end{align}
+
+The expression on the right is a product of sums.
+Each factor of the product is a sum of terms like $(a_k - a_j)\Pi^A_k$.
+In each factor the summation excludes one of the terms $\Pi^A_j$ with $j\neq i$.
+However, \textit{all} of the summations include the $\Pi^A_i$ term since $i$ is excluded from the product scope.
+When we multiply the summations out, bearing in mind that $\Pi^A_m\Pi^A_n = \delta_{nm}\Pi^A_n$, we see that only those terms of the sum involving $\Pi^A_i$ end up surviving.
+As a result we get
+
+\begin{align}
+\prod_{j\neq i} A- a_j \bv{1} = \prod_{j\neq i} (a_i - a_j)\Pi^A_i = \left(\prod_{j\neq i} a_i - a_j\right)\Pi^A_i
+\end{align}
+
+So that
+
+\begin{align}
+\Pi^A_i = \frac{\prod_{j \neq i} A - a_j \bv{1}}{\prod_{j\neq i} a_i - a_j}
+\end{align}
+We have
+
+\begin{align}
+\Pi^A_i =& \frac{\prod_{j\neq i} A - a_j \bv{1}}{\prod_{j\neq i} a_i-a_j} \nonumber\\
+\Pi^B_k =& \frac{\prod_{j\neq k} B - b_j \bv{1}}{\prod_{j\neq i} b_k-b_j}
+\end{align}
+
+Where the same argument follows for $B$.
+
+Now we can see, that if we assume $[A, B] = 0$ then $[\Pi_i^A, \Pi_k^B] = 0$ for all $i, k$ because polynomials of commuting operators commute.
+
+\end{document}

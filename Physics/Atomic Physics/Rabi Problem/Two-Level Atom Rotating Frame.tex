@@ -1,0 +1,911 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+	\title{Two-Level Atom Rotating Frame}
+	\author{Justin Gerber}
+	\date{\today}
+	\maketitle
+
+\section{Introduction}
+
+In this document I will derive the Rabi model (including the rotating wave approximation) from the electric dipole coupling between a two-level atom and the electric field. In particular, I will spend quite a while deriving the Hamiltonian in the rotating frame in a way that I haven't seen performed elsewhere. Finally, with the rotating frame Hamiltonian, I will derive the equations of motion in an elegant way to extract the optical Bloch equations. I'll then add in phenomenological damping to the optical bloch equations, define the bloch vector, and derive the steady state configuration for use in calculating resonance fluorescence properties of atoms.
+
+\section{Pauli Operators}
+
+First some notes on the Pauli operators for a two-level system with states $\ket{g}$ and $\ket{e}$
+
+\begin{align}
+\sigma^1 &= \ket{e}\bra{g} + \ket{g}\bra{e}\\
+\sigma^2 &= i(\ket{g}\bra{e} - \ket{e}\bra{g})\\
+\sigma^3 &= \ket{e}\bra{e} - \ket{g}\bra{g}\\
+\sigma^0 &= \ket{e}\bra{e} + \ket{g}\bra{g} = 1\\
+\sigma^- &= \ket{g}\bra{e}\\
+\sigma^+ &= \ket{e}\bra{g}
+\end{align}
+
+\begin{align}
+\sigma^1 &= \sigma^- + \sigma^+ = 2\text{Re}(\sigma^+)\\
+\sigma^2 &= i(\sigma^- - \sigma^+) = 2\text{Im}(\sigma^+)\\
+\sigma^3 &= \sigma^+\sigma^- - \sigma^-\sigma^+\\
+\sigma^0 &= \sigma^+\sigma^- + \sigma^-\sigma^+ = 1\\ 
+\sigma^+ &= \frac{1}{2}(\sigma^1 + i \sigma^2)\\
+\sigma^- &= \frac{1}{2}(\sigma^1 - i \sigma^2)\\
+\end{align}
+
+\begin{align}
+[\sigma^i, \sigma^j] &= 2i\epsilon_{ijk} \sigma^k
+\end{align}
+
+\begin{align}
+[\sigma^-, \sigma^+] &= - \sigma^3\\
+[\sigma^\pm, \sigma^3] &= \mp2\sigma^\pm\\
+\end{align}
+
+I'll also define
+
+\begin{align}
+\Pi_e &= \ket{e}\bra{e} = \sigma^+\sigma^- = \frac{1}{2}(1+\sigma^3)\\
+[\Pi_e,\sigma^3] &= 0\\
+[\Pi_e,\sigma^{\pm}] &= \pm \sigma^{\pm}
+\end{align}
+
+\section{Free Hamiltonian}
+
+Before jumping into the Two-level atom in an electric field I first want to work out some information which will be needed simply for a two level atom. The Hamiltonian for a free two-level atom is given by
+
+\begin{align}
+H_0 = \hbar \omega_0 \Pi_e = \hbar \omega_0 \frac{1}{2}(1+\sigma^3)
+\end{align}
+
+We will need the following definitions and commutation relations
+Working in the Heisenberg picture, we can work out the equations of motion for $\sigma^-$
+
+\begin{align}
+\ddt{\sigma^{\pm}} &= -\frac{i}{\hbar}\left[\sigma^-,\hbar\omega_0\frac{1}{2}(1+\sigma^3)\right] = -\frac{i}{\hbar}(\hbar\omega_0 \frac{1}{2} (\mp 2 \sigma^{\pm})) = \pm i \omega_0 \sigma^{\pm}\\
+\sigma^{\pm}(t) &= \sigma^{\pm}(0) e^{\pm i \omega_0 t}
+\end{align}
+
+So we can see that $\sigma^-$ is positive rotating and $\sigma^+$ is negative rotating (recalling that $e^{-i\omega t}$ represents positive rotating and vice-versa).
+
+\section{Electric Field Decomposition}
+Now we add an electric field to couple the two states.
+First we write down the electric field at the location of the atom. Note that because we are only concerned with the electric field at the location of the atom we don't need to write down the spatial coordinates. This is ok because we will consider light-matter coupling under the electric dipole approximation. Under higher order approximations it is necessary to consider the magnetic field as well as higher order spatial moments of the electric and magnetic fields.
+
+\begin{align}
+\bv{E}(\bv{r}_0,t) &= \bv{\epsilon}_x E_x \cos(\omega t+\phi_x) + \bv{\epsilon}_y E_y \cos(\omega t + \phi_y)\\
+&= \frac{1}{2}(E_xe^{-i\phi_x}\bv{\epsilon}_x+e^{-i\phi_y}E_y\bv{\epsilon_y})e^{-i\omega t} + \frac{1}{2}(E_xe^{+i\phi_x}\bv{\epsilon}_x+e^{+i\phi_y}E_y\bv{\epsilon_y})e^{+i\omega t}\\
+&= \bv{E}^+ + \bv{E}^-
+\end{align}
+
+We have
+
+\begin{align}
+\bv{E}^+ &= \frac{1}{2}\left(E_xe^{-i\phi_x}\bv{\epsilon}_x + e^{-i\phi_y}E_y\bv{\epsilon}_y\right) e^{-i\omega t}\\
+&= \frac{1}{2}\sqrt{E_x^2+E_y^2}\left(\frac{E_x}{\sqrt{E_x^2+E_y^2}} e^{-i\phi_x}\bv{\epsilon_x} + \frac{E_y}{\sqrt{E_x^2+E_y^2}} e^{-i\phi_y}\bv{\epsilon_y} \right) e^{-i\omega t}\\
+&= \frac{1}{2}E_0 \left(\cos(\theta) e^{-i\phi_x}\bv{\epsilon_x} + \sin(\theta)e^{-i\phi_y} \bv{\epsilon}_y \right) e^{-i\omega t}\\
+&= \frac{1}{2}E_0  e^{-i\omega t} \bv{\epsilon}
+\end{align}
+
+We note that $E_0 = \lvert \bv{E}(\bv{r}_0,t) \rvert$ and that $\bv{\epsilon}$ is the complex Jones vector describing the polarization. The circularity is determined by $\phi_y-\phi_x$ and the polarization orientation is determined by $\theta$. Note the factor of $\frac{1}{2}$. This indicates that half of the amplitude of the signal is contained in the positive rotating part while the other half is contained in the negative rotating part, $\bv{E}^- = (\bv{E}^{+})^*$.
+
+\section{Dipole Interaction and Dipole Moment}
+
+The interaction between an electric field and an electric dipole, $\bv{d}$, is given by
+
+\begin{align}
+H_d = -\bv{E} \cdot \bv{d}
+\end{align}
+
+We consider a system with a positive charge at the origin, $\bv{r}_0$ and a negative charge free to move about this origin, located at position $\bv{r}$. Note that $\bv{r}$ is a quantum position operator describing the position of the negative charge. The dipole approximation for EM coupling says that no matter how far this charge travels from the origin it always experiences the same electric field. The dipole operator can then be calculated as $\bv{d} = -e \bv{r}$.
+
+To fully address the problem of an atom in an electric field we would need to write down the Coulomb potential between the charge at the origin and the moving charge. This is the Hydrogen problem. However, we are ignoring all of that structure and simply considering two possible bound states of that system as constituting all of the accessible degrees of freedom of that system, embodied by the states $\ket{g}$ and $\ket{e}$. This is an approximation but in some cases can be realized.
+
+The dipole (vector) operator can be decomposed as
+
+\begin{align}
+\bv{d} = \sum_{i,j} \bra{i}\bv{d}\ket{j} \ket{i}\bra{j}
+\end{align}
+
+However, because the dipole operator flips sign under parity it turns out that only states of opposite parity are coupled to each other. In particular a state is not coupled to itself via the dipole operator. Furthermore, $\ket{g}$ and $\ket{e}$ will only be coupled if they have opposite parity. We assume this and we can write
+
+\begin{align}
+\bv{d} &= \bra{g}\bv{d}\ket{e} \ket{g}\bra{e} + \bra{e}\bv{d}\ket{g}\ket{e}\bra{g}\\
+&= \bra{g}\bv{d}\ket{e} \sigma^- + \bra{e}\bv{d}\ket{g} \sigma^+\\
+&= \bv{d}_{ge}\sigma^- + \bv{d}_{eg}\sigma^+\\
+&= \bv{d}_{ge}\sigma^- + \bv{d}_{ge}^*\sigma^+\\
+&= \bv{d}^+ + \bv{d}^-
+\end{align}
+
+Where we have introduced the Pauli raising and lowering operators.
+
+\section{Dipole Energy and Coupling Hamiltonian}
+We can now write down the electric dipole energy.
+
+\begin{align}
+H_d = -\frac{1}{2}E_0 \left(e^{-i\omega t} \bv{\epsilon} + e^{+i\omega t} \bv{\epsilon}^*\right)\cdot  \left(\bv{d}_{ge}\sigma^- + \bv{d}_{ge}^* \sigma^+\right)
+\end{align}
+
+Recall that $\sigma^+$ rotates as $e^{+i\omega_0 t}$ in the uncoupled system. This means that, assuming evolution under the free Hamiltonian gives the dominant temporal evolution (which it normally does), $\sigma^+ e^{-i\omega t}$ should be slowly varying if $\omega-\omega_0$ is small while $\sigma^+ e^{+i\omega t}$ will rotate at $\omega+\omega_0$, which is rapidly rotating. Later we will see that these fast rotating ``counter-rotating'' terms can be neglected in what amounts to the rotating frame approximation. I will, however, preserve these terms as we go and only drop them at the end once we have the equations of motion in the rotating frame, where it is clear form a differential equations perspective that they should not contribute much to the time evolution.
+
+Expanding we find
+
+\begin{align}
+H_d = &-\frac{1}{2}E_0\left(\bv{\epsilon}\cdot\bv{d}^*_{ge}e^{-i\omega t}\sigma^+ + \bv{\epsilon}^*\cdot\bv{d}_{ge}e^{+i\omega t}\sigma^-\right)\\
+& -\frac{1}{2}E_0\left(\bv{\epsilon}^*\cdot\bv{d}^*_{ge}e^{+i\omega t}\sigma^+ + \bv{\epsilon}\cdot\bv{d}_{ge}e^{-i\omega t}\sigma^-\right)\\
+= &H_R + H_{CR}
+\end{align}
+
+We can define the Rabi frequency (and an analog for the counter-rotating terms) as
+
+\begin{align}
+\hbar \Omega &= -E_0 \bv{\epsilon}\cdot \bv{d}^*_{ge} = -E_0 \left(\bra{g}\bv{\epsilon}^*\cdot\bv{d}\ket{e}\right)^*\\
+\hbar \chi &= -E_0 \bv{\epsilon}\cdot\bv{d}_{ge} = -E_0\bra{g}\bv{\epsilon}\cdot\bv{d}\ket{e}
+\end{align}
+
+Note the context in which the Rabi frequency is defined. It is depends specifically on the electric field at the location of at atom. Also, here it is defined relative to $E_0$, the peak to peak amplitude of a monochromatic oscillation of the electric field at frequency $\omega$. This is a purely local definition. Later we may see relationship between, for example, $|\Omega|^2$ and the intensity, $I$, of a laser beam generating the electric field. In the case of a plane wave or a single beam it is simple and possible to relate $E_0$ to the intensity of the laser beam. However, I warn that there are cases where a relationship between $E_0$, the peak to peak amplitude of the electric field at the location of the atom, and $I$ may not be so simple. 
+
+Plugging the Rabi frequency expression into the above Hamiltonian gives
+
+\begin{align}
+H_d = \frac{\hbar}{2}\left(e^{-i\omega t}\Omega\sigma^+ +  e^{+i\omega t}\Omega^* \sigma^- \right) + \frac{\hbar}{2}\left( e^{+i\omega t}\chi\sigma^+ + e^{-i\omega t}\chi^* \sigma^- \right)
+\end{align}
+
+The total Hamiltonian is then
+
+\begin{align}
+H &= H_0 + H_d = H_0 + H_R + H_{CR}\\
+= &\hbar \omega_0 \frac{1}{2}\left(1+\sigma^3\right)\\
+&+ \frac{\hbar}{2}\left(e^{-i\omega t}\Omega\sigma^+ +  e^{+i\omega t}\Omega^* \sigma^- \right)\\
+&+ \frac{\hbar}{2}\left( e^{+i\omega t}\chi\sigma^+ + e^{-i\omega t}\chi^* \sigma^- \right)\\
+\end{align}
+
+
+\section{Splitting the Hamiltonian}
+
+I will show solutions to this Hamiltonian in the ket interaction frame and the operator interaction frame. We recall that the interaction frame is useful when we have a Hamiltonian which is the sum of two terms, one which is boring and well-understood, and one which is more complicated. In this case we can write the total time evolution operator for the system as
+
+\begin{align}
+T_0 = X\tilde{Y}
+\end{align}
+
+Where $X$ leads to time evolution under the boring Hamiltonian and $\tilde{Y}$ leads to time evolution under a transformed version of the complicated Hamiltonian. The hope is that the transformation involved does some work towards simplifying the complicated Hamiltonian.
+
+Specifically, if the original Hamiltonian is given by
+
+\begin{align}
+H_0 = H_X + H_Y
+\end{align}
+
+and if $X$ is associated with Hamiltonian $H_X$ and $\tilde{Y}$ gives rise to the Hamiltonian 
+
+\begin{align}
+\tilde{H}_Y &= X^{\dag}H_YX\\
+H_Y &= X \tilde{H}_Y X^{\dag}
+\end{align}
+
+In addition to $X$ being simple and solved it must also be the case that the application of the $X$ transformation to $H_Y$ somehow simplifies it. In this case we will see that the $X$ transformation is actually able to remove the explicit time-dependence (which arises from the time varying electric field) from the problem!
+
+The task now is to find the appropriate way to split the driven dipole Hamiltonian above into a boring and an interesting part. One's first instinct is to take the boring part to be $H_0 = \hbar\omega_0 \Pi_{e}$. We will see that the correct answer is to actually take $\hbar\omega \Pi_{e}$ instead, but it is still helpful to explore the result of our first instinct.
+
+Suppose we take
+
+\begin{align}
+\bar{H}_X = H_0 = +\hbar\omega_0 \Pi_{e}
+\end{align}
+
+The overbar indicates this will not be transformation we choose in the end.
+Let's find the dynamics of $\sigma^{\pm}$ under this Hamiltonian. The bar indicates it is not quite right and I will show the correct answer shortly. Since $\bar{H}_X$ is time independent the associated Unitary can easily be calculated as
+
+\begin{align}
+\bar{X} = e^{-i\hbar\omega_0 \Pi_{e} t}
+\end{align}
+
+To transform $\bar{H}_Y$ we will need to know $\sigma^{\pm}_{\bar{X}} = \bar{X}^{\dag}\sigma^{\pm} \bar{X}$. It is possible to calculate this by expanding the exponential version of $\bar{X}$ but here I will solve the resulting Heisenberg equation of motion.
+
+\begin{align}
+\ddt{\sigma^{\pm}_{\bar{X}}} = -\frac{i}{\hbar}[\sigma^{\pm}_{\bar{X}},(\bar{H}_X)_{\bar{X}}]
+\end{align}
+
+The explicit time dependence part is zero here because we start from $\sigma^{\pm}$ which has no explicit time dependence. $(\bar{H}_X)_{\bar{X}}$ means take $\bar{H}_X$ and transform it by $\bar{X}$. We then get
+
+\begin{align}
+\ddt{\sigma^{\pm}_{\bar{X}}} = -\frac{i}{\hbar} [\sigma_{\bar{X}}^{\pm},\omega_0 \Pi_{e,\bar{X}}]
+\end{align}
+
+Commutation relations are preserved between pictures so we can calculate this as
+
+\begin{align}
+\ddt{\sigma^{\pm}_{\bar{X}}} = \pm i \omega_0 \sigma^{\pm}_{\bar{X}}
+\end{align}
+
+Noting that for $t=0$ we have $\sigma^{\pm}_{\bar{X}}(0) = \sigma^{\pm}$ we can solve this differential equation to find
+
+\begin{align}
+\sigma^{\pm}_{\bar{X}} = \bar{X}^{\dag}\sigma^{\pm}\bar{X} = \sigma^{\pm} e^{\pm i \omega t}
+\end{align}
+
+We then have that 
+
+\begin{align}
+\bar{H}_Y = H_d = &\frac{\hbar}{2}\left(\Omega^* \sigma^- e^{+i\omega t} + \Omega \sigma^+ e^{-i\omega t} \right)\\
++ &\frac{\hbar}{2}\left( \chi\sigma^+e^{+i\omega t} + \chi^* \sigma^-e^{-i\omega t} \right)
+\end{align}
+
+We can find the transformed (rotating frame) version of this Hamiltonian.
+
+\begin{align}
+\tilde{\bar{H}}_Y = \bar{X}^{\dag} H_Y X = &\frac{\hbar}{2}\left(\Omega^* \sigma^- e^{i(\omega - \omega_0)t} + \Omega \sigma^+ e^{-i(\omega - \omega_0)t} \right)\\
++ &\frac{\hbar}{2}\left( \chi\sigma^+e^{+i(\omega+\omega_0) t} + \chi^* \sigma^-e^{-i(\omega+\omega_0) t} \right)
+\end{align}
+
+We see here two things. First, there is still a lot of explicit time dependence in this Hamiltonian which will make it difficult to solve. However, we notice that if we had chosen to transform by $\hbar \omega$ instead of $\hbar \omega_0$ we could have \textit{at least} removed the time dependence from the `co-rotating' part of the Hamiltonian. The time dependence of the 'counter-rotating' part will persist and to make the problem tractable we will in the end simply drop the counter-rotating terms as will be justified later.
+
+We can define 
+\begin{align}
+\Delta = \omega-\omega_0
+\end{align}
+
+and make this adjustment above by choosing 
+
+\begin{align}
+X = e^{-i\hbar \omega \Pi_e}
+\end{align}
+
+to find
+
+\begin{align}
+X &= e^{-i\hbar\omega \Pi_e t}\\
+H_X &= H_0 +\hbar\Delta \Pi_e= \hbar\omega \Pi_e \\
+H_Y &= H_d -\hbar \Delta \Pi_e = 
+-\hbar\Delta \Pi_e + \frac{\hbar}{2}\left(\Omega^*\sigma^- e^{+i\omega t} + \Omega\sigma^+ e^{-i\omega t} \right)\\
+&\hspace{1.8in} +\frac{\hbar}{2}\left( \chi\sigma^+e^{+i\omega t} + \chi^* \sigma^-e^{-i\omega t} \right)\\
+\tilde{H}_Y & = 
+-\hbar\Delta \Pi_e + \frac{\hbar}{2}\left(\Omega^* \sigma^- + \Omega \sigma^+ \right)\\
+&\hspace{.7 in} +\frac{\hbar}{2}\left( \chi\sigma^+e^{+i(\omega+\omega_0) t} + \chi^* \sigma^-e^{-i(\omega+\omega_0) t} \right)\\
+\end{align}
+
+Doing this we see that the co-rotating part of $\tilde{H}_Y$ is now time-independent as desired. We used the fact that $[\Pi_{e,0},X]=0$ above. We can now use these definitions to perform calculations in the interaction frame!
+
+\section{Operator Calculation and the Optical Bloch Equations}
+
+\subsection{Rotating Frame}
+I will now solve the dynamics in the `rotating frame'. The logic is as follows. We convert an operator into the interaction frame by
+
+\begin{align}
+A_{RF} = \tilde{Y}^{\dag}A\tilde{Y}
+\end{align}
+
+The time evolution for the transformed operator is given by
+
+\begin{align}
+\ddt{A_{RF}} = -\frac{i}{\hbar}\left[A_{RF},\left(\tilde{H}_Y\right)_{RF}\right]
+\end{align}
+
+$\left(\tilde{H}_Y\right)_{RF}$ means to transform each of the operators into the rotating frame.
+
+Note that
+
+\begin{align}
+A_H = \tilde{Y}^{\dag}X^{\dag}A X \tilde{Y} = X^{\dag}_{RF}A_{RF}X_{RF}
+\end{align}
+
+If $A_{RF}$ is expressed in terms of basic operators such as $\sigma^{\pm}_{RF}$ then we can easily calculate $A_H$ by knowing how to calculate $X^{\dag}_{RF}\sigma^{\pm}_{RF}X_{RF}$. We in fact already know this because $X^{\dag}_{RF}\sigma^{\pm}_{RF}X_{RF}$ will have the same functional form as $X^{\dag}\sigma^{\pm}X$ but with the operators put into the rotating frame. For example:
+
+\begin{align}
+\sigma^{\pm}_H = X^{\dag}_{RF}\sigma^{\pm}_{RF}X_{RF} = \sigma_{RF}^{\pm}e^{+i\omega t}
+\end{align}
+
+So we see that if we have found $\sigma^{\pm}_{RF}$ in terms of $\sigma^{\pm} = \sigma^{\pm}_{RF}(0)$ then we see we can calculate $\sigma^{\pm}_H$ which can be used to calculate time evolution of measured values in the lab frame.
+
+Because it is straightforward to apply the rotation back into the lab frame I will drop the $RF$ subscripts for now. 
+
+First we justify neglecting the counter-rotating terms. We have 
+
+\begin{align}
+\tilde{H}_Y  = 
+-\hbar\Delta \Pi_e + &\frac{\hbar}{2}\left(\Omega^* \sigma^- + \Omega \sigma^+ \right)\\
++&\frac{\hbar}{2}\left( \chi\sigma^+e^{+i(\omega+\omega_0) t} + \chi^* \sigma^-e^{-i(\omega+\omega_0) t} \right)\\
+\end{align}
+
+The equation of motion for $\sigma^-$ is given by
+
+\begin{align}
+\ddt{\sigma^-} &= \frac{i}{\hbar}\left(-\hbar \Delta (+\sigma^-) + \frac{\hbar \Omega}{2} (-\sigma^3) + \frac{\hbar \chi}{2}e^{+i(\omega+\omega_0)t}(-\sigma^3) \right)\\
+&= -i \Delta \sigma^- - \frac{i}{2}\left(\Omega + \chi e^{i(\omega + \omega_0)t} \right)\sigma^-
+\end{align}
+
+$\omega+\omega_0$ is a much higher frequency scale than any of the other scales in the problem. What this means is that over short time scales (comparable to $\frac{1}{\omega+\omega_0}$) the term involving $\chi$ will effectively act as a fast forcing term to the rest of the system. However, since the system can't react on those fast time scales the system will effectively low pass filter this fast dynamics, seeing only the average value of the forcing term. The average value is of course zero since it is sinusoidally oscillating. This means that, to a certain approximation, the counter-rotating terms will not affect the dynamics. To that end we will go ahead and make the rotating frame approximation which ammounts to dropping the counter-rotating terms at the level of the Hamiltonian.
+
+\subsection{Effective Magnetic Field}
+We thus seek to find the dynamics under rotating frame and rotating wave approximation Hamiltonian:
+
+\begin{align}
+H_{RF} = -\hbar \Delta \Pi_e + \frac{\hbar}{2}\left(\Omega^*\sigma^- + \Omega \sigma^+ \right)
+\end{align}
+
+We can rewrite this as
+
+\begin{align}
+H_{RF} &= -\hbar \Delta \Pi_e + \frac{\hbar|\Omega|}{2}\frac{1}{2}\left(e^{-i\phi_{\Omega}}(\sigma^1-i\sigma^2) + e^{i\phi_{\Omega}}(\sigma^1+i\sigma^2) \right)\\
+&= -\frac{\hbar \Delta}{2} (1+\sigma^z) + \frac{\hbar|\Omega|}{2}\left(\cos(\phi_{\Omega})\sigma^x  -\sin(\phi_{\Omega})\sigma^y\right)
+\end{align}
+
+I've identified $\sigma^{1,2,3} = \sigma^{x,y,z}$. Note that this formula has a similarity to the nuclear magnetic resonance Hamiltonian which can be given by 
+
+\begin{align}
+H_{NMR} = -\bv{B}\cdot\bv{\mu}
+\end{align}
+
+We have a relationship between the magnetic moment $\bv{\mu}$ and the angular momentum of the system, $\bv{J}$, given by $\bv{\mu} = \gamma \bv{J}$ where $\gamma$ is the gyromagnetic ratio. For a two level system that we are considering here we want to compare to a magnetic moment with two possible levels. This corresponds to the magnetic moment of a spin-$\frac{1}{2}$ particle with $\bv{J} = \bv{S} = \frac{\hbar}{2} \bv{\sigma}$. We then have
+
+\begin{align}
+H_{NMR} = -\gamma\frac{\hbar}{2} \bv{B} \cdot \bv{\sigma}
+\end{align}
+
+
+We see that we can write the driven two-level atom Hamiltonian in the same form:
+
+\begin{align}
+H_{RF} = -\frac{1}{2} \hbar\Delta - \gamma\frac{\hbar}{2} \bv{B} \cdot \bv{\sigma}
+\end{align}
+
+if we identify
+
+\begin{align}
+\gamma\bv{B} &=
+\begin{bmatrix}
+-|\Omega|\cos(\phi_{\Omega})\\
++|\Omega|\sin(\phi_{\Omega})\\
+\Delta\\
+\end{bmatrix}
+\end{align}
+
+We can find the equations of motion by noting
+
+\begin{align}
+H_{RF} = -\frac{1}{2} \hbar \Delta - \frac{\hbar}{2} \gamma B_j \sigma^j
+\end{align}
+
+with Einstein summation convention implied (but there is no significance to the super or subscript placement of the indices here). We then calculate
+
+\begin{align}
+\left(\ddt{\bv{\sigma}}\right)_i &= \ddt{\sigma^i} = \frac{i}{\hbar}\frac{\hbar}{2}\gamma B_j [\sigma^i,\sigma^j] = \frac{i}{2} \gamma B_j 2i \epsilon_{ijk} \sigma^k = -\epsilon_{ijk} \gamma B_j  \sigma^k = \gamma\left(\bv{\sigma} \times \bv{B} \right)_i\\
+\ddt{\bv{\sigma}} &= \gamma \bv{\sigma}\times \bv{B}
+\end{align}
+
+We expand this out
+
+\begin{align}
+\ddt{\sigma^x} &= \gamma\left(\sigma^y B_z - \sigma^z B_y \right)\\
+\ddt{\sigma^y} &= \gamma\left(\sigma^z B_x - \sigma^x B_z \right)\\
+\ddt{\sigma^z} &= \gamma\left(\sigma^x B_y - \sigma^y B_x \right)\\
+\end{align}
+
+This can be written as a first order linear matrix differential equation
+
+\begin{align}
+\ddt{\bv{\sigma}} = \bv{N} \bv{\sigma}
+\end{align}
+
+Whose solution can be found by
+
+\begin{align}
+\bv{\sigma}(t) = e^{\bv{N}t} \bv{\sigma}(0)
+\end{align}
+
+with
+
+\begin{align}
+\bv{N} = \gamma\begin{bmatrix}
+0 && B_z && -B_y\\
+-B_z && 0 && B_x\\
+B_y && -B_x && 0
+\end{bmatrix}
+\end{align}
+
+From this all of the usual dissipationless Rabi dynamics can be derived and simulated by taking an expectation value to determine the time evolution of $\braket{\bv{\sigma}(t)}$ but I'll forego that analysis here \footnote{I will work out the dissipationless case in the Schrodinger picture}. The only important point I will make here is that the eigenvalues of $\bv{N}$ are $0$ and $\pm i \tilde{\Omega} = \pm i \sqrt{\Omega^2 + \Delta^2}$. This shows that the solutions to the problem are oscillations at the modified Rabi frequency $\tilde{\Omega}$. The eigenvalue $0$ corresponds to the situation when $\bv{\sigma}$ is parallel to $\bv{B}$ so that $\bv{\sigma}\times \bv{B}=0$ and the system is stationary.
+
+The next step in deriving the optical Bloch equations is to introduce phenomenological damping into the problem corresponding to $T_1$ and $T_2$ decay processes. Above all of the equations were Heisenberg-like equations governing operators. It is possible to extend such an approach to a Heisenberg-Langevin equation which includes noise drives and damping to come up with effective operator equations of motion in the presence of dissipation. However, that is a bit of a more complicated approach and we will get the results we are interested in by simply taking expectation values of the above equations and adding in phenomenological damping. We will add a damping term
+
+\begin{align}
+\bv{\Gamma} = 
+-\begin{bmatrix}
+\gamma_{\perp}\Braket{\sigma^x}\\
+\gamma_{\perp}\Braket{\sigma^y}\\
+\Gamma (\Braket{\sigma^z} + 1)
+\end{bmatrix}
+\end{align}
+
+The derivation of these damping terms is beyond the scope of this work. A full derivation can be found using master equations or Langevin equations. Note now that the damping drives $\Braket{\sigma^x}$ and $\Braket{\sigma^y}$ towards $0$ and $\Braket{\sigma^z}$ towards $-1$.
+In the simplest case $\Gamma$ represents spontaneous emission and we have $\frac{\gamma_{\perp}}{2} = \Gamma$. Generally we have that $\frac{\gamma_{\perp}}{2} \ge \Gamma$. The vector
+
+\begin{align}
+\Braket{\bv{\sigma}} = \begin{bmatrix}
+\Braket{\sigma^x}\\
+\Braket{\sigma^y}\\
+\Braket{\sigma^z}
+\end{bmatrix}
+\end{align}
+
+Is known as the Bloch vector and we can see from the undamped equation of motion that the Bloch vector precesses around the effective magnetic field vector and that the damping pulls the Bloch vector towards negative $z$.
+
+
+The total equation of motion can be written as
+
+\begin{align}
+\ddt{\Braket{\bv{\sigma}}} = \bv{\tilde{N}} \Braket{\bv{\sigma}} + \bv{f}
+\end{align}
+
+with
+
+\begin{align}
+\bv{\tilde{N}} &= \begin{bmatrix}
+-\gamma_{\perp} && B_z && -B_y\\
+-B_z && -\gamma_{\perp} && B_x\\
+B_y && -B_x && -\Gamma
+\end{bmatrix}\\
+\bv{f} &= \begin{bmatrix}
+0\\0\\-\Gamma
+\end{bmatrix}
+\end{align}
+
+We see that there is now a forcing term, $\bv{f}$. The solution to this matrix differential equation is 
+
+\begin{align}
+\Braket{\bv{\sigma}(t)} &= e^{\bv{\tilde{N}} t} \Braket{\bv{\sigma}(0)} + \int_{t'=0}^t e^{\bv{\tilde{N}} (t-t')} dt' \bv{f}\\
+&= e^{\bv{\tilde{N}}t} \Braket{\bv{\sigma}(0)} + \bv{\tilde{N}}^{-1}\left(e^{\bv{\tilde{N}}t} - \mathbb{I}\right)\bv{f}
+\end{align}
+
+Here if the eigenvalues of $\bv{\tilde{N}}$ have negative real parts (and they will) then the two terms including $e^{\bv{\tilde{N}}t}$ will decay to zero at large time and we will be left with the steady state population
+
+\begin{align}
+\Braket{\bv{\sigma}_{\infty}} = \Braket{\bv{\sigma}(t\rightarrow \infty)} = -\bv{\tilde{N}}^{-1} \bv{f}
+\end{align}
+
+This steady state formula could also have easily been derived by looking at the equation of motion for $\Braket{\bv{\sigma}}$ and setting $\ddt{\Braket{\bv{\sigma}}} = 0$. 
+
+This is the point at which some tricky algebra is typically done to determine $\Braket{\bv{\sigma}_{\infty}}$. However, all of the algebra is technically contained in the above matrix equation so I am happy to go ahead and let that do all of the heavy lifting and put the calculations into Mathematica. The only point of intuition for this algebra I will gives is that
+
+\begin{align}
+\text{Det}(\bv{\tilde{N}}) &= -B_x^2 \gamma_{\perp} - B_y^2 \gamma_{\perp} - B_z^2 \Gamma - \gamma^2 \Gamma\\
+&= -\Gamma\left(\left(\frac{\Gamma}{2}\right)^2 + \Delta^2 + \frac{|\Omega|^2}{2} \right)
+\end{align}
+
+Something like this will show up in the denominators of many subsequent expression as a result of taking the inverse of $\tilde{\bv{N}}$. In the second line I've replaced in $\bv{B}$ and assumed $\gamma_{\perp} = \frac{\Gamma}{2}$. I will assume this unless otherwise stated. This document has an associated Mathematica script which can be used to find the full solutions.
+
+We can find
+
+\begin{align}
+\Braket{\bv{\sigma}_{\infty}} = -\bv{\tilde{N}}^{-1}\bv{f} = 
+\begin{bmatrix}
+\frac{2|\Omega|(2\Delta \cos(\phi_{\Omega})+\Gamma \sin(\phi_{\Omega}))}{\Gamma^2 + 4\Delta^2 + 2|\Omega|^2}\\
+\frac{2|\Omega|(\Gamma \cos(\phi_{\Omega})-2\Delta \sin(\phi_{\Omega}))}{\Gamma^2 + 4\Delta^2 + 2|\Omega|^2}\\
+\frac{-\Gamma^2-4\Delta^2}{\Gamma^2 + 4\Delta^2 + 2|\Omega|^2}\\
+\end{bmatrix}
+\end{align}
+
+We might particularly be interested in the $z$ component of the Bloch vector which is related to the excited state fraction. We can find
+
+\begin{align}
+\rho_{ee} &= \Braket{\Pi_e} = \langle\ket{e}\bra{e} \rangle = \frac{1}{2}\left(\Braket{\sigma^z_{\infty}} + 1 \right)\\
+&= \frac{|\Omega|^2}{\Gamma^2 + 4\Delta^2 + 2|\Omega|^2} = \frac{1}{2} \frac{\frac{2|\Omega|^2}{\Gamma^2}}{1+\left(\frac{2\Delta}{\Gamma} \right)^2 + \frac{2|\Omega|^2}{\Gamma^2}}
+\end{align}
+
+For $\gamma_{\perp}>\frac{\Gamma}{2}$ we have
+
+\begin{align}
+\rho_{ee} &= \frac{1}{2} \frac{\frac{|\Omega|^2}{\gamma_{\perp}\Gamma}}{1+\frac{\Delta^2}{\gamma_{\perp}^2} + \frac{|\Omega|^2}{\gamma_{\perp}\Gamma}}
+\end{align}
+
+In the limit of large Rabi frequency, $|\Omega|\gg\Delta,\Gamma,\gamma_{\perp}$ we have
+
+\begin{align}
+\rho_{ee} \rightarrow \frac{1}{2}
+\end{align}
+
+This tells us that in the incoherent steady state the excited state fraction can be at most $\frac{1}{2}$. This is when the excitation rate is balanced by the de-excitation rate.
+
+It is also possible to calculate a very nice form of the energy shift the system undergoes when an atom equilibrates in a light field. To this end we are interested in
+
+\begin{align}
+\Braket{H_{RF}} = -\frac{1}{2}\hbar \Delta - \gamma \frac{\hbar}{2} \bv{B}\cdot \Braket{\bv{\sigma}_{\infty}}
+\end{align}
+
+We can use Mathematica to calculate this and find
+
+\begin{align}
+\Braket{H_{RF}} = \frac{\hbar \Delta |\Omega|^2}{\Gamma^2 + 4\Delta^2 + 2|\Omega|^2}
+\end{align}
+
+In the limit of large detuning, $\Delta \gg |\Omega|,\Gamma$ we can approximate
+
+\begin{align}
+\Braket{H_{RF}} = \frac{\hbar |\Omega|^2}{4 \Delta}
+\end{align}
+
+This is the usual light shift which is responsible for the Stark shift and the operation of far detuned optical dipole traps. In particular, if the amplitude of the electric field varies as a function of space then $\Omega$ will also vary as a function of space. If the internal state of the atom can equilibrate to the external field at its current location faster than any other timescales of the problem then this term will serve as an effective spatial potential for the atom. In this way an atom can, for example, be attracted to the center of a red detuned focused laser beam.
+
+\section{Ket Calculation and Rabi Oscillations}
+
+Instead of deriving and solving Heisenberg equations of motion as above it is also possible to solve the problem in the rotating frame using an effective Schrodinger equation. In this case the logic of working in the rotating frame is a bit simpler. We simply have, for the Schrodinger picture ket:
+
+\begin{align}
+\ket{\psi_S} = T\ket{\psi_0} = X\tilde{Y} \ket{\psi_0}
+\end{align}
+
+$X$ is very simple so we know how to act $X$ on any superposition of $\ket{e}$ and $\ket{g}$. So we all that it left is to solve for 
+
+\begin{align}
+\ket{\psi_{RF}} = \tilde{Y}\ket{\psi_0}
+\end{align}
+
+This can be done by solving the effective Schrodinger equation which arises:
+
+\begin{align}
+\ddt{\ket{\psi_{RF}}} = -\frac{i}{\hbar} H_{RF} \ket{\psi_{RF}}
+\end{align}
+
+Where $H_{RF}$ is given as above by:
+
+\begin{align}
+H_{RF} = -\hbar \Delta \Pi_e + \frac{\hbar}{2}\left(\Omega^*\sigma^- + \Omega \sigma^+ \right)
+\end{align}
+
+Here I've made the rotating frame approximation. Also note that for this case $H_{RF} = \tilde{H}_Y$. Above $H_{RF}$ was actually $\tilde{H}_Y$ with the operators expressed in the rotating frame.
+
+In my Unitary Time Evolution write up I show how the Schrodinger equation in terms of kets and operators can be converted to a matrix equation for the coefficients. Suppose
+
+\begin{align}
+\ket{\psi_{RF}} = c_e(t) \ket{e} + c_g(t) \ket{g}
+\end{align}
+
+Then we can define a vector
+
+\begin{align}
+\bv{c}(t) = \begin{bmatrix}c_e\\c_g\end{bmatrix}
+\end{align}
+
+and a matrix
+
+\begin{align}
+\bv{H} &= 
+\begin{bmatrix}
+\bra{e}H_{RF}\ket{e} && \bra{e}H_{RF}\ket{g}\\
+\bra{g}H_{RF}\ket{e} && \bra{g}H_{RF}\ket{g}
+\end{bmatrix}\\
+&=
+\hbar\begin{bmatrix}
+-\Delta&& \frac{\Omega}{2}\\
+\frac{\Omega^*}{2}&& 0
+\end{bmatrix}
+\end{align}
+
+With the property that
+
+\begin{align}
+\ddt{\bv{c}(t)} = -\frac{i}{\hbar}\bv{H}\bv{c}(t)
+\end{align}
+
+This is a simple system of linear equations for the time-dependent coefficients of $\ket{e}$ and $\ket{g}$ in $\ket{\psi_RF}$. This system is solved by
+
+\begin{align}
+\bv{c}(t) = e^{-i\frac{\bv{H}}{\hbar} t} \bv{c}(0) =
+\end{align}
+
+This is actually already well-posed enough to plug into Mathematica to get an answer but I will press on a little further analytically. We can diagonalize $\bv{H}$:
+
+\begin{align}
+\bv{P}e^{-i\frac{\bv{D}}{\hbar}t}\bv{P}^{\dag} \bv{c}(0)
+\end{align} 
+
+Here $\bv{D}$ is the diagonal matrix of eigenvalues of $\bv{H}$ and $\bv{P}$ is the matrix whose columns are the corresponding eigenvectors of $\bv{H}$. In my diagonalization write up I show
+
+\begin{align}
+\frac{\bv{D}}{\hbar} &= 
+\begin{bmatrix}
+-\frac{\Delta}{2} + \frac{\tilde{\Omega}}{2} && 0
+\\0 && -\frac{\Delta}{2} - \frac{\tilde{\Omega}}{2}
+\end{bmatrix}\\
+\bv{P} &= 
+\begin{bmatrix}
+\cos{\theta} && -\sin(\theta)\\
+e^{-i\phi_{\Omega}}\sin(\theta) && e^{-i\phi_{\Omega}}\cos(\theta)
+\end{bmatrix}
+\end{align}
+
+Here we have
+
+\begin{align}
+\tilde{\Omega} &= \sqrt{|\Omega|^2+\Delta^2}\\
+\cos(\theta) &= \frac{1}{\sqrt{2}}\sqrt{1-\frac{\Delta}{\tilde{\Omega}}}\\
+\sin(\theta) &= \frac{1}{\sqrt{2}}\sqrt{1+\frac{\Delta}{\tilde{\Omega}}}
+\end{align}
+
+One could calculate (I have Mathematica do it):
+
+\begin{align}
+e^{-i \frac{\bv{H}}{\hbar}t} &= \bv{P}e^{-i\frac{\bv{D}}{\hbar} t}\bv{P}^{\dag}\\
+&= e^{i \frac{\Delta}{2} t}
+\begin{bmatrix}
+\cos\left(\frac{\tilde{\Omega}t}{2}\right) + i \frac{\Delta}{\tilde{\Omega}}\sin\left(\frac{\tilde{\Omega}t}{2}\right) && -i \frac{\Omega}{\tilde{\Omega}}\sin\left(\frac{\tilde{\Omega}t}{2}\right)\\
+-i\frac{\Omega^*}{\tilde{\Omega}}\sin\left(\frac{\tilde{\Omega}t}{2}\right)&& \cos\left(\frac{\tilde{\Omega}t}{2}\right) - i \frac{\Delta}{\tilde{\Omega}}\sin\left(\frac{\tilde{\Omega}t}{2}\right)
+\end{bmatrix}
+\end{align}
+
+From this we can calculate
+
+\begin{align}
+c_e(t) &= e^{i\frac{\Delta}{2}t}\left(c_e(0) \cos\left(\frac{\tilde{\Omega}t}{2}\right) + i\left(\frac{\Delta}{\tilde{\Omega}}c_e(0) - \frac{\Omega}{\tilde{\Omega}}c_g(0) \right)\sin\left(\frac{\tilde{\Omega}t}{2}\right) \right)\\
+c_g(t) &= e^{i\frac{\Delta}{2}t}\left(c_g(0) \cos\left(\frac{\tilde{\Omega}t}{2}\right) - i\left(\frac{\Delta}{\tilde{\Omega}}c_g(0) + \frac{\Omega^*}{\tilde{\Omega}}c_e(0) \right)\sin\left(\frac{\tilde{\Omega}t}{2}\right) \right)\\
+\end{align}
+
+This is plenty to plug into Mathematica for plotting purposes. We could take the square magnitude of each of these to determine the populations as a function of time. However, this is actually redundant with the Bloch vector analysis performed above. This is the ket representation of the motion of the Bloch vector precessing about the effective magnetic field. We see that there is a dependence on the initial state of the system as well as the phase, $\phi_{\Omega}$ of the driving field.
+
+Instead I will simply calculate the excited state probability for the case that the system begins in the ground state. This is the simple picture of Rabi oscillations which is typically presented.
+
+We can immediately see (setting $c_g=1$ and $c_e=0$)
+
+\begin{align}
+c_e(t) &= e^{i\frac{\Delta}{2}t} -i\frac{\Omega}{\tilde{\Omega}}\sin
+\left(\frac{\tilde{\Omega}t}{2}\right)\\
+P_e(t) = |c_e(t)|^2 &= \frac{|\Omega|^2}{\tilde{\Omega^2}}\sin^2\left(\frac{\tilde{\Omega}t}{2}\right)\\
+&= \frac{1}{2\sqrt{1+\left(\frac{\Delta}{|\Omega|}\right)^2}}\left(1-\cos\left(\sqrt{1+\left(\frac{\Delta}{|\Omega|}\right)^2}|\Omega| t\right) \right)
+\end{align}
+
+This final form shows that the behavior depends only on $\frac{|\Omega|}{\Delta}$ and $|\Omega| t$. One resonance we have
+
+\begin{align}
+P_e(t) = \frac{1}{2}\left(1-\cos\left(|\Omega| t\right)\right)
+\end{align}
+
+The system oscillates from ground to excited state at frequency $|\Omega|$. As the detuning is increased the maximum population achieved is decreased by a factor of $\sqrt{1+\left(\frac{\Delta}{|\Omega|}\right)^2}$ and the frequency of oscillation is increased by the same factor.
+
+The final feature I would like to point out is the behavior of the eigenvalues. The energy of the ground and excited states go like
+
+\begin{align}
+E_{\pm} = -\frac{\hbar\Delta}{2} \pm \frac{\hbar\tilde{\Omega}}{2}
+\end{align}
+
+In the dispersive limit, $\Delta \gg |\Omega|$, we have
+
+\begin{align}
+\tilde{\Omega} = \sqrt{|\Omega|^2+\Delta^2} = \Delta \sqrt{1+\left(\frac{|\Omega|}{\Delta}\right)^2} \approx \Delta\left(1+\frac{1}{2}\left(\frac{|\Omega|}{\Delta}\right)^2\right)
+\end{align}
+
+This give
+
+\begin{align}
+E_+ &\approx \hbar \Delta + \frac{1}{2}\frac{|\Omega|^2}{\Delta}\\
+E_- &\approx -\frac{1}{2}\frac{|\Omega|^2}{\Delta}
+\end{align}
+
+The difference between these two energies is given by
+
+\begin{align}
+E_+-E_- = \frac{|\Omega|^2}{4\Delta}
+\end{align}
+
+Here we again see the AC Stark shift which is responsible for light forces on atoms from far detuned laser fields.
+
+\section{Complicated Rotating Frame Transformation}
+
+Note: This was a previous calculation which I performed when I was confused about how to do the rotating frame for operators. I am still a little confused but much less confused than back then when I had to get really deep into Baker-Campbell-Hausdorff stuff.
+
+This Hamiltonian is problematic because it is time-dependent. The free Hamiltonian is well understood so it should be possible to move into a rotating frame in which the free Hamiltonian dynamics are ``rotated out'' and only the dynamics due to the coupling remains. This is usually done in the Schrodinger picture, however, for my intuition, I would like to do it from the Heisenberg picture.
+
+This rotating frame transformation will be accomplished by a unitary transformation. We will see that after this unitary transformation the operators will evolve under a Hamiltonian which is time-independent as desired. The unitary transformation we will perform can be thought of as a rotation around the $z$ axis. This somehow makes intuitive sense. The dynamics under the free Hamiltonian tells us that $\bv{d}$ somehow rotates around the $z$ axis. If we perform a unitary transformation that does this same rotation to our basis vectors then the operators should stop their rotation. The unitary is achieved by
+
+\begin{align}
+P = e^{-i\omega \Pi_e t} 
+\end{align}
+
+Note very importantly that since we are working in the Heisenberg picture that $\Pi_e$ is time-dependent. One might be tempted to write
+
+\begin{align}
+\ddt{P} \stackrel{wrong}{=} -i\omega \Pi_e e^{-i\omega \Pi_e t} = -i\omega \Pi_e P
+\end{align}
+
+But this is incorrect because $\Pi_e$ has time dependence. One might realize this and take it a step further and try
+
+\begin{align}
+\ddt{P} \stackrel{wrong}{=} \left(-i\omega \Pi_e -i \omega \ddt{\Pi_e} t\right)e^{-i\omega \Pi_e t} = \left(-i\omega \Pi_e -i \omega \ddt{\Pi_e} t\right)P
+\end{align}
+
+But this is wrong because $\Pi_e$ doesn't commute with itself at different times so in general $\Pi_e$ and $P$ don't commute with each other.
+
+With those misconceptions out of the way we can tackle the correct way to find the time-evolution after this unitary transformation. In my time evolution write up I show that if an operator satisfies the commutation relation (assuming no explicit time dependence of the operator)
+
+\begin{align}
+\ddt{A} = -\frac{i}{\hbar}[A,H]
+\end{align}
+
+Then the transformed version of the operator
+
+\begin{align}
+A_P = PAP^{\dag}
+\end{align}
+
+has time evolution given by
+
+\begin{align}
+\ddt{A_P} &= -\frac{i}{\hbar}\left[A_P,H_P+i\hbar P \ddt{P^{\dag}}\right]\\
+&= -\frac{i}{\hbar}[A_P, H_{RF}]
+\end{align}
+
+\begin{align}
+H_{RF} = PH P^{\dag} - i \hbar P \ddt{P^{\dag}}
+\end{align}
+
+Thus, the present goal of this document is to derive a clean formula for $H_P + i\hbar P \ddt{P^{\dag}}$. We will identify this combination as the rotating wave Hamiltonian (at least for operators, I am not concerned with the corresponding, and different, ket Hamiltonian as I am interested in operator equations of motion).
+
+We have
+
+\begin{align}
+H_P &= PHP^{\dag} =\\
+= &\hbar \omega_0 \frac{1}{2}\left(1+\sigma^3_P\right)\\
+&+ \frac{\hbar}{2}\left(e^{-i\omega t}\Omega\sigma^+_P +  e^{+i\omega t}\Omega^* \sigma^-_P \right)\\
+&+ \frac{\hbar}{2}\left( e^{+i\omega t}\chi\sigma^+_P + e^{-i\omega t}\chi^* \sigma^-_P \right)\\
+\end{align}
+
+We see that each operator is just transformed into the new picture. Unfortunately this Hamiltonian is still time-dependent so it is not what we are seeking. However, we still must calculate $+i\hbar P \ddt{P^\dag}$ and add it to this. We will see when we do that that all of the time-dependence drops out of the Hamiltonian.
+
+We will now calculate $\sigma^{\pm}_P$ using a Baker-Campbell-Hausdorff type formula of the form
+
+\begin{align}
+e^{M}Ye^{-M} = \sum_{n=0}^{\infty} \frac{1}{n!}[M,[M,\ldots[M,Y]\ldots]]
+\end{align}
+
+Here there are enough commutators so that $M$ appears $n$ times in each term.
+Note that since $[\Pi_e,\sigma^{\pm}] = \pm \sigma^{\pm}$ we have the very nice property that
+
+\begin{align}
+[\Pi_e,[\Pi_e,\ldots[\Pi_e,\sigma^{\pm}]\ldots]] = (\pm 1)^n \sigma^{\pm}
+\end{align}
+
+\begin{align}
+\sigma^{\pm}_P = P\sigma^{\pm}P^{\dag} &= e^{-i\omega t \Pi_e} \sigma^{\pm} e^{+i\omega t \Pi_e}\\
+&= \sum_{n=0}^{\infty} \frac{1}{n!} (-i\omega t)^n [\Pi_e,[\Pi_e\ldots[\Pi_e,\sigma^{\pm}]\ldots]]\\
+&= \sum_{n=0}^{\infty} \frac{1}{n!} (-i\omega t)^n (\pm 1)^n \sigma^{\pm} = \sum_{n=0}^{\infty} \frac{1}{n!} (\mp i\omega t)^n \sigma^{\pm}\\
+&= e^{\mp i \omega t}\sigma^{\pm}
+\end{align}
+
+We see that this new operator should have it's fast rotation eliminated by the complex exponential which cancels out its free evolution.
+
+Now $\Pi_{e,P}$.
+
+\begin{align}
+\Pi_{e,P} = P\Pi_e P^{\dag} = \Pi_e
+\end{align}
+
+Where the formula for $\Pi_{e,P}$ follows because $[\Pi_e,P]=0$. We see that the rotation about the $z$ axis does not change $\sigma^3$.
+
+Note that at this point we actually have enough information to calculate the equations of motion for $\sigma^{\pm}_P$ and $\Pi_{e,P}$ using the above explicit transformation rules and the Heisenberg picture equations of motion for $\sigma^{\pm}$ and $\Pi_e$ which we could easily derive, howver, I still want to derive the effective Hamiltonian that governs those dynamics and derive the equations of motion in that way.
+
+
+
+We now set to work calculating the second term in the new Hamiltonian. We must calculate
+
+\begin{align}
+\ddt{P^{\dag}} &= \ddt{} e^{+i\omega \Pi_e t}
+\end{align}
+
+recalling that $\Pi_e$ is time dependent. We will do this using a formula which comes from fancy Lie group math. If we have an operator $M$, which may be time dependent, we can calculate
+
+\begin{align}
+\ddt{}e^{M} = e^M \sum_{n=0}^{\infty} \frac{(-1)^n}{(n+1)!}\left[M,\left[M,\ldots\left[M,\ddt{M}\right]\ldots\right]\right]
+\end{align}
+
+Here there are enough commutators that $M$ appears $n$ times in each term (not counting $\ddt{M}$).
+In this case we have $M = i\omega t \Pi_e$. We will need 
+
+\begin{align}
+\ddt{\Pi_e} &= -\frac{i}{\hbar} [\Pi_e,H]\\
+=&-\frac{i}{\hbar} \frac{\hbar}{2} \left(e^{-i\omega t} \Omega \sigma^+ - e^{+i\omega t}\Omega^* \sigma^- \right)\\
+&-\frac{i}{\hbar} \frac{\hbar}{2} \left(e^{+i\omega t} \chi \sigma^+ - e^{-i\omega t}\chi^* \sigma^- \right)\\
+=&-\frac{i}{2} \left(e^{-i\omega t} \Omega \sigma^+ - e^{+i\omega t}\Omega^* \sigma^- \right)\\
+&-\frac{i}{2} \left(e^{+i\omega t} \chi \sigma^+ - e^{-i\omega t}\chi^* \sigma^- \right)\\
+\end{align}
+
+We then work out $\ddt{M}$
+
+\begin{align}
+\ddt{M} = i\omega \left(\Pi_e + t \ddt{\Pi_e} \right)
+\end{align}
+
+We split the above expansion into two terms, one for the first term of $\ddt{M}$ and one for the second.
+
+\begin{align}
+\ddt e^{M} = &e^M \sum_{n=0}^{\infty} \frac{(-1)^n}{(n+1)!} (i \omega t)^n \left[\Pi_e,\left[\Pi_e\ldots\left[\Pi_e,i\omega \Pi_e\right]\ldots\right]\right]\\
++&e^M \sum_{n=0}^{\infty} \frac{(-1)^n}{(n+1)!} (i \omega t)^{n+1}\left[\Pi_e,\left[\Pi_e\ldots\left[\Pi_e,\ddt{\Pi_e}\right]\ldots\right]\right]\\
+=&i\omega e^{i\omega t \Pi_e} \Pi_e +e^M \sum_{n=0}^{\infty} \frac{(-1)^n}{(n+1)!} (i \omega t)^{n+1}\left[\Pi_e,\left[\Pi_e\ldots\left[\Pi_e,\ddt{\Pi_e}\right]\ldots\right]\right]
+\end{align}
+
+The second term will contain 4 terms, one proportional to $\Omega$, $\Omega^*$, $\chi$ and $\chi^*$. The form is
+
+\begin{align}
+\sum_{n=0}^{\infty}&\frac{(-1)^n}{(n+1)!} (i \omega t)^{n+1}\left[\Pi_e,\left[\Pi_e\ldots\left[\Pi_e,\ddt{\Pi_e}\right]\ldots\right]\right] =\\
+-\frac{i}{2}\sum_{n=0}^{\infty}\Bigg[ &\Omega \frac{(-1)^n}{(n+1)!}(i\omega t)^{n+1} e^{-i\omega t} (+1)^n\sigma^+\\
+-&\Omega^* \frac{(-1)^n}{(n+1)!}(i\omega t)^{n+1} e^{+i\omega t} (-1)^n\sigma^-\\
+&\chi \frac{(-1)^n}{(n+1)!}(i\omega t)^{n+1} e^{+i\omega t} (+1)^n\sigma^+\\
+-&\chi^* \frac{(-1)^n}{(n+1)!}(i\omega t)^{n+1} e^{-i\omega t} (-1)^n\sigma^-
+\Bigg]
+\end{align}
+
+\begin{align}
+=-\frac{i}{2}\sum_{n=0}^{\infty}\Bigg[ -&\Omega \frac{(-i\omega t)^{n+1}}{(n+1)!}e^{-i\omega t} \sigma^+\\
+-&\Omega^* \frac{(i\omega t)^{n+1}}{(n+1)!} e^{+i\omega t} \sigma^-\\
+-&\chi \frac{(-i\omega t)^{n+1}}{(n+1)!} e^{+i\omega t} \sigma^+\\
+-&\chi^* \frac{(i\omega t)^{n+1}}{(n+1)!} e^{-i\omega t} \sigma^-
+\Bigg]
+\end{align}
+
+\begin{align}
+-\frac{i}{2}\Bigg[&\Omega(1-e^{-i\omega t})e^{-i\omega t}\sigma^+ + \Omega^*(1-e^{+i\omega t})e^{+i\omega t}\sigma^-\\
++&\chi (1-e^{-i\omega t})e^{+i\omega t}\sigma^+ + \chi^* (1-e^{+i\omega t})e^{-i\omega t} \sigma^-\Bigg]
+\end{align}
+
+We put things back together, adding in the factor of $e^M$ which was removed as well as the $i\omega \Pi_e$ term which was ignored above. We also multiply by $+i\hbar P$ so that we get back to $+i\hbar P \ddt{P^{\dag}}$ which we are trying to calculate. Note that the $P$ from $+i\hbar P$ and the $P^{\dag}$ standing on the left part of $\ddt{P^{\dag}}$ cancel each other immediately.
+
+\begin{align}
++i\hbar P \ddt{P^{\dag}} = -\frac{\hbar}{2}\Bigg[&\Omega(e^{-i\omega t}-1)e^{-i\omega t}\sigma^+ + \Omega^*(e^{+i\omega t}-1)e^{+i\omega t}\sigma^-\\
++&\chi (e^{-i\omega t}-1)e^{+i\omega t}\sigma^+ + \chi^* (e^{+i\omega t}-1)e^{-i\omega t} \sigma^-\Bigg] - \hbar \omega \Pi_e
+\end{align}
+
+We rewrite $H_P$ from above using Heisenberg rather than $P$-picture operators.
+
+\begin{align}
+H_P = \hbar \omega_0 \Pi_e + \frac{\hbar}{2}\Bigg[\Omega e^{-i2\omega t} \sigma^+ + \Omega^* e^{+i2\omega_0t}\sigma^- + \chi\sigma^+ + \chi^* \sigma^-\Bigg]
+\end{align}
+
+Adding these two terms together we find
+
+\begin{align}
+H_{RF} &= -\hbar \Delta \Pi_e + \frac{\hbar}{2}\left(\Omega e^{-i\omega t}\sigma^+ + \Omega^* e^{+i\omega t}\sigma^- + \chi e^{+i\omega t}\sigma^+ + \chi^* e^{-i\omega t} \sigma^- \right)\\
+&= -\hbar \Delta \Pi_{e,P} + \frac{\hbar}{2}\left(\Omega \sigma^+_P + \Omega^* \sigma^-_P + \chi e^{+i2\omega t}\sigma^+_P + \chi^* e^{-i2\omega t}\sigma^-_P \right)
+\end{align}
+
+I have defined $\Delta = \omega - \omega_0$. We can now write down the equations of motion for $\sigma^-$. We find
+
+\begin{align}
+\ddt{\sigma^-_P} &= -i\left[-\Delta \sigma^-_P + \frac{1}{2}\left(\Omega + \chi e^{+i2\omega t} \right)(-\sigma^3_P)  \right]\\
+&= +i\Delta \sigma^-_P + \frac{i}{2}(\Omega + \chi e^{+i2\omega t})\sigma^3_P
+\end{align}
+
+We can see that this differential equation for $\sigma^-_P$ involves dynamics at frequencies $\Delta$, $\Omega$, $\chi$ and $\omega$ from the exponential. Typically $\omega$ is much greater than all of these other time scales. What happens is that the slower dynamics basically acts as a low pass filter for the fast rotating exponentials which can be thought of as force drives on the system. The system simply can't respond fast enough for that dynamics to matter. Said another way, the fast varying terms average to zero and have no effect. Said yet another way, we adiabatically eliminate the fast varying terms. The upshot of all of this is we can drop all the terms with coefficient $\chi$ or $\chi^*$. This is the content of the rotating wave approximation. If we make this approximation at the level of the Hamiltonian then we get the final rotating wave Hamiltonian:
+
+\begin{align}
+H_{RF} = -\hbar \Delta \Pi_{e,P} + \frac{\hbar}{2}(\Omega \sigma^+_P + \Omega^* \sigma^-_P)
+\end{align}
+
+Note that there is a slightly different form for $\ddt{}e^{M}$ in which the $e^{M}$ appears on the right side of $\ddt{}e^{M}$ instead of the left. I think using this form simplifies the calculation a bit. We also could have utilized the fact that $P\ddt{P^{\dag}} = -\ddt{P}P^{\dag}$ and calculated $\ddt{P}$. In this case we instead of the $PP^{\dag}$ canceling each other immediately we would have had a situation where the operators were conjugated by $P$ and $P^{\dag}$. This might be a little more elegant looking but the content of the derivation is comparable.
+
+\end{document}

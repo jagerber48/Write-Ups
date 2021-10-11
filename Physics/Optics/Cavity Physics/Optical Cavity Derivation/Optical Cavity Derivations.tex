@@ -1,0 +1,429 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Optical Cavity Derivations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+The goal of this write up is to give a classical treatment of the equations of motion which govern the optical fields entering, building up in, and leaking out of an optical cavity. This classical treatment will be presented throughout to help build up intuition about how an optical cavity works, however, throughout it will be clear that the final intent is to roll this picture over to a quantum picture. In light of this, much attention will be paid to the fact that the mirror are lossy, and it is through these additional loss channels that information can flow into and out of the optical cavity.
+
+The write up will begin with a couple of approaches to model a lossy mirror which attempt to be somewhat formal. The seemingly unnecessary formality is put into place to ease the transition to a quantum mechanical description. Two approaches are presented. 
+
+In one approach the lossy is mirror is presented as an ideal beamsplitter followed by an ideal mirror. The beamsplitter will reject some of the incident beam while the mirror will reflect and transmit as desired. The rejection represents loss. However, from quantum optics, we know that through these input ports extraneous ``noise'' fields can also be introduced. There is a slight annoyance in this picture that the light passes through the beam splitter on the first pass as well as on reflection and is in fact rejected out of two different ports of the beamsplitter. That is, this approach actually introduces two loss ports rather than just one.
+
+In the second approach the intuition of beam-splitters and mirrors is left behind to deal with this annoyance and the lossy mirror is now treated directly as an abstract 3 port device (here a port refers to a channel which supports both an input and an output mode), where light which impinges from one port can be reflected back along that same port, can transmit into the ``transmission'' port or can be transmitted into the ``loss'' port. In this case the loss comes directly from the third part. The tricky part in this approach is the determination of the 3x3 transfer matrix which characterizes the device that has the appropriate properties.
+
+Once we have the models in place for a lossy beamsplitter we can then consider the dynamics of the electric field when two such mirrors are made to face eachother to create an optical cavity. We will at first work entirely in the time domain and directly derive the impulse response function (as opposed to the transfer function) of the optical cavity. We will notice an analogy between an optical cavity and a tapped delay line. Subsequently, we can Fourier transform the impulse response function to learn the cavity transfer function.
+
+Finally we will write down the equation of motion which govern the amplitude of the standing wave inside of the optical cavity. At this point we will also form a distinction between quantities which should be thought of as energies (such as the energy in the cavity) and those which should be thought of as powers (such as the power leaking out of the cavity and eventually falling on a detector).
+
+\section{Electric Field}
+
+Consider an electric field $\bv{E}(\bv{r},t)$ in a single mode with frequency $\omega$ with spatial field mode $\bv{f}(\bv{r})$. We can write this electric field as the sum of a positive and negative rotating part.
+
+\begin{align}
+\bv{E}(\bv{r},t) &= \bv{E}^{(+)}(\bv{r},t) + \bv{E}^{(-)}(\bv{r},t)\\
+&= i\sqrt{\frac{\hbar \omega}{2\epsilon_0 V}} \bv{f}(\bv{r}) a(t) - i\sqrt{\frac{\hbar \omega}{2\epsilon_0 V}} \bv{f}^*(\bv{r})a^*(t)
+\end{align}
+
+Here the introduction of the prefactors and constants $a$ is arbitrary, but it should be obvious that if we work with $a(t)$ and $a^*(t)$ then to convert to the quantum treatment all that must be done is we must take $a(t) \to \hat{a}(t)$ and $a^*(t) \to \hat{a}^{\dag}(t)$. Note that I have absorbed a factor of $e^{-i \omega t}$ into $a(t)$.
+
+We will work here with the complex field $\bv{E}^{(+)}(\bv{r},t)$, but we're not concerned with the spatial mode or polarization so we need not carry around $\bv{f}(\bv{r})$ and the constants in front of $a(t)$ are just constants, so we only need to track the progression of $a(t)$ through the various systems which will be introduced here.
+
+\section{Lossy Mirror with Explicit Loss Ports}
+
+Here I will give two treatments of a lossy mirror. Consider a mirror with complex reflection and transmission coefficients $r$ and $t$ with $R = |r|^2$ and $T = |t|^2$. For an ideal mirror we would have $R + T = 1$ and we could treat this is a two-port beamsplitter (to be contrasted with the usual four-port beamsplitter). However, in the presence of loss we must change this picture slightly. In this section I will present two possible extensions to this model which can include loss. In the first treatment (much like a non-ideal photodiode) I will treat an non-ideal mirror as an ideal beamsplitter which rejects some of the signal as loss followed by an ideal mirror. This treatment can give the right answer but introducing a single beamsplitter into the path actually introduces two loss channels since the light must pass through the beamsplitter once before reflection off the mirror and once after. This is a bit inelegant. Because of this I will also introduce an approach in which the mirror is thought of a 3-way beamsplitter or Y-junction where one of the output legs is the transmitted signal and the other is the lost signal.
+
+\subsection{Beamsplitter followed by Mirror}
+
+A beamsplitter with power splitting ratio $\eta$ can be described as a 4 port device (each port can have an input and an output) With the following transfer function
+
+\begin{align}
+\begin{bmatrix}
+A_o\\ B_o\\ C_o\\ D_o
+\end{bmatrix}
+&=
+\begin{bmatrix}
+0 & 0 & \sqrt{\eta} & \sqrt{1-\eta}\\
+0 & 0 & -\sqrt{1-\eta} & \sqrt{\eta}\\
+\sqrt{\eta} & -\sqrt{1-\eta} & 0 & 0\\
+\sqrt{1-\eta} & \sqrt{\eta} & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+A_i\\ B_i\\ C_i\\ D_i
+\end{bmatrix}\\
+\bv{A}_o &= \bv{S} \bv{A}_i
+\end{align}
+
+$\bv{A}_i$ is a vector of the input light states and $\bv{A}_o$ is the vector of output light states. $\bv{S}$ is the beamsplitter scattering matrix. Note the minus signs on certain reflections. This arises from the physical constraint that the scattering matrix be unitary, $\bv{S} \bv{S}^{\dag} = \bv{I}$. This constraint comes from requiring energy conservation and time-reversal symmetry.
+
+Note a lossless mirror can be treated as a two port beamsplitter with
+
+\begin{align}
+\begin{bmatrix}
+a_R\\ a_T
+\end{bmatrix}
+=
+\begin{bmatrix}
+-r & t\\
+t & r
+\end{bmatrix}
+\begin{bmatrix}
+a_{in,1} \\ a_{in,2}
+\end{bmatrix}
+\end{align}
+
+We consider such a beamsplitter before a mirror in which the incident beam, $a_{in}$ is coming in from the left on port $A$, the transmitted beam, $a_1$ transmits to the right on port $C$ where it then hits the mirror and transmits as $a_T$ and reflects as $a_2$ where it again enters the beamsplitter on port $C$ and transmits through the beamsplitter as $a_R$ again on port $A$.
+On the first transmission there is also a reflection out port $D$ and on the second transmission there is a reflection on port $B$. It is also possible in general for fields to enter on ports $B$, $C$, and $D$. These are the fields responsible for Partition noise in quantum optics.
+
+We want this beamsplitter followed by a mirror to model a mirror in which the reflected power, $a^*_R a_R ~ P_R = R P_{in}$, the transmitted power, $a^*_T a_T ~ P_T = T P_{in}$ and the lost power, $P_L = P_{in} - P_R - P_T = LP_{in}$ with $R+T+L = r^2 + t^2 + l^2 =  1$.  We can take $r$ and $t$ to be real.
+
+We are considering this mirror to be one mirror of an optical cavity so that it has very high reflectivity so that
+
+\begin{align}
+t \approx l \ll r \approx 1
+\end{align}
+
+So that we can expand in orders of $t$ and $l$.
+To model this `ideal' lossy mirror we replace the mirror with $t$ and $r$ by a beamsplitter with splitting ratio $\eta$ and a mirror with $\tilde{t}$ and $\tilde{r}$. We will solve for $\tilde{t}$, $\tilde{r}$ and $\eta$ in terms of $t$, $r$, and $l$.
+
+We can use the beamsplitter and mirror transfer functions to determine $a_1$, $a_2$, $a_T$, and $a_R$ in terms of $a_{in}$ We can also calculate the fields lost out ports $B$, and $D$, $a_B$ and $a_D$.
+
+\begin{align}
+a_1 &= \sqrt{\eta} a_{in}\\
+a_2 &= -\tilde{r} a_1 = -\tilde{r} \sqrt{\eta} a_{in}\\
+a_R &= \sqrt{\eta} a_2 = -\tilde{r} \eta a_{in}\\
+a_T &= \tilde{t} a_1 = \tilde{t} \sqrt{\eta} a_{in}\\
+a_B &= -\sqrt{1-\eta} a_2 = \tilde{r} \sqrt{\eta}\sqrt{1-\eta} a_{in}\\
+a_D &= \sqrt{1-\eta} a_{in}
+\end{align}
+
+We should have
+
+\begin{align}
+a_R^*a_R &= \tilde{R} \eta^2 a_{in}^* a_{in} = R a^*_{in} a_{in}\\
+a_T^*a_T &= \tilde{T} \eta a_{in}^* a_{in} = T a^*_{in} a_{in}\\
+\end{align}
+
+So $\eta \tilde{r} = r$ and $ \sqrt{\eta} \tilde{t} = t$. We can write down
+
+\begin{align}
+\eta^2 \tilde{R}^2 + \eta^2 \tilde{T}^2 &= \eta^2 (\tilde{R}^2 + \tilde{T}^2) = \eta^2\\
+&= R + T \eta
+\end{align}
+
+since the mirror described by $\tilde{R}$ and $\tilde{T}$ is lossless. We then have (using the quadratic formula):
+
+\begin{align}
+\eta^2 - T \eta - R &= 0\\
+\eta &= \frac{T}{2} + \sqrt{\left(\frac{T}{2}\right)^2 + R} = \frac{T}{2} + \sqrt{\left(\frac{T}{2} \right)^2 + 1 - T - L}\\
+&\approx \frac{T}{2} + \sqrt{1 - T - L} \approx \frac{T}{2} + 1 - \frac{T}{2} - \frac{L}{2}\\
+&= 1 - \frac{L}{2}
+\end{align}
+
+Where we have neglected $T^2$ and expanded to first order in $T$ and $L$. We see the beamsplitter has power splitting ratio $1-\frac{L}{2}$. This says that the beamsplitter throws out the fraction $\frac{L}{2}$ of the power on each pass. This means after two passes the beamsplitter rejects total power $L$ as desired.
+
+We can see
+
+\begin{align}
+a_B^* a_B &= \tilde{R}^2 \eta (1-\eta) a^*_{in}a_{in}= \eta^2(1-\eta)R^2 a^*_{in}a_{in} = \eta^2(1-\eta)(1-T-L) a^*_{in}a_{in}\\
+&= \left(1-\frac{L}{2}\right)^2\left(\frac{L}{2}\right)(1-T-L) a^*_{in}a_{in} \approx (1-L)\left(\frac{L}{2}\right) a^*_{in}a_{in} \approx \frac{L}{2}a^*_{in}a_{in}
+\end{align}
+
+and
+
+\begin{align}
+a^*_D a_D = (1-\eta)a^*_{in}a_{in} = \frac{L}{2}a^*_{in}a_{in}
+\end{align}
+
+as expected. We see that the exiting fields carry total power $L P_{in}$.
+
+Note that if ports $B$, $C$, and $D$ are driven by $a_B^{\text{Drive}}$ $a_C^{\text{Drive}}$ and $a_D^{\text{Drive}}$ then they will contribute to the field exiting port $A$ as
+
+\begin{align}
+a_B^{in} &= (-\sqrt{1-\eta})(-\tilde{r})\sqrt{\eta} a_B^{\text{Drive}} \approx \sqrt{\frac{L}{2}} a_B^{\text{Drive}}\\
+a_C^{in}&= \tilde{t} \sqrt{\eta} a_C^{\text{Drive}} = \sqrt{T}a_C^{\text{Drive}}\\
+a_D^{in} &= \sqrt{1-\eta}a_D^{\text{Drive}} = \sqrt{\frac{L}{2}} a_D^{\text{Drive}}
+\end{align}
+
+So that
+
+\begin{align}
+a_R = \sqrt{R} a_{in} + \sqrt{T}a_C^{\text{Drive}} + \left(\sqrt{\frac{L}{2}} a_B^{\text{Drive}} + \sqrt{\frac{L}{2}} a_D^{\text{Drive}} \right)
+\end{align}
+
+If the two loss drives are uncorrelated standard white noise processes then we can define
+
+\begin{align}
+a_L^{\text{Drive}} = \sqrt{\frac{1}{2}}\left(a_B^{\text{Drive}} + a_D^{\text{Drive}}\right)
+\end{align}
+
+and $a_L^{\text{Drive}}$ will also be standard white noise. So we get
+
+\begin{align}
+a_R = \sqrt{R} a_{in} + \sqrt{T}a_C^{\text{Drive}} + \sqrt{L} a_L^{\text{Drive}}
+\end{align}
+
+\subsection{Y-Junction}
+To avoid the complication of the introduction of two additional ports rather than just one we can treat the lossy mirror as a Y-junction instead of a beam-splitter followed by a mirror. This explicitly introduces just one more additional loss port. In fact, if one imagine losses in the mirrors as absorption of light followed by the emission of thermal phonons then it is clear that we could in fact microscopically model the mirror loss as the coupling of the optical field to many other real physical modes.
+
+Regardless, here we idealize the loss into the single port of a Y-junction. We consider the following transfer matrix
+
+\begin{align}
+\begin{bmatrix}
+a_R\\ a_T\\ a_L
+\end{bmatrix} = 
+\bv{S}_Y 
+\begin{bmatrix}
+a_{\text{in},R}\\ a_{\text{in},T} \\ a_{\text{in},L}
+\end{bmatrix}
+\end{align}
+
+The present task is to determine the matrix $\bv{S}_Y$. It should be unitary as before and it should satisfy our expected formulas for a lossy mirror. That is
+
+\begin{align}
+\bv{S}^{\dag}\bv{S} = \bv{I}
+\end{align}
+
+Suppose there is only a field incident from the reflection port, $a_{\text{in},R}$. Then we should expect
+
+\begin{align}
+a_R^* a_R &= R a_{\text{in},R}^*a_{\text{in},R}\\
+a_T^* a_T &= T a_{\text{in},R}^*a_{\text{in},R}\\
+a_L^* a_L &= L a_{\text{in},R}^*a_{\text{in},R}\\
+R+T+L &= 1
+\end{align}
+
+If the other input fields, $a_{\text{in},T}$ and $a_{\text{in},L}$ are non-zero we should expect something like
+
+\begin{align}
+a_R = \sqrt{R}a_{\text{in},R} + \sqrt{T}a_{\text{in},T} + \sqrt{L} a_{\text{in},L}
+\end{align}
+
+If some time is spent guessing at the form for this matrix one can come up with
+
+\begin{align}
+\bv{S}_Y = 
+\begin{bmatrix}
+-r & t & l \\
+t & r & il \\
+l & il & \sqrt{1-2l^2}
+\end{bmatrix}
+\end{align}
+
+With $r = \sqrt{R}$, $t = \sqrt{T}$, and $l = \sqrt{L}$ real. This matrix does exactly satisfy the desired properties, however, if terms of order $l$ and $t$ are neglected when compared to terms of order $r$ or of order $1$ then this matrix does satisfy those properties.
+
+It is possible to write down a matrix which does exactly satisfy the desired properties but it is a little more messy.
+
+\begin{align}
+\bv{S}_Y = 
+\begin{bmatrix}
+-r & t e^{-i\theta}& l\\
+te^{-i\theta} & r & -il\\
+l & -il & \sqrt{1-2l^2}
+\end{bmatrix}
+\end{align}
+
+Here $r = \sqrt{R}$ and $t = \sqrt{T}$ but we now must have
+
+\begin{align}
+l &= \pm \frac{1}{\sqrt{2}} \sqrt{1 + \left(i r + e^{-i\theta} t\right)^2}\\
+\theta &= \arcsin\left(\frac{1-r^2-t^2}{2rt} \right) 
+\end{align}
+
+\section{Optical Cavity}
+
+To create an optical cavity we face two such lossy mirrors against eachother so that the light bounces back and forth between the mirrors many times before it finally leaves the cavity. The goal here is to take this intuitive notion of a cavity and put some formalism to it.
+
+We will write down the impulse response function of the cavity by realizing that the field at any location within the cavity (or on the output of the cavity) the optical field is a function of the optical field at the input of the cavity at earlier times. For example, consider light directly at the output of the cavity. Also denote the cavity round trip time
+
+\begin{align}
+\tau = \frac{c}{2d}
+\end{align}
+
+Where $c$ is the speed of light and $d$ is the optical length of the cavity. We can see that
+
+\begin{align}
+a_T(t) &= t_1t_2a_{\text{in}}\left(t-\frac{\tau}{2}\right) + t_1t_2 (-r_1)*(-r_2) a_{\text{in}}\left(t - \frac{\tau}{2} - \tau\right) + \ldots\\
+&=t_1 t_2 \sum_{n=0}^{\infty} (r_1 r_2)^n a_{\text{in}}\left(t- \frac{\tau}{2} - n \tau\right)
+\end{align}
+
+ We will massage a bit more in a minute. First I would like to point out the analogy to a tapped delay line. In the tapped delay line model of a digital filter, for example, the signal at the output of the circuit is a weighted sum of the value of the signal at earlier times. We imagine tapping a transmission line at different positions, amplifying the signal by the appropriate weighting, and adding up all of the taps to get the output. In digital signal processing this corresponds to weighting earlier samples of the signal and adding up the results. The optical cavity is in some sense a physical, continuous time, realization of a tapped delay line.
+
+We now work to massage this into a form which is more familiar. We work on $(r_1 r_2)^n$
+
+\begin{align}
+r_1r_2 &= \sqrt{1 - T_1 - L_1}\sqrt{1-T_2-L_2} \approx \sqrt{1 - (T_1 + T_2 + L_1 + L_2)}\\
+&\approx 1 - \frac{1}{2}(T_1 + T_2 + L_1 + L_2) = 1 - \frac{\pi}{\mathcal{F}} \approx e^{-\frac{\pi}{\mathcal{F}}}
+\end{align}
+
+Here I've defined the cavity Finesse
+
+\begin{align}
+\mathcal{F} = \frac{2\pi}{T_1 + T_2 + L_1 + L_2}
+\end{align}
+
+If we introduce $t_n = n \tau$ then we can write
+
+\begin{align}
+a_T(t) = t_1 t_2 \sum_{n=0}^{\infty} e^{-\frac{\pi}{\mathcal{F}}\frac{t_n}{\tau}} a_{\text{in}}\left(t-\frac{\tau}{2} - t_n\right)
+\end{align}
+
+At this point we can also introduce the cavity free spectral range which is intimately related to the round trip time as
+
+\begin{align}
+f_{\text{FSR}} = \frac{1}{\tau}
+\end{align}
+
+We then get
+
+\begin{align}
+a_T(t) = t_1 t_2 \sum_{n=0}^{\infty} e^{-\frac{\pi}{\mathcal{F}}f_{\text{FSR}}t_n} a_{\text{in}}\left(t-\frac{\tau}{2} - t_n\right)
+\end{align}
+
+At this point it makes sense to identify the angular frequency which appears as the decay constant in the exponential
+
+\begin{align}
+\kappa = 2\pi \frac{f_{\text{FSR}}}{\mathcal{F}}
+\end{align}
+
+and we rewrite
+
+\begin{align}
+a_T(t) = t_1 t_2 \sum_{n=0}^{\infty} e^{-\frac{\kappa}{2}t_n} a_{\text{in}}\left(t-\frac{\tau}{2} - t_n\right)
+\end{align}
+
+We see that the transmitted signal at time $t$ is a weighted sum of the incident electric field at earlier times $t-\frac{\tau}{2} - t_n$ with a weighting factor given by $e^{-frac{\kappa}{2}t_n}$. That is, the signal from earlier time is exponentially suppressed.
+
+We can rewrite this formula using a delta comb as
+
+\begin{align}
+a_T(t) = \int_{t'=-\infty}^{+\infty} a_{\text{in}}(t-t') t_1t_2\sum_{n=0}^{\infty} e^{-\frac{\kappa}{2}\left(t'- \frac{\tau}{2}\right)}\delta\left(t'-\frac{\tau}{2}-t_n\right) dt'
+\end{align}
+
+We are now in a position to define the impulse response function. We can write
+
+\begin{align}
+h(t) = t_1t_2\left(\sum_{n=0}^{\infty}e^{-\frac{\kappa}{2}\left(t-\frac{\tau}{2}\right)} \delta\left(t - \frac{\tau}{2} - t_n\right) \right)
+\end{align}
+
+We then have
+
+\begin{align}
+a_T(t) = \int_{t'=-\infty}^{+\infty} a_{\text{in}}(t-t')h(t') dt' = \left(a_{\text{in}}\ast h\right)(t)
+\end{align}
+
+So that $h(t)$ is directly identified as the impulse response function of the cavity.
+The next reasonable thing to do is to Fourier Transform the impulse response function to get the transfer function. By the convolution theorem we have
+
+\begin{align}
+\tilde{a}_T(f) = \tilde{a}_{\text{in}}(f) \tilde{h}(f)
+\end{align}
+
+We have
+
+\begin{align}
+\tilde{h}(f) &= t_1t_2\sum_{n=0}^{\infty} \int_{t = -\infty}^{+\infty} e^{2\pi i f t} e^{-\frac{\kappa}{2}\left(t-\frac{\tau}{2}\right)} \delta \left(t-\frac{\tau}{2} - t_n \right) dt\\
+&=t_1t_2\sum_{n=0}^{\infty} e^{2\pi i f \left(\frac{\tau}{2} + t_n\right)} e^{-\frac{\kappa}{2} t_n}\\
+&=t_1t_2 e^{2\pi i f \frac{\tau}{2}} \sum_{n=0}^{\infty} \left(e^{\left(2\pi i f - \frac{\kappa}{2}\right) \tau}\right)^n\\
+&= t_1t_2 e^{2\pi i f \frac{\tau}{2}} \frac{1}{1-e^{\left(2\pi i f - \frac{\kappa}{2}\right) \tau}}
+\end{align}
+
+We now work on the exponential factor. 
+
+\begin{align}
+e^{\left(2\pi i f - \frac{\kappa}{2} \right) \tau} = e^{2\pi i f \tau} e^{-\frac{\kappa}{2}\tau}
+\end{align}
+
+Note that $-\frac{\kappa}{2}\tau = \frac{\pi}{\mathcal{F}}$. Thus in limit of high Finesse we can Taylor expand this term.
+
+\begin{align}
+e^{-\frac{\kappa}{2}\tau} \approx 1 - \frac{\kappa}{2}\tau
+\end{align}
+
+ Also note for $n \in \mathbb{N}$ we can define the cavity frequencies 
+
+\begin{align}
+f_n &= \frac{n}{\tau} = n f_{\text{FSR}}\\
+f &= f_n + \Delta f_n
+\end{align}
+
+Where $\Delta f_n$ is the detuning of the light from the $n^{\text{th}}$ cavity frequency. We will see why these are called the cavity frequencies shortly. We can then write
+
+\begin{align}
+f \tau = f_n \tau + \Delta f_n \tau = n + \frac{\Delta f_n}{f_{\text{FSR}}}\\
+e^{2\pi i f \tau} = e^{2\pi i n} e^{2 \pi i \frac{\Delta f_n}{f_{\text{FSR}}}}
+\end{align}
+
+If $\frac{\Delta f_n}{f_{\text{FSR}}} \ll1$ we can Taylor expand the exponential to get
+
+\begin{align}
+e^{2\pi i f \tau} \approx 1 + 2\pi i \Delta f_n \tau
+\end{align}
+
+The total exponential can then be expanded
+
+\begin{align}
+e^{\left(2 \pi i f - \frac{\kappa}{2} \right) \tau} \approx 1 + 2\pi i \Delta f_n \tau - \frac{\kappa}{2} \tau
+\end{align}
+
+Note that we have dropped the term which goes like $\Delta f_n \tau \kappa \tau$ because both $\kappa \tau, \Delta f_n \tau \ll 1$.
+
+we can plug this in to the equation above for the cavity transfer function to get
+
+\begin{align}
+\tilde{h}_n(f) \approx t_1 t_2 e^{2\pi i f \frac{\tau}{2}} \frac{f_{\text{FSR}}}{\frac{\kappa}{2} - i 2\pi \Delta f_n}
+\end{align}
+
+This formula is correct in the neighborhood of the $n^{\text{th}}$ cavity peak but we could in fact copy it over for all cavity peaks to get an approximate formula for the transfer function.
+
+\begin{align}
+\tilde{h}(f) \approx t_1 t_2 e^{2\pi i f \frac{\tau}{2}} \sum_{n=-\infty}^{+\infty}\frac{f_{\text{FSR}}}{\frac{\kappa}{2} - i 2\pi \Delta f_n}
+\end{align}
+
+We can also get an approximate impulse response function by taking the Inverse Fourier Transform of one or all of these terms.
+
+We work out the Inverse Fourier Transform of two factors first.
+
+\begin{align}
+\mathcal{FT}^{-1}\left[e^{2\pi i f \frac{\tau}{2}} \right](t) &= \int_{f=-\infty}^{+\infty} e^{-i2\pi f t} e^{2\pi i f \frac{\tau}{2}} df = \delta\left(t - \frac{\tau}{2}\right)\\
+\mathcal{FT}^{-1}\left[\frac{1}{\frac{\kappa}{2} - i 2 \pi (f- f_n)} \right](t) &= e^{\left(-i2 \pi f_n - \frac{\kappa}{2}\right)t}\theta(t)
+\end{align}
+
+We can then work out the inverse Fourier transform using the convolution theorem of
+
+\begin{align}
+h_n(t) = \mathcal{FT}^{-1}\left[\tilde{h}_n(f)\right](t) &= t_1t_2 f_{\text{FSR}} \int_{t'=-\infty}^{+\infty} e^{\left(-i2\pi f_n - \frac{\kappa}{2}\right)t'}\theta(t') \delta\left(t-t'-\frac{\tau}{2}\right) dt'\\
+&= t_1t_2 f_{\text{FSR}} e^{\left(-i2 \pi f_n - \frac{\kappa}{2} \right) \left(t - \frac{\tau}{2}\right) } \theta\left(t - \frac{\tau}{2} \right)
+\end{align}
+
+The offset of $\frac{\tau}{2}$ reflects the fact that we are considering the electric field at the output of the cavity as a function of the electric field at the input. The electric field cannot propagate to the other side of the cavity until time delay $t-\frac{\tau}{2}$ has passed. Under normal circumstances the bandwidth of the incident signal will be much much less than a free spectral range which means that we can neglect delays on the order of $\tau$ and can drop those delays.
+
+\end{document}

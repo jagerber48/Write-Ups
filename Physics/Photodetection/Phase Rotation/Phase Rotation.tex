@@ -1,0 +1,226 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\bv}[1]{\mathbf{#1}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{E3 Quadrature Phase Rotation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+The photon field coming out of the cavity can be described by
+
+\begin{align}
+a(t) &= \frac{1}{2}(X(t) + i P(t))\\
+a^{\dag}(t) &= \frac{1}{2}(X(t) - i P(t))\\
+X(t) &= a^{\dag}(t) + a(t) = 2\text{Re}(a)\\
+P(t) &= i(a^{\dag}(t) - a(t)) = 2\text{Im}(a)\\
+\end{align}
+
+We can consistently define rotated quadrature operators:
+
+\begin{align}
+a^{\phi}(t) &= a(t)e^{i\phi}\\
+a^{\phi \dag}(t) &= a^{\dag}e^{-i\phi}\\
+X^{\phi}(t) &= a^{\phi \dag}(t) + a^{\phi}(t) = a^{\dag}(t)e^{-i\phi} + a(t) e^{i\phi}\\
+&= \frac{1}{2}\left((X(t)-iP(t))e^{-i\phi} + (X(t) + iP(t))e^{i\phi} \right)\\
+&= X(t) \cos(\phi) - P(t) \sin(\phi)\\
+P^{\phi}(t) &= i(a^{\phi \dag}(t) - a^{\phi}(t)) = i(a^{\dag}(t)e^{-i\phi} - a(t) e^{i\phi}) \\
+&= \frac{i}{2}\left((X(t)-iP(t))e^{-i\phi} - (X(t) + iP(t))e^{i\phi} \right)\\
+&= -X(t) \sin(\phi) + P(t) \cos(\phi)\\
+\end{align}
+
+The heterodyne detector makes a measurement of
+
+\begin{align}
+S_{\text{raw}}(t) = X^{\Delta_{LO} t + \phi_{det}(t)}
+\end{align}
+
+Where $\Delta_{LO} = \omega_P - \omega_{LO}$ is the angular frequency difference between the probe and local oscillator. In E3's case $\Delta_{LO} = 2\pi \times 10 \text{ MHz}$.
+
+Let me take some lines to explain what I think about $\phi(t)$. In any problem like this, just by writing down phases you are picking a phase reference to be zero phase somewhere in the problem. This is either done explicitly if there is a clear reference or implicitly if you don't think about it.
+
+In E3, I believe that we typically take as our phase reference the optical field in the cavity. For example, in my `Spin and Mech - Cleaner' write up I describe the cavity field by the boson operator $\hat{c}$. I then expand around $\bar{c}$, the average value of the intracavity field. $\bar{c}$ is set by the input field, $\hat{c}^{\text{in}}$ and the cavity probe detuning, $\Delta_{PC}$ relative to $\kappa$. Under extreme circumstances $\bar{c}$ also depends on the coupling to the optomechanical system and the positions of those oscillators. In any case, in that write up, and in many other write ups, we take the average photon field in the cavity to be real. That is $\bar{c} = \sqrt{\bar{n}}$ is a real quantity. This fixes the phase of the intracavity field $\hat{c}$ which in turn fixes the phase of the input field $\hat{c}^{\text{in}}$ and also determines the phase of the output field.
+Once the photon field exits the cavity it has to travel some distance to get to the detector. Over this time it incurs phase $\phi_{p}$. There is also the phase of the LO to consider. Let's think for a second about how the LO phase is determined. The LO has the same phase as the probe at the point where they are split off. The phase at the split off point is determined by the path from the split off to the cavity where it can then be referenced to the intra cavity field. The LO phase at the detector can then be referenced to this phase at the probe LO splitting point allowing us to write down $\phi_{LO}$. This was a long winded discussion about how in principle we might define the phases in the problem. The upshot is that we can write
+
+\begin{align}
+\phi_{det}(t) = \phi(t) = \phi_{LO}(t) + \phi_P(t)
+\end{align}
+
+Because none of the path lengths are stabilized this phase is 1) non-zero and 2) can drift on thermal time scales.
+
+For many applications in E3 we want to mix the heterodyne signal from 10 MHz down to DC by demodulating at the carrier frequency. Let's work towards that.
+
+\begin{align}
+S_{\text{raw}}(t) = X^{\Delta_{LO} t + \phi(t)} = a(t) e^{i\Delta_{LO}t} e^{i\phi(t)} + a^{\dag}(t) e^{-i\Delta_{LO}t} e^{-i\phi(t)}
+\end{align}
+
+Note that the $a(t)$ represents the probe field at the detector, but because of how I have defined the phases, $a(t)$ should be directly proportional to the probe field in the cavity via the cavity input-output relations. The way the phases have been defined takes care of the different path length differences. This is a desirable way to write things down because in the end we are attempting to use the heterodyne signal to reconstruct the state of the field in the optical cavity and then use that to learn about the interaction with the quantum optodynamical system.
+
+Moving forward. We are often interested in demodulating this signal to mix it down from 10 MHz to DC. To do this we multiply it by a sinusoid at the local oscillator frequency and low pass filter to cut out second harmonic components. We can do this using $\sin$ and $\cos$ or with a complex exponential. At the moment it's implemented as a complex exponential for computation speed so I'll follow that analysis.
+
+\begin{align}
+S_{\text{demod},1}(t) &= F_1\left[S_{\text{raw}}(t) e^{-i\Delta_{LO}t}\right]=\int S_{\text{raw}}(t') e^{-i\Delta_{LO}t'} F_1(t-t') dt'\\
+&= \int \left(a(t')e^{\phi(t')} + a^{\dag}(t')e^{-i2\Delta_{LO}t'}e^{-i\phi(t')}\right) F_1(t-t')dt'
+\end{align}
+
+Here I've multiplied by the exponential and convolved with the impulse response function $F_1$ of the low pass filter. The filter should be chosen so that it cuts out the second term which is at ~20 MHz. However, it's action on the first term is a little bit complicated. First let $e^{i\phi(t)} = \Phi(t)$. $\Phi(t)$ is a function whose value is on the unit circle in the complex plane. As the phase drifts $\Phi(t)$ rotates around in the complex plane. We then have
+
+\begin{align}
+S_{\text{demod},1}(t) = F_1\left[a(t)\Phi(t)\right] + F_1\left[a^{\dag}(t)\Phi^*(t) e^{-2\Delta_{LO}t} \right]
+\end{align}
+
+The second term vanishes since it has components much higher than the filter cutoff (assuming $a(t)$ and $\Phi(t)$ don't have components at these high frequencies which would mix the signal down into the filter range - they don't.)
+
+\begin{align}
+S_{\text{demod},1}(t) = F_1\left[a(t)\Phi(t)\right]
+\end{align}
+
+What does $a(t)\Phi(t)$ look like? Well let's split $a(t)$ into two parts.
+
+\begin{align}
+a(t) = \bar{a} + \tilde{a}(t)
+\end{align}
+
+$\bar{a}$ is the Dc part of $a$ related the mean intracavity photon number. $\tilde{a}(t)$ then carries the time dependence of the signal. I'll assume that the only time dependence is the sidebands coming from the optomechanical oscillators around 100 kHz, however, in practice there are other components in this signal such as various technical noise peaks.
+We then have
+
+\begin{align}
+S_{\text{demod},1}(t) = \bar{a}F_1\left[\Phi(t)\right] + F_1\left[\tilde{a}(t)\Phi(t) \right]
+\end{align}
+
+At this point I will make an assumption which I will revisit later. I will assume that $\Phi(t)$ only has low frequency components, much lower than the 100 kHz signal band and lower than the cutoff frequency for the filter. In that case $F_1[\Phi(t)] = \Phi(t)$. 
+
+In this case if we can place the cutoff for the filter below the signal band so that the second term is cut out to allow us to measure $\Phi(t)$.
+
+\begin{align}
+S_{\text{demod},1}(t) = \bar{a}\Phi(t) = \bar{a}e^{i\phi(t)}
+\end{align}
+
+Here $\bar{a}$ is the amplitude of the DC component of $a(t)$.
+Now, I'll remind you that $\bar{a}$ is proportional to the intracavity photon field and that the \textit{DC part} of the intracavity photon field is real (i.e. zero phase) by convention. This means that the phase of the expression for $S_{\text{demod},1}(t)$ is purely given by $\phi(t)$. Thus, under these conditions we can measure $\phi(t)$. Define a phase mask
+
+\begin{align}
+\phi_{\text{mask}} = \text{Arg}\left[\Phi(t)\right]
+\end{align}
+
+We see clearly that $\phi_{\text{mask}}(t) = \phi(t)$. 
+
+I'll point out here that in the signal band the photon field does have imaginary components. That is, some of signal is in the phase quadrature of the field, however we have cut those components out with the low pass filter. Importantly, we have taken the convention that the DC part is real.
+
+In this case, once we've performed this measurement, we can go back and try the demodulation again, but this time subtracting out the phase. Note that the first filter $F_1$ chopped out the signal band to measure the phase. Now, for this second filter, we want to keep the signal band so that we can see our signal. In E3 we choose $F_1$ to have a cutoff at around 10 kHz and the second filter, $F_2$ to have a cutoff at around 10 MHz. This time, instead of just multiplying by $e^{-i\Delta_{LO}t}$ I will also multiply by $e^{-i\phi_{\text{mask}}(t)}=e^{-i\phi(t)}$. Then we get
+
+\begin{align}
+S_{\text{demod},2}(t) = F_2\left[S_{\text{raw}}e^{-i\Delta_{LO} t}e^{-i\phi(t)} \right] \int S_{\text{raw}}(t) e^{-\Delta_{LO} t'} e^{-i\phi(t')} F_2(t-t') dt'
+\end{align}
+
+We then apply the filter, cutting out the second harmonic, noticing that all the phases drop away and that the filter passes the signal through so that we get
+
+\begin{align}
+S_{\text{demod},2} = a(t)
+\end{align}
+
+We can then calculate the $I$ and $Q$ quadratures.
+
+\begin{align}
+I(t) &= \text{Re}(S_{\text{demod},2}(t)) = \frac{1}{2} X(t)\\
+Q(t) &= \text{Im}(S_{\text{demod},2}(t)) = \frac{1}{2} P(t)\\
+\end{align}
+
+We see that independent of the detuning between the probe and the cavity, $\Delta_{PC}$ this phase rotation routine gives us the amplitude quadrature of the intracavity field in the I quadrature and the phase quadrature of the intracavity field in the Q quadrature. Now I'll just point out that when we are doing optomechanics whether the motion of the oscillator shows up on $X(t)$ or $P(t)$ of the intracavity field depends on the detuning $\Delta_{PC}$.
+
+
+Let's step back to the assumptions I made about $\Phi(t)$. I assumed $\Phi(t)$ only had low frequency components. But what if $\Phi(t)$ has higher frequency components? In particular, what I am worried about is when we rapidly ramp the detuning of the probe field. When this happens the path length for the LO and Probe is effectively jumped resulting in a sharp step (as short in time as the detuning ramp) in $\Phi(t)$. This step can include high frequency components. The question is what is the effect of this step on the signal? We return to
+
+\begin{align}
+S_{\text{demod},1}(t) = \bar{a}F_1\left[\Phi(t)\right] + F_1\left[\tilde{a}(t)\Phi(t) \right]
+\end{align}
+
+It is possible that the step even still doesn't include frequency components up to the signal band. In this case, it may pass beyond the filter cutoff in which case we would get
+
+\begin{align}
+S_{\text{demod},1}(t) = \bar{a}F_1\left[\Phi(t)\right]
+\end{align}
+
+in this case 
+
+\begin{align}
+\phi_{\text{mask}}(t) = \text{Arg}\left[F_1[\Phi(t)]\right] \neq \phi(t)
+\end{align}
+
+This means that when we attempt to calculate
+
+\begin{align}
+S_{\text{demod},2}(t) = F_2\left[S_{\text{raw}}(t) e^{-i\Delta_{LO} t} e^{-i\phi_{\text{mask}}(t)} \right] = F_2\left[S_{\text{raw}}(t) e^{-i\Delta_{LO} t} \Phi^*(t) \right] 
+\end{align}
+
+The phase terms $\phi(t)$ and $\phi_{\text{mask}}(t)$ will not cancel out. We will end up with
+
+\begin{align}
+S_{\text{demod},2}(t) = a(t) e^{i(\phi(t)-\phi_{\text{mask}}(t))}
+\end{align}
+
+My initial hope was that $\phi_{\text{mask}}$ was just a low pass filtered version of $\phi(t)$ but the exponentiation and taking the Arg are nonlinear so I don't think $\text{Arg}[F_1[e^{i\theta(t)}]] = F_1[\theta(t)]$ in general.
+
+
+Let's think in the time domain a little bit. The filter, $F_1$ can be thought of as a running average with width $\Delta t \approx \frac{1}{f_{BW}}$. The idea is that $\Delta t$ should be narrow enough that $\Phi(t)$ basically doesn't vary much over the timescale $\Delta t$ so that $F_1[\Phi(t)] \approx \Phi(t)$ and we get $\phi_{\text{mask}}(t) \approx \phi(t)$. However this breaks down if $\Phi(t)$ has high frequency components because the signal may vary on time scales faster than $\Delta t$. However, even if $\Phi(t)$ has sharp steps in it, say at $t = t_i$, as long as we look at times satisfying $|t-t_i|>\Delta t$, the relation that $F_1[\Phi(t)] \approx \Phi(t)$ should still hold because the function will be varying slowly at these points and the running average should work fine. Our solution in E3, then, has been to mask out the regions of time with $|t-t_i|<\Delta t$ . That is, we take the region of $t$ close to steps in the detuning and we erase the value that was calculated for $\phi_{\text{mask}}$ and replace it by an interpolation from $t_i-\Delta t$ to $t_i+\Delta t$. Written out mathematically we define a corrected phase mask function
+
+\begin{align}
+\phi_{\text{corr}} = 
+\begin{cases}
+\phi_{\text{mask}}(t) \approx \phi(t) & \text{for $t$ away from detuning steps}\\
+\phi_{\text{mask}}(t_a) + \frac{\phi_{\text{mask}}(t_b) - \phi_{\text{mask}}(t_a)}{t_b-t_a}(t-t_a) & \text{for $t$ near detuning steps}
+\end{cases}
+\end{align}
+
+Here $t_a$ and $t_b$ are the bounds of some interval of length $\approx 2\Delta t$ containing one or more steps in detuning. By subtracting this phase out before the second demodulation we get
+
+\begin{align}
+S_{\text{demod},2}(t) = a(t) e^{i(\phi(t) - \phi_{\text{corr}}(t))}
+\end{align}
+
+Far from detuning steps then we see that the phase of this expression is zero as hoped. Near detuning steps we see we have subtracted a slow linearly varying part of $\phi(t)$ but the rapidly varying part due to the detuning step should persist unchanged. Importantly, this means that the I and Q quadratures get rotated during this time and don't correspond exactly the phase amplitude quadratures of the intracavity field.
+I'll write just one more equation down regarding this in case I can figure out more about it. The low pass filter, $F_1$ has a compliment high pass filter, $H_1$ such that for any signal $S(t)$ we have
+
+\begin{align}
+S(t) = F_1[S(t)] + H_1[S(t)]
+\end{align}
+
+We can then write
+
+\begin{align}
+\Phi(t)F_1[\Phi(t)]^* &= F_1[\Phi(t)]F_1[\Phi(t)]^* + H_1[\Phi(t)]F_1[\Phi(t)]^*\\
+&= |F_1[\Phi(t)]|^2 + H_1[\Phi(t)]F_1[\Phi(t)]^*
+\end{align}
+
+I want to say that the amplitude of the first term is 1 but I can't quite convince myself.. I think the point from the last paragraph is that far from steps in the phase due to steps in detuning the first term \textit{is} unity and the second term is negligible. 
+
+Finally, there is one more scenario that I have thought about which is really worst case scenario. Returning to 
+
+\begin{align}
+S_{\text{demod},1}(t) = \bar{a}F_1\left[\Phi(t)\right] + F_1\left[\tilde{a}(t)\Phi(t) \right]
+\end{align}
+
+Imagine if $\Phi(t)$ has signal components up to 100 kHz in the signal band. This means that the expression $\tilde{a}(t)\Phi(t)$ would actually have components mixed down to low frequency which would make it through the low pass filter. This situation would distort the subsequent analysis. However, I think we are saved from this for a few reasons. 1) $\Phi(t)$ doesn't have signal at those frequencies except during the detuning steps and as I have described we mask those out. And 2) $\tilde{a}(t) \ll \bar{a}$ so the second term should always be negligible compared to the first. This is to say that the modulation depth of the mechanics on the probe is very small which should be the case. If this is the case then it is ok if the phase has high frequency components, we will just get the same treatment as before that can be solved by masking times close to detuning steps. That is, the pathology of the problem is still simply that $\Phi(t)$ has signal components larger than the filter cutoff frequency. The difference is that if the components are still lower than the signal band in the first case you could increase that filter bandwidth, but it would not work if we increased the filter bandwidth above the signal band because we would then be effectively rotating out the phase of our signal which is something we do not want to do.
+
+
+
+\end{document}

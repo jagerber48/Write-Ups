@@ -1,0 +1,509 @@
+\documentclass[12pt]{article}
+\usepackage{setspace}
+\doublespacing
+\usepackage[left=0.5in,right=1.0in,top=1in,bottom=1in,]{geometry}
+
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[version=3]{mhchem}
+\usepackage{bbm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{braket}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{siunitx}
+\usepackage{float}
+
+
+\usepackage[acronym,nomain,toc,hyperfirst=false]{glossaries} 
+\newacronym{nep}{NEP}{noise-equivalent-power}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+\begin{document}
+\title{Heterodyne Detection Calibration}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this write up I will describe the calibration of a heterodyne detector.
+The calibration will be based on some fundamental formulas involving the relationship between the photocurrent and input optical power. 
+These are described in the Kelley-Kleiner write-up/paper elsewhere in my write ups.
+\subsection{Single Detector Formulas}
+The first formulas relate statistics of the photocurrent, $i(t)$ to the quantum incident photon flux $\hat{n}(t)$ for a single optical detector:
+
+\begin{align}
+\Braket{i(t)} =& e\ep_Q \Braket{:\hat{n}(t):}\\
+\Braket{i(t_1)i(t_2)} =& e^2 \ep_Q^2 \Braket{:\hat{n}(t_1)\hat{n}(t_2):} + e^2 \ep_Q \delta(t_2-t_1) \Braket{:\hat{n}(t_1):}
+\end{align}
+
+This is simplified when the input field is in a coherent state so that $\hat{n}\rightarrow \bar{n}$.
+
+\begin{align}
+\label{eq:singledet1}
+\Braket{i(t)} =& e\ep_Q \bar{n}\\
+\label{eq:singledet2}
+\Braket{i(t_1)i(t_2)} =& e^2 \ep_Q^2 \bar{n}^2 + e^2 \ep_Q \bar{n} \delta(t_2-t_1) 
+\end{align}
+
+Here $i(t)$ is the measured photocurrent, $e$ is the electron charge (this arises because one detected photon creates one electron), and $\ep_Q$ is the detector quantum efficiency.
+$\hat{n}(t) = \hat{a}^{\dag}(t)\hat{a}(t)$ is the photon number flux operator.
+It has dimensions of $\left[\frac{1}{T}\right]$.
+Recall that $\delta(t)$ also has dimensions of $\left[\frac{1}{T}\right]$.
+
+\subsection{Balanced Heterodyne Detector Formulas}
+We will also require the formulas for balanced heterodyne detection.
+In balanced heterodyne detection a signal and LO beam are combined on a beamsplitter such that the beamsplitter outputs are
+
+\begin{align}
+\hat{a}_{\pm} = \frac{1}{\sqrt{2}}\left(\hat{a}_S \pm \hat{a}_{LO}\right)
+\end{align}
+
+These two output beams are put onto two photodetectors and the photocurrents from the two detectors are subtracted resulting in the balanced photocurrent.
+This subtraction leads to suppression of common mode noise such as intensity noise on either of the lasers.
+
+\begin{align}
+\Braket{i_{\text{bal}}(t)} =& e\ep_Q\sqrt{\ep_{MM}} \Braket{:\hat{a}^{\dag}_{LO}(t)\hat{a}_S(t) + \hat{a}_{LO}(t)\hat{a}^{\dag}_S(t):}\\
+\end{align}
+
+$\sqrt{\ep_{MM}}$ captures the mode-matching overlap between the two beams. Assuming both beams fall entirely on the detector the mode-matching is defined by an overlap integral of the 2D mode profiles of the beams $g(\bv{r})$ on the detector:
+
+\begin{align}
+\sqrt{\ep_{MM}} = \int_{\bv{A}_{det}} g_S^*(\bv{r})g_{LO}(\bv{r})d\bv{A}
+\end{align}
+
+(Note that the overlap integral may have a non-zero complex phase, we can just ignore this phase or include it as an extra phase on the LO beam).
+
+We let
+
+\begin{align}
+\hat{a}_{S, LO} \rightarrow |\alpha_{S, LO}|e^{-i(\omega_{S,LO} t + \phi_{S, LO})}
+\end{align}
+
+So that
+
+\begin{align}
+\Braket{i_{\text{bal}}(t)} =& e\ep_Q\sqrt{\ep_{MM}}|\alpha_{LO}||\alpha_S|\left(e^{-i((\omega_S - \omega_{LO})t + \phi_S - \phi_{LO})} +  e^{+i((\omega_S - \omega_{LO})t + \phi_S - \phi_{LO})}\right)\\
+=& 2e\ep_Q\sqrt{\ep_{MM}}|\alpha_{LO}||\alpha_S| \cos\left(\Delta_{LO} t + \Delta\phi\right)\\
+=& 2e\ep_Q\sqrt{\ep_{MM}}\sqrt{\bar{n}_{LO}\bar{n}_S} \cos\left(\Delta_{LO} t + \Delta\phi\right)
+\end{align}
+
+The two-time correlation function for the balanced Heterodyne output goes like
+
+\begin{align}
+\Braket{i_{bal}(t_1)i_{bal}(t_2)} =& e^2 \ep_Q^2\ep_{MM}\Braket{:\left(\hat{a}^{\dag}_{LO}(t_1)\hat{a}_S(t_1) + \hat{a}_{LO}(t_1)\hat{a}^{\dag}_S(t_1)\right)\left(\hat{a}^{\dag}_{LO}(t_2)\hat{a}_S(t_2) + \hat{a}_{LO}(t_2)\hat{a}^{\dag}_S(t_2)\right) :}\\
+&+ e^2\ep_Q^2 \Braket{:\hat{a}^{\dag}_{LO}(t_1)\hat{a}_{LO}(t_1) + \hat{a}^{\dag}_S(t_1)\hat{a}_S(t_1) :} \delta(t_2-t_1)
+\end{align}
+
+For coherent states we have $\hat{a}\rightarrow \alpha$.
+We also assume $\bar{n}_{LO} \gg \bar{n}_S$.
+This expression then reduces to
+
+\begin{align}
+\Braket{i_{bal}(t_1)i_{bal}(t_2)} =& 4e^2\ep_Q^2\ep_{MM}\bar{n}_{LO}\bar{n}_S \cos^2\left(\Delta_{LO}t + \Delta \phi\right) + e^2\ep_Q \bar{n}_{LO}\delta(t_2-t_1)
+\end{align}
+
+The important feature of the balanced heterodyne two time correlation function is that the shot noise component is the exact same as the shot noise component for a single detector with shot noise power $P = \hbar \omega \bar{n}_{LO}$ falling onto it.
+
+\subsection{Summary}
+
+Single detector:
+\begin{align}
+\Braket{i(t)} =& e\ep_Q \bar{n}\\
+\Braket{i(t_1)i(t_2)} =& e^2 \ep_Q^2 \bar{n}^2 + e^2 \ep_Q \bar{n} \delta(t_2-t_1) 
+\end{align}
+
+Balanced Heterodyne Detector:
+
+\begin{align}
+\Braket{i_{\text{bal}}(t)} =& 2e\ep_Q\sqrt{\ep_{MM}}\sqrt{\bar{n}_{LO}\bar{n}_S} \cos\left(\Delta_{LO} t + \Delta\phi\right)\\
+\Braket{i_{bal}(t_1)i_{bal}(t_2)} =& 4e^2\ep_Q^2\ep_{MM}\bar{n}_{LO}\bar{n}_S \cos^2\left(\Delta_{LO}t + \Delta \phi\right) + e^2\ep_Q \bar{n}_{LO}\delta(t_2-t_1)
+\end{align}
+
+
+
+
+\section{Signal Conversions}
+
+A photodetector converts an incident photon flux into a voltage via the following signal chain.
+
+\begin{align}
+\text{Incident power} \rightarrow \text{Output Current} \rightarrow \text{Convert Current to Voltage}
+\end{align}
+
+The conversion between current and power is called the responsivity of the detector:
+
+\begin{align}
+i =& R P = R \hbar \omega \bar{n} = e\ep_Q \bar{n}\\
+R =& \frac{e \ep_Q}{\hbar \omega}
+\end{align}
+
+So we can see that $R$ is mainly dependent on the quantum efficiency $\ep_Q$ for the detector since $e$ and $\hbar$ are fixed and $\omega$ is typically fixed for a monochromatic application.
+$R$ has dimensions of $\left[\frac{A}{W}\right]$.
+
+The conversion from a current to a voltage is accomplished with a transimpedance amplifier.
+This can be thought of as a resistor through which the photocurrent is run to convert it into a voltage.
+In practice the transimpedance amplifier is an active amplifier circuit.
+The electronic noise floor for a photodetector arises from contributions such as Johnson noise in the transimpedance resistor as well as current noise and other electronic noise sources in the transimpedance amplifier.
+
+\begin{align}
+V_{out} = G_{TI} i
+\end{align}
+
+We can see that $G_{TI}$ has dimensions of resistance.
+Datasheets also spec the overall conversion gain from optical power to electric voltage.
+
+\begin{align}
+G_{conv} =& G_{TI}R\\
+V_{out} =& G_{conv} P
+\end{align}
+
+$G_{conv}$ has dimensions of $\left[\frac{V}{W}\right]$.
+
+There is one more factor which we must take into account.
+The photodetector may have a low output impedance which means the voltage measured across the load the photodetector drives (typically an oscilloscope, spectrum analyzer, or amplifier) will depend, through a voltage divider formula, on the output impedance of the photodetector and the input impedance of the load.
+For a \SI{50}{\ohm} pre-amplified photodetector this factor is given as
+
+\begin{align}
+G_Z^{\infty} =& \frac{\SI{1}{\mega \ohm}}{\SI{1}{\mega \ohm} + \SI{50}{\ohm}} \approx 1\\
+G_Z^{50} =& \frac{\SI{50}{\ohm}}{\SI{50}{\ohm} + \SI{50}{\ohm}} = \frac{1}{2}
+\end{align}
+
+Where the different factors are for low impedance (\SI{50}{\ohm}) and high impedance (\SI{1}{\mega \ohm}) loads.
+We have
+
+\begin{align}
+V_{det} = V_{load} = V_{out} G_Z^{\infty, 50} = G_Z^{\infty,50}G_{conv}P
+\end{align}
+
+Note that in the way I am defining $G_{conv}$ I am assuming $G_{conv}$ to be the voltage which would be measured at the output of the photodetector given a certain input power \textit{assuming} the output is measured with a high impedance load.
+Below I will discuss the $G_{conv}$ read off of the datasheet for a Newport 1807 photodetector.
+I believe that the conversion gain reported on that datasheet is in fact $\frac{1}{2} G_{conv} = G_Z^{50}G_{conv}$ with $G_{conv}$ defined as written here.
+That is, they have given the expected voltage for a given input power assuming the output is measured \textit{instead} with a \SI{50}{\ohm} load.
+This means the value used for $G_{conv}$ in calculations (following the conventions in this document) should be twice what is reported on the datasheet.
+
+\section{Shot Noise Levels}
+
+Suppose we have power $P$ incident on a single detector.
+What noise level do we expect to measure for shot noise limited detection?
+From above we can see that photocurrent power spectral density (away from DC) is given by the Fourier transform of $\Braket{i(t_1)i(t_2)}$ (as per the Wiener-Khintchine theorem) as
+
+\begin{align}
+S_{ii,2}(f) = e^2\ep_Q \bar{n} = e \frac{e\ep_Q}{\hbar \omega} P
+\end{align}
+
+Note that $S_{ii,2}(f)$ has dimensions of $\left[\frac{A^2}{Hz}\right]$.
+This is the two-sided power spectral density.
+It has weight at positive and negative frequency.
+A real spectrum analyzer reports the one-sided power spectral density in which power in negative frequency is folded into positive frequency so that
+
+\begin{align}
+S_{ii,1}(f) = 2e \frac{e\ep_Q}{\hbar \omega} P = 2e RP
+\end{align}
+
+And this is only reported for positive frequencies.
+Suppose we are measuring this on a spectrum analyzer which is a \SI{50}{\ohm} load.
+
+\begin{align}
+\label{eq:shotnoise}
+S_{vv,1}(f) = \left(G_{TI}G_Z^{50}\right)^2 S_{ii,1}(f) = 2\left(G_{TI}G_Z^{50}\right)^2 e RP = 2 \left(G_{conv}G_Z^{50}\right)^2 \frac{e}{R} P
+\end{align}
+
+The voltage power spectral density has dimensions of $\left[\frac{V^2}{Hz}\right]$.
+We can convert this to dBm or dBm/Hz by
+
+\begin{align}
+L_{dBm} =& 10 \times \log_{10}\left(\frac{\frac{S_{vv,1}(f)}{\SI{50}{\ohm}} \times \Delta f_{RBW}}{\SI{1}{\milli \watt}}\right)\\
+L_{dBm/Hz} =& 10 \times \log_{10}\left(\frac{\frac{S_{vv,1}(f)}{\SI{50}{\ohm}}}{\SI{1}{\milli \watt / \Hz}}\right)\\
+\end{align}
+In the expression in terms of dBm we must multiply the power spectral density by the spectrum analyzer resolution bandwidth.
+
+\section{Power and Noise levels for Real Detector}
+Let's put in some real numbers.
+In E3 and E6 we work with a Newport 1807 balanced photodetector.
+This detector has a \SI{50}{\ohm} output impedance and the datasheet gives the following specs:
+
+\begin{align}
+R =& \SI{0.5}{\A / \watt}\\
+G_Z^{50}G_{TI} = \tilde{G}_{TI} =& 4\times 10^4 \si{\V / \A} = \SI{40}{\kilo \ohm}\\
+G_Z^{50}G_{conv} = \tilde{G}_{conv}=& 2\times 10^4 \si{\V / \watt} = R \tilde{G}_{TI}
+\end{align}
+
+Here $\tilde{G}_{conv}$ and $\tilde{G}_Z^{50}$ are what is reported on the datasheet.
+I believe that these are the `conversion and transimpedance gains assuming a \SI{50}{\ohm} load' rather than a high impedance load as I have defined $G_{conv}$ and $G_{TI}$.
+We can easily calculate $G_{conv} = \frac{\tilde{G}_{conv}}{G_Z^{50}} = 2\tilde{G}_{conv}$ and $G_{TI} = \frac{\tilde{G}_{TI}}{G_Z^{50}} = 2\tilde{G}_{TI}$.
+
+From this value of $R$ we can calculate (using $\omega = 2\pi \times \SI{348}{\THz}$)
+
+\begin{align}
+\ep_Q = \frac{R}{e} \hbar \omega = 0.79
+\end{align}
+
+Here are signal and noise levels for this detector, as per the datasheet, for a range of input powers.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{VvsP}
+\caption{Output voltage (high impedance load) versus input power}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{shotnoisevsP}
+\caption{Shot noise PSD as measured on a \SI{50}{\ohm} terminated spectrum analyzer for a given input power. Units of dBm/Hz.}
+\label{fig:shotnoisePSD}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{shotnoisespectrum}
+\caption{Shot noise power spectrum as measured on a \SI{50}{\ohm} terminated spectrum analyzer for a given input power. Calculated with $\Delta f_{RBW} = \SI{100}{\kilo \hertz}$. Units of dBm.}
+\end{figure}
+
+\subsection{Noise Equivalent Power}
+
+Another spec which is occasionally given for photodetectors is the \gls{nep}.
+The \gls{nep} is based on the following.
+Even with no light on the detector the photodetector will output some electronic voltage noise.
+This is is likely due to Johnson noise or current shot noise in the transimpedance amplifier or some other noise sources in the circuity.
+If you measure this dark output with a certain bandwidth you will observe certain RMS fluctuations in the noise which increase with increasing detection bandwidth.
+The \gls{nep} is a quantification of at what power an input beam can be detected above this electronic noise floor.
+That is, for what power does the DC level of the optical signal exceed the RMS electronic noise for a given detection bandwidth.
+
+The RMS fluctuations will be given by
+
+\begin{align}
+V_{noise,RMS} =& \left(\int_{f=0}^{\Delta f_{BW}} S_{VV,1}(f) df\right)^{\frac{1}{2}} \approx \sqrt{S_{VV,1}(f)\times \Delta f_{BW}}\\
+V_{signal} =& G_{conv} G_Z^{50} P
+\end{align}
+
+Here $S_{VV,1}(f)$ is not the shot noise level as above, but rather the given electronic noise spectrum.
+We see that the signal DC level exceeds the RMS noise when
+
+\begin{align}
+P = \frac{\sqrt{S_{VV,1}(f)\times \Delta f_{BW}}}{G_{conv}G_Z^{50}}
+\end{align}
+
+The \gls{nep} is defined as the bandwidth independent quantity:
+
+\begin{align}
+NEP =& \frac{\sqrt{S_{VV,1}(f)}}{G_{conv}G_Z^{50}}\\
+P =& NEP \times \sqrt{\Delta f_{BW}}
+\end{align}
+
+For the 1807 detector Newport specifies a noise floor of \SI{-128.71}{dBm/\Hz} which corresponds to $S_{VV,1}(f) = 6.73 \times 10^{-15} \si{\V^2 / \Hz}$.
+Plugging this and the other values in I calculate
+
+\begin{align}
+NEP = \SI{4.1}{\pico \watt / \sqrt{\Hz}}
+\end{align}
+
+This is close to the value of \SI{3.28}{\pico \watt / \sqrt{\Hz}} specified in the figure.
+The discrepency is a factor of $\approx 0.8$ which is close to the specced quantum efficiency extracted from $R$.
+I'm not sure if this is coincidental or not.
+
+\begin{figure}[H] 
+\centering
+\includegraphics[width=0.75\textwidth]{1807 spectrum}
+\caption{Electronic noise spectrum for Newport 1807 balanced photoreceiver from datasheet. Blue curve represents relative gain for the detector, i.e. the frequency response. Note the rolloff by \SI{80}{\MHz}. The red curve represents the electronic noise floor. The left vertical axis is expressed as a noise spectrum (units of dBm) measured with $\Delta f_{RBW} = \SI{100}{\kHz}$. The label indicates a point in the spectrum which is at about \SI{-80}{dBm} on the left axis and is labeled as \SI{-128.71}{dBm} measured with a \SI{1}{\Hz} bandwidth. This discrepency of $\approx \SI{50}{dB}$ is due to the difference between the \SI{100}{\kHz} and \SI{1}{\Hz} measurement bandwidths. Alternatively we could say the PSD at the indicated point is \SI{-128.71}{dBm / \Hz}.}
+\end{figure}
+
+\begin{figure}[H]
+\centering 
+\includegraphics[width=0.75\textwidth]{NEP}
+\caption{NEP (pW/$\sqrt{\si{\Hz}}$) for a given electronic noise level (dBm/Hz).}
+\end{figure}
+
+\subsection{Shot Noise Equivalent Power}
+
+Here I want to define a non-standard term, the shot noise equivalent power.
+This term tells us given a certain electronic noise floor what is the minimum power needed such that optical shot noise exceeds the electronic noise floor.
+This quantity is just the inversion of Eq. \ref{eq:shotnoise}:
+
+\begin{align}
+P_{SNEP} = \frac{S_{VV,1}(f)R}{2\left(G_{conv}G_Z^{50}\right)^2 e}
+\end{align}
+
+For the 1807 detector at low frequency with \SI{-128.71}{dBm / \Hz} I calculate this to be $P_{SNEP} = \SI{105}{\micro \watt}$.
+Currently in our experiment we are working with a signal at \SI{60}{\mega \Hz}
+The electronic noise floor in this frequency range is larger, reaching up to \SI{-121}{dBm / \Hz}.
+At this level I estimate $P_{SNEP} = \SI{621}{\micro \watt}$.
+
+Note that the NEP defined in the previous section is essentially unrelated to the shot noise level.
+If an input beam exceeds the NEP at a given bandwidth this does not necessarily mean the detection will be shot noise limited, it simply means the DC level will exceed the electronic RMS noise level.
+I think it will typically be the case the for reasonable detection bandwidth $NEP \times \Delta f_{BW} < P_{SNEP}$.
+That is, the signal rises above the electronic noise floor level before shot noise exceeds the electronic noise floor.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.75\textwidth]{shotnoiselimited}
+\caption{$P_{SNEP}$ (\si{\micro\watt}) for a given electronic noise level (dBm/Hz). This is essentially the inverse of Fig. \ref{fig:shotnoisePSD}.}
+\end{figure}
+
+\section{Calibrations}
+
+There are a few reasons we want to calibrate the detector. 
+First, we would like to know, for a given voltage, what is the corresponding photon flux incident on the detector?
+This, in combination with a number of detection efficiencies, will allow us to determine, for example, from our measured photovoltages, the number of photons in the cavity at any given moment.
+To measure all of this it turns out we will be interested in knowing the conversion gain, $G_{conv}$ and the detector quantum efficiency $\ep_Q$.
+These quantities can of course be extracted from the detector datasheet from $G_{conv}$ and $R$ but I would like to measure these quantities to check that they match our expectations.
+The quantum efficiency is especially important because it determines the signal to noise ratio for the signals from our experiment.
+
+I am also motivated to double check this because both E3 and E6 measure large discrepencies when measuring $G_{conv}$.
+The datasheet specifies $2\times 10^4 \si{V / W}$ while both E3 and E6 measure more like $3\times 10^4 \si{V / W}$. 
+I would like to determine whether this is a discrepancy in the transimpedance gain or the quantum efficiency.
+In fact, Jonathan previously preformed the calibrations I describe here for E3 and he did in fact find a decreased quantum efficiency compared to what was expected from the datasheet.
+
+\subsection{Measurement of $G_{conv}$}
+
+It is very straightforward to measure $G_{conv}$.
+You simply shine a known amount of power onto the detector and record the voltage and then $G_{conv}$ can be calculated as
+
+\begin{align}
+G_{conv} = \frac{V}{G_Z^{\infty,50} P}
+\end{align}
+
+This measurement is typically performed by measuring the DC voltage using either a digital multimeter or oscilloscope, both of which are high impedance loads.
+
+\subsection{Measurement of $R$ and $\ep_Q$}
+
+In Eq. \ref{eq:shotnoise} we see that the power spectral density for the photodetector, $S_{VV,1}(f)$ depends on $G_{conv}$ (which is easily calibrated) and $R$.
+This expression can be used to measure $R$ given a known input power $P$.
+The hardest part about doing this calibration is writing down the correct formula and getting all of the conversions correct, that is the motivation for this entire document!
+
+The first step in the measurement is to ensure the power you are using exceed $P_{SNEP}$ for the detector.
+This can be checked as follows.
+Plug the photodetector output into a spectrum analyzer and set the spectrum analyzer to `noise' mode (\si{dBm / \Hz} units) reading out the frequency range of interest (for example from DC to slightly beyond the bandwidth of the photodetector).
+Now block the photodetector input so that no light falls on the detector.
+The spectrum analyzer should now be reading the photodetector electronic noise floor.
+First check that the photodetector electronic noise floor exceeds the spectrum analyzer noise floor by unplugging the photodetector and seeing the noise level drops.
+If the photodetector noise floor does not exceed the spectrum analyzer noise floor you should decrease the reference level for the spectrum analyzer.
+At large reference levels spectrum analyzers utilize input attenuators which increase the effective electronic noise floor.
+You want this attenuation to be small so you want a low reference level (\SI{-40}{dBm}, for example).
+Note, always use a DC-block or some kind of high-pass filter to limit the DC signal going into the spectrum analyzer so that you do not damage it.
+This is especially important when using low reference levels on the spectrum analyzer because it has no input attenuation.
+You can place a scope trace marking both the spectrum analyzer noise floor and the photodetector electronic noise floor.
+I recommend using a small RBW or averaging the signal to ensure the amplitude noise on the signal is less than \SI{2}{dBm / \Hz} or so so that the signal is clean.
+
+Now, shine light onto the photodetector.
+If the light is shot noise limited and $P > P_{SNEP}$ you should see the noise level rise and be roughly flat in frequency.
+The noise floor should rise and fall as you increase or decrease $P$.
+If you see no change in the noise level this means you do not have enough power to perform a shot noise limited measurement.
+
+Now, at some frequency in the shot noise limited frequency range measure the power spectral density.
+Suppose you record a value of $L_{dBm/Hz}$.
+You can convert this by
+
+\begin{align}
+S_{VV,1}(f) = 10^{\frac{1}{10} L_{dBm/Hz}}\times \SI{1}{\milli \watt} \times \SI{50}{\ohm}
+\end{align}
+
+From this we can now calculate $R$ through Eq. \ref{eq:shotnoise}
+
+\begin{align}
+R = \frac{2\left(G_{conv}G_Z^{50}\right)^2 e P}{S_{VV,1}(f)}
+\end{align}
+
+
+And we can subsequently calculate
+
+\begin{align}
+\ep_Q = \frac{R}{e} \hbar \omega
+\end{align}
+
+Note, this measurement will not work appropriately if the beam which you are using for the measurement is itself shot noise limited.
+This is the case if this beam has intensity fluctuations.
+The amplitude of shot noise fluctuations (that is the RMS intensity fluctuations due to shot noise) scales with the square root of the beam power.
+This means the power spectral density for shot noise will scale linearly with beam power.
+The amplitude of technical intensity fluctuations will scale linearly with the beam power.
+This means the power spectral density for technical intensity fluctuations will scale with beam power squared.
+This scaling for technical noise is especially true in the case that the intensity at the detector is changed using, for example, ND filters at the detector.
+If the beam power is changed by, for example, changing the lock point of an intensity stabilization servo, then the intensity noise spectrum may change in unpredictable ways due to nonlinearity of the servo response.
+One should ensure that the measurement of $R$ is carried out with a shot-noise limited optical beam.
+
+\subsection{Measurement of $G_{TI}$}
+
+From $R$ and $G_{conv}$ we easily calculate 
+
+\begin{align}
+G_{TI} = \frac{G_{conv}}{R}
+\end{align}
+
+Note that $G_{TI}$ is likely simply the resistance of a particular resistor in the amplifier circuit, so this is the value which I expect to most closely match the datasheet specification.
+It seems more likely to me that $\ep_Q$ might vary thus changing $R$ and $G_{conv}$.
+
+\section{Mode Matching Efficiency}
+
+Mode matching efficiency is calculated from
+
+\begin{align}
+\Braket{i_{bal}(t)} = 2e \ep_Q \sqrt{\ep_{MM}}\sqrt{\hat{n}_{LO}\hat{n}_S} \cos(\Delta_{LO} t + \Delta \phi)
+\end{align}
+
+We first apply some conversions. I assume a \SI{50}{\ohm} load:
+
+\begin{align}
+V_{beat}(t) =& 2 G_{TI}G_Z^{50} \frac{e \ep_Q}{\hbar \omega} \sqrt{\ep_{MM}} \sqrt{P_{LO}P_S} \cos(\Delta_{LO}t + \Delta \phi)\\
+=& 2 G_{conv} G_Z^{50} \sqrt{\ep_{MM}} \sqrt{P_{LO}P_S}\cos(\Delta_{LO} t + \Delta \phi)
+\end{align}
+
+I now recommend putting this signal into a spectrum analyzer. 
+If the beatnote signal between the signal and LO is strong enough then there should be a peak occurring at the frequency corresponding to $\Delta_{LO}$.
+Now, if the spectrum analyzer is put into `spectrum' mode (rather than `noise' mode) the height of this signal peak will correspond to the RMS power in the beatnote \footnote{In noise mode the height of broadband noise features is independent of the RBW and integration of the signal over frequency represents RMS power within the integration bandwidth. In noise mode the height of a coherent tone will change with the RBW but the integrated area under the peak will be constant. In spectrum mode the height of a coherent peak will be independent of RBW and represent the total RMS power in the tone (assuming the RBW is greater than the bandwidth of the tone which is likely the case). In spectrum mode the noise floor height will vary as a function of RBW. Integration of signals in spectrum mode is not very meaningful.}. 
+The signal-to-noise ratio can be enhanced by reducing the RBW if needed.
+
+When taking the RMS we have $\cos(\Delta_{LO} t + \Delta \phi) \rightarrow \frac{1}{\sqrt{2}}$
+So we get
+
+\begin{align}
+V_{beat,RMS} = \sqrt{2}G_{conv}G_Z^{50}\sqrt{\ep_{MM}}\sqrt{P_{LO}P_S}
+\end{align}
+
+So we calculate $\ep_{MM}$ from
+
+\begin{align}
+\ep_{MM} = \frac{V_{beat, RMS}^2}{2\left(G_{conv}G_Z^{50}\right)^2 P_{LO} P_S}
+\end{align}
+
+
+It is actually instructive to calculate the signal-to-noise ratio for the measurement of the RMS power in the peak.
+
+\begin{align}
+SNR = \frac{V_{beat, RMS}^2}{S_{VV,1}(f)\Delta f_{RBW}}
+\end{align} 
+
+That is, we look at the peak height which is the RMS voltage in the beatnote and compare to the shot noise level multiplied by the resolution bandwidth.
+
+\begin{align}
+SNR =& \frac{2G_{conv}^2(G_Z^{50})^2 \ep_{MM}P_{LO}P_S}{2G_{TI}^2(G_Z^{50})^2 e R P_{LO} \Delta f_{RBW}}\\
+=& \frac{R}{e} \ep_{MM} \frac{P_S}{\Delta f_{RBW}} = \frac{1}{\Delta f_{RBW}}\ep_Q \ep_{MM} \bar{n}_S
+\end{align}
+
+This tells us that the resolution bandwidth must exceed the rate of photons falling on the detector, $\bar{n}_S$ to ensure SNR greater than unity. This basically says that within each detection time $\frac{1}{\Delta f_{RBW}}$ we should have multiple photons fall on the detector.
+This is the same SNR which one would realize for measuring the power of a single beam on a single detector.
+Note that the SNR does not depend at all on the LO power.
+Also note that this expression supports my claim above that you can enhance the SNR by decreasing the RBW.
+
+The LO power should then be chosen to ensure the measurement is shot-noise limited (this is accomplished by choosing $P_{LO} > P_{SNEP}$) but not so large that the beatnote itself can saturate the detector.
+
+\section{Calibrating a Balanced Photodetector}
+
+It is not much different to calibrate a balanced photodetector than a single photodetector.
+First $G_{conv}$ can be calibrated by shining a beam with known power onto one of the photodetectors at a time (making sure not to saturate the detector) and looking at the output voltage.
+Once $G_{conv}$ is calibrated we calibrate $R$ for the photodetector, assuming it is the same for both photodetectors.
+The shot noise for a balanced photodetector goes like
+
+\begin{align}
+S_{ii,2}(f) = e^2 \ep_Q \bar{n}_{LO}
+\end{align}
+
+So, using the same manipulations above we can see that we expect the same power spectral density as we would for a single detector with power $P_{LO}$ on it.
+This makes sense because in a balanced photodetector $P_{LO}$ is split onto each detector and the shot noise power on each detector contributes equally to the total power spectral density of the difference current which is output by the detector.
+
+\end{document}

@@ -1,0 +1,151 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{ND}
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\langle\{#1\} \rangle}
+\newcommand{\braketcomm}[1]{\langle[#1] \rangle}
+\newcommand{\lm}{\xleftarrow[LM]{}}
+
+\begin{document}
+	
+\title{Eliminability of Defined Functions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I will attempt to provide a metatheoretic proof that ``extension by definition'' in formal logic is a justified operation. More rigorously: Suppose we have a theory $\bv{K}_0$ express in language $\bv{L}_0$ which contains axioms $\bv{\Gamma}_0$. Suppose also that 
+
+\begin{align}
+\bv{K}_0 \vdash (\forall \vec{s})(\exists !y)F(y, \vec{s})
+\end{align}
+
+We can introduce a new language $\bv{L}_1$ where $\bv{L}_1$ is the same as $\bv{L}_0$ but the non-logical function symbol ``$f$'' has been added. We can then introduce a theory $\bv{K}_1$ expressed in language $\bv{L}_1$ which has axioms 
+\begin{align}
+\bv{\Gamma}_1 = \bv{\Gamma}_0 \cup \{(\forall \vec{s})(\forall y)(y = f(\vec{s}) \iff F(y, \vec{s})\}\
+\end{align}
+
+The idea is that this new theory should be the same as the old with the only difference being the addition of the definitional axiom above for the function symbol $f(\vec{s})$.
+Granted that $\bv{K}_0$ proves the uniqueness clause above, we will prove that $\bv{K}_1$ is a conservative extension of $\bv{K}_0$. $\bv{K}_1$ is a conservative extension of $\bv{K}_0$ means
+
+\begin{enumerate}
+	\item $\bv{K}_0 \vdash G$ implies that $\bv{K}_1 \vdash G$ (this says that $\bv{K}_1$ is an extension of $\bv{K}_0$.)
+	\item if $\bv{K}_1 \vdash G$ and $G \in \textbf{WFF}_{\bv{L}_0}$ then $\bv{K}_0 \vdash G$. That is, if $G$ is a expressible in $\bv{L}_0$ and it is provable in $\bv{K}_1$ then it should also be provable in $\bv{K}_0$. That is, $\bv{K}_1$ doesn't prove anything expressible in $\bv{L}_0$ that $\bv{K}_0$ doesn't already prove.
+\end{enumerate}
+
+I want to provide a broad outline of how we will prove this. I am familiar with and partial to the Lemmon system proof scheme for logical deduction. I prefer it to Hilbert style systems because it does not rely on a large number of `logical axioms'. In contrast, it contains no logical axioms leaving the choice of axioms up the practitioner. However, the price that must be paid for lack of logical axioms is a large number of inference rules. This will be disadvantageous in what follows because each inference rule will need to be inducted over in turn to prove the above claim.
+
+First, the proof that $\bv{K}_1$ is an extension of $\bv{K}_0$ is immediate from the fact that $\bv{\Gamma}_0 \subset \bv{\Gamma}_1$. Thus a proof of a statement $G$ in theory $\bv{K}_0$ is also a valid proof of $G$ in theory $\bv{K}_1$.
+
+The proof that the extension is conservative will be much more difficult. Here is sort of the tricky thing we need to prove. If $G$ is expressible in $\bv{L}_0$ and provable by proof $P$ which has been provided involves $f$ or not. What we require then is a way to `translate' a proof which involves $f$ into a proof which does not involve $f$. The translation will be provided in part by the definitional axiom above. The idea is that anywhere the symbol $f$ appears, it can be replaced by a different expression involving the predicate $F$ which serves to define the function.
+
+We will require a few steps to translate such a proof. First, we will need a way to translate any given formula of $\bv{L}_1$ into a corresponding formula of $\bv{L}_0$. We can express this as follows. Suppose $G$ is a statement in language $\bv{L}_1$. Our hope is to find a corresponding expression $G^{\sharp}$ in the language $\bv{L}_0$. Note that these two formulas will not be equivalent, they will just be paired together in this translational sense.
+
+The translation will be provided by the following rule. Suppose $\phi$ is an atomic formula in $\bv{L}_1$ that contains $n$ occurrences of the symbol $f$. We define the $f$ transform of $\phi$ as follows.
+
+If $\phi$ contains zero occurrences of $f$ then we define
+
+\begin{align}
+\phi' \equiv \phi
+\end{align}
+
+If $\phi$ contains one or more occurrences of $f$ then we define
+
+\begin{align}
+\phi' \equiv (\exists \nu)\left(F(\nu, \vec{s}) \land \phi\left[f(\vec{s}) \lm \nu \right] \right)
+\end{align}
+
+where $\nu$ is the first unused logical variable in the language $\bv{L}_0$. The notation $\phi\left[f(\vec{s}) \lm \nu \right]$ means take the string $\phi$ and replace the leftmost occurrence of the symbol $f$, whose arguments are the terms $\vec{s}$, and replace that occurrence of $f$ and its arguments by the new variable $\nu$.
+
+We can also define the iterated version of this operation recursively as follows. We define $\phi'_0 \equiv \phi$ and $\phi'_n \equiv \left(\phi'_{n-1}\right)'$ It can be proven without too much difficult (by induction) that if $\phi$ contains $n$ occurrences of $f$ then $\phi'_n$ contains 0 occurrences of $f$. The proof follows almost immediately from the fact that $\phi'$ contains one less occurrence of $f$ than $\phi$ does. Thus, we will take this to be our formula for translating the formula $\phi$. That is, if $\phi$ contains $n$ occurrences of $f$ we will define the translation of $\phi$, $\phi^{\sharp}$ to be
+
+\begin{align}
+\phi^{\sharp} \equiv \phi'_n
+\end{align}
+
+We can extend the translation operation to non-atomic formulas simply by
+
+\begin{align}
+\left(\lnot A\right)^{\sharp} & \equiv \lnot \left( A^{\sharp}\right)\\
+\left( A \land B\right)^{\sharp} & \equiv A^{\sharp} \land B^{\sharp}\\
+\left( A \lor B \right)^{\sharp} & \equiv A^{\sharp} \lor B^{\sharp}\\
+\left( A \implies B \right)^{\sharp} & \equiv A^{\sharp} \implies B^{\sharp}\\
+\end{align}
+
+With these rules it can be proven by induction that any formula $G$ in $\bv{L}_1$ can be translated uniquely into a corresponding formula $G^{\sharp}$ of $\bv{L}_0$. Essentially the procedure is to translate each atomic part of the formula independently.
+
+This rule allows to translate the sentences in the proof $P$ of $\phi$ into sentences which are expressible in $\bv{L}_0$. However, it does not guarantee that the resultant list of sentences constitutes a valid under the rules of deduction at hand. For example, suppose at line $i$ we have $A$, at line $j$ we have $B$, and at line $k$ we have $A \land B$ following from lines $i$ and $j$. This is allowed by the rule of $\land I$. However, after translating we now have $A^{\sharp}$ on one line, $B^{\sharp}$ on another line and $\left(A \land B\right)^{\sharp}$. It is not immediately obvious that $\left(A \land B\right)^{\sharp}$ follows from $A^{\sharp}$ and $B^{\sharp}$. Now, of course in this case it is not too difficult to see that it does in fact follow. This is because we can derive $A^{\sharp} \land B^{\sharp}$ on a new line using $\land I$ and we know that $A^{\sharp} \land B^{\sharp} \equiv \left(A \land B\right)^{\sharp}$. 
+
+Most of the rules of inference will follow as simply as this. However, the critical and difficult rule will be that of $= E$. In some sense it is not surprising that this is the difficult rule. The definition we have added comes in the form of the introduction of an equals sign and by making the statement of a definition we are saying something about the equality of two statements. It stands to some sort of intuition then that we will have to do some legwork to show that what we have done is justified according to the rules of equality. In particular, and importantly, we will see that to show the rule of $= E$ is `translatable' we will have to make use of the uniqueness clause listed above.
+
+This is in fact the point of the whole exercise. Intuitively it is clear that for a function to be well-defined there must be a unique association between possible inputs to the function and its associated outputs. However, I was curious about how this necessity could be stated and proven in a formal context. This has turned out to be a fruitful curiosity. We will see in what follows that the uniqueness is necessary to prove the $=E$ rule is translatable, and thus that it is necessary to have the uniqueness clause for $\bv{K}_1$ to conservatively extend $\bv{K}_0$.
+
+Let's first give formal proofs that each of the rules other than $=I$ are translatable.
+
+$\land$ introduction first. $\land$ introduction says if we have $A$ on line $i$, $B$ on line $j$ then we can derive $A \land B$ on line $k$ using $i,j \land I$ and line $k$ depends on all of the lines that $i$ and $j$ depend on. That is
+
+\begin{tabular}{c c c c}
+& \vdots & & \\
+$\vec{a}$ & $(i)$ & $A^{\sharp}$ & \\
+& \vdots & & \\
+$\vec{b}$ & $(j)$ & $B^{\sharp}$ & \\
+& \vdots & & \\
+$\vec{a}, \vec{b}$ & $(k)$ & $A \land B$ & $i,j \land I$
+\end{tabular}
+
+
+
+\begin{ND}[First Proof]
+\ndl{1}{$(t_1=t_2)^{\sharp}$}{Premise}
+\ndl{2}{$(\phi t_1)^{\sharp}$}{Premise}
+\ndl{1}{$((t_1 = t_2)')^{\sharp}$}{$1, \equiv$}
+\ndl{1}{$((\exists \nu_1)(\psi(\nu_1,\vec{x}_1) \land (t_1=t_2)[f(\vec{x}_1) \xleftarrow[LM]{} \nu_1]))^{\sharp}$}{$3, \equiv$}
+\ndl{1}{$((\exists \nu_1)(\psi(\nu_1,\vec{x}_1) \land (t_1[f(\vec{x}_1) \xleftarrow[LM]{} \nu_1]=t_2)))^{\sharp}$}{$4, \equiv$}
+\ndl{1}{$(\exists \nu_1)(\psi(\nu_1,\vec{x}_1) \land (t_1[f(\vec{x}_1) \xleftarrow[LM]{} \nu_1]=t_2)^{\sharp})$}{$5, \equiv$}
+\ndl{7}{$(\psi(a,\vec{x}_1) \land (t_1[f(\vec{x}_1) \xleftarrow[LM]{} a]=t_2)^{\sharp})$}{Assumption}
+\ndl{7}{$\psi(a,\vec{x}_1)$}{$7, \land E$}
+\ndl{7}{$(t_1[f(\vec{x}_1) \xleftarrow[LM]{} a]=t_2)^{\sharp}$}{$7, \land E$}
+\ndl{2}{$((\exists \nu_2)(\psi(\nu_2,\vec{x}_2)\land\phi t_1[f(\vec{x}_2)\xleftarrow[LM]{} \nu_2]))^{\sharp}$}{$2, \equiv$}
+\ndl{2}{$((\exists \nu_2)(\psi(\nu_2,\vec{x}_1)\land\phi t_1[f(\vec{x}_1)\xleftarrow[LM]{} \nu_2]))^{\sharp}$}{$10, \equiv$}
+\ndl{2}{$(\exists \nu_2)(\psi(\nu_2,\vec{x}_1)\land (\phi t_1[f(\vec{x}_1)\xleftarrow[LM]{} \nu_2])^{\sharp})$}{$11, \equiv$}
+\ndl{13}{$(\psi(b,\vec{x}_1)\land (\phi t_1[f(\vec{x}_1)\xleftarrow[LM]{} b])^{\sharp})$}{Assumption}
+\ndl{13}{$\psi(b,\vec{x}_1)$}{$13,\land E$}
+\ndl{13}{$(\phi t_1[f(\vec{x}_1)\xleftarrow[LM]{} b])^{\sharp}$}{$13,\land E$}
+\ndl{$K$}{$(\forall \vec{s})(\exists ! y)\psi(y,\vec{s})$}{Premise}
+\ndl{$K$}{$(\exists ! y)\psi(y,\vec{x}_1)$}{$16, \forall E$}
+\ndl{$K$}{$((\exists y)\psi(y,\vec{x}_1))\land ((\forall y)(\forall z)((\psi(y,\vec{x}_1) \land \psi(z,\vec{x}_1)) \implies y=z))$}{$17, \equiv$}
+\ndl{$K$}{$(\forall y)(\forall z)((\psi(y,\vec{x}_1) \land \psi(z,\vec{x}_1)) \implies y=z)$}{$18, \land E$}
+\ndl{$K$}{$(\psi(a,\vec{x}_1) \land \psi(b,\vec{x}_1)) \implies a=b$}{$19, \forall E$}
+\ndl{7,13}{$\psi(a,\vec{x}_1) \land \psi(b,\vec{x}_1)$}{$8,14 \land I$}
+\ndl{K,7\\13}{$a=b$}{$21,20 \implies E$}
+\ndl{K,7\\13}{$(\phi t_1[f(\vec{x}_1)\xleftarrow[LM]{} a])^{\sharp}$}{$15,22=E$}
+\ndl{K,7\\13}{$\phi t_2$}{$9,23 =E$}
+\ndl{K,7\\2}{$\phi t_2$}{$12,13,24 \exists E$}
+\ndl{K,1\\2}{$\phi t_2$}{$6,7,25 \exists E$}
+\end{ND}
+
+We finally see that $(t_1 = t_2)^{\sharp}, (\phi t_1)^{\sharp} \vdash \phi t_2$ if $\phi$ has no occurrences of $f$ not coming from $t_1$ and $t_2$ has no occurrences of $f$.
+
+
+\end{document}

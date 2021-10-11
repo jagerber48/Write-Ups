@@ -1,0 +1,1654 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{siunitx}
+\usepackage{braket}
+\usepackage{multirow}
+\usepackage{empheq}
+
+\usepackage[
+sorting=none,
+style=numeric
+]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+	
+
+\begin{document}
+\title{Least Squares}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+There are a suite of statistical techniques which involve the name least squares. 
+In this document I will summarize some of those which have been useful during my time in E3 and E6.
+
+The main important techniques are ordinary least squares (OLS), generalized least squares (GLS), and non-linear least squares (NLLS). 
+OLS and GLS are forms of linear least squares (LLS).
+These are each techniques that solve the problem laid out below. 
+
+There is a set of $N$ labeled data points or observations $Y_i$. 
+It is assumed that each data point includes a \textit{pure data} component $\Gamma_i$ and a noise component $\ep_i$.
+The pure data component $\Gamma_i$ is the value of $Y_i$ which would have been expected in the absence of noise.
+
+\begin{align}
+Y_i = \Gamma_i + \ep_i
+\end{align}
+
+This can be written in vector form as
+
+\begin{align}
+\bv{Y} = \bv{\Gamma} + \bv{\ep}
+\end{align}
+
+Here each of $\bv{Y}$, $\bv{\Gamma}$, and $\bv{\ep}$ are real $N \times 1$ vectors.
+Often $\bv{\Gamma}$ is thought of as a function of some dependent variables such as position or time. 
+In practice the pure data component or function $\bv{\Gamma}$ may or may not be known in a given application. 
+In the least squares technique we then generate a model function which we will try to use to approximate the pure-data function. 
+We introduce the model function
+
+\begin{align}
+\bv{F}(\bv{\beta})
+\end{align}
+
+The model function $\bv{F}(\bv{\beta})$ has $N$ possibly different values like $\bv{\Gamma}$ but it also depends on a $K\times 1$ vector of \textit{model parameters} $\bv{\beta}$. 
+Ideally $\bv{F}(\bv{\beta}) = \bv{\Gamma}$ but since the data are noisy and there may be unknown effects contributing to $\bv{\Gamma}$ this may be impossible in practice. 
+However, the goal is to choose $\bv{F}(\bv{\beta})$ and the $\bv{\beta}$ such that $\bv{F}(\bv{\beta})$ is a good approximation for $\bv{\Gamma}$.
+
+The question is given observed data $\bv{Y}$, and a model function $\bv{F}(\bv{\beta})$, what are the values of $\bv{\beta}$ which make $\bv{F}(\bv{\beta})$ as close (in a sense which will be defined shortly) to $\bv{\Gamma}$ as possible?
+
+We define the residuals:
+
+\begin{align}
+\bv{r}(\bv{\beta}) &= \bv{Y} - \bv{F}(\bv{\beta})
+\end{align}
+
+The goal is to choose $\bv{\beta}$ such that the components of $\bv{r}(\bv{\beta})$ are all very small. 
+``very small'' is made rigorous by the following least squares cost function:
+
+\begin{align}
+\Phi_{LS}(\bv{\beta}) = |\bv{r}(\bv{\beta})|^2 = \bv{r}^T(\bv{\beta})\bv{r}(\bv{\beta}) = \sum_{i=1}^N r_i(\bv{\beta})^2
+\end{align}
+
+This is the least squares cost function. 
+It has the property that it is small if the absolute value of all of the $r_i$ are small. 
+Alternatively we could have defined something like $\Phi_{abs}(\bv{\beta}) = \sum_i |r_i(\bv{\beta})|$ but this would be much more difficult to work with analytically.
+
+Note that in the equations above the $\bv{\ep}$ are random variables. 
+This means the $\bv{Y}$ and thus $\bv{r}(\bv{\beta})$ and $\phi_{LS}(\bv{\beta})$ are all also random variables. 
+When one generates a dataset one gets a realization or sample of the signal random variable and we have
+
+\begin{align}
+\ul{\bv{r}}(\bv{\beta}) &= \ul{\bv{Y}} - \bv{F}(\bv{\beta})\\
+\ul{\phi_{LS}}(\bv{\beta}) &= |\ul{\bv{r}}(\bv{\beta})|^2
+\end{align}
+
+Here the underlines indicate a realized sample of the random variable. Given a data realization of $\ul{\bv{Y}}$ we see that it is in principle possible to choose a set of values $\ul{\bv{\hat{\beta}}}$ such that $\ul{\phi_{LS}}(\ul{\bv{\hat{\beta}}})$ is a global minimum of $\ul{\phi_{LS}}(\bv{\beta})$. 
+If this is done then $\ul{\bv{\hat{\beta}}}$ is called the optimal parameter estimator for $\bv{\beta}$. 
+Note that for different noise realizations that $\ul{\bv{\hat{\beta}}}$ will differ for each. 
+We can see then that $\ul{\bv{\hat{\beta}}}$ is in fact itself a realization of another random variable $\bv{\hat{\beta}}$. 
+We might then be curious about the mean and covariance of this optimal parameter random variable. 
+
+The reason we care about the statistics of $\bv{\hat{\beta}}$ is that we would like to report on a set of parameters which does a great job of making $\bv{F}(\bv{\hat{\beta}})$ look like $\bv{\Gamma}$. 
+That means we would ideally like to report a number close to $E[\bv{\hat{\beta}}]$. 
+By studying the statistics of $\bv{\hat{\beta}}$ we can get a sense for how close we expect any realized $\ul{\bv{\hat{\beta}}}$ to be to $E[\bv{\hat{\beta}}]$. 
+This is in fact exactly what is captured by 
+
+\begin{align}
+\text{Cov}(\bv{\hat{\beta}}) = E\left[(\bv{\hat{\beta}} - E[\bv{\hat{\beta}}])(\bv{\hat{\beta}} - E[\bv{\hat{\beta}}])^T\right]
+\end{align}
+
+In what follows we will see how, given a dataset $\bv{Y}$ and model function $F(\bv{\beta})$ each of OLS, GLS, and NLLS provides a method to calculate the optimal estimator $\bv{\hat{\beta}}$ as well as statistics for the $\bv{\hat{\beta}}$ including $E[\bv{\hat{\beta}}]$, $\text{Cov}(\bv{\hat{\beta}})$ and confidence regions and intervals for $\bv{\hat{\beta}}$.
+
+\section{Ordinary Least Squares}
+
+We first work on OLS. OLS is a type of linear least squares. OLS differs from GLS only in the assumed statistics of the input noise $\bv{\ep}$.
+These two points will be discussed below in turn. In OLS the model function is given by
+
+\begin{align}
+F_i(\bv{\beta}) &= \sum_j X_{ij}\beta_j\\
+\bv{F}(\bv{\beta}) &= \bv{X}\bv{\beta}
+\end{align}
+
+$\bv{X}$ is known as the design matrix. Clearly $F_i(\bv{\beta})$ depends linearly on the $\beta_j$. 
+This is what is meant by linear (as opposed to non-linear) least squares.
+Note that in some cases the $X_{ij}$ might depend on other independent variables such as position or time such as $X_{ij} = f_j(t_i)$. 
+Here $f_j$ might be a non-linear function of $t_i$, but this is not what is needed for the scheme to be a linear least squares. 
+It is needed for the model function to depend linearly on the variable model parameters.
+
+\subsection{Definition and Minimization of Cost Function}
+
+We see that the residuals can be written as
+
+\begin{align}
+\bv{r}(\bv{\beta}) &= \bv{Y} - \bv{X}\bv{\beta}\\
+r_i(\bv{\beta}) &= Y_i - \sum_j X_{ij}\beta_j
+\end{align}
+
+We write down the OLS estimator:
+
+\begin{align}
+\Phi_{LS}(\bv{\beta}) = |\bv{r}(\bv{\beta})|^2 = \bv{r}^T\bv{r} = \sum_i r_i(\bv{\beta})^2
+\end{align}
+
+We know this estimator will be minimized as a function of the $\beta_j$ when $\frac{\partial \Phi_{LS}}{\partial \beta_j} = 0$.
+
+\begin{align}
+\frac{\partial \Phi_{LS}}{\partial \beta_j} = 2\sum_i \frac{\partial r_i(\bv{\beta})}{\partial \beta_j} r_i(\bv{\beta})
+\end{align}
+
+From above we can see that
+
+\begin{align}
+\frac{\partial r_i(\bv{\beta})}{\partial \beta_j} = -\sum_k X_{ik} \frac{\partial \beta_k}{\partial \beta_j} = -\sum_k X_{ik} \delta_{kj} &= -X_{ij}\\
+\end{align}
+
+So
+
+\begin{align}
+\frac{\partial \phi_{LS}}{\partial \beta_j} = -2\sum_{i,k} X_{ij}\left(Y_i - X_{ik}\beta_k\right)
+\end{align}
+
+We set this to zero
+
+\begin{align}
+\sum_{ik} X_{ij}\left(Y_i - X_{ik}\beta_k\right) &= 0\\
+\sum_{ik} \left[\bv{X}^T\right]_{ji} \left(Y_i - X_{ik}\beta_k\right)&=0
+\end{align}
+
+noting that $X_{ij} = \left[\bv{X}^T\right]_{ji}$. This can be written in vector form as
+
+\begin{align}
+\bv{X}^T \left(\bv{Y} - \bv{X}\bv{\beta}\right) &= 0\\
+\bv{X}^T\bv{Y} = \bv{X}^T\bv{X}\bv{\beta}
+\end{align}
+
+It is tempting to solve for $\bv{\beta}$ by inverting $\bv{X}^T\bv{X}$. 
+If $\bv{X}$ is invertible then this is definitely possible. 
+However, $\bv{X}^{-1}$ can only possibly exist if $\bv{X}$ is a square matrix. 
+In the case at hand $\bv{X}$ is a $N\times K$ matrix so it may not necessarily be square and thus may not be invertible. 
+However, $\bv{X}^T\bv{X}$ is a $K\times K$ matrix so it may be invertible. 
+In fact, $\bv{X}^T\bv{X}$ is invertible whenever $\bv{X}$ has linearly independent columns.
+
+In this case the equation above is solved by
+
+\begin{align}
+\boxed{
+\bv{\hat{\beta}} = \left(\bv{X}^T\bv{X}\right)^{-1}\bv{X}^T\bv{Y} = \bv{X}^+ \bv{Y}
+}
+\end{align}
+
+Note the requirement for invertibility of $\bv{X}^T\bv{X}$.
+
+Here I have defined the Moore-Penrose pseudoinverse of $\bv{X}$ by
+
+\begin{align}
+\bv{X}^+ = (\bv{X}^T\bv{X})^{-1}\bv{X}^T
+\end{align}
+
+Note that
+
+\begin{align}
+\bv{X}^+ \bv{X} &= \bv{I}
+\end{align}
+
+Note also that if $\bv{X}$ is invertible then
+
+\begin{align}
+\bv{X}^+ &= \bv{X}^{-1}(\bv{X}^T)^{-1} \bv{X}^T = \bv{X}^{-1}
+\end{align}
+
+Note that $\bv{\hat{\beta}}$ has the property that it minimizes $\Phi_{LS}(\bv{\beta})$. 
+I find this a bit confusing to think about given that both $\Phi_{LS}(\bv{\beta})$ and $\bv{\hat{\beta}}$ are random variables. 
+How do you minimize a random function? (Note that in these equations $\bv{\beta}$ is a function input variable but not necessarily a random variable, either number or random variables can be ``plugged into'' $\bv{\beta}$). 
+The key to understanding this is to understand that \textit{if} a data sample $\ul{\bv{Y}}$ is realized then one could calculate $\ul{\Phi_{LS}}(\bv{\beta})$ and calculate $\ul{\bv{\hat{\beta}}}$ using the same formula above:
+
+\begin{align}
+\ul{\bv{\hat{\beta}}} = \bv{X}^+ \ul{\bv{Y}}
+\end{align}
+
+By the exact same math as above one would find that $\ul{\bv{\hat{\beta}}}$ minimizes $\ul{\Phi_{LS}}(\bv{\beta})$. Thus, the random variable $\bv{\hat{\beta}}$ is a minimizer of the random function $\Phi_{LS}(\bv{\beta})$ in the sense that any realization $\ul{\bv{\hat{\beta}}}$ of $\bv{\hat{\beta}}$ will be a minimizer of the corresponding realization $\ul{\Phi_{LS}}(\bv{\beta})$ of $\Phi_{LS}(\bv{\beta})$.
+
+\subsection{Mean and Covariance of Estimator}
+
+This motivates the exploration of statistics of $\bv{\hat{\beta}}$.
+
+Recall that we have assumed that
+
+\begin{align}
+\bv{Y} = \bv{\Gamma} + \bv{\ep}
+\end{align}
+
+Where $\bv{\Gamma}$ is the pure-data function. We can then write
+
+\begin{align}
+\bv{\hat{\beta}} = \bv{X}^+\bv{Y} = \bv{X}^+(\bv{\Gamma} + \bv{\ep})
+\end{align}
+
+In both GLS and OLS it is assumed that
+
+\begin{align}
+E[\bv{\ep}] = \bv{0}
+\end{align}
+
+In GLS it is assumed that
+
+\begin{align}
+\text{Cov}(\bv{\ep}) = E\left[\left(\bv{\ep} - E[\bv{\ep}]\right)\left(\bv{\ep} - E[\bv{\ep}]\right)^T\right] = E[\bv{\ep}\bv{\ep}^T]= \bv{\Omega}
+\end{align}
+
+With $\bv{\Omega}$ a known non-singular covariance matrix (any symmetric positive definite matrix can be a covariance matirx). 
+For OLS it is assumed that
+
+\begin{align}
+\bv{\Omega} = \sigma^2 \bv{I}
+\end{align}
+
+We are now in a position to asses the mean and variance of the random variable $\bv{\hat{\beta}}$ in the OLS scheme.
+
+First the mean value of $\bv{\hat{\beta}}$:
+
+\begin{align}
+E\left[\bv{\hat{\beta}} \right] = E\left[\bv{X}^+ (\bv{\Gamma} + \bv{\ep})\right] = \bv{X}^+ \bv{\Gamma}
+\end{align}
+
+Where the final equality holds because $E[\bv{\ep}]=0$ and $\bv{X}^+$ and $\bv{\Gamma}$ are not random variables.
+
+And now the covariance. First note $\bv{\hat{\beta}} - E\left[\bv{\hat{\beta}}\right] = \bv{X}^+\bv{\ep}$.
+
+\begin{align}
+\text{Cov}\left(\bv{\hat{\beta}}\right) &= E\left[\left(\bv{\hat{\beta}} - E\left[\bv{\hat{\beta}}\right] \right)\left(\bv{\hat{\beta}} - E\left[\bv{\hat{\beta}}\right] \right)^T \right]\\
+&= E\left[(\bv{X}^+ \bv{\ep})(\bv{X}^+ \bv{\ep})^T\right]\\
+&= \bv{X}^+ E[\bv{\ep}\bv{\ep}^T](\bv{X}^+)^T\\
+&= \bv{X}^+ \bv{\Omega} (\bv{X}^+)^T\\
+&= \bv{X}^+\sigma^2 \bv{I} (\bv{X}^+)^T\\
+&= \sigma^2 \bv{X}^+ (\bv{X}^+)^T\\
+&= \sigma^2 (\bv{X}^T\bv{X})^{-1}\bv{X}^T \bv{X} \left((\bv{X}^T\bv{X})^{-1}\right)^T\\
+&= \sigma^2 \left(\bv{X}^T\bv{X}\right)^{-1}
+\end{align}
+
+Summarizing:
+
+\begin{align}
+E\left[\bv{\hat{\beta}}\right] &= \bv{X}^+\bv{\Gamma}\\
+\text{Cov}\left(\bv{\hat{\beta}}\right) &= \sigma^2\left(\bv{X}^T\bv{X}\right)^{-1}
+\end{align}
+
+In the case that the true data function is in fact a linear function of some set of \textit{true} or \textit{actual} parameters $\bv{\beta^*}$, that is $\bv{\Gamma} = \bv{F}(\bv{\beta^*}) = \bv{X}\bv{\beta^*}$ we have
+
+\begin{align}
+E\left[\bv{\hat{\beta}}\right] = \bv{X}^+\bv{X}\bv{\beta^*} = \bv{\beta^*}
+\end{align}
+
+That is $\bv{\hat{\beta}}$ is an unbiased estimator for the true data parameters $\bv{\beta^*}$. In the appendix we see that in a particular sense $\bv{\hat{\beta}}$ is in fact the optimal estimator for $\bv{\beta^*}$.
+
+\begin{empheq}[box=\fbox]{align}
+E\left[\bv{\hat{\beta}}\right] &= \bv{\beta^*}\\
+\text{Cov}\left(\bv{\hat{\beta}}\right) &= \bv{C} =  \sigma^2\left(\bv{X}^T\bv{X}\right)^{-1}
+\end{empheq}
+
+
+\section{Some Distribution Theory}
+
+In addition to establishing the mean and covariance for $\bv{\hat{\beta}}$ we would also like to establish confidence regions involving $\bv{\hat{\beta}}$. 
+To establish confidence regions one must know the statistical distribution of a random variable, or one must be able to transform the variable until the transformed variable has a known distribution.
+
+We will consider the distribution of a variety of combinations of the variables we have encountered so far.
+We will use a few facts about about multivariate normal distributions which are proven in, for example, Seber 1977.
+
+First we recall that $\bv{\ep}$ is distributed as a multivariate normal distribution with mean $\bv{0}$ and variance $\sigma^2 \bv{I}$.
+
+\begin{align}
+\bv{\ep} \sim \mathcal{N}(\bv{0}, \sigma^2\bv{I})
+\end{align}
+
+Note that we can simply divide $\bv{\ep}$ by $\sigma$ to get a random vector which is standardly multivariate normal distributed.
+
+\begin{align}
+\bv{Z} = \frac{\bv{\ep}}{\sigma} \sim \mathcal{N}(\bv{0}, \bv{I})
+\end{align}
+
+Next we can consider
+
+\begin{align}
+\bv{\hat{\beta}} = \bv{X}^+\bv{Y} &= \bv{X}^+(\bv{\Gamma} + \bv{\ep})\\
+&= \bv{X}^+\bv{X}\bv{\beta^*} + \bv{X}^+\bv{\ep}\\
+&= \bv{\beta^*} + \bv{X}^+\bv{\ep}
+\end{align}
+
+This is an affine transformation of $\bv{\ep}$ so we get
+
+\begin{align}
+\bv{\hat{\beta}} &\sim \mathcal{N}(\bv{\beta^*}, \sigma^2 \bv{X}^+\bv{I}(\bv{X}^+)^T) = \mathcal{N}\left(\bv{\beta^*}, \sigma^2(\bv{X}^T\bv{X})^{-1}\right)\\
+&= \mathcal{N}(\bv{\beta^*}, \bv{C})
+\end{align}
+
+We now turn to the residuals and the cost function.
+
+\begin{align}
+\bv{r}(\bv{\beta}) &= \bv{Y} - \bv{X}\bv{\beta}\\
+&=\bv{X}(\bv{\beta^*} - \bv{\beta}) + \bv{\ep}
+\end{align}
+
+We can see that
+
+\begin{align}
+\bv{r}(\bv{\beta^*}) = \bv{\ep}
+\end{align}
+
+We can also see that
+
+\begin{align}
+\bv{r}(\bv{\hat{\beta}}) &= \bv{X}(-\bv{X}^+\bv{\ep}) + \bv{\ep}\\
+&= (\bv{1} - \bv{X}\bv{X}^+)\bv{\ep}
+\end{align}
+
+It is shown in the appendix that $\bv{X}\bv{X}^+ = \bv{P_X}$ is an orthogonal projector onto the range of $\bv{X}$. The rank of $\bv{P_X}$ is equal to the rank of $\bv{X}$. If $\bv{X}$ is a full rank $N\times P$ matrix with rank $P$ then $\bv{P_X}$ is an $N \times N$ matrix also of rank $P$.
+
+We can define $\bv{Q_X} = 1 - \bv{P_X}$ which is also an orthogonal projector, this time onto the orthogonal complement of the range of $\bv{X}$. 
+$\bv{Q_X}$ will have rank $N-P$.
+We then have
+
+\begin{align}
+\bv{r}(\bv{\hat{\beta}}) = \bv{Q_X}\bv{\ep}
+\end{align}
+
+We can then look at the cost functions for $\bv{\beta^*}$ and $\bv{\hat{\beta}}$. We recall that $\phi_{LS}(\bv{\beta}) = \bv{r}(\bv{\beta})^T\bv{r}(\bv{\beta})$
+
+\begin{align}
+\phi_{LS}(\bv{\beta^*}) &= \bv{\ep}^T\bv{\ep} = \bv{\ep}^T\bv{I}\bv{\ep}\\
+\phi_{LS}(\bv{\hat{\beta}}) &= \bv{\ep}^T\bv{Q_X}^T\bv{Q_X}\bv{\ep} = \bv{\ep}^T\bv{Q_X}\bv{\ep}
+\end{align}
+
+Which follows because $\bv{Q_X} = \bv{Q_X}^T = \bv{Q_X}^2$.
+We can take the difference of these two expressions and see
+
+\begin{align}
+\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}}) = \bv{\ep}^T\bv{P_X}\bv{\ep}
+\end{align}
+
+Let's now work out the distributions of these various random variables. Fist let's look at
+
+\begin{align}
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\beta^*}) &= \frac{1}{\sigma^2}\bv{\ep}^T\bv{\ep} = \bv{Z}^T\bv{Z}\\
+&= \sum_{i=1}^N Z_i^2 \sim \chi^2_N
+\end{align}
+
+This requires that the $\bv{Z}_i$ are all independent in this expression, which is the case because they are elements of a multivariate normal distribution and are all uncorrelated.
+
+Next we can consider
+
+\begin{align}
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\hat{\beta}}) = \frac{1}{\sigma^2} \bv{\ep}^T\bv{Q_X}\bv{\ep}
+\end{align}
+
+We first write
+
+\begin{align}
+\bv{Q_X} = \bv{S}\bv{D_Q}\bv{S}^T
+\end{align}
+
+This is a diagonalization of $\bv{Q_X}$ by an orthogonal matrix $\bv{S}$ recalling that $\bv{Q_X}$ is an orthogonal (symmetric) projection matrix.
+$\bv{D_Q}$ is a diagonal matrix which contains $N-P$ ones along the diagonal followed by $P$ zeros.
+This means $\bv{D_Q}^2 = \bv{D_Q}$.
+We have that $\bv{Q_X} = \bv{Q_X}^T\bv{Q_X}$ so
+
+\begin{align}
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\hat{\beta}}) = \frac{1}{\sigma^2} \bv{\ep}^T\bv{S}\bv{D_Q}\bv{S}^T\bv{\ep}
+\end{align}
+
+We can define
+
+\begin{align}
+\bv{Z}' = \frac{1}{\sigma}\bv{S}^T\bv{\ep} = \bv{S}^T\bv{Z} \sim \mathcal{N}(\bv{0},\bv{I})
+\end{align}
+
+since an orthogonal transformation of a standard normal distributed random vector is also a standard normal distributed random vector.
+Then
+
+\begin{align}
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\hat{\beta}}) = (\bv{Z}')^T\bv{D_Q}\bv{Z}' = \sum_{i=1}^{N-P} Z_i^{'2} \sim \chi^2_{N-P}
+\end{align}
+
+So we see that $\frac{1}{\sigma^2}\phi_{LS}(\bv{\hat{\beta}})$  is distributed as a $\chi^2$ variable with $N-P$ parameters.
+
+Note that $\bv{P_X}$ can also be diagonalized by the symmetric matrix $\bv{S_Q}$ so we would have
+
+\begin{align}
+\bv{P_X} &= \bv{1} - \bv{Q_X} = \bv{1} - \bv{S_Q}\bv{D_Q}\bv{S_Q}^T\\
+&=\bv{S_Q}(\bv{1}-\bv{D_Q})\bv{S_Q}^T = \bv{S_Q}\bv{D_P}\bv{S_Q}^T
+\end{align}
+
+Where $\bv{D_P}$ now has $N-P$ zeros along the diagonal and then $P$ ones.
+We can write
+
+\begin{align}
+\frac{1}{\sigma^2}(\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})) &= \frac{1}{\sigma^2}\bv{\ep}^T\bv{P_X}\bv{\ep}\\
+&= \bv{Z}^T\bv{S}\bv{D_P}\bv{S}^T\bv{Z}\\
+&= (\bv{Z}')^T\bv{D_P}\bv{Z}'\\
+&= \sum_{i=N-P+1}^N Z_i^{'2} \sim \chi^2_P\\
+\end{align}
+
+Furthermore, $\phi_{LS}(\bv{\hat{\beta}})$ is related to $\bv{D_Q}\bv{Z}'$ and $\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})$ is related to $\bv{D_P}\bv{Z'}$. 
+These vectors are made up of disjoint sets from the standard multivariate normal distribution $\bv{Z}'$. 
+This means that $\bv{D_Q}\bv{Z}'$ and $\bv{D_P}\bv{Z}'$ are independent. 
+Subsequently, this means that $\phi_{LS}(\bv{\hat{\beta}})$ and $\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})$ are independently distributed.
+
+Summarizing:
+
+\begin{align}
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\beta^*}) &= \frac{1}{\sigma^2}\bv{\ep}^T\bv{\ep} \sim \chi^2_N\\
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\hat{\beta}}) &= \frac{1}{\sigma^2}\bv{\ep}^T\bv{Q_X}\bv{\ep} \sim \chi^2_{N-P}\\
+\frac{1}{\sigma^2}(\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})) &= \frac{1}{\sigma^2}\bv{\ep}^T\bv{P_X}\bv{\ep} \sim \chi^2_P
+\end{align}
+
+One final note regarding $\phi_{LS}(\bv{\hat{\beta}})$.
+
+\begin{align}
+E[\phi_{LS}(\bv{\hat{\beta}})] = \sigma^2 \sum_{i=1}^{N-P} E[Z_i^{'2}] = \sigma^2(N-P)
+\end{align}
+
+So we see that if we define
+
+\begin{align}
+\hat{\sigma}^2 = \frac{\phi_{LS}(\bv{\hat{\beta}})}{N-P}
+\end{align}
+
+That
+
+\begin{align}
+E[\hat{\sigma}^2] = \sigma^2
+\end{align}
+
+so $\hat{\sigma}^2$ is an unbiased estimator for $\sigma^2$.
+Note that
+
+\begin{align}
+\frac{\hat{\sigma}^2}{\sigma^2} (N-P) \sim \chi^2_{N-P}
+\end{align}
+
+We now show that $\hat{\sigma}^2$ is independent from $\hat{\beta}$. 
+
+\begin{align}
+\bv{\hat{\beta}} &= \bv{X}^+\bv{Y} = \bv{\beta^*} + \bv{X}^+\bv{\ep} = \bv{\beta^*} + \bv{X}^+\bv{P_X}\bv{\ep}\\
+\bv{r}(\bv{\hat{\beta}}) &= \bv{Q_X}\bv{\ep}
+\end{align}
+
+So we see that $\bv{\hat{\beta}}$ depends on $\bv{P_X}\bv{\ep}$ and $\bv{r}(\bv{\hat{\beta}})$ depends on $\bv{Q_X}\bv{\ep}$. 
+But from above we saw that these two projections are independent.
+This means that $\bv{\hat{\beta}}$ and $\phi_{LS}(\bv{\hat{\beta}}) = \bv{r}(\bv{\hat{\beta}})^T\bv{r}(\bv{\hat{\beta}})$ are independent so that $\bv{\hat{\beta}}$ and $\hat{\sigma}^2$ are independent.
+
+Now, with all of these independence results in hand we are ready for some additional results.
+
+First we consider the scalar (as opposed to vector) random variable $\bv{a}^T \bv{\hat{\beta}}$ where $\bv{a}$ is any $P\times 1$ vector.
+Of interest, we will set $\bv{a}$ to the canonical coordinate vector $\bv{e}_i$ to `pick out' particular $\hat{\beta}_i$.
+We remember that
+
+\begin{align}
+\bv{\hat{\beta}} \sim \mathcal{N}(\bv{\beta^*}, \bv{C}) = \mathcal{N}(\bv{\beta^*}, \sigma^2(\bv{X}^T\bv{X})^{-1})
+\end{align}
+
+We can see that
+
+\begin{align}
+\bv{a}^T\bv{\hat{\beta}} \sim \mathcal{N}(\bv{a}^T\bv{\beta^*}, \bv{a}^T\bv{C}\bv{a})
+\end{align}
+
+We can construct
+
+\begin{align}
+Z = \frac{\bv{a}^T\bv{\hat{\beta}} - \bv{a}^T\bv{\beta^*}}{(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}}} \sim \mathcal{N}(\bv{0}, \bv{I})
+\end{align}
+
+If $\sigma^2$ is unknown then we must estimate
+
+\begin{align}
+\bv{\hat{C}} = \frac{\hat{\sigma}^2}{\sigma^2}\bv{C} = \hat{\sigma}^2(\bv{X}^T\bv{X})^{-1}
+\end{align}
+
+And we note that $\bv{\hat{\beta}}$ is independent from $\bv{\hat{C}}$.
+
+We can then construct
+
+\begin{align}
+T = \frac{\bv{a}^T\bv{\hat{\beta}} - \bv{a}^T\bv{\beta^*}}{(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}}} = \frac{Z}{\sqrt{\frac{\hat{\sigma}^2}{\sigma^2}}}
+\end{align}
+
+Let
+
+\begin{align}
+V = \frac{\hat{\sigma}^2}{\sigma^2} (N-P) \sim \chi^2_{N-P}
+\end{align}
+
+So that
+
+\begin{align}
+T = \frac{Z}{\sqrt{\frac{V}{N-P}}} \sim T_{N-P}
+\end{align}
+
+That is $T$ is distributed as a student T distribution with $N-P$ degrees of freedom.
+
+In particular, if we set $\bv{a} = \bv{e}_i$ then we get
+
+\begin{align}
+\frac{\beta_i - \beta^*_i}{\sqrt{\hat{C}_{ii}}} \sim T_{N-P}
+\end{align}
+
+We can consider the increase in cost function
+
+\begin{align}
+\frac{1}{\sigma^2}(\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})) &= \frac{1}{\sigma^2}\bv{\ep}^T\bv{P_X}\bv{\ep} \sim \chi^2_P
+\end{align}
+
+In the case when $\sigma^2$ is unknown we can use the estimator $\hat{\sigma}^2$ and we get
+
+\begin{align}
+\frac{1}{\hat{\sigma}^2}(\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})) = \frac{\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})}{\frac{\phi_{LS}(\bv{\hat{\beta}})}{N-P}}
+\end{align}
+
+If we construct
+
+\begin{align}
+F = \frac{\frac{\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})}{\sigma^2}\frac{1}{P}}{\frac{\phi_{LS}(\bv{\hat{\beta}})}{\sigma^2}\frac{1}{N-P}} = \frac{\frac{V_P}{P}}{\frac{V_{N-P}}{N-P}} \sim F_{P,N-P}
+\end{align}
+
+Where $V_P \sim \chi^2_P$ and $V_{N-P} \sim \chi^2_{N-P}$ so that $F$ is distributed as an $F_{P,N-P}$ distribution
+
+\begin{align}
+F = \frac{\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})}{P\hat{\sigma}^2}
+\end{align}
+
+We summarize the main results.
+
+\begin{empheq}[box=\fbox]{align}
+\bv{\ep} &\sim \mathcal{N}(\bv{0}, \sigma^2 \bv{I})\\
+\bv{\hat{\beta}} & \sim \mathcal{N}(\bv{\beta^*}, \bv{C})\\
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\beta^*}) &\sim \chi^2_N\\
+\frac{1}{\sigma^2}\phi_{LS}(\bv{\hat{\beta}}) &\sim \chi^2_{N-P}\\
+\frac{1}{\sigma^2}(\phi_{LS}(\bv{\beta^*})-\phi_{LS}(\bv{\hat{\beta}})) &\sim \chi^2_P\\
+\hat{\sigma}^2 &= \frac{\phi_{LS}(\bv{\hat{\beta}})}{N-P}\\
+\frac{\hat{\sigma}^2}{\sigma^2}(N-P) &\sim \chi^2_{N-P}\\
+\frac{\bv{a}^T\bv{\hat{\beta}} - \bv{a}^T\bv{\beta^*}}{(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}}} &\sim \mathcal{N}(\bv{0}, \bv{I})\\
+\bv{\hat{C}} &= \frac{\hat{\sigma}^2}{\sigma^2} \bv{C}\\
+\frac{\bv{a}^T\bv{\hat{\beta}} - \bv{a}^T\bv{\beta^*}}{(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}}} &\sim T_{N-P}\\
+\frac{\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})}{P\hat{\sigma}^2} &\sim F_{P,N-P}
+\end{empheq}
+
+Furthermore we importantly have that $\bv{\hat{\beta}}$ is independent from $\bv{\sigma}^2$.
+
+
+\section{Confidence Regions and Intervals}
+
+Above we have discussed $E[\bv{\hat{\beta}}]$ and $\text{Cov}(\bv{\hat{\beta}})$. 
+There $\bv{\hat{\beta}}$ serves as a point estimator for $\bv{\beta^*}$.
+Here we will consider set estimators for $\bv{\beta^*}$.
+That is, we will construct confidence regions for $\bv{\beta^*}$.
+This will be done using the distribution theory information from the previous section.
+
+We will consider full $P$-dimensional confidence regions for $\bv{\hat{\beta}}$ as well as 1-dimensional confidence intervals for the $\hat{\beta}_i$ (or more generally 1-dimensional confidence intervals for $\bv{a}^T \bv{\hat{\beta}}$).
+We will consider the confidence regions and confidence intervals under the circumstance that $\sigma^2$ is known and under the circumstance that $\sigma^2$ must be estimated by $\hat{\sigma}^2$.
+
+The confidence region when $\sigma^2$ is known will involve a $\chi^2_P$ distribution, the confidence region when $\sigma^2$ must be estimated by $\hat{\sigma}^2$ will involve an $F$-distribution.
+The confidence interval in which $\sigma^2$ is known will involve a standard normal distribution and the confidence interval in which $\sigma^2$ must be approximated by $\hat{\sigma}^2$ will involve a student T-distribution.
+
+\subsection{Confidence Regions - General Approach}
+First a general note on calculating confidence regions.
+A confidence region for a parameter $\theta^*$ with confidence level $\gamma$ should be a set $R$ such that
+
+\begin{align}
+P(\theta^* \in R) = \gamma
+\end{align}
+
+This is typically calculated by constructing what is known as a pivotal quantity.
+A pivotal quantity is a random variable $A(\theta^*) \sim D$ which depends on $\theta^*$ but which has a fixed statistical distribution $D$, that is $D$ is independent of $\theta^*$.
+The pivotal quantity is used to construct a confidence region in the following way.
+
+We first recall the notion of a cumulative distribution function.
+
+\begin{align}
+F_D(x) = P(A(\beta^*) \le x)
+\end{align}
+
+The cumulative distribution function takes in a parameter value $x$ and returns a probability that the random variable is less than that value.
+The inverse of the cumulative distribution function is known as the quantile function.
+We write
+
+\begin{align}
+D^{\gamma} &= F^{-1}_D(\gamma)\\
+F_D(D^{\gamma}) &= \gamma
+\end{align}
+
+The quantile functions takes in a probability and a returns a parameter with the property that the the probability that the random variable is less than the returned parameter is less than the given probability.
+Thus
+
+\begin{align}
+F_D(D^{\gamma}) = P(A(\theta^*) \le D^{\gamma}) = \gamma
+\end{align}
+
+We can then construct a region
+
+\begin{align}
+R = \left\{\theta: A(\theta) \le D^{\gamma} \right\}
+\end{align}
+
+We then see that
+
+\begin{align}
+P(\theta^* \in R) = P(A(\theta^*) \le D^{\gamma}) = \gamma
+\end{align}
+
+as desired.
+
+\subsection{Confidence Regions for Least Squares}
+For the case of the confidence region when $\sigma^2$ is known the pivotal quantity of use will be
+
+\begin{align}
+V_{\chi^2} = \frac{\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})}{\sigma^2} \sim \chi^2_P
+\end{align}
+
+The confidence region is then
+
+\begin{align}
+ R_{\chi^2} = \left\{\bv{\beta}: \frac{\phi_{LS}(\bv{\beta}) - \phi_{LS}(\bv{\hat{\beta}})}{\sigma^2} \le \chi^{2,\gamma}_P\right\}
+\end{align}
+
+In the case that $\sigma^2$ must be estimated by $\hat{\sigma}^2$ the pivotal quantity of use will be
+
+\begin{align}
+V_F = \frac{\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})}{P \hat{\sigma}^2} \sim F_{P,N-P}
+\end{align}
+
+So that the confidence region is
+
+\begin{align}
+R_F = \left\{\bv{\beta}: \frac{\phi_{LS}(\bv{\beta}) - \phi_{LS}(\bv{\hat{\beta}})}{P\hat{\sigma}^2} \le F_{P,N-P}^{\gamma}\right\}
+\end{align}
+
+Note that one of the properties of an $F$ distribution is that if $V_F \sim F_{P,N-P}$ and $V_{\chi^2} \sim \chi^2_P$ we have that
+
+\begin{align}
+\lim_{N-P \rightarrow \infty} PV_F \sim \chi^2_P
+\end{align}
+
+So as the sample number $N$ increase the confidence region $R_F$ becomes closer and closer to the confidence region $R_{\chi^2}$ which is expected because $\hat{\sigma}^2$ becomes a better and better estimator of $\sigma^2$.
+
+\subsubsection{Shape of the Confidence Regions}
+
+In deriving the confidence regions we used the pivotal quantities
+
+\begin{align}
+V_{\chi^2} &= \frac{\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})}{\sigma^2} \sim \chi^2_P\\
+V_F &= \frac{\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})}{P \hat{\sigma}^2} \sim F_{P,N-P}
+\end{align}
+
+The numerator in each of these can be written as
+
+\begin{align}
+\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}}) = \bv{\ep}^T\bv{P_X}\bv{\ep}
+\end{align}
+
+We have that
+
+\begin{align}
+\bv{\hat{\beta}} = \bv{\beta^*} + \bv{X}^+\bv{\ep}
+\end{align}
+
+From which we can derive
+
+\begin{align}
+\bv{P_X}\bv{\ep} = \bv{X}(\bv{\hat{\beta}} - \bv{\beta^*})
+\end{align}
+
+From which we see
+
+\begin{align}
+\phi_{LS}(\bv{\beta^*}) - \phi_{LS}(\bv{\hat{\beta}})  &= \left(\bv{\hat{\beta}} - \bv{\beta^*}\right)^T \bv{X}^T\bv{X} \left(\bv{\hat{\beta}} - \bv{\beta^*}\right)\\
+&=\left(\bv{\beta^*} - \bv{\hat{\beta}}\right)^T \bv{X}^T\bv{X} \left(\bv{\beta^*} - \bv{\hat{\beta}}\right)
+\end{align}
+
+Note that
+
+\begin{align}
+\frac{\bv{X}^T\bv{X}}{\sigma^2} &= \bv{C}^{-1}\\
+\frac{\bv{X}^T\bv{X}}{\hat{\sigma}^2} &= \bv{\hat{C}}^{-1}
+\end{align}
+
+So we can write
+
+\begin{align}
+V_{\chi^2} &= \left(\bv{\beta^*} - \bv{\hat{\beta}}\right)^T\bv{C}^{-1}\left(\bv{\beta^*} - \bv{\hat{\beta}}\right)\\
+V_{F} &= \frac{1}{P}\left(\bv{\beta^*} - \bv{\hat{\beta}}\right)^T\bv{\hat{C}}^{-1}\left(\bv{\beta^*} - \bv{\hat{\beta}}\right)
+\end{align}
+
+The confidence regions can then be written as
+
+\begin{align}
+R_{\chi^2} &= \left\{\bv{\beta}: \left(\bv{\beta} - \bv{\hat{\beta}}\right)^T\bv{C}^{-1}\left(\bv{\beta} - \bv{\hat{\beta}}\right) \le \chi^{2,\gamma}_P \right\}\\
+R_{F} &= \left\{\bv{\beta}: \left(\bv{\beta} - \bv{\hat{\beta}}\right)^T\bv{\hat{C}}^{-1}\left(\bv{\beta} - \bv{\hat{\beta}}\right) \le PF_{P,N-P}^{\gamma} \right\}\\
+\end{align}
+
+These confidence regions are ellipsoids described by covariance matrix $\bv{C}^{-1}$ scaled by the critical values $\chi^{2,\gamma}_P$ or $PF_{P,N-P}^{\gamma}$ centered about $\bv{\hat{\beta}}$.
+
+\subsection{Confidence Intervals - General Approach}
+
+Notice that the confidence regions above always contain the point where the pivotal quantity is equal to zero up to some values $\chi^{2,\gamma}_P$ or $F_{P,N-P}^{\gamma}$.
+This generally makes sense as these distributions have the properties that they only have support (positive probability) for positive values and because the value zero is always within one standard deviation of the mean.
+So it makes sense to allow the confidence region to contain all values from zero up to a cutoff.
+
+However, in the case of the confidence intervals we see that the pivotal quantities are distributed as normal or student t-distributions. 
+These distributions have support (non-zero probability) for both positive and negative values for the random variables.
+In fact the PDFs are symmetric about zero.
+Because of this the confidence regions are constructed a little bit different.
+
+A confidence region with confidence level $\gamma$ for parameter $\theta^*$ should still be a region satisfying
+
+\begin{align}
+P(\theta^* \in R) = \gamma
+\end{align}
+
+We still seek a pivotal quantity with $A(\theta^*) \sim D$.
+In this case however we consider
+
+\begin{align}
+P(-x \le A(\theta^*) \le + x)
+\end{align}
+
+We desire to find an $x$ so that this probability is equal to $\gamma$.
+We do this by leveraging the following manipulations.
+
+\begin{align}
+P(-x \le A(\theta^*) \le +x) = F_D(+x) - F_D(-x)
+\end{align}
+
+Since the PDF is symmetric about zero we have
+
+\begin{align}
+F_D(-x) &= \int_{z = -\infty}^{-x} f_D(z)dz\\
+&= \int_{z=-\infty}^{-x}f_D(-z) dz\\
+&= -\int_{z=\infty}^{+x}f_D(z)dz\\
+&= \int_{z=+x}^{\infty} f_D(z)dz\\
+&= \int_{z=-\infty}^{+\infty} f_D(z) dz - \int_{z=-\infty}^{+x}f_D(z)dz\\
+&= 1 - F_D(x)
+\end{align}
+
+So
+
+\begin{align}
+F_D(+x) - F_D(-x) = 2F_D(x) - 1
+\end{align}
+
+So if we want to solve
+
+\begin{align}
+P(-x \le A(\theta^*) \le +x) = F_D(+x) - F_D(-x) = \gamma
+\end{align}
+
+We must solve
+
+\begin{align}
+2F_D(+x) - 1 &= \gamma\\
+F_D(+x) &= \frac{1+\gamma}{2}\\
+x = F_D^{\frac{1+\gamma}{2}}
+\end{align}
+
+Sometimes a p-level is quoted instead of a confidence level.
+The p-level is given by $\alpha=1-\gamma$. Expressed in terms of $\alpha$ instead of $\gamma$ we have
+
+\begin{align}
+x = F_D^{1-\frac{\alpha}{2}}
+\end{align}
+
+We then construct confidence regions
+
+\begin{align}
+R = \left\{\theta : -F_D^{\frac{1+\gamma}{2}} \le \theta \le +F_D^{\frac{1+\gamma}{2}}\right\}
+\end{align}
+
+and we can see that
+
+\begin{align}
+P(\theta^* \in R) = \gamma
+\end{align}
+
+\subsection{Confidence Intervals for Least Squares}
+The pivotal quantity of interest for the case when $\sigma^2$ is known is
+
+\begin{align}
+V_N = \frac{\bv{a}^T\bv{\hat{\beta}} - \bv{a}^T\bv{\beta^*}}{(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}}} \sim \mathcal{N}(\bv{0},\bv{I})
+\end{align}
+
+The confidence region for $\bv{a}^T\bv{\beta^*}$ is given by
+
+\begin{align}
+R_N &= \left\{b : -z^{\frac{1+\gamma}{2}} \le \frac{\bv{a}^T\bv{\hat{\beta}} - b}{(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}}} \le +z^{\frac{1+\gamma}{2}}\right\}\\
+&= \left\{b: \bv{a}^T\bv{\hat{\beta}} - z^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}} \le b \le \bv{a}^T\bv{\hat{\beta}} + z^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}} \right\}
+\end{align}
+
+So we write $\bv{a}^T\bv{\beta^*} = \bv{a}^T\bv{\hat{\beta}} \pm z^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}}$. 
+In particular we have $\beta^*_i = \hat{\beta}_i \pm z^{\frac{1+\gamma}{2}}\sqrt{C_{ii}}$.
+
+In the case when $\sigma^2$ must be estimated by $\hat{\sigma}^2$ $\bv{C}$ is replaced by $\bv{\hat{C}}$ and the normal distribution is simply replaced by a t-distribution so we get:
+
+\begin{align}
+R_T &= \left\{b: \bv{a}^T\bv{\hat{\beta}} - t^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}} \le b \le \bv{a}^T\bv{\hat{\beta}} + t^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}} \right\}
+\end{align}
+
+and we write $\bv{a}^T\bv{\beta^*} = \bv{a}^T\bv{\hat{\beta}} \pm t^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}}$. 
+In particular we have $\beta^*_i = \hat{\beta}_i \pm t^{\frac{1+\gamma}{2}}\sqrt{\hat{C}_{ii}}$.
+
+\section{General Least Squares}
+
+We now discuss general least squares. 
+The only difference between the setup for GLS and OLS is that for OLS we assumed $\bv{\Omega} = \sigma^2 \bv{I}$. 
+This is equivalent to requiring the errors $\bv{\ep}$ to be uncorrelated and homoskedastic. 
+In GLS we relax these constraints and allow $\bv{\Omega}$ to be any valid covariance matrix.
+
+We start with the same setup
+
+\begin{align}
+\bv{Y} = \bv{\Gamma} + \bv{\ep} = \bv{X}\bv{\beta^*} + \bv{\ep}
+\end{align}
+
+We assume a model function of the form $\bv{F}(\bv{\beta}) = \bv{X}\bv{\beta}$ and seek a $\bv{\hat{\beta}}$ which makes $\bv{F}(\bv{\beta})$ a good estimator for $\bv{\Gamma}$. 
+In particular, we will again assume the pure data function is of the form $\bv{X}\bv{\beta^*}$ as above in the OLS case. 
+We then seek a good estimator $\bv{\hat{\beta}}$ of $\bv{\beta^*}$.
+
+We have already proven above for the OLS case with $\bv{\Omega} = \sigma^2\bv{I}$ that the estimator defined above as $\bv{\hat{\beta}}_{OLS} = \bv{X}^+\bv{Y}$ is a BLUE, however that proof relied on constraints on the noise required by OLS.
+
+The trick in GLS is to perform a transformation of the problem such that it again looks like an OLS problem. Then the OLS methods can be used to get a BLUE again!
+
+We do this as follows. Let's consider a transformation matrix $\bv{T}$ and consider
+
+\begin{align}
+\bv{T}\bv{Y} &= \bv{T}\bv{X}\bv{\beta^*} + \bv{T}\bv{\ep}\\
+\bv{\tilde{Y}} &= \bv{\tilde{X}}\bv{\beta^*} + \bv{\tilde{\ep}}
+\end{align}
+
+We then consider
+
+\begin{align}
+\text{Cov}(\bv{\tilde{\ep}}) &= \bv{\tilde{\Omega}} =  E\left[\bv{T}\bv{\ep}\bv{\ep}^T\bv{T}^T\right]\\
+&= \bv{T}\bv{\Omega}\bv{T}^T
+\end{align}
+
+Ideally we would have $\text{Cov}(\bv{\tilde{\ep}}) = \bv{I}$ so that we could apply the techniques of OLS to solve the problem.
+Suppose we are able to perform a decomposition of $\bv{\Omega}$ into
+
+\begin{align}
+\bv{\Omega} = \bv{W}\bv{W}^T
+\end{align}
+
+Such a decomposition is guaranteed for the real symmetric, positive definite covariance matrix $\bv{\Omega}$ by the Cholesky decomposition.
+
+We would then choose
+
+\begin{align}
+\bv{T} = \bv{W}^{-1}
+\end{align}
+
+so that
+
+\begin{align}
+\bv{\tilde{\Omega}} = \bv{T}\bv{\Omega}\bv{T}^T = \bv{W}^{-1}\bv{W}\bv{W}^T (\bv{W}^{-1})^T = \bv{I}
+\end{align}
+
+We recall the formula above for the transformed dataset $\bv{\tilde{Y}}$
+
+\begin{align}
+\bv{\tilde{Y}} = \bv{\tilde{X}}\bv{\beta^*} + \bv{\tilde{\ep}}
+\end{align}
+
+But we now see that this is the constituent equation for an ordinary least squares problem since the noise $\bv{\tilde{\ep}}$ are again uncorrelated and homoskedastic. 
+The transformation $\bv{T} = \bv{W}^{-1}$ is known as a whitening transformation. The reason for this is that it takes initially correlated noise and transforms it into white (uncorrelated) noise.
+
+We can apply the OLS scheme to this new problem to get a BLUE (by the Guass-Markov theorem).
+
+\begin{align}
+\bv{\hat{\beta}} &= \bv{\tilde{X}}^+ \bv{\tilde{Y}}\\
+&= \left(\bv{\tilde{X}}^T\bv{\tilde{X}}\right)^{-1}\bv{\tilde{X}}^T\bv{\tilde{Y}}\\
+&= \left(\bv{X}^T\bv{\Omega}^{-1}\bv{X}\right)^{-1}\bv{X}\bv{\Omega}^{-1}\bv{Y}
+\end{align}
+
+Assuming the pure data function is again given by $\bv{\Gamma} = \bv{X}\bv{\beta^*}$ we have the results from OLS.
+We know $\bv{\hat{\beta}}$ is unbiased so we have
+
+\begin{align}
+E[\bv{\hat{\beta}}] = \bv{\beta^*}
+\end{align}
+
+The covariance matrix for the estimator is given by
+
+\begin{align}
+\text{Cov}\left(\bv{\hat{\beta}}\right) &= \left(\bv{\tilde{X}}^T\bv{\tilde{X}}\right)^{-1} = \left(\bv{X}^T \bv{T}^T\bv{T}\bv{X}\right)^{-1}\\
+&= \left(\bv{X}^T (\bv{W}^{-1})^T\bv{W}^{-1} \bv{X}\right)^{-1}\\
+&= \left(\bv{X}^T \bv{\Omega}^{-1} \bv{X}\right)^{-1}
+\end{align}
+
+Summarizing the estimator results for GLS:
+
+\begin{empheq}[box=\fbox]{align}
+\bv{\hat{\beta}} &= \left(\bv{X}^T\bv{\Omega}^{-1}\bv{X}\right)^{-1} \bv{X} \bv{\Omega}^{-1} \bv{Y}\\
+E\left[\bv{\hat{\beta}}\right]&=  \bv{\beta^*}\\
+\text{Cov}\left(\bv{\hat{\beta}}\right) &= \left(\bv{X}^T\bv{\Omega}^{-1}\bv{X}\right)^{-1}
+\end{empheq}
+
+We see that this reduces exactly to the OLS solution when we set $\bv{\Omega} = \sigma^2 \bv{I}$.
+
+\section{Non-Linear Least Squares}
+
+We now consider NLLS. 
+Above we have assumed the model function $\bv{F}(\bv{\beta})$ has been a linear function of $\bv{\beta}$. 
+In NLLS the model function can be an arbitrary function of $\bv{\beta}$, it need not be linear. 
+Thus we have
+
+\begin{align}
+\bv{r}(\bv{\beta}) = \bv{Y} - \bv{F}(\bv{\beta})
+\end{align}
+
+The task however is still the same, to find the value of $\bv{\beta} = \bv{\hat{\beta}}$ which minimizes the least squares cost function
+
+\begin{align}
+\phi_{LS}(\bv{\beta}) = \bv{r}(\bv{\beta})^T\bv{r}(\bv{\beta})
+\end{align}
+
+Two aspects of the problem will be discussed here. 
+First we will discuss how to find the parameter estimator vector $\bv{\hat{\beta}}$ which minimizes $\phi_{LS}(\bv{\beta})$ and second, once the estimator has been found, we will discuss its statistical properties such as covariance and confidence regions.
+Both aspects of the problem will rely heavily on linearizing the model function.
+
+\subsection{Minimization of the Cost Function}
+
+For linear case it was possible to perform the minimization of $\phi_{LS}(\bv{\beta})$ because $\frac{\partial \phi_{LS}}{\partial \beta_j}=0$ could be explicitly solved for $\bv{\beta}$ so that the estimator $\bv{\hat{\beta}}$ could be analytically expressed. 
+This was possible because the residuals depended linearly on $\bv{\beta}$ so the minimization formula could be easily inverted. 
+In the non-linear case the formula for the minimization condition on $\phi_{LS}(\bv{\beta})$ cannot necessarily be analytically inverted. 
+This means the minimizing parameters must be found otherwise.
+
+Generally the non-linear least squares estimator is found by an iterative minimization algorithm on the function $\phi_{LS}(\bv{\beta})$. 
+One obvious approach is to use gradient descent. 
+In this case an initial parameter choice $\bv{\beta^0}$ is made.
+$\bv{\beta^0}$ is chosen as a rough guess of where the function minimum may be located. 
+The gradient $\nabla \phi_{LS}(\bv{\beta})$ is then calculated. 
+One then generates a new guess for the minimizing set of parameters:
+
+\begin{align}
+\bv{\beta^1} = \bv{\beta^0} - \gamma \nabla \phi_{LS}(\bv{\beta^0})
+\end{align}
+
+Here $\gamma$ is a small positive real number. The idea is to step down the gradient of the function until one hits a minimum. New estimators are generated until some satisfactory condition is realized to indicate the estimate is very near to a minimum:
+
+\begin{align}
+\bv{\beta^{n+1}} &= \bv{\beta^n} - \gamma \nabla \phi_{LS}(\bv{\beta^n})\\
+\bv{\delta^n} &= -\gamma\nabla \phi_{LS}(\bv{\beta^n}) = \bv{\beta^{n+1}} - \bv{\beta^n}
+\end{align}
+
+The stopping condition could be that the difference in cost function from one iteration to the next, $\bv{\delta^n}$ falls below a small pre-defined value.
+
+We now look towards generating an expression for $\nabla \phi_{LS}(\bv{\beta})$.
+At this point it will be useful to make a Taylor expansion of the model function $\bv{F}(\bv{\beta})$.
+In fact, this Taylor expansion will form the basis for most of what will follow in terms of working through non-linear least squares. 
+We write out
+
+\begin{align}
+F_i(\bv{\beta}) &\approx F_i(\bv{\beta^0}) + \sum_j \frac{\partial F_i(\bv{\beta^0})}{\partial \beta_j} (\beta_j-\beta_j^0) + \ldots\\
+\bv{F}(\bv{\beta}) &\approx \bv{F}(\bv{\beta^0}) + (D\bv{F}\rvert_{\bv{\beta^0}})(\bv{\beta}-\bv{\beta^0})\\
+\bv{F}(\bv{\beta}) &\approx \bv{F}(\bv{\beta^0}) + \bv{J}(\bv{\beta^0})(\bv{\beta}-\bv{\beta^0})\\
+\end{align}
+
+We have defined the total differential matrix $(D\bv{F}\rvert_{\bv{\beta^0}}) = \bv{J}(\bv{\beta^0})$ by
+
+\begin{align}
+\left[D\bv{F}\rvert_{\bv{\beta^0}}\right]_{ij} = J_{ij}(\bv{\beta^0}) = \frac{\partial F_i(\bv{\beta^0})}{\partial{\beta_j}}
+\end{align}
+
+We will see that $\bv{J}$ will play the role in the linear approximation of non-linear least squares that $\bv{X}$ plays in the case of linear least squares.
+
+We note that
+
+\begin{align}
+\bv{r}(\bv{\beta}) &= \bv{Y} - \bv{F}(\bv{\beta}) = \bv{F}(\bv{\beta^*}) - \bv{F}(\bv{\beta}) + \bv{\ep}\\
+&\approx \bv{F}(\bv{\beta^*}) - \bv{F}(\bv{\beta^0}) - \bv{J}(\bv{\beta^0})(\bv{\beta}-\bv{\beta^0}) + \bv{\ep}\\
+r_i(\bv{\beta}) &= F_i(\bv{\beta^*}) - F_i(\bv{\beta^0}) - \sum_k J_{ik}(\bv{\beta^0})(\beta_k - \beta_k^0) + \ep_i
+\end{align}
+
+In particular we see that
+
+\begin{align}
+\frac{\partial r_i(\bv{\beta})}{\partial \beta_j} = -J_{ij}
+\end{align}
+
+Keeping all of the above linearization in mind we return to the task of minimizing $\phi_{LS}(\bv{\beta})$.
+
+We rewrite
+
+\begin{align}
+\phi_{LS}(\bv{\beta}) = \phi_{LS}(\bv{\beta^n + \delta^n}) &= \sum_i r_i(\bv{\beta})r_i(\bv{\beta})\\
+\end{align}
+
+The gradient of this function is given by
+
+\begin{align}
+\frac{\partial \phi_{LS}(\bv{\beta^n})}{\partial \beta_j} &= 2\sum_i r_i(\bv{\beta^n}) \frac{\partial r_i(\bv{\beta^n})}{\partial \beta_j} = 2\sum_i r_i(\bv{\beta^n}) J_{ij}(\bv{\beta^n})\\
+&= 2\left[\bv{J}^T(\bv{\beta^n}) \bv{r}(\bv{\beta^n})\right]_j\\
+\nabla \phi_{LS}(\bv{\beta^n}) &= 2\bv{J}^T(\bv{\beta^n})\bv{r}(\bv{\beta^n})
+\end{align}
+
+With this formula in hand we could perform a gradient descent algorithm by calculating $\bv{J}(\bv{\beta^n})$ at each step in the iteration.
+
+Gradient descent is a simplistic algorithm and is known to have unfavorable convergence and speed performance characteristics. 
+A more sophisticated method is the Gauss-Newton or Newton algorithm which will be described next.
+
+Gradient descent works by fitting the cost function with a plane (order 1 Taylor expansion) and moving down the plane.
+The Newton algorithm works by fitting the cost function with a paraboloid (order 2 Taylor expansion) and jumping down to the minimum value of that paraboloid. 
+
+For a one dimensional function we can show the computation quickly.
+Suppose we seek to find the minimum of $f(x)$.
+We start with an initial guess $x^0$.
+We then calculate
+
+\begin{align}
+f(x) = f(x^0 + \delta) \approx f(x^0) + \frac{df}{dx}\Big\rvert_{x^0} \delta + \frac{1}{2}\frac{d^2f}{dx^2}\Big\rvert_{x^0} \delta^2
+\end{align}
+
+We find the minimum value of this function by
+
+\begin{align}
+\frac{df}{d\delta}\Big\rvert_{x^0} \approx \frac{df}{dx}\Big\rvert_{x^0} + \frac{d^2f}{dx^2}\Big\rvert_{x^0} \delta= 0
+\end{align}
+
+Which is solved when
+
+\begin{align}
+\delta = -\frac{\frac{df}{dx}\Big\rvert_{x^0}}{\frac{d^2f}{dx^2}\Big\rvert_{x^0}}
+\end{align}
+
+Let us define
+
+\begin{align}
+g_n &= \frac{df}{dx}\Big\rvert_{x^{n-1}}\\
+H_n &= \frac{d^2f}{dx^2}\Big\rvert_{x^{n-1}}
+\end{align}
+
+so that 
+
+\begin{align}
+\delta^n &= -\frac{g_n}{H_n}\\
+x^n &= x^{n-1} + \delta^n
+\end{align}
+
+The idea is then that the sequence $x^n$ will converge to the value of $x$ which minimize $f(x)$.
+
+For non-linear least squares we generalize this Newton algorithm to multiple dimensions.
+
+\begin{align}
+f(\bv{x}) &= f(\bv{x^0} + \bv{\delta}) \approx f(\bv{x^0}) + \sum_i \frac{df}{dx_i}\Big\rvert_{\bv{x^0}}\delta_i + \frac{1}{2}\sum_{ij} \frac{d^2f}{dx_idx_j}\Big\rvert_{\bv{x^0}} \delta_i \delta_j\\
+\end{align}
+
+Let us define
+
+\begin{align}
+[\bv{g}^1]_i &= \frac{df}{dx_i}\Big\rvert_{\bv{x^0}} = [\nabla f(\bv{x^0})]_i\\
+\bv{g}^1 &= \nabla f(\bv{x^0})\\
+[\bv{H}^1]_{ij} &= \frac{d^2f}{dx_idx_j}\Big\rvert_{\bv{x^0}}
+\end{align}
+
+Here $\bv{H}$ is the Hessian matrix.
+
+We can then write
+
+\begin{align}
+f(\bv{x}) = f(\bv{x^0} + \bv{\delta}) \approx f(\bv{x^0}) + \bv{g}^1\cdot \bv{\delta} + \bv{\delta}^T\bv{H}\bv{\delta}
+\end{align}
+
+We minimize this approximation by taking the gradient of $f(\bv{x})$ to get
+
+\begin{align}
+\frac{df(\bv{x})}{dx_k} &= \sum_i g_i^1 \frac{d\delta_i}{d\delta_k} + \frac{1}{2} \sum_{ij}H_{ij}^1\left(\frac{d\delta_i}{d\delta_k} \delta_j + \delta_i \frac{d\delta_j}{d\delta_k} \right) = 0\\
+&= g_k^1 + \frac{1}{2} \left(\sum_j H^1_{kj}\delta_j + \sum_i H^1_ik \delta_i\right)\\
+&= g_k^1 + \sum_j H^1_{kj}\delta_j = 0\\
+\end{align}
+
+The last line follows because $\bv{H}^1$ is symmetric.
+This can be written as
+
+\begin{align}
+\bv{g}^1 + \bv{H}^1 \bv{\delta} = 0
+\end{align}
+
+Which is solved by
+
+\begin{align}
+\bv{\delta} = -(\bv{H}^1)^{-1}\bv{g}^1
+\end{align}
+
+In analogy to the one-dimensional case we define an iterative procedure by
+
+\begin{align}
+\bv{\delta^n} = -(\bv{H}^n)^{-1}\bv{g^n}\\
+\bv{x^n} = \bv{x^{n-1}} + \bv{\delta^n}
+\end{align}
+
+For the case of non-linear least squares the function we are minimizing is $\phi_{LS}(\bv{\beta})$.
+We must then calculate the Hessian and gradient of this function. 
+We have already calculated the gradient as
+
+\begin{align}
+\bv{g}(\bv{\beta}) = 2\bv{J}^T(\bv{\beta})\bv{r}(\bv{\beta})
+\end{align}
+
+To calculate the Hessian we consider
+
+\begin{align}
+\phi_{LS}(\bv{\beta}) &= \sum_i r_i(\bv{\beta})^2\\
+\frac{d\phi_{LS}(\bv{\beta})}{d\beta_j} &= 2 \sum_i r_i(\bv{\beta})\frac{dr_i(\bv{\beta})}{d\beta_j}\\
+\frac{d\phi_{LS}(\bv{\beta})}{d\beta_jd\beta_k} &= 2 \sum_i\left( \frac{dr_i(\bv{\beta})}{d\beta_k}\frac{dr_i(\bv{\beta})}{d\beta_j} + r_i(\bv{\beta})\frac{d^2r_i(\bv{\beta})}{d\beta_jd\beta_k}\right) = H_{ij}
+\end{align}
+
+The formula for the Hessian includes terms of the form $\frac{dr_i(\bv{\beta})}{d\beta_k} = -J_{ik}$ but it also includes terms which are second derivatives of $r_i(\bv{\beta})$.
+While these could in principle be calculated it is in fact very numerically costly to do so.
+The Gauss part of the Gauss-Markov algorithm consists in dropping these second derivative terms so that
+
+\begin{align}
+\frac{d\phi_{LS}(\bv{\beta})}{d\beta_jd\beta_k} &\approx 2 \sum_i \frac{dr_i(\bv{\beta})}{d\beta_k}\frac{dr_i(\bv{\beta})}{d\beta_j}\\
+&= 2\sum_i J_{ik}J_{ij}\\
+&= 2\sum_i (\bv{J}^T)_{ki}J_{ij}\\
+\bv{H} \approx 2\bv{J}^T\bv{J}
+\end{align}
+
+The step that should be taken at every iteration is then
+
+\begin{align}
+\bv{\delta^n} &= \bv{H}(\bv{\beta^{n-1}})^{-1}\bv{g}(\bv{\beta^{n-1}})\\
+&= \left(\bv{J}(\bv{\beta^{n-1}})^T\bv{J}(\bv{\beta^{n-1}})\right)^{-1}\bv{J}^T(\bv{\beta})\bv{r}(\bv{\beta})
+\end{align}
+
+Or with less clutter:
+
+\begin{align}
+\bv{\delta} = (\bv{J}^T\bv{J})^{-1}\bv{J}^T\bv{r} = \bv{J}^+\bv{r}
+\end{align}
+
+A commonly used variation is the levenberg-Marquardt algorithm which utilized both gradient and the Gauss-Newton method.
+
+For gradient descent we have
+
+\begin{align}
+\bv{\delta} \propto \bv{J}^T\bv{r}
+\end{align}
+
+Levenberg-Marquardt is given by
+
+\begin{align}
+\bv{\delta} = \left(\bv{J}^T\bv{J} + \lambda \bv{I}\right)^{-1}\bv{J}^T\bv{r}
+\end{align}
+
+For $\lambda$ large it looks like gradient descent. 
+$\lambda$ small it looks like Gauss-Newton.
+$\lambda$ can be chosen and even altered during the course the algorithm depending on various diagnostics to improve convergence results.
+
+Note that here I have presented a few methods to minimize the least squares cost function.
+The end goal of all of these algorithms is efficient minimization of a function.
+In principle it would suffice to simply do a brute force search of a particular region of phase space to try to find the minimum.
+There are numerous drawbacks to such an approach but I point it out to clarify the goal of these algorithms in the context of the total least squares procedure. 
+
+\subsection{Statistics of the Estimator}
+
+We now suppose that a value $\bv{\hat{\beta}}$ which minimizes $\phi_{LS}(\bv{\beta})$ has been found by some iterative or other procedure.
+
+The question, as above in the case of linear least square, is what are the statistics of $\bv{\hat{\beta}}$.
+
+Above we were able to derive many statistics about $\bv{\hat{\beta}}$ because we were able to directly relate $\bv{\hat{\beta}}$ to $\bv{\ep}$ noting that all statistical properties of $\bv{\hat{\beta}}$ derive from the statistical properties of $\bv{\ep}$.
+
+In particular we had that
+
+\begin{align}
+\bv{\hat{\beta}} &= \bv{\beta^*} + \bv{X}^+\bv{\ep}
+\end{align}
+
+From this all of the other statistics could be derived knowing $\bv{\ep} \sim \mathcal{N}(\bv{0}, \sigma^2\bv{I})$.
+
+In the non-linear case there is not such an immediate relationship between $\bv{\hat{\beta}}$ and $\bv{\ep}$.
+However, we can proceed by linearizing the non-linear model function.
+We have
+
+\begin{align}
+\bv{r}(\bv{\hat{\beta}}) &= \bv{Y} - \bv{F}(\bv{\hat{\beta}})\\
+&= \bv{F}(\bv{\beta^*}) - \bv{F}(\bv{\hat{\beta}}) + \bv{\ep}
+\end{align}
+
+We can Taylor expand $F(\bv{\beta^*})$ about $\bv{\hat{\beta}}$ if $\bv{\hat{\beta}}$ is sufficiently close to $\bv{\beta^*}$ which is hopefully the case as a result of the minimization algorithm.
+
+\begin{align}
+\bv{F}(\bv{\beta^*}) \approx \bv{F}(\bv{\hat{\beta}}) + \bv{J}(\bv{\hat{\beta}})(\bv{\beta^*} - \bv{\hat{\beta}})
+\end{align}
+
+So that
+
+\begin{align}
+\bv{r}(\bv{\hat{\beta}}) \approx \bv{J}(\bv{\beta^*} - \bv{\hat{\beta}}) + \bv{\ep}
+\end{align}
+
+We know that if we have successfully minimized the cost function then 
+
+\begin{align}
+\nabla \phi_{LS}(\bv{\hat{\beta}}) = 2\bv{J}^T(\bv{\hat{\beta}})\bv{r}(\bv{\hat{\beta}}) = 0
+\end{align}
+
+So we can solve the above for $\bv{\hat{\beta}}$ by
+
+\begin{align}
+\bv{\hat{\beta}} &= \bv{\beta^*} + (\bv{J}^T(\bv{\hat{\beta}})\bv{J}(\bv{\hat{\beta}}))^{-1}\bv{J}^T(\bv{\hat{\beta}})\bv{\ep}\\
+&= \bv{\beta^*} + \bv{J}^+(\bv{\hat{\beta}})\bv{\ep}
+\end{align}
+
+From this expression and the assumption that $\bv{\ep} \sim \mathcal{N}(\bv{0}, \sigma^2\bv{I})$ all statistics and confidence intervals can be derived as they were above in the linear case. We assume $\bv{J}^+$ is full rank.
+
+\begin{align}
+E\left[\bv{\hat{\beta}}\right] &= \bv{\beta^*}\\
+\text{Cov}(\bv{\hat{\beta}}) = \bv{C} &= \sigma^2\bv{J}^+(\bv{\hat{\beta}})(\bv{J}^+(\bv{\hat{\beta}}))^T = \sigma^2\left(\bv{J}^T(\bv{\hat{\beta}})\bv{J}(\bv{\hat{\beta}})\right)^{-1}
+\end{align}
+
+Confidence regions for known $\sigma^2$ can be calculated as
+
+\begin{align}
+R_{\chi^2} = \left\{\bv{\beta} : \frac{\phi_{LS}(\bv{\beta}) - \phi_{LS}(\bv{\hat{\beta}})}{\sigma^2} \le \chi^{2,\gamma}_P \right\}
+\end{align}
+
+or
+
+\begin{align}
+R_{\chi^2} = \left\{\bv{\beta}: \left(\bv{\beta}-\bv{\hat{\beta}}\right)^T\bv{C}^{-1}\left(\bv{\beta} - \bv{\hat{\beta}}\right) \le \chi^{2,\gamma}_P\right\}
+\end{align}
+
+Note that in the linear case these two regions were exactly equal. However, in the non-linear case they are in general unequal. 
+In general the former generates better confidence regions while the latter sometimes gives non-nonsensical or overly large confidence regions for non-linear least squares.
+See Vugrin et. al., \textit{Confidence Region Estimation Techniques for Nonlinear Regression: Three Case Studies}, \textbf{Sandia Report} for examples and more analysis.
+
+Confidence regions for the case when $\sigma^2$ is unknown we have
+
+\begin{align}
+R_F = \left\{\bv{\beta}: \frac{\phi_{LS}(\bv{\beta}) - \phi_{LS}(\bv{\hat{\beta}})}{\hat{\sigma}^2} \le PF_{P,N-P}^{\gamma} \right\}
+\end{align}
+
+with
+
+\begin{align}
+\hat{\sigma}^2 = \frac{\phi_{LS}(\bv{\hat{\beta}})}{N-P}
+\end{align}
+
+Similarly an alternative linearly approximated confidence region is
+
+\begin{align}
+R_F = \left\{\bv{\beta}:\left(\bv{\beta}-\bv{\hat{\beta}}\right)^T\bv{\hat{C}}^{-1}\left(\bv{\beta}-\bv{\hat{\beta}}\right) \le PF_{P,N-P}^{\gamma} \right\}
+\end{align}
+
+Again, the region defined by the increase in cost function is known to be a better estimate than the ellipsoidal confidence region.
+Here $\bv{\hat{C}} = \hat{\sigma}^2\left(\bv{J}^T(\bv{\hat{\beta}})\bv{J}(\bv{\hat{\beta}})\right)^{-1} = \frac{\hat{\sigma}^2}{\sigma^2}\bv{C}$.
+
+Confidence intervals are calculated similarly as for the linear case.
+If $\sigma^2$ is known we have a confidence interval for the scalar random variable $\bv{a}^T\bv{\beta^*}$
+
+\begin{align}
+R_N = \left\{b: \bv{a}^T\bv{\hat{\beta}} - z^{\frac{1-\gamma}{2}}(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}} \le b \le \bv{a}^T\bv{\hat{\beta}} + z^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{C}\bv{a})^{\frac{1}{2}}\right\}
+\end{align}
+
+and for the case $\bv{a} = \bv{e}_i$ we get
+
+\begin{align}
+R_N = \left\{b: \hat{\beta}_i - z^{\frac{1+\gamma}{2}} \sqrt{C_{ii}} \le b \le \hat{\beta}_i + z^{\frac{1+\gamma}{2}}\sqrt{C_{ii}}\right\}
+\end{align}
+
+If $\sigma^2$ is unknown we must estimate with $\hat{\sigma}^2$ so the normal distribution is replaced with a student t-distribution and $\bv{C}$ is replaced with $\bv{\hat{C}}$.
+
+\begin{align}
+R_T = \left\{b: \bv{a}\bv{\hat{\beta}} - t^{\frac{1-\gamma}{2}}(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}} \le b \le \bv{a}^T\bv{\hat{\beta}} + t^{\frac{1+\gamma}{2}}(\bv{a}^T\bv{\hat{C}}\bv{a})^{\frac{1}{2}}\right\}
+\end{align}
+
+and for the case $\bv{a} = \bv{e}_i$ we get
+
+\begin{align}
+R_T = \left\{b: \hat{\beta}_i - t^{\frac{1+\gamma}{2}} \sqrt{\hat{C}_{ii}} \le b \le \hat{\beta}_i + t^{\frac{1+\gamma}{2}}\sqrt{\hat{C}_{ii}}\right\}
+\end{align}
+
+\section{Appendices}
+
+\subsection{Appendix A: Projection Matrix Facts}
+
+A projection matrix is any idempotent matrix. $\bv{P}$, an $N\times N$ matrix from $\bv{V} \rightarrow \bv{V}$ is idempotent if
+
+\begin{align}
+\bv{P}^2 = \bv{P}\bv{P} = \bv{P}
+\end{align}
+
+Additionally, if $\bv{P}$ is hermitian, $\bv{P}^{\dag} = \bv{P}$ then we say the projection is orthogonal. Be careful that an orthogonal projection is not necessarily and orthogonal matrix. An orthogonal matrix must be invertible but an orthogonal projection is not necessarily invertible.
+
+Any vector can be written as
+
+\begin{align}
+\bv{v} &= (\bv{v} - \bv{P}\bv{v}) + \bv{P}\bv{v}\\
+&= \bv{v}_0 + \bv{v}_1
+\end{align}
+
+We have that
+
+\begin{align}
+\bv{P}\bv{v}_0 &= \bv{P}\bv{v} - \bv{P}\bv{P}\bv{v} = \bv{P}\bv{v} - \bv{P}\bv{v} = \bv{0} = 0 \bv{v}_0\\
+\bv{P}\bv{v}_1 &= \bv{P}\bv{P}\bv{v} = \bv{P}\bv{v} = \bv{v}_1
+\end{align}
+
+So $\bv{v}_0$ and $\bv{v}_1$ are eigenvectors of $\bv{P}$ with eigenvalues 0 and 1 respectively.
+Thus the eigenvectors of $\bv{P}$ with eigenvalues 1 and 0 span the entire space meaning there are no other eigenvalues.
+If $\bv{P}$ has rank $r$ then the nullity is $\text{dim}(\text{ker}(\bv{V})) = N-r$ by the rank nullity theorem.
+Thus dimension of the kernel is the geometric multiplicity of the $0$ eigenvector.
+Thus, the geometric multiplicity of the 1 eigenvector must be $N - (N-r) = r$.
+
+
+
+Since the eigenvectors of $\bv{P}$ span $\bv{V}$ $\bv{P}$ is diagonalizable
+
+\begin{align}
+\bv{P} = \bv{S}\bv{D}\bv{S}^{-1}
+\end{align}
+
+Where $\bv{D}$ is 
+
+\begin{align}
+\bv{D} = 
+\begin{bmatrix}
+\bv{I}_{r\times r} && \bv{0}_{r\times n-r}\\
+\bv{0}_{n-r, r} && \bv{0}_{n-r\times n-r}
+\end{bmatrix}
+\end{align}
+
+$\bv{D}$ has $r$ ones along the diagonal and $n-r$ zeros along the diagonal.
+
+If $\bv{P}$ is an orthogonal projection then it is hermitian meaning it can be diagonalized by unitary matrices $\bv{S}$ (characterized by $\bv{S}^{\dag}\bv{S}=\bv{I}$) with the same $\bv{D}$.
+
+\begin{align}
+\bv{P} = \bv{S}\bv{D}\bv{S}^{\dag}
+\end{align}
+
+If $\bv{P}$ is real and symmetric then it can be diagonalized by orthogonal matrices $\bv{S}$ (characterized by $\bv{S}^T\bv{S} = \bv{I}$) with the same $\bv{D}$.
+
+\begin{align}
+\bv{P} = \bv{S}\bv{D}\bv{S}^T
+\end{align}
+
+Note that if $\bv{P}$ is a projection matrix then $\bv{Q} = \bv{I}-\bv{P}$ is also a projection matrix:
+
+\begin{align}
+\bv{Q}^2 = (\bv{I}-\bv{P})(\bv{I}-\bv{P}) = \bv{I} - 2\bv{P} + \bv{P}^2 = \bv{I} - \bv{P} = \bv{Q}
+\end{align}
+
+If $\bv{P}$ is hermitian then $\bv{Q}$ is hermitian. If $\bv{P}$ is real and symmetric then $\bv{Q}$ is real and symmetric.
+
+\subsection{Appendix B: Moore-Penrose Pseudoinverse}
+
+Consider an arbitrary $N\times M$ matrix $A$. If there is a ($M\times N$) matrix $A^+$ satisfying
+
+\begin{align}
+AA^+A &= A\\
+A^+AA^+ &= A^+\\
+(AA^+)^{\dag} &= AA^+\\
+(A^+A)^{\dag} &= A^+A
+\end{align}
+
+Then we say $A^+$ is a Moore-Penrose inverse for $A$. Existence and uniqueness of $A^+$ for any matrix $A$ are proven on the Wikipedia page for ``Proofs involving the Moore-Penrose Inverse''.
+
+Now a quick Lemma. I will prove that $A^{\dag} A$ has the same null space as $A$.
+
+If $x \in \text{Ker}(A)$ then $A^{\dag}Ax = A^{\dag}0 = 0$ so $x\in \text{Ker}(A^{\dag}A)$.
+if $x\in \text{Ker}(A^{\dag}A)$ then $A^{\dag}Ax=0$ which implies $x^{\dag}A^{\dag}Ax = (Ax)^{\dag}Ax = ||Ax||^2 = 0$ which implies $Ax=0$ so $x\in\text{Ker}(A)$.
+Thus $\text{Ker}(A) = \text{Ker}(A^{\dag}A)$.
+
+Now, this means that if $A$ is full rank then the nullity of $A$ is zero so the nullity of $A^{\dag}A$ is also zero. This means the $M\times M$ matrix $A^{\dag}A$ is invertible.
+
+Returning to the Moore-Penrose inverse for the case that $A$ has full rank (and thus $A^{\dag}A$ is invertible) we have
+
+\begin{align}
+A A^+ A &= A\\
+A^{\dag} A A^+ A &= A^{\dag} A\\
+(A^{\dag}A)^{-1}A^{\dag}AA^+A &= (A^{\dag} A)^{-1} A^{\dag} A\\
+A^+ A &= I
+\end{align}
+
+We also have that
+
+\begin{align}
+(A^+A)^{\dag} &= A^{\dag} (A^+)^{\dag} = A^+ A = I\\
+(AA^+)^{\dag} &= (A^+)^{\dag}A^{\dag} = A A^+
+\end{align}
+
+Multiplying the bottom equation on the left by $A^{\dag}$ we get
+
+\begin{align}
+A^{\dag}(A^+)^{\dag}A^{\dag} &= A^{\dag}A A^+\\
+A^{\dag} &= A^{\dag}A A^+\\
+A^+ &= (A^{\dag} A)^{-1} A^{\dag}
+\end{align}
+
+If $A$ is square then $A$ is invertible so we then have
+
+\begin{align}
+A^+ = (A^{\dag}A)^{-1}A^{\dag} = A^{-1}(A^{\dag})^{-1} A^{\dag} = A^{-1}
+\end{align}
+
+We will show that $P = A A^+$ is an orthogonal projector onto the range of $A$.
+
+\begin{align}
+P^2 &= AA^+AA^+ = AA^+ = P\\
+P^{\dag} &= (AA^+)^{\dag} = AA^+ = P
+\end{align}
+
+I will now show the range of $P$ is the same as the range of $A$. First we have that
+
+\begin{align}
+PA = AA^+A = A
+\end{align}
+
+Suppose $x$ is in the range of $A$ so that $x = Ay$ for some $y$ so $Px = PAy = Ay = x$ so $x$ is in the range of $P$. Now suppose $x$ is in the range of $P$ so that $Py=x$ for some $y$. We have
+
+\begin{align}
+PPy &= Px\\
+Py &= Px\\
+Px &= x\\
+AA^+x &= x
+\end{align}
+
+So we see that $x$ is in the range of $A$. Thus $A$ and $P$ have the same range. This means that the rank of $P$ is the same as the rank of $A$.
+
+\subsection{Appendix C: Multivariate Gaussian Random Variables}
+
+if $\bv{X}$ is a gaussian random variable distributed as
+
+\begin{align}
+\bv{X} \sim \mathcal{N}(\bv{\mu}, \bv{\Sigma})
+\end{align}
+
+Then the random variable
+
+\begin{align}
+\bv{Y} = \bv{M}\bv{X} + \bv{b}
+\end{align}
+
+is distributed as
+
+\begin{align}
+\bv{X} \sim \mathcal{N}(\bv{M}\bv{\mu} + \bv{b}, \bv{M}\bv{\Sigma}\bv{M}^T)
+\end{align}
+
+This follows from a few facts. The joint probability density function (PDF) for a gaussian random vector is
+
+\begin{align}
+f_{\bv{X}}(\bv{x}) = \frac{1}{(2\pi)^{\frac{n}{2}}\sqrt{\text{Det}(\bv{\Sigma})}}\exp\left[-\frac{1}{2}\left((\bv{x}-\bv{\mu})^T\bv{\Sigma}^{-1}(\bv{x}-\bv{\mu})\right)\right]
+\end{align}
+
+When transforming a random variable $\bv{X}$ into $\bv{Y}$ by
+
+\begin{align}
+\bv{Y} = g(\bv{X})
+\end{align}
+
+The joint PDF transforms as
+
+\begin{align}
+f_{\bv{Y}}(y) = \frac{f_{\bv{X}}(g^{-1}(\bv{y}))}{\text{Det}(Dg|_{g^{-1}(\bv{y})})}
+\end{align}
+
+The proof the PDF transformation formula can be found in Mathematics stack exchange under the question ``Derivation of multivariate transformation of random variables'' and the application of the formula to the case of an affine transformation of a gaussian random vector can be found in Cross Validated stack exchange under the question ``Linear Transformation of Gaussian Random Variable''.
+
+In particular, consider a normal multivariate random vector
+
+\begin{align}
+\bv{Z} \sim \mathcal{N}(\bv{0}, \bv{I})
+\end{align}
+
+If we multiply this by an orthogonal matrix $\bv{S}^T = S^{-1}$ we can see
+
+\begin{align}
+\bv{Z}' &= \bv{S}\bv{Z} \sim \mathcal{N}(\bv{0}, \bv{S}\bv{I}\bv{S}^T) = \mathcal{N}(\bv{0}, \bv{I}) 
+\end{align}
+
+Thus an orthogonal transformation of a normal random variable is again normal.
+
+\subsection{Appendix D: Multidimensional Ellipsoid}
+
+The formula for a multidimensional ellipse is given by:
+
+\begin{align}
+\sum_{i=1}^D \frac{x_i^2}{r_i^2} = 1
+\end{align}
+
+This gives an ellipse whose axes along the $i$ axis have length $r_i$. The ellipse is aligned along the coordinate axes. This could be re-written as
+
+\begin{align}
+\bv{x}^T\bv{R}^{-1}\bv{x} = 1
+\end{align}
+
+Here $\bv{x}$ is a vector of the coordinates, $x_i$ and $\bv{R}$ is a diagonal matrix with the squared radii along the diagonals so that $\bv{R}^{-1}$ has $\frac{1}{r_i^2}$ along the diagonals.
+
+We can perform transformations on this ellipse by transforming the coordinates. For example, if we take $x\rightarrow x-x_0$ we get
+
+\begin{align}
+(\bv{x}-\bv{x}_0)^T \bv{R}^{-1}(\bv{x}-\bv{x}_0) = 1
+\end{align}
+
+This takes the ellipse and translates it by $\bv{x}_0$ so that it is now centered at $\bv{x}_0$.
+
+If we perform a transformation on $\bv{x}-\bv{x}_0$ we can transform the ellipse
+
+\begin{align}
+(\bv{x}-\bv{x}_0)^T(\bv{T}^{-1})^T \bv{R}^{-1} \bv{T}^{-1}(\bv{x}-\bv{x}_0) = 1
+\end{align}
+
+This is then the equation for an ellipse in the coordinates 
+
+\begin{align}
+\bv{\tilde{x}} = \bv{T}^{-1}(\bv{x}-\bv{x}_0)
+\end{align}
+
+Where $\bv{x} = \bv{T}\bv{\tilde{x}} + \bv{x}_0$.
+
+The axis endpoints occur at the points where $\bv{\tilde{x}} = \bv{e}_i$ where $\bv{e}_i$ are the canonical coordinate vectors so they occur when
+
+\begin{align}
+\bv{x} = \bv{T}\bv{e}_i + \bv{x}_0
+\end{align}
+
+$\bv{T}\bv{e}_i$ gives the first column of $\bv{T}$. 
+
+We consider now a positive definite, symmetric matrix $\bv{C}$. Since $\bv{C}$ is symmetric we can diagonalize it as
+
+\begin{align}
+\bv{C} = \bv{T} \bv{R} \bv{T}^T
+\end{align}
+
+Where $\bv{T}$ is an orthogonal matrix so that $\bv{T}^T = \bv{T}^{-1}$. The columns of $\bv{T}$ are the eigenvectors of $\bv{C}$ and the elements along the diagonal of $\bv{R}$ are the eigenvalues of $\bv{C}$.
+We can consider
+
+\begin{align}
+\bv{C}^{-1} &= (\bv{T}^T)^{-1} \bv{R}^{-1} \bv{T}^{-1}\\
+\end{align}
+ We can then consider
+
+\begin{align}
+(\bv{x}-\bv{x}_0)^T \bv{C}^{-1}(\bv{x}-\bv{x}_0) &= 1\\
+(\bv{x}-\bv{x}_0)^T (\bv{T}^{-1})^T \bv{R}^{-1} \bv{T}^{-1}(\bv{x}-\bv{x}_0) &= 1
+\end{align}
+
+So we see that
+
+\begin{align}
+(\bv{x}-\bv{x}_0)^T \bv{C}^{-1}(\bv{x}-\bv{x}_0) &= 1\\
+\end{align}
+
+Is the formula for an ellipse centered at $\bv{x}_0$, with radii equal to the square root of the eigenvalues of $\bv{C}$ and with axes oriented along the eigenvectors of $\bv{C}$.
+
+\subsection{Appendix E: Gauss-Markov Theorem}
+
+Above we saw that $\bv{\hat{\beta}} = \bv{X}^+\bv{\beta^*}$ was an unbiased estimator for $\bv{\beta^*}$ when the true model function is in fact linear.
+That is we saw that
+
+\begin{align}
+E\left[\bv{\hat{\beta}}\right] = \bv{\beta^*}
+\end{align}
+
+This only relies on $E[\bv{\ep}] = \bv{0}$ so it is in fact valid for both OLS and GLS. 
+Here we restrict to OLS so that $\text{Cov}(\bv{\ep}) = E[\bv{\ep}\bv{\ep}^T] = \sigma^2\bv{I}$.
+
+We would prefer the variance of the estimator to be as small as possible so that we know that for any given data realization $\ul{\bv{Y}}$ we can expect the extracted estimator $\ul{\bv{\hat{\beta}}}$ to be close to $\bv{\beta^*}$.
+
+We can quantify the quality of the covariance of the estimator in the following way. We consider the concept of a best linear unbiased estimator (BLUE). 
+Let $\bv{C} = \text{Cov}(\bv{\hat{\beta}})$. 
+Suppose we have another linear unbiased estimator $\bv{\tilde{\beta}}$ for $\bv{\beta^*}$ which is found by some other means than the formula described above. 
+There will be a corresponding covariance matrix for that estimator as well, $\bv{\tilde{C}}$.
+
+We say an estimator is the best if the difference between its covariance matrix $\bv{C}$ and the covariance matrix for any other estimator $\bv{\tilde{C}}$ results in a positive definite matrix. 
+Consider
+
+\begin{align}
+\bv{\tilde{\beta}} &= (\bv{X}^+ + \bv{D})\bv{Y}\\
+E\left[\bv{\tilde{\beta}}\right] &= E\left[(\bv{X}^+ + \bv{D})\bv{Y} = (\bv{X}^+ + \bv{D})(\bv{X}\bv{\beta^*}+\bv{\ep})\right]\\
+&= (\bv{X}^+ + \bv{D})\bv{X}\bv{\beta^*}\\
+&= (\bv{I} + \bv{D}\bv{X})\bv{\beta^*}
+\end{align}
+
+Thus for $\bv{\tilde{\beta}}$ to be unbiased we must have $\bv{D}\bv{X} = \bv{0}$. Now for the covariance. First 
+
+\begin{align}
+\bv{\tilde{\beta}} - E\left[\bv{\tilde{\beta}}\right] &= (\bv{X}^+ + \bv{D})\bv{Y} - \bv{\beta^*}\\
+&= \bv{X}^+\bv{X}\bv{\beta^*} + \bv{X}^+ \bv{\ep} + \bv{D}\bv{X}\bv{\beta^*} + \bv{D}\bv{\ep} - \bv{\beta^*}\\
+&= (\bv{X}^+ + \bv{D})\bv{\ep}
+\end{align}
+
+\begin{align}
+\bv{\tilde{C}} &= \text{Cov}(\bv{\tilde{\beta}}) = E\left[\left(\bv{\tilde{\beta}} - E\left[\bv{\tilde{\beta}}\right]\right)\left(\bv{\tilde{\beta}} - E\left[\bv{\tilde{\beta}}\right]\right)^T\right]\\
+&=E\left[\left(\bv{X}^+ + \bv{D}\right) \bv{\ep}\bv{\ep}^T \left(\bv{X}^+ + \bv{D}\right)^T \right]\\
+&= \left(\bv{X}^+ + \bv{D}\right) \bv{\Omega} \left(\bv{X}^+ + \bv{D}\right)^T\\
+&= \sigma^2 \left(\bv{X}^+ + \bv{D}\right) \left(\bv{X}^+ + \bv{D}\right)^T\\
+&= \sigma^2 \left(\bv{X}^+(\bv{X}^+)^T + \bv{X}^+ \bv{D}^T + \bv{D}(\bv{X}^+)^T +\bv{D}\bv{D}^T \right)
+\end{align}
+
+We have from above that $\bv{X}^+(\bv{X}^+)^T = (\bv{X}^T\bv{X})^{-1}$. Then we have
+
+\begin{align}
+\bv{X}^+\bv{D}^T = (\bv{X}^T\bv{X})\bv{X}^T\bv{D}^T = \bv{0}
+\end{align}
+
+since $\bv{X}^T \bv{D}^T = (\bv{D}\bv{X})^T = \bv{0}^T = \bv{0}$. Likewise for the $\bv{D}(\bv{X}^+)^T$. We can write this as
+
+\begin{align}
+\bv{\tilde{C}} &= \sigma^2\left((\bv{X}^T\bv{X})^{-1} + \bv{D}\bv{D}^T\right)\\
+&=\bv{C} + \sigma^2 \bv{D}\bv{D}^T
+\end{align}
+
+It is the case that $\bv{D}\bv{D}^T$ is positive semi-definite. 
+This means that the covariance matrix $\bv{\tilde{C}}$ for any unbiased linear estimator $\bv{\tilde{\beta}}$ of $\bv{\beta^*}$ exceeds the covariance matrix $\bv{C}$ of the OLS estimator $\bv{\hat{\beta}}$ by a positive semi-definite matrix. 
+This means that $\bv{\hat{\beta}}$ is a BLUE. 
+This statement is the Gauss-Markov theorem and motivates the practical use of the OLS estimator defined above.
+
+
+\end{document}

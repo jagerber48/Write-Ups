@@ -1,0 +1,124 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+	
+
+\begin{document}
+\title{Conditional Spin Squeezing}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+Last Fall I went to a conference on many-body cavity QED at ITAMP and just now I went to a DAMOP conference. Both times I saw talks from the Thompson group about their spins in a cavity and both times I have found myself thinking about their results on the plane ride home. I think I have finally worked out have I have been trying to work out and I find it quite interesting. I want to try to summarize my thoughts here.
+
+Here is the short story of what they have done that I find so interesting. They can put spins such that they point transverse to the cavity axis in a coherent spin state. They can measure Jz in the cavity by putting in resonant light and finding the cavity resonance. In practice they do this by sweeping a cavity probe and finding the peak of the transmission spectrum. In particular their Jz sensitivity is much better than the variance of a coherent state. After this measurement then they know what Jz is to better than the coherent state uncertainty. They say the measurement has collapsed the spin into a (conditionally) spin squeezed state. They can then perform another measurement of Jz and see that they (unsurprisingly) get the same result again. They have taken it one step further and applied some feedback in which they apply a small rabi pulse to rotate the spin to spin zero based on the first measurement so that the second measurement always comes out to spin zero with variance better than the coherent state uncertainty. They have now arguably prepared an unconditionally spin squeezed state.
+
+\section{More Details}
+
+Ok now I will add some more ingredients necessary to go through the story I want to tell. 
+
+\subsection{Hamiltonian}
+First the interaction Hamiltonian between the spins and the cavity field. Suppose we simply have
+
+\begin{align}
+\hat{H} = \hbar \Omega \hat{a}^{\dag} \hat{a} \hat{J}_z
+\end{align}
+
+We can view this Hamiltonian in two ways. In one way $\Omega \hat{J}_z$ can be thought of as a spin projection dependent cavity shift and in another way $hbar \Omega \hat{a}^{\dag} \hat{a}$ can be thought of as being proportional to an effective photon number dependent magnetic field. 
+
+\subsection{Dynamics}
+
+After thinking about this Hamiltonian for a while I have realized that it is actually quite rich and to give the full description of the spin squeezing I think it is necessary to preserve the full non-linearity.
+
+The equations of motion are
+
+\begin{align}
+\dot{\hat{J}}_z &= 0\\
+\dot{\hat{a}} &= -\Omega \hat{a} \hat{J}_z\\
+\dot{\hat{J}}_x &= -\Omega \hat{a}^{\dag}\hat{a} \hat{J}_y\\
+\dot{\hat{J}}_y &= \Omega \hat{a}^{\dag}\hat{a} \hat{J}_x\\
+\dot{\hat{n}} &= 0 
+\end{align}
+
+Note that these equations of motion do not include the cavity driving fields.
+
+We can notice that $\hat{J}_x$ and $\hat{J}_y$ constitute a simple harmonic oscillator with a $\hat{n}$ dependent oscillator frequency. This is in line with the idea that the photon number creates an effective magnetic field and the precession is captured by the harmonic motion of $\hat{J}_x$ and $\hat{J}_y$.
+
+The interesting part, I think, however, is what happens when the cavity is driven. Note that $\Braket{\hat{J}_z} = \frac{J}{2}$ for the coherent, that is, half way up the magnetization sphere. Suppose the system was classical and truly had $\hat{J}_z = \frac{J}{2}$ (an approximation quantum mechanically). In this case the driving field could be tuned so that it is resonant with the cavity (accounting for the frequency shift from the atoms in the cavity with $\hat{J}_z = \frac{J}{2}$). 
+
+However, the problem is that $\hat{J}_z$ is not a fixed quantity and the spins are in fact in a superposition of different values of $\hat{J}_z$. This means that if the cavity is driven with a particular tone then for the parts of the superposition for which $\hat{J}_z = 0$ the tone will be on resonance but for the parts for which $\hat{J}_z$ is greater or less than zero this tone will be detuned either to the red or to the blue. In particular, for the parts of the superposition for which $\hat{J}_z$ is non-zero the $\hat{J}_x$ and $\hat{J}_y$ harmonic oscillator will have a smaller oscillation frequency because $\hat{n}$ in the cavity will be smaller for those parts of the superposition.
+
+This will have the effect of twisting the coherent state into a different sort of state which is in fact non-Gaussian. Importantly, note also that this state will have an increased variance in the transverse directions as compared to the coherent state. This will be important later.
+
+In addition to a different photon number the cavity light will have different detunings for the different parts of the superposition. I'm not actually sure what role the cavity detuning actually plays in this story. At the present it mainly looks like the detuning will stay confined to the optical sector in the $\hat{a}$ equation of motion while the spin dynamics will have no dependence on the cavity detuning. However, this $\hat{J}_z$ dependent phase shift of the light will be important when it comes to reading out the cavity field to determine the value of the spin in the cavity.
+
+Note that at this point I am not sure if this Hamiltonian accurately describes the Thompson experiment. Their experiment is described not by a spin photon number coupling (like in E3) but rather by a spin-photon hopping coupling (the Jaynes-Cummings Hamiltonian). This difference arises because in the Thompson setup the cavity is on or very near atomic resonance (actually the cavity is orders of magnitude broader than atomic resonance because they have such a narrow transition).. in any case they are in a resonant cavity QED regime whereas in E3 the cavity is far detuned from atomic resonance so that we are wroking in a dispersive regime.
+
+In any case I will continue with the current analysis.
+
+\section{$\hat{J}_z$ Measurement}
+
+The cavity resonance frequency can be found by sweeping a probe across resonance and watching the transmission and looking for the peak. However, it is difficult to analyze such a situation theoretically because the probe detuning is changing as a function of time. This is additionally complicated by the fact that the probe detuning must be thought of as a being a quantum variable which can be in a superposition according to the spin superposition within the cavity. This then becomes a tricky story in which to imagine the dynamics. In particular I think the twisting reverses directions as the probe sweeps across resonance but somehow in a hysteretic such that the end result has some twist.
+
+Instead I will consider a theoretically simpler phase detection scheme. For this measurement the light will simply be pulsed on for some time at the (average) resonant frequency described above for the mean spin value $\Braket{\hat{J}_z}$. Then after this light leaves the cavity the light will be detected in a homo or heterodyne receiver and the phase of the light will be extracted. In this case the detuning is still a quantum operator which can be in a superposition state according to the $\hat{J}_z$ superposition but it does not change as a function of time.
+
+\section{The Overall Measurement Scheme}
+
+The simplest measurement I am now imagining includes a three step sequence.
+
+\begin{enumerate}
+	\item{First a measurement pulse is applied to measure $\hat{J}_z$ The measured value is recorded as $M^1_i$ where the superscript 1 indicates the first measurement and the subscript $i$ indicates the result on the $i^{\text{th}}$ iteration of the experiment.}
+	\item{Next the probe field is turned off. During this time all variables are stationary and no dynamics occur.}
+	\item{Finally an identical measurement pulse is applied to again measure $\hat{J}_z$. Now the value is recorded as $M^2_i$.}
+\end{enumerate}
+
+I can tell you now what we expect the outcome of these measurements to be. First of all we should have $\Braket{M^1} = \frac{1}{N}\sum_{i = 1}^n M^1_i$ and $\Braket{M^2}$ are both equal to $\frac{J}{2}$ as expected for the coherent state.
+
+In addition the variance $\Braket{(\Delta M^1)^2}$ will be equal to that for a coherent state. That is, we don't know what value we will measure for $\hat{J}_z$ since it is initially in a superposition of many different values. 
+
+Next, We should expect very high correlation between the values of $M^1_i$ and $M^2_i$. If we measure a certain value on the first measurement, then since nothing happened in between the two shots, we expect the same value on the final shot. That is, we could suppose that we have $M^1_i = M^2_i$. We could calculate the Pearson correlation coefficient for such a set of measurements and find
+
+
+\begin{align}
+P = \frac{\Braket{M^1 M^2}}{\sqrt{\Braket{(\Delta M^1)^2}\Braket{(\Delta M^2)^2}}}
+\end{align}
+
+If $M^1_i = M^2_i$ then we can see that $P = 1$. The two variables are perfectly correlated. Note that in the course of this analysis one would see the variance of the second measurement $\Braket{(\Delta M^2)^2}$ is also equal to the variance of a coherence state. This is simply to say that on any given run of the experiment, before we do either measurement (or throwing out the result of the first measurement) we do not know what the outcome of the second measurement will be. We do of course know what the outcome of the second measurement will be once we have performed the first measurement.
+
+Note that so far I have reported what the measurement results will be but I haven't given any justification for why we expect $M^1_i = M^2_i$. I have simply claimed it on common sense, but I at least heavily doubt my own common sense when it comes to questions of quantum measurement.
+
+In the next section I will give stories that explain the results I have described. The first story will be from a Copenhagen interpretation of the measurement and the second will be from more of a Everettian or Many-worlds interpretation of the measurement.
+
+\section{The Copenhagen Story}
+
+The Copenhagen story is quite simple. In the Copenhagen story we say that after the first measurement the spin is projected onto whichever value of $\hat{J}_z$ is measured. So if we measure a value of $0$ we expect all of the spins to collapse onto the equator. Then of course nothing happens during the second stage, and finally during the final stage we measure again, but since the atoms were all now pointing along the equator we clearly measure the same result during the second measurement.
+
+\section{The Everettian Story}
+
+Generally in the Everettian interpretation of quantum mechanics the mechanism of Copenhagen collapse is replaced with a spread of entanglement. Where the Copenhagen spins are collapsed after the probe beam passes through the spins (or perhaps after the light has been measured on the photodetector?) the Everettian spins become entangled with the probe light, and the probe light subsequently becomes entangled with the photodetector. No information is lost, the entanglement simply spreads throughout the entire environment.
+
+
+
+\end{document}

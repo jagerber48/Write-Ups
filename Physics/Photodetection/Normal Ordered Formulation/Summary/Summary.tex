@@ -1,0 +1,404 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Linear Multiplexed Matched Filtering}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+[Disclaimer: This document is patched together from some of my write-ups. A lot is copy and pasted. Also for purposes of a publication many steps could probably be skipped. I will work on that pairing down later]
+
+The goal of this document is to summarize the work I have done over the past at least half of a year towards obtaining an end to end descriptions of the E3 spin mechanics optodynamical system. In particular I want to highlight a few interesting portions of the theoretical treatment that the E3 team and myself have utilized in trying to understand our system.
+
+The main feature that sets this work apart from much of the other work that I am familiar with in the field of optomechanics is the emphasis on the time domain description of the system which has been developed at each stage. Much of the optomechanics literature is expressed in the frequency domain. This is because, often in optomechanical systems, measurements are performed under steady state conditions. Under these steady state conditions most, if not all, of the features of the system can be extracted by looking at spectral densities of the  detected signal.
+
+However, in our system, we are considering a positive mass mechanical oscillator which is coupled to a negative mass spin oscillator via the optical cavity field. Under the appropriate conditions this system exhibits a negative mass instability in which the two oscillators undergo parametric amplification. This negative mass instability leads to exponential growth of the occupation and correlation of the two oscillators, of interest for metrological purposes.
+
+This system exhibits explicit out of equilibrium behavior and is thus not amenable to a Fourier domain analysis. This drove us to search for time domain descriptions of our system.
+
+I will discuss three main pieces of this end to end description. 
+
+The first piece is the description of the optodynamical evolution of the system within the cavity when the coupling between the oscillators is turned on in the presence of thermal and back-action drives. 
+
+The evolution of a linear, thermally-driven, coupled optodynamical system can be cast as a multi-dimensional Ornstein-Uhlenbeck process arising from Langevin equations of motion. In the first piece of this work we will extract expressions for the time evolutoin of each of the (hermitian) quadrature operators involved in the optodynamical system as well as time evolution of the means and two-time correlation functions of the quadrature operators. At this point I will highlight that, although the quadrature operators themselves are hermitian, since they do not necessarily commute with each other, products of the operators may not be hermitian. The consequence of that is that the two-time correlation functions can in general be complex, a non-classical feature. A main theme of this work will be to trace how these imaginary correlations show up throughout the system and detection.
+
+%In the E3 system it is possible to make further approximations, including an adiabatic approximation and a rotating wave approximation to simplify the dynamics until explicit analytic expressions for a range of quantities of interest are readily available. In this work I will hold back from making these approximations and keep the description general. 
+
+The second piece is a time-domain normal and time ordered treatment of our heterodyne detection. The basic picture is that the system undergoes interesting dynamics within the cavity and interaction with the cavity field imprint signatures of these dynamics onto the cavity field. This field then leaks out of the cavity where it is subsequently detected on our photo-detector. What I will describe here is a scheme for converting quantum statistical properties of the probe field into classical statistical properties of the detected photocurrent. To do this I will utilize a (little used) treatment of photo-detection in which normal and time ordered expectation values (Glauber correlation functions) of the probe field are connected to statistics of the photocurrent. In working with the normal and time ordered treatment of heterodyne detection, we will see that the two-time correlation function for the photocurrent will have some dependence on the imaginary parts of the two-time correlation functions of the system operators. At this point I will point out that since there is sensitivity to the imaginary part of the two-time correlation function, it should, in principle, be possible to extract these ``imaginary'' correlations from the detected signal. It will be shown later that this is possible.
+
+Continuing on the last point, the third piece of this work will be a treatment of a post-processing matched filtering technique applied to the measured photocurrent to extract means and covariances of the optodynamical system operators. Of particular interest will be the possibility to apply filters which can extract the imaginary parts of the covariances between the system operators.
+
+[At this point there should be some discussion of systems in which this can be applied and why it might be interesting. Is there important physical significance of these ``imaginary'' correlations? Squeezing? Entanglement? Uncertainty Principle?]
+
+\section{Solution to Linear Langevin Equations}
+Consider a system which evolves under the following equations of motion: [Perhaps it could be useful to show how this equation of motion arises when considering an optodynamical system to motivate the generalization]
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{A}\bv{v}(t) + \bv{\eta}(t)
+\end{align}
+
+With
+
+\begin{align}
+\bv{v} =
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+\vdots\\
+v_{2n^*-1}\\
+v_{2n^*}
+\end{bmatrix}
+=
+\begin{bmatrix}
+X_1\\
+P_1\\
+X_2\\
+P_2\\
+\vdots\\
+X_{n^*}\\
+P_{n^*}
+\end{bmatrix}
+\hspace{1 in}
+\bv{\eta} =
+\begin{bmatrix}
+\eta_1\\
+\eta_2\\
+\eta_3\\
+\eta_4\\
+\vdots\\
+\eta_{2n^*-1}\\
+\eta_{2n^*}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\sqrt{\Gamma_1}X^{\text{in}}_1\\
+\sqrt{\Gamma_1}P^{\text{in}}_1\\
+\sqrt{\Gamma_2}X^{\text{in}}_2\\
+\sqrt{\Gamma_2}P^{\text{in}}_2\\
+\vdots\\
+\sqrt{\Gamma_{n^*}}X^{\text{in}}_{n^*}\\
+\sqrt{\Gamma_{n^*}}P^{\text{in}}_{n^*}
+\end{bmatrix}
+\end{align}
+
+and $\bv{A}$ a $2n^* \times 2n^*$ matrix.
+Here $X_i$ and $T_i$ represent the position and momentum of the $i^{th}$ oscillator. Note I use the index $n^*$ rather than $n$. This is because throughout I will sometimes use $n$ as a regular index within summations, whereas $n^*$ is some fixed number. I will try my best to not have an expression include both of these indices.
+The $X_i^{\text{in}}$ and $P_i^{\text{in}}$ are stochastic drive terms (arising due to coupling to thermal reservoirs, for example). The coupling rate for each reservoir is $\Gamma_i$. These terms satisfy
+
+\begin{align}
+[X_i^{\text{in}}(t_1),P_j^{\text{in}}(t_2)] &= 2i\delta(t_1-t_2)\delta_{ij}\\
+[X_i^{\text{in}}(t_1),X_j^{\text{in}}(t_2)] = [P_i^{\text{in}}(t_1),P_j^{\text{in}}(t_2)] &= 0\\
+\Braket{X_{i}^{\text{in}}(t)} = \Braket{P_i^{\text{in}}(t)} &= 0\\
+\Braket{X_i^{\text{in}}(t_1)X_j^{\text{in}}(t_2)} = \Braket{P_i^{\text{in}}(t_1)P_j^{\text{in}}(t_2)} &= (2n_i+1)\delta(t_1-t_2)\delta_{ij}\\
+\Braket{X_i^{\text{in}}(t_1)P_j^{\text{in}}(t_2)} = -\Braket{P_i^{\text{in}}(t_1)X_j^{\text{in}}(t_2)} &= i\delta(t_1-t_2)\delta_{ij}
+\end{align}
+
+Note that in the expressions above the indices run from $1\ldots n^*$. In what follows below the indices will run from $1\ldots n^*$ since we are indexing directly over all elements of these arrays.
+
+
+\subsection{Diagonalization}
+
+We suppose that $\bv{A}$ is diagonalizable so that
+
+\begin{align}
+\bv{A} &= \bv{T}\bv{D}\bv{T}^{-1}\\
+\bv{D} &= \bv{T}^{-1}\bv{D}\bv{T}
+\end{align}
+
+Where $\bv{D}$ is diagonal with the eignvalues of $\bv{A}$ along the diagonal and $\bv{T}$ is the matrix of eigenvectors of $\bv{A}$
+Rewritten in index notation for later use:
+
+\begin{align}
+A_{ij} &= T_{ik}D_{kl}T^{-1}_{lj} = T_{ik}d_k\delta_{kl}T^{-1}_{lj} = T_{ik}d_k T^{-1}_{kj}\\
+D_{ij} &= T^{-1}_{ik}A_{kl}T_{lj}
+\end{align}
+
+Here $d_k$ is the $k^{th}$ eigenvalue of $\bv{A}$. Note that the index $k$ appears three times in these expressions. The explicit expansion of $D_{kl}$ into $d_k \delta_{kl}$ breaks the standard rules of Einstein summation convention so we will sometimes have weird summations like those above. This ambiguity could be lifted somewhat by writing in explicit summations but I will forego that for now to save space/time. [Later I can put in these explicit summations]
+
+We are interested in the time evolution of this system. In the end we will be interested in the two-time correlation matrix of this system. Our approach will be to solve this linear system for $\bv{v}(t)$ In terms of the system parameters contained in $\bv{A}$, $\bv{\eta}$ and $\bv{v}(0)$. Then, with $\bv{v}(t)$ in hand and knowing the statistics of $\bv{v}(0)$ we can calculate formulas for more complex function of $\bv{v}(t)$ such as the two-time correlation matrix $\Braket{\bv{v}(t_1)\bv{v}^T(t_2)}$.
+
+It will be helpful to work entirely in index notation, especially when working out the effects of applying a matched filter. [The equations of motion can also be solved in vector form using matrix exponentials. I find the index notation to be more accessible]
+
+\subsection{Time Evolution}
+We rewrite the equations of motion in index notation form:
+
+\begin{align}
+\dot{v}_i(t) = A_{ij}v_j(t) + \eta_i(t)
+\end{align}
+
+We can expand this into normal modes by applying the diagonalization of $\bv{A}$
+
+\begin{align}
+\dot{v}_i(t) = T_{ik}d_k T^{-1}_{kj} v_j(t) + \eta_i(t)
+\end{align}
+
+Multiplying on the left by $T^{-1}_{li}$
+
+\begin{align}
+T^{-1}_{li} \dot{v}_i(t) &= T^{-1}_{li}T_{ik} d_k T^{-1}_{kj} v_j(t) + T^{-1}_{li}\eta_i(t) = \delta_{lk} d_k T^{-1}_{kj} v_j(t) + T^{-1}_{li}\eta_i(t)\\
+&= d_l T^{-1}_{lj}v_j(t) + T^{-1}_{li}\eta_i(t)
+\end{align}
+
+Note here how I've explicitly shown how the step $T^{-1}_{li}T_{ik} = \delta_{lk}$. This is how tensor inverse operations are performed in index notation. Later on we will face higher dimensional tensors which must be inverted but the scheme will be similar.
+
+We can then identify $T^{-1}_{li}v_i = \tilde{v}_l$ as the normal mode vectors of the system. We also identify $T^{-1}_{li}\eta_{i} = \tilde{\eta}_l$. The corresponding vector formulae are
+
+\begin{align}
+\tilde{\bv{v}} = \bv{T}^{-1}\bv{v}\\
+\tilde{\bv{\eta}} = \bv{T}^{-1}\bv{\eta}\\
+\end{align}
+
+And the inverses
+
+\begin{align}
+\bv{v} = \bv{T}\tilde{\bv{v}}\\
+\bv{\eta} = \bv{T}\tilde{\bv{\eta}}\\
+\end{align}
+
+This yields
+
+\begin{align}
+\dot{\tilde{v}}_l(t) = d_l \tilde{v}_l(t) + \tilde{\eta}_l(t)
+\end{align}
+
+The different modes are decoupled here into a differential equation which is easily solvable
+
+\begin{align}
+e^{-d_l t}\left(\dot{\tilde{v}}_l(t) - d_l \tilde{v}_l(t)\right) = e^{-d_lt}\tilde{\eta}_l(t)\\
+\frac{d}{dt}\left(e^{-d_l t} \tilde{v}_l(t)\right) = e^{-d_l t}\tilde{\eta}_l(t)
+\end{align}
+
+Integrating and solving
+
+\begin{align}
+e^{-d_l t} \tilde{v}_l(t) - \tilde{v}_l(0) = \int_{t'=0}^{t}e^{-d_l t'}\tilde{\eta}_l(t')dt'\\
+\tilde{v}_l(t) = e^{d_l t}\tilde{v}_l(0) + \int_{t'=0}^{t} e^{d_l (t-t')} \tilde{\eta}(t')dt'
+\end{align}
+
+Note that summation is NOT implied for the first term here. This is the pesky $d_l$ breaking Einstein summation convention again. Here we have solved the time evolution of the normal modes. We see that each normal mode evolves like an independent Ornstein-Uhlenbeck process driven by noise drive $\tilde{\eta}_l(t)$.
+
+In what follows we will be concerned with the evolution of the bare oscillators rather than just the normal modes. We convert back into bare oscillator expressions.
+
+\begin{align}
+\tilde{v}_l(t) = T^{-1}_{li}v_i(t) = e^{d_l t}T^{-1}_{li}v_i(0) + \int_{t'=0}^{t}e^{d_l(t-t')}T^{-1}_{li}\eta_i(t')dt'
+\end{align}
+
+We multiply on the left by $T_{jl}$ and apply the requisite kronecker deltas to find
+
+\begin{align}
+v_j(t) = e^{d_l t} T_{jl}T^{-1}_{li} v_i(0) + \int_{t'=0}^{t} e^{d_l(t-t')}T_{jl}T^{-1}_{li}\eta_i(t')dt'
+\end{align}
+
+\subsection{Mode Overlap Tensor}
+
+It is tempting to contract $T_{jl}T^{-1}_{li}$ to $\delta_{ji}$ but this in fact cannot be done because of the presence of the exponential term which contains an $l$ index. Again this confusion is because we broke Einstein summation conventions earlier.
+
+A bit of intuition on this point. The construction $T_{jl}T^{-1}_{li}$ is a three index tensor. It could be written, for example (with summation on $l$ NOT implied on the RHS), as
+
+\begin{align}
+\tau_{jli} = T_{jl}T^{-1}_{li}
+\end{align}
+
+The intuition behind this tensor is as follows. In general we see that $v_j(t)$ has components of evolution at the frequencies of all of the eigenvalues of $\bv{A}$. That is, in general, $v_j(t)$ contains terms like $e^{d_l}(t)$ for all values of $l$. In addition, The magnitude of this evolution is modified by the presence of initial occupation of any of the oscillator quadratures, $v_i(0)$. That is, an initial occupation of quadrature $i$ indicated by $v_i(0)$, causes some evolution of quadrature $j$, indicated by $v_j(t)$ and eigenfrequency $d_l$ indicated by $e^{d_l t}$. $\tau_{jli}$ captures this dependency.
+
+Said a slightly different way, the first factor of $T^{-1}_{li}$ captures the overlap of the $i^{th}$ bare oscillator mode onto the $l^{th}$ eigenvector. So if there is an initial contribution of the $v_i(0)$ then it will cause some amount of oscillation at eigenfrequency $d_l$. The second factor, $T_{jl}$ captures the overlap of the $l^{th}$ eigenvector onto the $j^{th}$ bare oscillator mode to tell us how much oscillation at eigenfrequency $d_l$ shows up on the $j^{th}$ oscillator. The net result is the three index tensor $\tau_{jli} = T_{jl}T^{-1}_{li}$.
+
+I admit this is a strange tensor at first but I'll write the expression out in terms of it anyways..
+
+\begin{align}
+v_j(t) = e^{d_l t} \tau_{jli} v_i(0) + \int_{t'=0}^t e^{d_l(t-t')} \tau_{jli}\eta_i(t') dt'
+\end{align}
+
+\subsection{Average Value}
+We can calculate the mean of the above expression.
+
+\begin{align}
+\Braket{v_j(t)} = \Braket{e^{d_l t}\tau_{jli} v_i(0)} + \int_{t'=0}^{t}\Braket{e^{d_l(t-t')}\tau_{jli} \eta_i(t')}dt'
+\end{align}
+
+Here we note that the initial position of the oscillators, $v_i(0)$ and the noise drives $\eta_i(t')$ are independent of the system parameters which means we can split the expectation values.
+
+\begin{align}
+\braket{v_j(t)} = \braket{e^{d_l t}\tau_{jli}}\Braket{v_i(0)} + \int_{t'=0}^t \Braket{e^{d_l (t-t')}\tau_{jli}}\Braket{\eta_i(t')}dt'
+\end{align}
+
+But $\Braket{\eta_i(t')} = 0$ so the second term vanishes and we are left with
+
+\begin{align}
+\braket{v_j(t)} = \Braket{e^{d_l t}\tau_{jli}}\Braket{v_i(0)}
+\end{align}
+
+Note that if the system parameters, $\bv{A}$, are deterministic/fixed for each realization of the system we can rewrite
+
+\begin{align}
+\braket{v_j(t)} = e^{d_l t} \tau_{jli} \Braket{v_i(0)}
+\end{align}
+
+However, we will keep those expectation value symbols because that allows us to model the possibility of fluctuating system parameters. For example, in the E3 spin/mechanics work, if the magnetic field fluctuates from shot to shot then the frequency of the spin oscillator (one of the $d_l$) will not be fixed but vary from shot to shot with some distribution.
+
+\subsection{Two-Time Correlation}
+We now work out the two-time correlation matrix. First
+
+\begin{align}
+v_i(t_1)v_j(t_2) = &e^{d_k t_1}\tau_{ikl} v_{l}(0) e^{d_m t_2}\tau_{jmn}v_{n}(0)\\
+&+\int_{t'=0}^t \int_{t''=0}^t e^{d_k (t_1-t')}\tau_{ikl} \eta_{l}(t') e^{d_m (t_2-t'')}\tau_{jmn}\eta_{n}(t'')dt'dt''\\
+&+ \int_{t'=0}^t e^{d_k (t_1-t')}\tau_{ikl} \eta_{l}(t')e^{d_m t_2}\tau_{jmn}v_{n}(0) dt'\\
+&+ \int_{t''=0}^t e^{d_k t_1}\tau_{ikl} v_{l}(0) e^{d_m (t_2-t'')}\tau_{jmn}\eta_{n}(t'')dt''
+\end{align}
+
+The last two cross terms vanish upon taking expectation because the $\bv{\eta}$ terms are independent of the other symbols and $\Braket{\bv{\eta}} = 0$.
+We proceed to take the expectation value
+
+\begin{align}
+\Braket{v_i(t_1)v_j(t_2)} = &\Braket{e^{d_k t_1}\tau_{ikl} e^{d_m t_2}\tau_{jmn}}\Braket{v_l(0)v_n(0)}\\
+&+\int_{t'=0}^{t_{\text{min}}} \Braket{e^{d_k (t_1-t')}\tau_{ikl} e^{d_m (t_2-t')}\tau_{jmn}}N_{ln}dt'
+\end{align}
+
+Where I have defined $\bv{N}$ by $\Braket{\bv{\eta}(t_1)\bv{\eta}^T(t_2)} = \bv{N}\delta(t_1-t_2)$ and $t_{\text{min}} = \text{min}(t_1,t_2)$.
+
+If we define $\bv{C}(t_1,t_2) = \Braket{\bv{v}(t_1)\bv{v}^T(t_2)}$ and $\bv{C}^0 = \bv{C}(0,0)$ then we can rewrite this as
+
+\begin{align}
+C(t_1,t_2)_{ij} = \Braket{e^{d_k t_1}e^{d_m t_2} \tau_{ikl}\tau_{jmn}} C^0_{ln} +\int_{t'=0}^{t_{\text{min}}}\Braket{e^{d_k (t_1-t')}e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}} N_{ln} dt'
+\end{align}
+
+I will note here that in the case that the system parameters are deterministic that we can remove the expectation brackets on the right hand side. In that case the integral is a simple exponential integral which we can easily evaluate. For this work I will leave the expectation values.
+
+
+\subsection{Commutator and Anti-Commutator}
+
+We now want to work out $\Braket{[v_i(t_1),v_j(t_2)]}$ and $\Braket{\{v_i(t_1),v_j(t_2)\}}$ as we suspect the heterodyne signal will depend on these combinations. Note that for two hermitian operators $A$ and $B$ we have that $AB$ is not necessarily Hermitian. However, we can write
+
+\begin{align}
+AB = \frac{1}{2}\{A,B\} + \frac{1}{2}[A,B]
+\end{align}
+
+Where by inspection it is clear that $\{A,B\}$ is purely Hermitian and $[A,B]$ is purely anti-Hermitian. This means that in terms of expectation values we have
+
+\begin{align}
+\frac{1}{2}\Braket{\{A,B\}} &= \text{Re}(\Braket{AB})\\
+\frac{1}{2i}\Braket{[A,B]} &= \text{Im}(\Braket{AB})
+\end{align}
+
+We begin work on the anti-commutator,proceeding similarly to the two time correlation function.
+
+\begin{align}
+\{v_i(t_1),v_j(t_2)\} = &e^{d_k t_1}\tau_{ikl} e^{d_m t_2}\tau_{jmn}\{v_l(0),v_{n}(0)\}\\
+&+\int_{t'=0}^t \int_{t''=0}^t e^{d_k (t_1-t')}\tau_{ikl} e^{d_m (t_2-t'')}\tau_{jmn}\{\eta_l(t'),\eta_{n}(t'')\}dt'dt''\\
+&+ \int_{t'=0}^t e^{d_k (t_1-t')}\tau_{ikl} e^{d_m t_2}\tau_{jmn}\{\eta_l(t'),v_{n}(0)\} dt'\\
+&+ \int_{t''=0}^t e^{d_k t_1}\tau_{ikl} e^{d_m (t_2-t'')}\tau_{jmn}\{v_l(0),\eta_{n}(t'')\}dt''
+\end{align}
+
+As before the last two terms will vanish upon taking the expectation value. The first two terms can be evaluated and written by noticing
+
+\begin{align}
+\Braket{\{v_i(0),v_j(0)\}} &= 2 \text{Re}(C^0_{ij})\\
+\Braket{\{\eta_i(t'),\eta_n(t'')\}} &= 2\text{Re}(N_{ij})\delta(t'-t'')
+\end{align}
+
+We write
+
+\begin{align}
+\Braket{\{v_i(t_1),v_j(t_2)\}} &= 2 \text{Re}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2\text{Re}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2\text{Re}(N_{ln})
+\end{align}
+
+The same pattern follows for the commutator version but with imaginary parts instead of real parts.
+
+\begin{align}
+\Braket{[v_i(t_1),v_j(t_2)]} &= 2i \text{Im}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2i\text{Im}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2i\text{Im}(N_{ln})
+\end{align}
+
+\subsection{Time Evolution Summary}
+We summarize these different expressions for time evolution.
+
+\begin{align}
+\braket{v_j(t)} = \Braket{e^{d_l t} \tau_{jli}} \Braket{v_i(0)}
+\end{align}
+
+\begin{align}
+\Braket{v_i(t_1)v_j(t_2)} &= C(t_1,t_2)_{ij}\\
+&= \Braket{e^{d_k t_1}e^{d_m t_2} \tau_{ikl}\tau_{jmn}} C^0_{ln}\\ &+\int_{t'=0}^{t_{\text{min}}}\Braket{e^{d_k t_1-t'}e^{d_m t_2-t'} \tau_{ikl}\tau_{jmn}} N_{ln} dt'
+\end{align}
+
+\begin{align}
+\Braket{\{v_i(t_1),v_j(t_2)\}} &= 2 \text{Re}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2\text{Re}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2\text{Re}(N_{ln})
+\end{align}
+
+\begin{align}
+\Braket{[v_i(t_1),v_j(t_2)]} &= 2i \text{Im}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2i\text{Im}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2i\text{Im}(N_{ln})
+\end{align}
+
+\section{Normal and Time Ordered Heterodyne Detection}
+
+I will shift gears in this section to discuss a normal ordered treatment of balanced heterodyne detection. For balanced heterodyne detection we consider a signal field, $a_{\text{det}}$ which is mixed on a beamsplitter with a local oscillator, $a_{\text{LO}}$. The two output ports of the beamsplitter are then populated by fields
+
+\begin{align}
+a_{\pm}(t) = \frac{1}{\sqrt{2}}(a_{\text{det}}(t) \pm a_{\text{LO}}(t))
+\end{align}
+
+These two ports are then monitored by independent photodiodes whose respective photocurrents, $i_{\pm}(t)$ are then subtracted.
+
+\begin{align}
+i_{\text{bal}}(t) = i_+(t) - i_-(t)
+\end{align}
+
+Here we interpret these photocurrents as classical random variables corresponding to the outcome of the photoionization measurement of the incident electric field. That is, even if we prepare the same quantum field and repeatedly measure the photocurrent, we can't, with complete certainty, predict the value the photocurrent will take. However, it should be possible in this case to predict statistics of the photocurrent such as the mean value and the two-time correlation function, consistent with the notion that we can predict the statistics of quantum measurements even though we can't predict individual outcomes.
+
+The task of determining the statistics of a photodetector 
+
+
+
+
+\subsection{Cavity Output Mode}
+
+Above I have given the general solution to a multidimensional Ornstein-Uhlenbeck process. As has been mentioned previously, this system generalizes an optodynamical system. We can now consider an optodynamical system in which one of the internal oscillators can be interpreted as the cavity probe field.
+
+The interesting feature of the probe field (compared to the other oscillators in the system) is that the probe field, $X_{n^*}$ and $P_{n^*}$ leaks out of the cavity and populates a free space propagating mode according to
+
+\begin{align}
+X^{\text{out}} = \sqrt{2\kappa} X_{n^*} + X_{n^*}^{\text{in}}
+\end{align}
+
+Here $\kappa$ is the cavity half linewidth. This can be interpreted as an amplitude/energy decay equation for the cavity. That is, energy stored in the cavity, related to $X_{n^*}$ leaks out of the cavity at a rate $\sqrt{2\kappa}$ (noting that $\kappa$ is an energy rather than amplitude decay rate) to generate an output photon flux, $X^{\text{out}}$.
+
+
+
+
+
+\end{document}

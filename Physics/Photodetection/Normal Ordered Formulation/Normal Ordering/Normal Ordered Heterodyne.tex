@@ -1,0 +1,471 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Normal Ordered Operators in Heterodyne Detection}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In the Photodetection write up I have shown how statistics of the detected photocurrent depend on expecation values of normal ordered quadrature operators for the incident photon field. In the normal ordered quadrature operators I have derived expressions for these normal ordered quadrature operators. In this write up I will plug in these normal ordered expectation values to get predictions for the result of applying various analyses to the measured photocurrent in terms of the incident photon field. The analyses I will consider are 
+
+1) Power spectral density of raw heterodyne signal. This will be useful for two reasons. The first reason is that we should see the expected sideband asymmetry which tells us about the oscillator temperature. We should also be able to calculate the ratio of the area under the carrier peak to the level shot noise level or the height of the carrier peak to the shot noise level to get an expression for $\bar{n}$.
+
+2) Expressions for demodulated signals such as I, Q, and arbitrary quadratures. Subsequently, expressions for the power spectral density of these resultant quadratures. Once an expression is found for the power spectral density of arbitrary quadratures I can generate squeezing colormaps which can then be compared to, for example, some of these colormaps in Sydney's thesis or other squeezing publications.
+
+\clearpage
+
+\section{Normal Ordered Quadrature Operators Summary}
+I'll summarize the main results on a single page for easy future reference
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_{max}),\hat{P}(t_{min})\right]\right)\\
+:\hat{P}(t_1)\hat{P}(t_2): &= \frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{P}(t_{max}),\hat{X}(t_{min})\right]\right)
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2): &= :\hat{P}(t_2)\hat{X}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - i \left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + i \left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]\right), &\text{for } t_2>t_1
+\end{cases}
+\end{align}
+
+
+\begin{align}
+:\hat{P}(t_1)\hat{X}(t_2): &= :\hat{X}(t_2)\hat{P}(t_1):\\
+&= 
+\begin{cases}
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]\right), &\text{for } t_1>t_2\\
+\frac{1}{2}\left(\left\{\hat{P}(t_1),\hat{X}(t_2)\right\} - i \left[\hat{X}(t_\text{max}),\hat{X}(t_{\text{min}})\right]\right), &\text{for } t_2>t_1\\
+\end{cases}
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2) &+ \hat{P}(t_1)\hat{X}(t_2):\\
+&= \frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} + \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&-i\frac{1}{2}\left(\left[\hat{X}(t_\text{max}),\hat{X}(t_\text{min})\right] -\left[\hat{P}(t_\text{max}),\hat{P}(t_\text{min})\right]\right)
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{P}(t_2) &- \hat{P}(t_1)\hat{X}(t_2):\\
+&= \frac{1}{2} \left(\left\{\hat{X}(t_1),\hat{P}(t_2)\right\} - \left\{\hat{P}(t_1),\hat{X}(t_2)\right\}\right)\\
+&-i\frac{1}{2}\left(\left[\hat{X}(t_1),\hat{X}(t_2)\right] +\left[\hat{P}(t_1),\hat{P}(t_2)\right]\right)
+\end{align}
+
+\clearpage
+
+\section{Heterodyne Detection Expressions}
+
+I showed in my photodection write up that the classical photocurrent (thought of as a classical random process) follows the following statistics:
+
+\begin{align}
+\Braket{i(t)} &= A\left<:\hat{X}^{\Delta_{LO} t}(t):\right>\\
+\Braket{i(t_1)i(t_2)} &= A^2 \left<:\hat{X}^{\Delta_{LO}t_1}(t_1)\hat{X}^{\Delta_{LO}t_2}(t_2):\right> + B^2 \delta(t_1-t_2)
+\end{align}
+
+with 
+
+\begin{align}
+\hat{X}^{\Delta_{LO} t}(t) = \cos(\Delta_{LO}t) \hat{X}(t) - \sin(\Delta_{LO}t)\hat{P}(t)
+\end{align}
+
+representing a time-rotating quadrature of the intra-cavity field and
+
+\begin{align}
+A &= e \sqrt{2\kappa}\sqrt{\epsilon_C \epsilon_P \epsilon_{MM}} \epsilon_Q |\alpha|\\
+B &= e \sqrt{\epsilon_Q} |\alpha|
+\end{align}
+
+$e$ is the electron charge, all of the $\epsilon_i$ are various losses, $\kappa$ is the cavity half-linewidth and $|\alpha|$ is the amplitude of the local oscillator field. $\sqrt{\kappa}$ has dimensions of $[T^{-\sfrac{1}{2}}]$ and the quadrature operators have units of $[T^{-\sfrac{1}{2}}]$ so we see that the units of $\Braket{i(t)}$ and $\Braket{i(t_1)i(t_2)}$ have units of $[C T^{-1}]=[A]$ and $[C^2 T^{-2}] = [A^2]$, that is amps and amps squared as expected.
+
+\section{Heterodyne Power Spectral Density}
+
+In this section I will derive an expression for the heterodyne power spectral density in terms of the intra-cavity photon field. 
+
+I will consider the case when the intra-cavity system is stable and in equilibrium so that the intracavity field is a stationary process. That is operators like $\hat{X}(t_1)\hat{X}(t_2)$ only depend on the time difference so that $\hat{X}(t_1)\hat{X}(t_2) = \hat{X}(t_1-t_2)\hat{X}(0)$. Note that for a classical stationary process the autocorrelation function is always even since $\Braket{X_{clas}(t)X_{clas(0)}} = \Braket{X_{clas}(0)X_{clas}(-t)} = \Braket{X_{clas}(-t)X_{clas}(0)}$ but the last step where we commute the operators need not hold for a quantum variable.
+
+In the case that the intra-cavity system is stable and at equilibrium so that the optical field is a quantum stationary process it will follow that the photocurrent is almost a classical stationary process. There is a slight technicality that must be dealt with before it can be treated as a stationary process. In addition the normal ordering operation will play an important role in converting the quantum stationarity (which need not be time symmetric) in to classical stationarity.
+
+Given the stationary photocurrent autocorrelation function $\Braket{i(t_1)i(t_2)} = \Braket{i(t_1-t_2)i(0)}$ we will find the power spectral density, $S_{ii}$ by Fourier transforming. We first work towards calculating the two time correlation function but first I'll state the result for the mean photocurrent.
+
+\begin{align}
+\hat{X}^{\Delta_{LO} t}(t) = \cos(\Delta_{LO}t) \hat{X}(t) - \sin(\Delta_{LO}t)\hat{P}(t)
+\end{align}
+So we can expand
+
+\begin{align}
+\Braket{i(t)} = A \cos(\Delta_{LO} t) \Braket{\hat{X}(t)} - A \sin(\Delta_{LO}t) \Braket{\hat{P}(t)}
+\end{align}
+
+Where we have used $:\hat{X}:=\hat{X}$ and $:\hat{P}:=\hat{P}$.
+
+Now we begin work on the two-time correlation function:
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = A^2\bigg<: &\left(\cos(\Delta_{LO} t_1) \hat{X}(t_1) - \sin(\Delta_{LO}t_1) \hat{P}(t_1)\right) \\
+\times &\left(\cos(\Delta_{LO} t_2) \hat{X}(t_2) - \sin(\Delta_{LO}t_1) \hat{P}(t_2)\right) :\bigg>\\
+&+B^2 \delta(t_1-t_2)
+\end{align}
+
+expanding:
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = A^2\bigg<: &\cos(\Delta_{LO}t_1) \cos(\Delta_{LO}t_2) \hat{X}(t_1)\hat{X}(t_2)\\
+&\sin(\Delta_{LO}t_1) \sin(\Delta_{LO}t_2) \hat{P}(t_1)\hat{P}(t_2)\\
+&-\cos(\Delta_{LO}t_1) \sin(\Delta_{LO}t_2) \hat{X}(t_1)\hat{P}(t_2)\\
+&-\sin(\Delta_{LO}t_1) \cos(\Delta_{LO}t_2) \hat{P}(t_1)\hat{X}(t_2):\bigg>\\
+&+ B^2 \delta(t_1-t_2)
+\end{align}
+
+Expanding and applying some trig identities:
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = \frac{A^2}{2} \bigg(&\left[\cos(\Delta_{LO}(t_1-t_2))+\cos(\Delta_{LO}(t_1+t_2)\right]\Braket{:\hat{X}(t_1)\hat{X}(t_2):}\\
+&\left[\cos(\Delta_{LO}(t_1-t_2))-\cos(\Delta_{LO}(t_1+t_2)\right]\Braket{:\hat{P}(t_1)\hat{P}(t_2):}\\
+&\left[\sin(\Delta_{LO}(t_1-t_2))-\sin(\Delta_{LO}(t_1+t_2)\right]\Braket{:\hat{X}(t_1)\hat{P}(t_2):}\\
+&\left[-\sin(\Delta_{LO}(t_1-t_2))-\sin(\Delta_{LO}(t_1+t_2)\right]\Braket{:\hat{P}(t_1)\hat{X}(t_2):}\bigg)\\
+&+B^2 \delta(t_1-t_2)
+\end{align}
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = \frac{A^2}{2} \bigg(
+&\cos(\Delta_{LO}(t_1-t_2))\left(\Braket{:\hat{X}(t_1)\hat{X}(t_2):} + \Braket{:\hat{P}(t_1)\hat{P}(t_2):}\right)\\
+&\sin(\Delta_{LO}(t_1-t_2))\left(\Braket{:\hat{X}(t_1)\hat{P}(t_2):} - \Braket{:\hat{P}(t_1)\hat{X}(t_2):}\right)\\
+&\cos(\Delta_{LO}(t_1+t_2))\left(\Braket{:\hat{X}(t_1)\hat{X}(t_2):} - \Braket{:\hat{P}(t_1)\hat{P}(t_2):}\right)\\
+&\sin(\Delta_{LO}(t_1+t_2))\left(-\Braket{:\hat{X}(t_1)\hat{P}(t_2):} - \Braket{:\hat{P}(t_1)\hat{X}(t_2):}\right)\bigg)\\
+&+B^2\delta(t_1-t_2)
+\end{align}
+
+This is where we can see the technicality I mentioned earlier. Even supposing the terms like $\hat{X}(t_1)\hat{X}(t_2)$ only depend on the time difference $t_1-t_2$ there are the pesky sinusoidal terms which depend on $t_1+t_2$. I'll give a brief argument here as to why they do not contribute to the power spectral density and thus why they can be dropped for purposes of calculating the power spectral density. The definition of the power spectral density is
+
+\begin{align}
+S_{ii}(f) &= \lim_{t_0\rightarrow \infty} \frac{1}{2 t_0}\Braket{\tilde{i}_{t_0}(f)\tilde{i}_{t_0}^*(f)}\\
+&=\lim_{t_0\rightarrow \infty} \frac{1}{2 t_0} \int \int_{-t_0}^{+t_0} e^{i2\pi f(t_1-t_2)} \Braket{i(t_1)i(t_2)} dt' dt''
+\end{align}
+
+For the terms in $\Braket{i(t_1)i(t_2)}$ the arguments in my Wiener-Khintchine theorem write up apply to show that these terms are non-vanishing and contribute to the power spectral density. Assume that the $\hat{X}(t_1-t_2)\hat{X}(0)$ terms vanish for large time difference. Thus, in the $t_1, t_2$ plane the integrand has support in a band surrounding the line $t_1 = t_2$. Importantly, this is just a constant diagonal band in the space. That is, if you increase $t_1+t_2$ but keep $t_1-t_2$ the same you get the same value. This means that as you increase $t_0$ to get a larger integration area you just linearly increase the length of the band and get a larger integral. Dividing by $t_0$ as the last step gives a finite power spectral density. However, now consider the terms like $\cos(\Delta_{LO}(t_1+t_2)$. Now instead of having a constant band as you increase $t_1+t_2$ you get something which is sinusoidally modulated. This means that as you increase $t_0$ instead of getting an integral that increase as you lengthen the band you instead get something that just periodically modulates between two finite values. Thus, when you divide by $t_0$ you get something which vanishes for large $t_0$. Incidentally, if all of the terms in the integrand went as $t_1+t_2$ instead of $t_1-t_2$ then you could apply a sort of reverse Wiener-Khintchine theorem to calculate something related to $\Braket{\tilde{i}_{t_0}(f)^2}$. It is important that $t_0$ is longer than the time it takes for the  $\hat{X}(t_1-t_2)\hat{X}(0)$ terms to decay away.
+
+The upshot of all is that I will neglect these terms in the two-time correlation function and thus be able to treat the photocurrent as if it were a stationary process. That is, I will be happy to just Fourier transform it (with the proper terms neglected) to get the power spectral density.
+
+After this we are left with
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = \frac{A^2}{2} \bigg(
+&\cos(\Delta_{LO}(t_1-t_2))\left(\Braket{:\hat{X}(t_1)\hat{X}(t_2):} + \Braket{:\hat{P}(t_1)\hat{P}(t_2):}\right)\\
+&\sin(\Delta_{LO}(t_1-t_2))\left(\Braket{:\hat{X}(t_1)\hat{P}(t_2):} - \Braket{:\hat{P}(t_1)\hat{X}(t_2):}\right)\bigg)\\
+&+B^2\delta(t_1-t_2)
+\end{align}
+
+At this point we can plug in the above expressions for the normal ordered quadrature operators. We get
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} &= \frac{A^2}{4}\Bigg[\\
+\cos(\Delta_{LO}(t_1-t_2))\bigg(&\left(\braketacomm{\hat{X}(t_1),\hat{X}(t_2)} + \braketacomm{\hat{P}(t_1),\hat{P}(t_2)}\right) \\
++i&\left(\braketcomm{\hat{X}(t_{\text{max}}),\hat{P}(t_{\text{min}})} - \braketcomm{\hat{P}(t_{\text{max}}),\hat{X}(t_{\text{min}}) }  \right)\bigg)\\
+\sin(\Delta_{LO}(t_1-t_2))\bigg(&\left(\braketacomm{\hat{X}(t_1),\hat{P}(t_2)} - \braketacomm{\hat{P}(t_1),\hat{X}(t_2)}\right) \\
+-i&\left(\braketcomm{\hat{X}(t_1),\hat{X}(t_2)} + \braketcomm{\hat{P}(t_1),\hat{P}(t_2)} \right)\bigg)\bigg]\\
+&+B^2\delta(t_1-t_2)
+\end{align}
+
+At this point I will note some interesting symmetries. First, since $i(t)$ is a classical variable we should have $\Braket{i(t_1)i(t_2)} = \Braket{i(t_2)i(t_1)}$. The $\cos$ is symmetric already in $t_1$ and $t_2$ so the term multiplying it should also be. Indeed it is. Within the anti-commutators we can just swap the two terms by the property of the anti-commutator and within the commutators it doesn't matter which is larger, the first term or the second in the brakets since the $\text{max}$ and $\text{min}$ notation is agnostic to that detail. The $\sin$ is anti-symmetric so the term multiplying it should also be anti-symmetric and indeed the anti-commutators and commutators achieve this again.
+
+I will now apply the stationarity of the fields $\hat{X}(t)$ and $\hat{P}(t)$ and define $\tau = t_1-t_2$ noting that $t_{\text{max}} - t_{\text{min}} = |\tau|$.
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = \Braket{i(\tau)i(0)} &= \frac{A^2}{4}\Bigg[\\
+\cos(\Delta_{LO}\tau)\bigg(&\left(\braketacomm{\hat{X}(\tau),\hat{X}(0)} + \braketacomm{\hat{P}(\tau),\hat{P}(0)}\right) \\
++i&\left(\braketcomm{\hat{X}(|\tau|),\hat{P}(0)} - \braketcomm{\hat{P}(|\tau|),\hat{X}(0)}  \right)\bigg)\\
+\sin(\Delta_{LO}(\tau))\bigg(&\left(\braketacomm{\hat{X}(\tau),\hat{P}(0)} - \braketacomm{\hat{P}(\tau),\hat{X}(0)}\right) \\
+-i&\left(\braketcomm{\hat{X}(\tau),\hat{X}(0)} + \braketcomm{\hat{P}(\tau),\hat{P}(0)}  \right)\bigg)\bigg]\\
+&+B^2\delta(\tau)
+\end{align}
+
+
+
+We then Fourier Transform this to get the power spectral density. At this point I will touch base with the time domain linear amplifier model write up. There I derive an expression for the matrix $\Braket{\bv{v}(\tau)\bv{v}^T(0)}$ as well as the matrices $\Braket{\{\{\bv{v}(\tau),\bv{v}^T(0)\}\}}$ and $\Braket{[[\bv{v}(\tau),\bv{v}^T(0)]]}$. The terms in the above expression are all elements of these latter two matrices plus additionally $\Braket{[[\bv{v}(|\tau|),\bv{v}^T(0)]]}$. We can Fourier transform each of these two-time correlation matrices to get the cross spectral density matrices
+
+\begin{align}
+S_{\bv{v}\bv{v}}(f) &= \int e^{i 2\pi f \tau} \Braket{\bv{v}(\tau)\bv{v}^T(0)} d\tau\\
+S_{\{\bv{v}\bv{v}\}}(f) &= \int e^{i 2\pi f \tau} \Braket{\{\{\bv{v}(\tau),\bv{v}^T(0)\}\}} d\tau\\
+S_{[\bv{v}\bv{v}]}(f) &= \int e^{i 2\pi f \tau} \Braket{[[\bv{v}(\tau),\bv{v}^T(0)]]} d\tau\\
+S_{[\bv{v}\bv{v}]_2}(f) &= \int e^{i 2\pi f \tau} \Braket{[[\bv{v}(|\tau|),\bv{v}^T(0)]]} d\tau\\
+\end{align}
+
+It is possible to derive expressions for all of the elements of these matrices in terms of the eigenvalues and eigenvectors of the system transition matrix which can, worst case, be found numerically.
+
+The coefficient of the $\cos$ and $\sin$ term can be written as
+
+\begin{align}
+\gamma_{\cos}(\tau) = &\left(\braketacomm{\hat{X}(\tau),\hat{X}(0)} + \braketacomm{\hat{P}(\tau),\hat{P}(0)}\right) \\
++i&\left(\braketcomm{\hat{X}(|\tau|),\hat{P}(0)} - \braketcomm{\hat{P}(|\tau|),\hat{X}(0)}  \right)\\
+\gamma_{\sin}(\tau) = 
+&\left(\braketacomm{\hat{X}(\tau),\hat{P}(0)} - \braketacomm{\hat{P}(\tau),\hat{X}(0)}\right) \\
+-i&\left(\braketcomm{\hat{X}(\tau),\hat{X}(0)} + \braketcomm{\hat{P}(\tau),\hat{P}(0)}  \right)
+\end{align}
+
+with
+
+\begin{align}
+S_{\text{cos}}(f) = \tilde{\gamma}_{\cos}(f)&= (S_{\{v_x v_x\}}(f) + S_{\{v_p v_p\}}(f)) +i(S_{[v_x v_p]_2}(f) - S_{[v_p v_x]_2}(f))\\
+S_{\text{sin}}(f) = \tilde{\gamma}_{\sin}(f) &= (S_{\{v_x v_p\}}(f) - S_{\{v_p v_x\}}(f)) -i(S_{[v_x v_x]}(f) + S_{[v_p v_p]}(f))
+\end{align}
+
+and we write
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = \Braket{i(\tau)i(0)} = \frac{A^2}{4}\left(\cos(\Delta_{LO}\tau)\gamma_{\cos}(\tau) + \sin(\Delta_{LO}\tau)\gamma_{\sin}(\tau)\right) + B^2 \delta(\tau)
+\end{align}
+
+When we Fourier transform this we will get three terms. One term will be a term which is flat in frequency from the $\delta(\tau)$. This is the shot noise contribution (Note in that write up I talk about how the $\delta(\tau)$ can be replaced with $\Lambda(\tau)$, an approximation to a delta function to capture the finite detector bandwidth). The other two terms will be convolutions of the $\gamma_{\cos}(\tau)$ and $\gamma_{\sin}(\tau)$ with the sinusoidal functions. This means we will get peaks at $f = \pm \Delta_{LO}/2\pi$ with sidebands related to $S_{\cos}(f)$ and $S_{\sin}(f)$. I will just expand that out now noting
+
+\begin{align}
+\
+\mathcal{FT}[\cos(\Delta_{LO}\tau)](f) &= \frac{1}{2} \left(\delta\left(f - \frac{\Delta_{LO}}{2\pi}\right) + \delta\left(f + \frac{\Delta_{LO}}{2\pi}\right)\right)\\
+\mathcal{FT}[\sin(\Delta_{LO}\tau)](f) &= i\frac{1}{2} \left(\delta\left(f - \frac{\Delta_{LO}}{2\pi}\right) - \delta\left(f + \frac{\Delta_{LO}}{2\pi}\right)\right)\\
+\mathcal{FT}[\delta(\tau)](f) &= 1
+\end{align}
+
+and using the convolution theorem we get
+
+\begin{align}
+S_{ii}(f) &= \frac{A^2}{8} \left(S_{\cos}\left(f-\frac{\Delta_{LO}}{2\pi}\right) + iS_{\sin}\left(f-\frac{\Delta_{LO}}{2\pi}\right)\right)\\
+&+ \frac{A^2}{8} \left(S_{\cos}\left(f+\frac{\Delta_{LO}}{2\pi}\right) - iS_{\sin}\left(f+\frac{\Delta_{LO}}{2\pi}\right)\right)\\
+&+B^2
+\end{align}
+
+I'll note that $S_{\cos}(f)$ is even and $S_{\sin}(f)$ is odd so the total power spectral density is even as required. However, the sidebands around the carrier peak at $\frac{\Delta_{LO}}{2\pi}$ can be asymmetric due to the $S_{\sin}$ terms.
+
+I want to note here that this whole derivation is assuming the commutators and anti-commutators which are derived in the time-domain linear amplifier model which are in turn derived from the dynamical matrix which is derived in my and others' spin-mech write ups. In those write ups the cavity field operators are actually the fluctuations about a mean value of the intracavity field, $\bar{n}$ which has been subtracted off. We don't want to forget about that mean part because it will be important for extracting various signals.
+
+Using $\hat{a}$ as the intracavity boson operator and $\bar{a} = \sqrt{\bar{n}}$ as the real (by convention) mean intracavity field we get $\bar{X} = 2\sqrt{\bar{n}}$. We can then replace $\hat{X} \rightarrow \bar{X} + \hat{X}$. Since the mean intracavity field is real we have $\bar{P} = 0$. How will this affect the expressions above? It will only affect the $\Braket{\left\{\hat{X}(\tau),\hat{X}(0) \right\}}$ terms.
+
+\begin{align}
+\Braket{\left\{\hat{X}(\tau),\hat{X}(0) \right\}} &\rightarrow \Braket{\left\{\hat{X}(\tau) +\bar{X},\hat{X}(0)+\bar{X} \right\}}\\
+&=\Braket{\left\{\hat{X}(\tau),\hat{X}(0) \right\}} + \left\{\bar{X},\bar{X} \right\}\\
+&=\Braket{\left\{\hat{X}(\tau),\hat{X}(0) \right\}} + 2\bar{X}^2\\
+&=\Braket{\left\{\hat{X}(\tau),\hat{X}(0) \right\}} + 8\bar{n}
+\end{align}
+
+This has the effect of adding $8 \bar{n}$ to $\gamma_{\cos}(\tau)$ and modifying the detected heterodyne power spectral density to
+
+\begin{align}
+S_{ii}(f) &= \frac{A^2}{8} \left(8\bar{n}\delta\left(f-\frac{\Delta_{LO}}{2\pi}\right) + S_{\cos}\left(f-\frac{\Delta_{LO}}{2\pi}\right) + iS_{\sin}\left(f-\frac{\Delta_{LO}}{2\pi}\right)\right)\\
+&+ \frac{A^2}{8} \left(8\bar{n}\delta\left(f+\frac{\Delta_{LO}}{2\pi}\right) + S_{\cos}\left(f+\frac{\Delta_{LO}}{2\pi}\right) - iS_{\sin}\left(f+\frac{\Delta_{LO}}{2\pi}\right)\right)\\
+&+B^2
+\end{align}
+
+We get peaks at plus and minus the carrier frequency corresponding to the carrier power.
+
+\subsection{Sideband Asymmetry}
+As I mentioned before it can be seen by inspection that $\gamma_{\cos}(\tau)$ is even (and real) and $\gamma_{\sin}(\tau)$ is odd (and real). This means that the respective Fourier transforms, $S_{\cos}(f)$ is real and even and $S_{\sin}(f)$ is imaginary and odd. Thus it is the $S_{\sin}(f)$ term which will give rise to a measured sideband asymmetry.
+
+I'll put plots here later.
+
+\section{Demodulated Quadratures}
+In addition to looking at the raw power spectral density to learn things like the probe detuning photon number and oscillator sideband asymmetry (to extract oscillator temperatures) we can also demodulate the signal at the probe carrier signal to get more detailed information about the oscillators time evolution. In this section I will do two things. I will derive expressions for the demodulated signals for arbitrary demodulation phase including their mean and two-time correlation functions. Second, I will derive expressions for the power spectral densities of the demodulated sidebands. Once I have power spectral densities of arbitrary demodulated quadratures I can produce color maps of power spectrum vs. demodulation angle to recreate plots that Sydney made investigating pondermotive squeezing. I consider this to be a sophisticated prediction of the theory and I would see agreement in those colormaps as a strong indication of the validity of this theory.
+
+Demodulation works as follows. We take the raw signal, multiply it by a sinusoid at the demodulation frequency (carrier frequency in this case) with a given phase. We then low pass filter this signal. This process mixes signals near the carrier down to DC. The low pass filter cuts out second harmonic components which also get mixed in by the multiplication. I will use the notation $D_{\phi}(t)$ to indicate a demodulated quadrature at quadrature angle $\phi$. Note that like $i(t)$, $D_{\phi}(t)$ is a classical random variable.
+
+\begin{align}
+D_{\phi}(t) = \mathcal{L}[i(t)\cos(\Delta_{LO}t - \phi)]
+\end{align}
+
+Where $\mathcal{L}$ indicates low pass filtering with a filter that will cut out the high frequency components. The cutoff can be chosen as $\Delta_{LO}$ for example. We note that $D_{0}(t) = I(t)$, the I-quadrature and $D_{\pi/2}(t) = Q(t)$, the Q-quadrature.
+We can write the filter out more explicitly.
+
+\begin{align}
+D_{\phi}(t) = \int F(t-t')i(t')\cos(\Delta_{LO}t'-\phi)dt'
+\end{align}
+
+Where $F(t)$ is the impulse response of the filter. It can be thought of as being a box function in time with width $1/f_{BW}$ where $f_{BW}$ is the bandwidth of the filter.
+We can look for the mean of this signal
+
+\begin{align}
+\Braket{D_{\phi}(t)} = A\int& F(t-t') \left(\cos(\Delta_{LO}t')\Braket{\hat{X}(t')} - \sin(\Delta_{LO}t')\Braket{\hat{P}(t')}\right)\\
+&\times\left(\cos(\Delta_{LO}t')\cos(\phi) + \sin(\Delta_{LO}t')\sin(\phi)\right) dt'
+\end{align}
+
+Terms like $\cos(\Delta_{LO}t')\sin(\Delta_{LO}t')$ will vanish upon integration. The terms with sinusoids squared will each split into two terms due to the identities $\cos^2(\theta) = \frac{1}{2}(1+\cos(2\theta)$ and $\sin^2(\theta) = \frac{1}{2}(1-\sin(2\theta)$. The DC terms will survive integration unchanged assuming $\Braket{\hat{X}(t)}$ and $\Braket{\hat{P}(t)}$ vary on timescales slow compared to the filter impulse response (which they should since they shouldn't be cut out by the low pass filter). The high frequency terms will vanish upon convolution against the filter. The result is
+
+\begin{align}
+\Braket{D_{\phi}(t)} = \frac{A}{2}\left(\cos(\phi)\Braket{\hat{X}(t)} - \sin(\phi)\Braket{\hat{P}(t)}\right)
+\end{align}
+
+Now I want to work out two-time cross-correlation functions for the demodulated quadratures. Note, informed by Tom Purdy's recent Science paper, I'll look at the cross-correlation function quadratures demodulated at two different phases, $\phi_1$ and $\phi_2$.
+
+\begin{align}
+&\Braket{D_{\phi_1}(t_1)D_{\phi_2}(t_2)} = \langle\mathcal{L}[i(t_1)\cos(\Delta_{LO}t_1-\phi_1)]\mathcal{L}[i(t_2)\cos(\Delta_{LO}t_2-\phi_2)]\rangle\\
+&=\Bigg<: A\int F(t_1-t') \left(\cos(\Delta_{LO}t')\hat{X}(t') - \sin(\Delta_{LO}t')\hat{P}(t')\right)\\
+&\times\left(\cos(\Delta_{LO}t')\cos(\phi_1) + \sin(\Delta_{LO}t')\sin(\phi_1)\right) dt'\\
+\times& A\int F(t_2-t'') \left(\cos(\Delta_{LO}t'')\hat{X}(t'') - \sin(\Delta_{LO}t'')\hat{P}(t'')\right)\\
+&\times\left(\cos(\Delta_{LO}t'')\cos(\phi_2) + \sin(\Delta_{LO}t'')\sin(\phi_2)\right) dt'':\Bigg>\\
+&+B^2\int\int F(t_1-t')F(t_2-t'') \delta(t'-t'') \cos(\Delta_{LO}t'-\phi_1)\cos(\Delta_{LO}t''-\phi_2)dt'dt''
+\end{align}
+
+The two integrals in the first term are dealt with as before by noting the action of the filter to eliminate the appropriate sinusoidal terms. Note that even though $\hat{X}(t)$ and $\hat{P}(t)$ are quantum operators it still stands that they only have low frequency components so they are unaffected by the filter. 
+
+The $\cos$ product in the second term (the noise term) expands as 
+\begin{align}
+\frac{1}{2}\left(\cos(\Delta_{LO}(t'-t'') - (\phi_1-\phi_2)) + \cos(\Delta_{LO}(t+t') - (\phi_1 + \phi_2)) \right)
+\end{align}
+
+After applying the $\delta$ the first term here survives but the second term is behaves like a high frequency term and is killed by the filter which is now a product of the original filter response time shifted by the values $t_1$ and $t_2$. We define $\Delta \phi = \phi_1-\phi_2$.
+
+\begin{align}
+\Braket{D_{\phi_1}(t_1)D_{\phi_2}(t_2)} &=\\
+&=\left(\frac{A}{2}\right)^2\Bigg<:\left(\cos(\phi_1)\hat{X}(t_1) - \sin(\phi_1)\hat{P}(t_1)\right)\\
+&\times\left(\cos(\phi_2)\hat{X}(t_2) - \sin(\phi_2)\hat{P}(t_2)\right):\Bigg>\\
+&+\frac{B^2}{2}\cos(-\Delta \phi)\int F(t_1-t')F(t_2-t')dt'
+\end{align}
+
+Note the shot noise term vanishes for $\Delta \phi = \frac{\pi}{2}$. This was one of the main points of the Science article. I'll keep the shot noise term as is for now and chew on it a little later. Note $\cos(-\Delta \phi) = \cos(\Delta \phi)$. Let's start expanding the signal term.
+
+\begin{align}
+\Braket{D_{\phi_1}(t_1)D_{\phi_2}(t_2)} &=\\
+\frac{A^2}{4}\Bigg(&\cos(\phi_1)\cos(\phi_2)\Braket{:\hat{X}(t_1)\hat{X}(t_2):} + \sin(\phi_1)\sin(\phi_2)\Braket{:\hat{P}(t_1)\hat{P}(t_2):}\\
+-&\cos(\phi_1)\sin(\phi_2)\Braket{:\hat{X}(t_1)\hat{P}(t_2):}-\sin(\phi_1)\cos(\phi_2)\Braket{:\hat{P}(t_1)\hat{X}(t_2):}\Bigg)\\
+&+\frac{B^2}{2}\cos(\Delta \phi)\int F(t_1-t')F(t_2-t')dt'
+\end{align}
+
+Expanding once
+
+\begin{align}
+\Braket{D_{\phi_1}(t_1)D_{\phi_2}(t_2)} &=\\
+\frac{A^2}{4}\Bigg(&\cos(\phi_1)\cos(\phi_2)\Braket{:\hat{X}(t_1)\hat{X}(t_2):} + \sin(\phi_1)\sin(\phi_2)\Braket{:\hat{P}(t_1)\hat{P}(t_2):}\\
+-&\frac{1}{2}\sin(\phi_1+\phi_2)\left(\Braket{:\hat{X}(t_1)\hat{P}(t_2):} + \Braket{:\hat{P}(t_1)\hat{X}(t_2):}\right)\\
++&\frac{1}{2}\sin(\Delta \phi) \left(\Braket{:\hat{X}(t_1)\hat{P}(t_2):} - \Braket{:\hat{P}(t_1)\hat{X}(t_2):}\right)\Bigg)\\
+&+\frac{B^2}{2}\cos(\Delta \phi)\int F(t_1-t')F(t_2-t')dt'
+\end{align}
+
+We can then expand out the normal ordered quadrature operators using the formulas above.
+
+\begin{align}
+\Braket{D_{\phi_1}(t_1)D_{\phi_2}(t_2)} &=\frac{A^2}{8}\Bigg(\\
++\cos(\phi_1)\cos(\phi_2)&\left(\Braket{\left\{\hat{X}(t_1),\hat{X}(t_2)\right\}}+i\Braket{\left[\hat{X}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]}\right)\\
++\sin(\phi_1)\sin(\phi_2)&\left(\Braket{\left\{\hat{P}(t_1),\hat{P}(t_2)\right\}}-i\Braket{\left[\hat{P}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right]}\right)\\
+-\frac{1}{2}\sin(\phi_1+\phi_2)\bigg(&\left(\Braket{\left\{\hat{X}(t_1),\hat{P}(t_2)\right\}}+\Braket{\left\{\hat{P}(t_1),\hat{X}(t_2)\right\}}\right)\\
+-i&\left(\Braket{\left[\hat{X}(t_{\text{max}}),\hat{X}(t_{\text{min}})\right]}-\Braket{\left[\hat{P}(t_{\text{max}}),\hat{P}(t_{\text{min}})\right]}\right)\bigg)\\
++\frac{1}{2}\sin(\Delta\phi)\bigg(&\left(\Braket{\left\{\hat{X}(t_1),\hat{P}(t_2)\right\}}-\Braket{\left\{\hat{P}(t_1),\hat{X}(t_2)\right\}}\right)\\
+-i&\left(\Braket{\left[\hat{X}(t_1),\hat{X}(t_2)\right]}+\Braket{\left[\hat{P}(t_1),\hat{P}(t_2)\right]}\right)\bigg)\Bigg)\\
+&+\frac{B^2}{2}\cos(\Delta\phi)\int F(t_1-t')F(t_2-t')dt'
+\end{align}
+
+We have again reduced the expression to something which is calculable from the time domain linear amplifier model expressions. Let's think about the shot noise term for a minute. The integrand is the product of the impulse response function evaluated at two different times. The impulse response has some characteristics width, $\Delta t \sim \frac{1}{f_{BW}}$. For $t_1=t_2$ we can see that the integral will give a value of $\sim \Delta t$. However, as $t_1-t_2$ increases the value of the integral will decrease until $t_1-t_2 \sim \Delta t$ at which point the integral will vanish. In fact, let's do a change of variables on this expression with $t_2-t' = t''$
+
+\begin{align}
+\frac{B^2}{2}\cos(\Delta \phi)\int_{-\infty}^{+\infty} F(t_1-t')F(t_2-t')dt' &= -\frac{B^2}{2}\cos(\Delta\phi)\int_{\infty}^{-\infty} F(t_1-t_2+t'')F(t'')dt'\\
+&=\frac{B^2}{2}\cos(\Delta \phi)\int_{-\infty}^{+\infty}F(t_1-t_2+t'')F(t'')dt''
+\end{align}
+
+for $t_1 = t_2$ this becomes
+
+\begin{align}
+\frac{B^2}{2}\cos(\Delta\phi)\int F(t'')^2 dt'' = \frac{B^2}{2}\cos(\Delta\phi)\int |\tilde{F}(f')|^2df' \approx B^2 \cos(\Delta\phi) f_{BW}
+\end{align}
+
+The conversion into Fourier space uses Parseval's theorem and the fact that $\tilde{F}(-f) = \tilde{F}^*(f)$ for real $F(t)$. In my opinion the second to last expression should be used in calculations as it will capture the full behavior of the filter whereas the final expression can only be used if the filter bandwidth has been carefully defined and calculated for a given filter.
+
+If instead of evaluating at $t_1 = t_2$ and we are integrating this expression over $\tau = t_1-t_2$ then we can replace the integral with $\delta(t_1-t_2)$ so long as the other terms in the $\tau$ integral vary more slowly than the bandwidth of the filter. That is
+
+\begin{align}
+\frac{B^2}{2}\cos(\Delta\phi)\int_{-\infty}^{+\infty}F(t_1-t_2+t'')F(t'')dt'' \approx \frac{B^2}{2}\cos(\Delta \phi)\delta(t_1-t_2)
+\end{align}
+
+We have thus calculated the two-time correlation function for the demodulated quadrature. Lately in E3 we have found ourselves looking at the squared version of the demodulated signal to see something related to the oscillator occupation number. That is this signal for the case $t_1 = t_2 = t$. We are also considering the case $\phi_1 = \phi_2 = \phi$.
+
+\begin{align}
+\Braket{D_{\phi}(t)D_{\phi}(t)} &=\frac{A^2}{8}\Bigg(\\
++\cos^2(\phi)&\left(2\Braket{\hat{X}(t)^2}+i\Braket{\left[\hat{X}(t),\hat{P}(t)\right]}\right)\\
++\sin^2(\phi)&\left(2\Braket{\hat{P}(t)^2}-i\Braket{\left[\hat{P}(t),\hat{X}(t)\right]}\right)\\
+-\frac{1}{2}\sin(2\phi)&\left(2\Braket{\left\{\hat{X}(t),\hat{P}(t)\right\}}\right)\Bigg)\\
+&+\frac{B^2}{2}\cos(\Delta\phi)\int \lvert \tilde{F}(f')\rvert^2 df'
+\end{align}
+
+\begin{align}
+\Braket{D_{\phi}(t)D_{\phi}(t)} &=\frac{A^2}{8}\Bigg(\\
+& 2\cos^2(\phi)\Braket{\hat{X}(t)^2} + 2 \sin^2(\phi) \Braket{\hat{P}(t)^2} + i \Braket{\left[\hat{X}(t),\hat{P}(t)\right]}\\
+&-\sin(2\phi)\Braket{\left\{\hat{X}(t),\hat{P}(t)\right\}}\Bigg)\\
+&+\frac{B^2}{2}\cos(\Delta\phi)\int \lvert \tilde{F}(f')\rvert^2 df'
+\end{align}
+
+Note that for Heisenberg operators equal time commutators are equal to the normal Schrodinger picture commutators. In the convention we have chosen here $[\hat{X},\hat{P}] = 2i$.
+
+\begin{align}
+&\Braket{D_{\phi}(t)D_{\phi}(t)} =\frac{A^2}{4}\Bigg(\\
+&\cos^2(\phi)\Braket{\hat{X}(t)^2} + \sin^2(\phi)\Braket{\hat{P}(t)^2} -\sin(\phi)\cos(\phi)\Braket{\left\{\hat{X}(t),\hat{P}(t)\right\}} -1
+\Bigg)\\
+&+\frac{B^2}{2}\int |\tilde{F}(f')|^2 df'
+\end{align}
+
+This expression can be used to predict the time traces of the squared signal in the positive negative mass coupling window.
+
+For this final section I will calculate the cross power spectral density of a two quadratures in the case that the system is stable and in equilibrium and thus stationary. First the auto-correlation function.
+
+\begin{align}
+\Braket{D_{\phi_1}(\tau)D_{\phi_2}(0)} &=\frac{A^2}{8}\Bigg(\\
++\cos(\phi_1)\cos(\phi_2)&\left(\Braket{\left\{\hat{X}(\tau),\hat{X}(0)\right\}}+i\Braket{\left[\hat{X}(\lvert\tau\rvert),\hat{P}(0)\right]}\right)\\
++\sin(\phi_1)\sin(\phi_2)&\left(\Braket{\left\{\hat{P}(\tau),\hat{P}(0)\right\}}-i\Braket{\left[\hat{P}(\lvert\tau\rvert),\hat{X}(0)\right]}\right)\\
+-\frac{1}{2}\sin(\phi_1+\phi_2)\bigg(&\left(\Braket{\left\{\hat{X}(\tau),\hat{P}(0)\right\}}+\Braket{\left\{\hat{P}(\tau),\hat{X}(0)\right\}}\right)\\
+-i&\left(\Braket{\left[\hat{X}(\lvert\tau\rvert),\hat{X}(0)\right]}-\Braket{\left[\hat{P}(\lvert\tau\rvert),\hat{P}(0)\right]}\right)\bigg)\\
++\frac{1}{2}\sin(\Delta\phi)\bigg(&\left(\Braket{\left\{\hat{X}(\tau),\hat{P}(0)\right\}}-\Braket{\left\{\hat{P}(\tau),\hat{X}(0)\right\}}\right)\\
+-i&\left(\Braket{\left[\hat{X}(\tau),\hat{X}(0)\right]}+\Braket{\left[\hat{P}(\tau),\hat{P}(0)\right]}\right)\bigg)\Bigg)\\
+&+\frac{B^2}{2}\cos(\Delta\phi)\int F(\tau-t')F(-t')dt'
+\end{align}
+
+We then Fourier transform this expression to find the demodulated quadrature power spectral density. I'll work on the shot noise term first
+
+\begin{align}
+\int \int e^{i 2\pi f \tau}F(\tau-t')F(-t')dt'd\tau &= \int \int e^{i 2\pi f (\tau+t')}F(\tau)F(-t')dt'd\tau\\
+&=\int \tilde{F}(f) e^{+i 2\pi f t'}F(-t')dt' = |\tilde{F}(f)|^2
+\end{align}
+
+Neglecting frequencies above the bandwidth of the filter (much out of the signal band anyways) we have $\lvert\tilde{F}(f)\rvert^2 = 1$. And adding in the main signal
+
+\begin{align}
+S_{D_{\phi_1}D_{\phi_2}}(f) &= \frac{A^2}{8}\bigg(\\
+\cos(\phi_1)\cos(\phi_2)&\left(S_{\{v_x v_x\}}(f) + iS_{[v_x v_p]_2}(f) \right)\\
+\sin(\phi_1)\sin(\phi_2)&\left(S_{\{v_p v_p\}}(f) - iS_{[v_p v_x]_2}(f) \right)\\
+-\frac{1}{2}\sin(\phi_1+\phi_2)&\left(S_{\{v_x v_p\}}(f) +S_{\{v_p v_x\}}(f) -iS_{[v_x v_x]_2}(f) +iS_{[v_p v_p]_2}(f)\right)\\
++\frac{1}{2}\sin(\Delta \phi)&\left(S_{\{v_x v_p\}}(f) -S_{\{v_p v_x\}}(f) -iS_{[v_x v_x]}(f) -iS_{[v_p v_p]}(f)\right)\bigg)\\
+&+\frac{B^2}{2}\cos(\Delta \phi)
+\end{align}
+
+We can normalize so that shot-noise for $\Delta\Phi = 0$ is unity. Noting that $\frac{A^2}{4B^2} = \frac{1}{2}\kappa \epsilon$ where $\epsilon$ is the homodyne detection efficiency.
+
+\begin{align}
+\frac{2}{B^2} S_{D_{\phi_1}D_{\phi_2}}(f) &= \frac{1}{2}\kappa \epsilon \bigg(\\
+\cos(\phi_1)\cos(\phi_2)&\left(S_{\{v_x v_x\}}(f) + iS_{[v_x v_p]_2}(f) \right)\\
+\sin(\phi_1)\sin(\phi_2)&\left(S_{\{v_p v_p\}}(f) - iS_{[v_p v_x]_2}(f) \right)\\
+-\frac{1}{2}\sin(\phi_1+\phi_2)&\left(S_{\{v_x v_p\}}(f) +S_{\{v_p v_x\}}(f) -iS_{[v_x v_x]_2}(f) +iS_{[v_p v_p]_2}(f)\right)\\
++\frac{1}{2}\sin(\Delta \phi)&\left(S_{\{v_x v_p\}}(f) -S_{\{v_p v_x\}}(f) -iS_{[v_x v_x]}(f) -iS_{[v_p v_p]}(f)\right)\bigg)\\
+&+\cos(\Delta \phi)
+\end{align}
+
+\end{document}

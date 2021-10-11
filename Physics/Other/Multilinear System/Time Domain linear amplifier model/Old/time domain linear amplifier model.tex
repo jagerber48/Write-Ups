@@ -1,0 +1,410 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+
+\begin{document}
+\title{Time Domain Linear Amplifier Model}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this write-up I will develop a formalism for predicting the time domain behavior of a noise-driven system of coupled oscillators. At present it applies to our optomechanical measurement of a positive mass mechanical oscillator coupled to a negative mass spin oscillator but the formalism should be applicable to other systems. For example, it may be interesting to consider a single oscillator with two cavity drives at different frequencies or polarizations.
+
+
+For now I'll pick up where Dan's write up left off, that is, the equations of motion for a linearized three oscillator optomechanical model.
+
+The Hamiltonian in a frame rotating at the probe frequency $\omega_p$. $\Delta = \omega_p-\omega_c$.
+
+\begin{equation}
+H = -\hbar \omega_a a^{\dag} a + \hbar \omega_b^{\dag}b - \hbar\Delta c^{\dag} c - \hbar g_a c^{\dag}c(a^{\dag} +a) -\hbar g_b c^{\dag} c(b^{\dag}+b)
+\end{equation}
+
+Now lets look at the linearized equations of motion. From now on the operators $a$, $b$, and $c$ represent fluctuations abut the average amplitudes of the three oscillators, $\bar{a}$, $\bar{b}$ and $\bar{c}$. That is we have subtracted off the steady state optomechanical shifts. Note that these average amplitudes will depend on an optical drive field which would come into the equations of motion as $\sqrt{2\kappa}c^{\text{dr}}$ rotating at the probe frequency (or constant in the rotating frame). However this term won't show up explictly in what follows but only through the dependence of the average amplitudes upon it. We absorb the static cavity shift into $\Delta$. $\Gamma_a$ and $\Gamma_b$ are the energy decay rates (power FWHM) of the two oscillators and $\kappa$ is the amplitude decay rate (cavity HWHM) of the cavity. $G_a = g_a \bar{c}$ and $G_b = g_b \bar{c}$ where $\bar{c} = \sqrt{\bar{n}}$ where $\bar{n}$ is the average intracavity photon number. We have assumed $\bar{c}$ is real.
+
+\begin{align*}
+\dot{a} &= \left(+i \omega_a - \frac{\Gamma_a}{2}\right)a + i G_a(c^{\dag} +c)\\
+\dot{b}&= \left(-i \omega_b - \frac{\Gamma_b}{2}\right)b + i G_b(c^{\dag} +c)\\
+\dot{c}&= \left(+i \Delta - \kappa\right) c + i(G_a(a^{\dag}+a)+G_b(b^{\dag}+b))
+\end{align*}
+In terms of position and momentum operators, $X_{\alpha} = 2\text{Re}(\alpha) = \alpha^{\dag}+\alpha$ and $P_{\alpha} = 2\text{Im}(\alpha) = i(\alpha^{\dag}-\alpha)$.
+
+\begin{align*}
+\dot{X}_a &= -\omega_a P_a -\frac{\Gamma_a}{2} X_a\\
+\dot{P}_a &= +\omega_a X_a -\frac{\Gamma_a}{2} P_a + 2 G_a X_c\\
+\dot{X}_b &= +\omega_b P_b -\frac{\Gamma_b}{2} X_b\\
+\dot{P}_b &= -\omega_b X_b -\frac{\Gamma_b}{2} P_b + 2 G_b X_c\\
+\dot{X}_c &= -\Delta P_c - \kappa X_c\\
+\dot{P}_c &= +\Delta X_c - \kappa P_c + 2 G_a X_a + 2 G_b X_b\\
+\end{align*}
+
+Putting these into Matrix Form:
+
+\[ \bv{v} = \begin{bmatrix}
+X_a\\P_a\\X_b\\P_b\\X_c\\P_c \end{bmatrix} \]
+
+\[ \bv{M} = \begin{bmatrix}
+-\frac{\Gamma_a}{2} & -\omega_a & 0 & 0 & 0 & 0 \\
+\omega_a & -\frac{\Gamma_a}{2} & 0 & 0 & 2G_a & 0 \\
+0 & 0 & -\frac{\Gamma_b}{2} & \omega_b & 0 & 0 \\
+0 & 0 & -\omega_b & -\frac{\Gamma_b}{2} & 2G_b & 0\\
+0 & 0 & 0 & 0 & -\kappa & -\Delta \\
+2G_a & 0 & 2G_b & 0 & \Delta & -\kappa \\ \end{bmatrix}\]
+
+$\bv{v}$ is the state vector and $\bv{M}$ is the state matrix. We have
+
+\begin{equation}
+\dot{\bv{v}}(t) = \bv{M}\bv{v}(t)
+\end{equation}
+
+While this formalism includes damping it does not include the input fields which drive the system. 
+Here are the equations of motion including those drives.
+
+\begin{align*}
+\dot{X}_a &= -\omega_a P_a -\frac{\Gamma_a}{2} X_a + \sqrt{\Gamma_a}X_a^{\text{in}}\\
+\dot{P}_a &= +\omega_a X_a -\frac{\Gamma_a}{2} P_a + 2 G_a X_c + \sqrt{\Gamma_a}P_a^{\text{in}}\\
+\dot{X}_b &= +\omega_b P_b -\frac{\Gamma_b}{2} X_b + \sqrt{\Gamma_b}X_b^{\text{in}}\\
+\dot{P}_b &= -\omega_b X_b -\frac{\Gamma_b}{2} P_b + 2 G_b X_c + \sqrt{\Gamma_b}P_b^{\text{in}}\\
+\dot{X}_c &= -\Delta P_c - \kappa X_c + \sqrt{2\kappa}X_c^{\text{in}}\\
+\dot{P}_c &= +\Delta X_c - \kappa P_c + 2 G_a X_a + 2 G_b X_b + \sqrt{2\kappa}P_c^{\text{in}}\\
+\end{align*}
+
+We can introduce a new vector $\bv{g}$ to represent these stochastic inputs fields.
+
+\begin{equation}
+\bv{g} = \begin{bmatrix}
+\sqrt{\Gamma}_a X_a^{\text{in}}\\
+\sqrt{\Gamma}_a P_a^{\text{in}}\\
+\sqrt{\Gamma}_b X_b^{\text{in}}\\
+\sqrt{\Gamma}_b P_b^{\text{in}}\\
+\sqrt{2\kappa} X_c^{\text{in}}\\
+\sqrt{2\kappa} P_c^{\text{in}}\\
+\end{bmatrix}
+\end{equation}
+
+So we now have
+
+\[
+\dot{\bv{v}}(t) = \bv{M} \bv{v}(t) + \bv{g}(t)
+\]
+
+Here are the defining features of the noise inputs:
+
+\begin{align*}
+[X_{\alpha}^{\text{in}}(t),P_{\beta}^{\text{in}}(t')] &= 2i\delta(t-t')\delta_{\alpha \beta}\\
+[X_{\alpha}^{\text{in}}(t),X_{\beta}^{\text{in}}(t')]& = [P_{\alpha}^{\text{in}}(t),P_{\beta}^{\text{in}}(t')] = 0\\
+\braket{X_{\alpha}^{\text{in}}(t)X_{\beta}^{\text{in}}(t')} &= \braket{P_{\alpha}^{\text{in}}(t)P_{\beta}^{\text{in}}(t')} = (2\bar{n}_{\alpha} +1)\delta(t-t')\delta_{\alpha \beta}\\
+\braket{X_{\alpha}^{\text{in}}(t)P_{\beta}^{\text{in}}(t')} &= -\braket{P_{\alpha}^{\text{in}}(t)X_{\beta}^{\text{in}}(t')} = i\delta(t-t')\delta_{\alpha \beta}
+\end{align*}
+
+Where $\alpha$ and $\beta$ label the appropriate oscillator and $\bar{n}_{\alpha}$ is the thermal occupation of the reservoir which is driving oscillator $\alpha$.
+
+The task is now to solve
+
+\begin{equation}
+\dot{\bv{v}}(t) = \bv{M} \bv{v}(t) + \bv{g}(t)
+\label{main}
+\end{equation}
+
+and extract what relevant information we can about it. First we transform to work in the eigenbasis of $\bv{M}$. We note that $\bv{M}$ can be diagonalized by some matrix $\bv{P}$.
+
+\[
+\bv{D} = \bv{P}^{-1} \bv{M} \bv{P}
+\]
+
+Where the columns of $\bv{P}$ are the eigenvectors of $\bv{M}$ and $\bv{D}$ is a diagonal matrix whose diagonal elements are the respective eigenvalues of $\bv{M}$. Note that $\bv{M}$ is not Hermitian. This means that $\bv{P}$ is not necessarily unitary. I believe in control theory $\bv{M}$ is referred to as the state matrix.
+
+\[\bv{M} = \bv{P} \bv{D} \bv{P}^{-1}\]
+
+We define the transformed vectors
+
+\begin{align*}
+\tilde{\bv{v}} &= \bv{P}^{-1} \bv{v}\\
+\tilde{\bv{g}} &= \bv{P}^{-1} \bv{g}
+\end{align*}
+
+And multiply Eq (\ref{main}) on the left by $\bv{P}^{-1}$ to obtain the equation in the eigenbasis representation
+
+\[
+\dot{\tilde{\bv{v}}}(t) = \bv{D}\tilde{\bv{v}}(t) + \tilde{\bv{g}}(t)
+\]
+
+and we start manipulating
+
+\[
+\dot{\tilde{\bv{v}}}(t) - \bv{D}\tilde{\bv{v}}(t) = \tilde{\bv{g}}(t)
+\]
+
+but note that
+
+\[
+\frac{d}{dt} \left(e^{-\bv{D}t} \tilde{\bv{v}}(t)\right) = e^{-\bv{D}t} (\dot{\tilde{\bv{v}}}(t) - \bv{D}\tilde{\bv{v}}(t))
+\]
+
+so
+
+\[
+\frac{d}{dt} \left(e^{-\bv{D}t} \tilde{\bv{v}}(t)\right) = e^{-\bv{D}t}\tilde{\bv{g}}(t)
+\]
+
+integrating both sides from $t'=0$ to $t'=t$ we find
+
+\[
+\tilde{\bv{v}}(t) = e^{+\bv{D}t}\tilde{\bv{v}}(0) + \int_{t'=0}^{t} e^{\bv{D}(t-t')} \tilde{\bv{g}}(t') dt'
+\]
+
+We convert this back into the bare oscillator basis by multiplying on the left by $\bv{P}$ to get 
+
+\begin{equation}
+\bv{v}(t) = \bv{P} e^{\bv{D}t} \bv{P}^{-1}\bv{v}(0) + \int_{t'=0}^t \bv{P}e^{D(t-t')}\bv{P}^{-1} \bv{g}(t') dt' = \tilde{\bv{A}}(t) \bv{v}(0) + \int_{t'=0}^t \tilde{\bv{A}}(t-t') \bv{g}(t') dt'
+\label{complex}
+\end{equation}
+
+with $\tilde{\bv{A}}(t) =  \bv{P} e^{\bv{D}t} \bv{P}^{-1}$. However, we have to be careful here. The expression above is a solution to Eq (\ref{main}) but in general it is not necessarily real. This is because the eigenvalues of $\bv{M}$ are likely complex meaning $\tilde{\bv{A}}(t)$ is complex. We must, by hand, impose the physical constraint that $\bv{v}(t)$ is real. We can do this by simply taking the real part of Eq (\ref{complex}). Since Eq (\ref{complex}) is a solution to Eq (\ref{main}) we know that the real part will also be a solution. We let $\bv{A}(t) = \text{Re}(\tilde{\bv{A}})$ so that 
+
+\begin{equation}
+\bv{v}(t) = \bv{A}(t) \bv{v}(0) + \int_{t'=0}^t \bv{A}(t-t') \bv{g}(t') dt'
+\end{equation}
+
+describes the time evolution of $\bv{v}$. I believe $\bv{A}$ is called the state transition matrix.
+
+I think that it is important to take the real part here because in the next step we are going to essentially square $\bv{v}$ and the real part of the square of a complex number is not equal to the square of the real part of the complex number. Normally we wait until the end of a calculation to take the real part because that makes the calculation easiest, but I think that is only valid if you are performing linear operations.
+
+We are interested in the covariance matrix describing these three oscillators. 
+
+\[
+\text{cov}(\bv{v}(t)) = \braket{\bv{v}(t)\bv{v}^T(t)}
+\]
+
+To calculate this we will need to calculate $\bv{v}(t)\bv{v}^T(t)$.
+
+\begin{align}
+\bv{v}(t)\bv{v}^T(t) &= \bv{A}(t)\bv{v}(0)\bv{v}^T(0) \bv{A}^T(t)\\
+&+\int_{t'=0}^{t}\bv{A}(t)\bv{v}(0) \bv{g}^T(t')\bv{A}^T(t-t')dt'\\
+&+\int_{t'=0}^{t}\bv{A}(t-t')\bv{g}(t')\bv{v}^T(0)\bv{A}^T(t)dt'\\
+&+ \int_{t'=0}^{t} \int_{t''=0}^{t} \bv{A}(t-t')\bv{g}(t')\bv{g}^T(t'')\bv{A}^T(t-t'') dt' dt''
+\end{align}
+
+When we take the expectation value to calculate $\braket{\bv{v}(t)\bv{v}^T(t)}$ the central two terms of the above expression will vanish since the initial state of the system, $\bv{v}(0)$, and the noise driving the system, $\bv{g}(t')$, should be uncorrelated.
+
+
+\[
+\braket{\bv{v}(t)\bv{v}^T(t)} = \bv{A}(t) \braket{\bv{v}(0)\bv{v}^T(0)}\bv{A}^T(t) + \int_{t'=0}^t \int_{t''=0}^t \bv{A}(t-t') \braket{\bv{g}(t')\bv{g}^T(t'')} \bv{A}^T(t-t'') dt' dt''
+\]
+
+The covariance matrix is now expressed in terms of the initial covariance matrix, $\braket{\bv{v}(0)\bv{v}^T(0)}$ and a matrix capturing the noise correlations $\braket{\bv{g}(t')\bv{g}^T(t'')}$. We work to express these in terms of simpler quantities. We will take the initial system state $\bv{v}(0)$ to be a thermal state. This means that both matrices,  $\braket{\bv{v}(0)\bv{v}^T(0)}$ and $\braket{\bv{g}(t')\bv{g}^T(t'')}$ represent covariance matrices for thermal states of the form:
+
+\begin{equation}
+\begin{bmatrix}
+\braket{X_a X_a} & \braket{X_a P_a} & \braket{X_a X_b} & \braket{X_a P_b} & \braket{X_a X_c} & \braket{X_a P_c}\\
+\braket{P_a X_a} & \braket{P_a P_a} & \braket{P_a X_b} & \braket{P_a P_b} & \braket{P_a X_c} & \braket{P_a P_c}\\
+\braket{X_b X_a} & \braket{X_b P_a} & \braket{X_b X_b} & \braket{X_b P_b} & \braket{X_b X_c} & \braket{X_b P_c}\\
+\braket{P_b X_a} & \braket{P_b P_a} & \braket{P_b X_b} & \braket{P_b P_b} & \braket{P_b X_c} & \braket{P_b P_c}\\
+\braket{X_c X_a} & \braket{X_c P_a} & \braket{X_c X_b} & \braket{X_c P_b} & \braket{X_c X_c} & \braket{X_c P_c}\\
+\braket{P_c X_a} & \braket{P_c P_a} & \braket{P_c X_b} & \braket{P_c P_b} & \braket{P_c X_c} & \braket{P_c P_c}\\
+\end{bmatrix}
+\end{equation}
+
+For a thermal state we have the relations $\braket{X^2} = \braket{P^2} = 2\bar{n}+1$ and $\braket{XP} = -\braket{PX} = i$. For the input states these relations have an additional $\delta(t-t')$ as stated earlier.
+
+From this we find that 
+
+\begin{equation}
+\braket{\bv{v}(0)\bv{v}^T(0)}=\bv{\beta} = 
+\begin{bmatrix}
+2\bar{n}_a+1 & i & 0 & 0 & 0 & 0\\
+-i & 2\bar{n}_a+1 & 0 & 0 & 0 & 0\\
+0 & 0 & 2\bar{n}_b+1 & i & 0 & 0\\
+0 & 0 & -i & 2\bar{n}_b+1 & 0 & 0\\
+0 & 0 & 0 & 0 & 2\bar{n}_c+1 & i\\
+0 & 0 & 0 & 0 & -i & 2\bar{n}_c+1\\
+\end{bmatrix}
+\end{equation}
+
+Similarly
+\begin{align}
+&\braket{\bv{g}(t')\bv{g}^T(t'')}=\bv{\eta}\delta(t'-t'')\\
+&=
+\begin{bmatrix}
+\Gamma_a (2\bar{n}^{\text{in}}_a+1) & i\Gamma_a & 0 & 0 & 0 & 0\\
+-i\Gamma_a & \Gamma_a(2\bar{n}^{\text{in}}_a+1) & 0 & 0 & 0 & 0\\
+0 & 0 & \Gamma_b(2\bar{n}^{\text{in}}_b+1) & i\Gamma_b & 0 & 0\\
+0 & 0 & -i\Gamma_b & \Gamma_b(2\bar{n}^{\text{in}}_b+1) & 0 & 0\\
+0 & 0 & 0 & 0 & 2\kappa(2\bar{n}^{\text{in}}_c+1) & i2\kappa\\
+0 & 0 & 0 & 0 & -i2\kappa & 2\kappa(2\bar{n}^{\text{in}}_c+1)\\
+\end{bmatrix}
+\delta(t'-t'')
+\end{align}
+
+We can rewrite this and apply the action of the delta function to find
+
+\begin{equation}
+\braket{\bv{v}(t)\bv{v}^T(t)} = \bv{A}(t) \bv{\beta} \bv{A}^T(t) + \int_{t'=0}^t \bv{A}(t-t') \bv{\eta} \bv{A}^T(t-t') dt'
+\end{equation}
+
+Note that in general this expression can be complex owing to the complexity of $\bv{\eta}$ and $\bv{\beta}$. The complexity comes from the non-zero quantum commutation relations. Typically when people express quantum covariances they take the real part of the covariance matrix I have just described. Since everything else in the expression is real this can be done by setting $i\rightarrow 0$ in the matrix representations of $\bv{\beta}$ and $\bv{\eta}$.
+
+I am slightly curious if the state estimation technique we use in E3 is actually sensitive exactly to the real part of the covariance matrix or if it is sensitive to some other thing.
+
+This slight curiosity turned into a major exploration of heterodyne detection and  Glauber theory of photodetection..
+
+It turns out heterodyne detection will be sensitive to commutators and anti-commutators of $\bv{v}$ and $\bv{v}^T$. In the languages spelled out in the appendix we are interested in
+
+\begin{align}
+[[\bv{v}(t_1),\bv{v}^T(t_2)]]\\
+\{\{\bv{v}(t_1),\bv{v}^T(t_2)\}\}
+\end{align}
+
+And expectations of these quantities. 
+\begin{align}
+\bv{v}(t) &= \bv{A}(t) \bv{v}(0) + \int_{t'=0}^t \bv{A}(t-t') \bv{g}(t') dt'\\
+\bv{v}^T(t) &=  \bv{v}^T(0)\bv{A}^T(t) + \int_{t'=0}^t \bv{g}^T(t')\bv{A}^T(t-t')  dt'
+\end{align}
+
+Using the identities shown in the appendix
+
+\begin{align}
+[[\bv{v}(t_1),\bv{v}^T(t_2)]]&= \\
+&\bv{A}(t_1)[[\bv{v}(0),\bv{v}^T(0)]]\bv{A}^T(t_2)\\
+&+\int_{t'=0}^{t_2} \bv{A}(t_1) [[\bv{v}(0),\bv{g}^T(t')]] \bv{A}^T(t_2-t') dt'\\
+&+\int_{t'=0}^{t_1}\bv{A}(t_1-t')[[\bv{g}(t'),\bv{v}^T(0)]] \bv{A}^T(t_2) dt'\\
+&+\int_{t'=0}^{t_1}\int_{t''=0}^{t_2} \bv{A}(t_1-t')[[\bv{g}(t'),\bv{g}^T(t'')]]\bv{A}^T(t_2-t'') dt' dt''
+\end{align}
+
+When we take the expectation value the two central terms will vanish due to $\bv{g}(t')$ being uncorrelated with $\bv{v}(0)$.
+
+\begin{align}
+\braket{[[\bv{v}(t_1),\bv{v}^T(t_2)]]} =& \bv{A}(t_1)\braket{[[\bv{v}(0),\bv{v}^T(0)]]}\bv{A}^T(t_2)\\
+&+\int_{t'=0}^{t_1}\int_{t''=0}^{t_2} \bv{A}(t_1-t')\braket{[[\bv{g}(t'),\bv{g}^T(t'')]]}\bv{A}^T(t_2-t'') dt' dt'' 
+\end{align}
+
+We can work out 
+
+\begin{align}
+\braket{[[\bv{v}(0),\bv{v}^T(0)]]} = \braket{\bv{v}(0)\bv{v}^T(0) - (\bv{v}(0)\bv{v}^T(0))^T} = \bv{\beta} - \bv{\beta}^T = 2i \text{Im}(\bv{\beta})
+\end{align}
+
+The last equality follows from the fact that $\bv{\beta}$ is Hermitian. That is $\bv{\beta}^{\dag} = \bv{\beta}$ implying $\bv{\beta}^T = \bv{\beta}^*$.
+
+Similarly
+
+\begin{align}
+\braket{[[\bv{g}(t'),\bv{g}^T(t'')]]} &= \braket{\bv{g}(t')\bv{g}^T(t'') - (\bv{g}(t'')\bv{g}(t'))^T}\\
+&= (\bv{\eta} - \bv{\eta}^T)\delta(t'-t'') = 2i \text{Im}(\bv{\eta}) \delta(t'-t'')
+\end{align}
+
+Which follows from the evenness of the delta function and the hermiticity of $\bv{\eta}$.
+
+\begin{align}
+\braket{[[\bv{v}(t_1),\bv{v}^T(t_2)]]} =& 2i \bv{A}(t_1) \text{Im}(\bv{\beta}) \bv{A}^T(t_2)\\
+&+2i \int_{t'=0}^{\text{min}(t_1,t_2)} \bv{A}(t_1-t')\text{Im}(\bv{\eta})\bv{A}^T(t_2-t') dt'
+\end{align}
+
+We can work out similar formulas for the anticommutators. The analysis is the exact same except we find
+
+\begin{align}
+\braket{\{\{\bv{v}(0),\bv{v}^T(0)\}\}} = \braket{\bv{v}(0)\bv{v}^T(0) + (\bv{v}(0)\bv{v}^T(0))^T} = \bv{\beta} + \bv{\beta}^T = 2 \text{Re}(\bv{\beta})
+\end{align}
+
+\begin{align}
+\braket{\{\{\bv{g}(t'),\bv{g}^T(t'')\}\}} &= \braket{\bv{g}(t')\bv{g}^T(t'') + (\bv{g}(t'')\bv{g}(t'))^T}\\
+&= (\bv{\eta} + \bv{\eta}^T)\delta(t'-t'') = 2 \text{Re}(\bv{\eta}) \delta(t'-t'')
+\end{align}
+
+Which results in
+
+\begin{align}
+\braket{[[\bv{v}(t_1),\bv{v}^T(t_2)]]} =& 2 \bv{A}(t_1) \text{Re}(\bv{\beta}) \bv{A}^T(t_2)\\
+&+2 \int_{t'=0}^{\text{min}(t_1,t_2)} \bv{A}(t_1-t')\text{Re}(\bv{\eta})\bv{A}^T(t_2-t') dt'
+\end{align}
+
+
+
+
+
+At this point we have come a long way towards solving the problem. $\boldsymbol{\beta}$ is specified by the initial thermal occupations, $\boldsymbol{\eta}$ is specified by the thermal occupations of the respective reservoirs, and $\bv{A}(t)$ can be found by diagonalizing the system matrix $\bv{M}$.
+
+\section{Matrix Transpose}
+
+In normal matrix operations we have the identity $(\bv{A}\bv{B})^T = (\bv{B}^T\bv{A}^T)^T$. This identity does not hold in the case that components of $\bv{A}$ and $\bv{B}$ are quantum operators which may not commute. I'll show why.
+
+\begin{align}
+(\bv{A}\bv{B})_{ik} - ((\bv{B}^T\bv{A}^T)^T)_{ik} &= (\bv{A}\bv{B})_{ik} - (\bv{B}^T\bv{A}^T)_{ki}\\
+= A_{ij} B_{jk} - (\bv{B}^T)_{kj}(\bv{A}^T)_{ji} &= A_{ij}B_{jk} - B_{jk} A_{ki}\\
+= [A_{ij},B_{jk}] &= ([[\bv{A},\bv{B}]])_{ik} 
+\end{align}
+
+We thus define an operator, $[[.,.]]$ such that $([[\bv{A},\bv{B}]])_{ik} = [A_{ij},B_{jk}]$ so that
+
+\begin{align}
+&\bv{A}\bv{B} - (\bv{B}^T\bv{A}^T)^T = [[\bv{A},\bv{B}]]
+\end{align}
+
+The case relevant for this write up is $\bv{A} = \bv{v}$ and $\bv{B} = \bv{v}^T$ giving
+
+\begin{align}
+&\bv{v}\bv{v}^T - ((\bv{v}^T)^T\bv{v}^T)^T\\
+&= \bv{v}\bv{v}^T - (\bv{v}\bv{v}^T)^T = [[\bv{v},\bv{v}^T]]
+\end{align}
+
+Some properties
+
+Additivity:
+
+\begin{align}
+([[\bv{A}+\bv{B},\bv{C}]])_{ik} &= [A_{ij}+B_{ij},C_{jk}]\\
+&= [A_{ij},C_{jk}+[B_{ij},C_{jk} = ([[\bv{A},\bv{C}]])_{ij} + ([[\bv{B},\bv{C}]])_{ik}
+\end{align}
+
+so
+
+\begin{align}
+[[\bv{A}+\bv{B},\bv{C}]] &= [[\bv{A},\bv{C}]]+[[\bv{B},\bv{C}]]\\
+[[\bv{A},\bv{B}+\bv{C}]] &= [[\bv{A},\bv{B}]] + [[\bv{A},\bv{C}]]
+\end{align}
+
+Where the second line follows by a similar proof.
+
+Scalar multiplication. Consider $\bv{A}$ and $\bv{D}$ whose entries are all C-numbers.
+
+\begin{align}
+([[\bv{A}\bv{B},\bv{C}\bv{D}]])_{ik} &= [(\bv{A}\bv{B})_{ij},(\bv{C}\bv{D})_{jk}]] = [A_{il}B_{lj},C_{jm}D_{mk}]\\
+&= A_{il}[B_{lj},C_{jm}]D_{mk}= A_{il}[[\bv{B},\bv{C}]_{lm} D_{mk}
+\end{align}
+
+so
+
+\begin{align}
+[[\bv{A}\bv{B},\bv{C}\bv{D}]] = \bv{A}[[\bv{B},\bv{C}]]\bv{D}
+\end{align}
+
+We can similarly define an anti-commutator operator $\{\{.,.\}\}$
+
+\begin{align}
+(\bv{A}\bv{B})_{ik} + ((\bv{B}^T\bv{A}^T)^T)_{ik} &= (\bv{A}\bv{B})_{ik} + (\bv{B}^T\bv{A}^T)_{ki}\\
+= A_{ij} B_{jk} + (\bv{B}^T)_{kj}(\bv{A}^T)_{ji} &= A_{ij}B_{jk} + B_{jk} A_{ki}\\
+= \{A_{ij},B_{jk}\} &= (\{\{\bv{A},\bv{B}\}\})_{ik}
+\end{align}
+
+\begin{align}
+\{\{\bv{A},\bv{B}\}\} = \bv{A}\bv{B} + (\bv{B}^T\bv{A}^T)^T
+\end{align}
+
+This anti-commutator operator will satisfy the same additive and scalar multiplication identities as the commutator.
+
+
+
+\end{document}

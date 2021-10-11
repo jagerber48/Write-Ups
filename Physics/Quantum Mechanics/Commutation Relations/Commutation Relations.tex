@@ -1,0 +1,461 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Spin and Oscillator Commutation Relations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Here I will summarize the definition of various operators which arise frequently in the study of two-level (spin-$\frac{1}{2}$) systems and harmonic oscillators as well as algebraic properties of those operators.
+
+\section{Pauli Matrices}
+
+The Pauli-matrices are intimately tied to spin-$\frac{1}{2}$ systems and two-level systems. I think the reason the Pauli matrices show up in the study of two-level systems is because spin-$\frac{1}{2}$ systems are the first two-level systems which people study so the intuition from spin-$\frac{1}{2}$ is ported over to any two-level system (which has the same Hilbert space as spin-$\frac{1}{2}$ system. Unfortunately it is not exactly clear to me why the Puali matrices are the best way to represent spin-$\frac{1}{2}$ systems but I see that it works and I will report those results. I will state the following about the Pauli matrices. The Pauli matrices are Hermitian, they are Unitary, and they are traceless.
+
+As far as I can tell the Pauli matrices are always defined with respect to a particular basis. Since we often discuss a two level system where the Hilbert space is spanned by the two kets $\ket{g}$ and $\ket{e}$ I will use that notation here.
+
+\begin{align}
+\sigma^1 &= \ket{e}\bra{g} + \ket{g}\bra{e}\\
+\sigma^2 &= i(\ket{g}\bra{e} - \ket{e}\bra{g})\\
+\sigma^3 &= \ket{e}\bra{e} - \ket{g}\bra{g}\\
+\sigma_0 &= \ket{e}\bra{e} + \ket{g}\bra{g} = \mathbbm{1}
+\end{align}
+
+Note that $\sigma_0$ isn't necessary a Pauli matrix, but when it is included then we have a basis which spans the vector space of $2x2$ Hermitian matrices.
+
+It will be helpful to include
+
+\begin{align}
+\Pi_e = \ket{e}\bra{e}
+\end{align}
+
+We also define the Pauli raising and lower operators
+
+\begin{align}
+\sigma^+ &= \ket{e}\bra{g}\\
+\sigma^- &= \ket{g}\bra{e}\\
+\end{align}
+
+We can re-express the Pauli operators as
+
+\begin{align}
+\sigma^1 &= \sigma^- + \sigma^+ = 2\text{Re}(\sigma^+)\\
+\sigma^2 &= i(\sigma^- - \sigma^+) = 2\text{Im}(\sigma^+)\\
+\sigma^3 &= \sigma^+\sigma^- - \sigma^-\sigma^+ = 2\Pi_e - \mathbbm{1}\\
+\sigma_0 &= \sigma^+\sigma^- + \sigma^-\sigma^+\\ 
+\sigma^+ &= \frac{1}{2}(\sigma^1 + i \sigma^2)\\
+\sigma^- &= \frac{1}{2}(\sigma^1 - i \sigma^2)\\
+\Pi_e &= \frac{1}{2}\left(\sigma^3+\mathbbm{1}\right)
+\end{align}
+
+In converting between Hermitian and Complex representations of matrices there are a number of conventions for where the factor of $\frac{1}{2}$ can appear. I'm not exactly sure why all of the convention choices above are made but here is my guess. My guess is that the Pauli matrices were defined to not involve factors of two in their matrix representation or their eigenvalues. The spin raising and lowering operators were also chosen to have simple matrix representations. In that case the transformation between the two requires the above factor of two. I will choose the factor of two to be different below in defining Harmonic oscillator raising and lowering operators. I think the factors may be different when spin matrices (rather than Pauli matrices) are considered.
+Notice
+
+\begin{align}
+\sigma_i^2 = \mathbbm{1}
+\end{align}
+
+for $i=1,2,3,0$.
+
+\subsection{Commutation Relations}
+
+In basis or matrix representation it is easy to directly calculate the commutation relations (I'm not sure if there is an algebraic way to derive them).
+
+\begin{align}
+[\sigma^1, \sigma^2] &= i \ket{e}\bra{e}  - i \ket{g}\bra{g} +i \ket{e}\bra{e} - i \ket{g}\bra{g}\\
+&= 2i \sigma^3\\
+[\sigma^2, \sigma^3] &= +i\ket{e}\bra{g} +i\ket{g}\bra{e} +i\ket{e}\bra{g} +i\ket{g}\bra{e}\\
+&= 2i \sigma^1\\
+[\sigma^3, \sigma^1] &= \ket{e}\bra{g} - \ket{g}\bra{e} +\ket{e}\bra{g} - \ket{g}\bra{e}\\
+&= 2i \sigma^2
+\end{align}
+
+These are summarized by
+
+\begin{align}
+[\sigma_i, \sigma_j] &= 2i\epsilon_{ijk} \sigma_k
+\end{align}
+
+\begin{align}
+[\sigma^-, \sigma^+] &= - \sigma^3\\
+[\sigma^-, \sigma^3] &= 2\sigma^-\\
+[\sigma^+, \sigma^3] &= -2\sigma^+\\
+[\sigma^-, \Pi_e] &= \sigma^-\\
+[\sigma^+, \Pi_e] &= -\sigma^+
+\end{align}
+
+These can be summarized as
+
+\begin{align}
+[\sigma^{\pm},\sigma^3] &= \mp 2\sigma^{\pm}\\
+[\sigma^{\pm},\Pi_e]&= \mp \sigma^{\pm}
+\end{align}
+
+\section{Matrix Form}
+
+We can express the Pauli matrices in matrix form.
+
+\begin{align}
+\sigma^1 &= 
+\begin{bmatrix}
+0 && 1\\
+1 && 0\\
+\end{bmatrix}\\
+\sigma^2 &= 
+\begin{bmatrix}
+0 && -i\\
+i && 0\\
+\end{bmatrix}\\
+\sigma^3 &= 
+\begin{bmatrix}
+1 && 0\\
+0 && -1\\
+\end{bmatrix}\\
+\sigma_0 &= 
+\begin{bmatrix}
+1 && 0\\
+0 && 1\\
+\end{bmatrix}\\
+\sigma^+ &= 
+\begin{bmatrix}
+0 && 1\\
+0 && 0\\
+\end{bmatrix}\\
+\sigma^- &= 
+\begin{bmatrix}
+0 && 0\\
+1 && 0\\
+\end{bmatrix}\\
+\Pi_e &=
+\begin{bmatrix}
+1 && 0\\
+0 && 0\\
+\end{bmatrix}
+\end{align}
+
+\section{Relationship with Spin-$\frac{1}{2}$ Operators}
+
+We know that for spin operators we have the relation
+
+\begin{align}
+[S_i, S_j] = i\hbar\epsilon_{ijk}S_k
+\end{align}
+
+This indicates we should define $S_i = \frac{1}{2}\hbar \sigma_i$
+
+With this we can see that
+
+\begin{align}
+S^2 = (S_1^2+S_2^2+S_3^2) = \frac{3}{4}\hbar^2 \mathbbm{1} = \hbar^2 \frac{1}{2}(\frac{1}{2}+1) = \hbar^2s(s+1)
+\end{align}
+
+with $s=\frac{1}{2}$.
+
+
+\section{Creation and Annihilation Operators}
+
+The Harmonic Oscillator Hamiltonian is
+
+\begin{align}
+H = \frac{1}{2}m\omega^2X_0^2 + \frac{1}{2m}P_0^2
+\end{align}
+
+I note that $X_0$ and $P_0$ satisfy the canonical commutation relation $[X_0,P_0] = i\hbar$
+We can make this symmetric in $X$ and $P$ by defining 
+
+\begin{align}
+X' &= \sqrt{m\omega}X_0\\
+P' &= \frac{1}{\sqrt{m\omega}} P_0\\
+[X', P'] &= i\hbar
+\end{align}
+
+Notice that this transformation doesn't change the commutation relations. This means it is a canonical transformation. This sort of transformation is nice because it preserves the equations of motion. However, we'll shortly make a non-canonical transformation for separate reasons. $X'$ and $P'$ have the same dimensions.
+We then have
+
+\begin{align}
+H = \frac{\omega}{2}(X^{'2}+P^{'2})
+\end{align}
+
+We can now make $X'$ and $P'$ dimensionless by multiplying by $\sqrt{\frac{1}{N\hbar}}$. The $N$ is a constant number. We will see that different choices for $N$ lead to different conventions for the definitions of quadrature and amplitude operators.
+
+\begin{align}
+X &= \sqrt{\frac{1}{N\hbar}} X'\\
+P &= \sqrt{\frac{1}{N\hbar}} P'\\
+[X, P] &= \frac{1}{N} i
+\end{align}
+
+\begin{align}
+H = \frac{N}{2}\hbar \omega(X^2 + P^2)
+\end{align}
+
+We can consider $X$ and $P$ to be the axes on a two-dimensional phase space. We see that orbits of constant radius have fixed constant energy. Points in a two-dimensional phase space can be described by their two coordinates or they can be expressed as a complex number with a magnitude related to their radius and the phase related to the angle with respect to one of the axes. Thus it seems a reasonable idea to define
+
+\begin{align}
+a &= M(X+i P)\\
+a^{\dag} &= M(X-i P)\\
+X &= \frac{1}{2M} (a^{\dag}+a) = \frac{1}{M}\text{Re}(a)\\
+P &= \frac{i}{2M} (a^{\dag}-a) = \frac{1}{M}\text{Im}(a)
+\end{align}
+
+$M$ is another constant whose value will determine a convention choice about definitions of quadrature/amplitude operators. Shortly, we will see that the choice of $M$ and $N$ are typically constrained (by another more forceful convention choice) so that they can't be chosen independently.
+
+We can derive
+
+\begin{align}
+[a,a^{\dag}] = \frac{M^2}{N}i(-i-i) = 2\frac{M^2}{N}
+\end{align}
+
+\begin{align}
+H &= \hbar \omega \frac{N}{2}\frac{1}{4M^2} 2(a^{\dag}a+aa^{\dag})\\
+&= \hbar \omega \frac{N}{4M^2}(2a^{\dag}a + 2\frac{M^2}{N})\\
+&= \hbar \omega\left( \frac{N}{2M^2} a^{\dag}a + \frac{1}{2} \right)
+\end{align}
+
+We can calculate
+
+\begin{align}
+[a,a^{\dag}a] &= a^{\dag}[a,a] + [a,a^{\dag}]a = 2\frac{M^2}{N} a = ca
+\end{align}
+
+Note that eigenstates of $a^{\dag}a$ are eigenstates of the Hamiltonian. Suppose $\ket{n}$ is an eigenstate of $a^{\dag}a$ with eigenvalue $n$. We want to consider the state $a\ket{n}$
+
+\begin{align}
+a^{\dag}a a \ket{n} &= (a a^{\dag} a - ca) \ket{n}\\
+&= (an - ca)\ket{n} = (n-c)a\ket{n}
+\end{align}
+
+So we see that $a\ket{n}$ is also an eigenvector of $a^{\dag}a$ with eigenvalue $n-c$. That is $a$ lowers the eigenvalue by amount $c$. One can similarly show that $a^{\dag}$ raises the eigenvalue by $c$. Note that the energy of the system is proportional to this eigenvalue.
+Physical systems have energies which are bounded form below. This leads to the conclusion that if we act $a$ on any given eigenstate of $a^{\dag}a$ many times eventually we must get to a state $\ket{\psi}$ with $a\ket{\psi} = 0\ket{\psi}$. In that case subsequent action of $a$ on the initial state would not give states with lower energies. However, if there was a state with the eigenvalue lower than zero then $a$ could be acted infinitely many times to get states with arbitrarily negative energy.
+
+Putting this together we see that there is a state $\ket{0}$ with the property that $a\ket{0} = 0\ket{0}$ so that $a^{\dag}a\ket{0} = 0\ket{0}$. We can then see that any state $\ket{n}$ with the property that $a^{\dag}a\ket{n} = n\ket{n}$ is equal to $\ket{n} = (a^{\dag})^{\frac{n}{c}}\ket{0}$. That is, $\ket{n}$ arises from raising the eigenvalue by $c$ enough times so that we end up at $n$. Given this it seems sensible to label the states by exactly how many times they have been ``raised'' above this ground state. This means that we would like $n$ to be an integer and in particular we would like $c=1$. This makes $a$ and $a^{\dag}$ \textit{number} lowering and raising operators respectively.
+
+We then have
+
+\begin{align}
+2\frac{M^2}{N} = 1\\
+2M^2 = N
+\end{align}
+
+With this constraint we can then see
+
+\begin{align}
+H &= \hbar \omega\left(a^{\dag}a + \frac{1}{2}\right)\\
+[a,a^{\dag}] &= 1\\
+[a,a^{\dag}a] &= a\\
+[a^{\dag},a^{\dag}a] &= -a^{\dag}
+\end{align}
+
+We must add one more constraint to fully define $M$ and $N$. There are 3 choice which I would call reasonable. I will outline all three of them here and show their respective consequences.
+
+\subsection{General $M$ and $N$}
+
+First a convention agnostic presentation of the formulas. 
+
+\begin{align}
+H &= \frac{N}{2}\hbar \omega (X^2 + P^2) = \hbar \omega \left(\frac{N}{2M^2}a^{\dag}a+\frac{1}{2}\right)\\
+[a, a^{\dag}] &= 2\frac{M^2}{N}\\
+[X,P] &= \frac{1}{N} i\\
+a &= M(X + i P)\\
+a^{\dag} &= M(X - i P)\\
+X &= \frac{1}{2M}(a^{\dag} + a) = \frac{1}{M}\text{Re}(a)\\
+P &= \frac{i}{2M}(a^{\dag} - a) = \frac{1}{M}\text{Im}(a)
+\end{align}
+
+
+
+The constraint on $M$ and $N$ discussed above arises from the desire for $a$ and $a^{\dag}$ to be number raising and lowering operators. It is equivalent to the constraint that $[a, a^{\dag}] = 1$. The constraint is $2M^2 = N$.
+
+\subsection{$M=1$, $N=2$}
+I will call this the Real and Imaginary convention. This is the one which I think makes the most sense at the time of this writing, though I believe my opinion changes regularly. In this convention we choose $M=1$. This means the identification with $X$ and $P$ as the real (Hermitian) and imaginary (Anti-Hermitian) parts of $a$ is exact. This makes the expansion of $a$ and $a^{\dag}$ in terms of $X$ and $P$ as simple as possible. In this convention we have $N=2$.
+
+\begin{align}
+H &= \hbar \omega (X^2 + P^2) = \hbar \omega \left(a^{\dag}a+\frac{1}{2}\right)\\
+[a, a^{\dag}] &= 1\\
+[X,P] &= \frac{1}{2}i\\
+a &= X + i P\\
+a^{\dag} &= X - i P\\
+X &= \frac{1}{2}(a^{\dag} + a) = \text{Re}(a)\\
+P &= \frac{i}{2}(a^{\dag} - a) = \text{Im}(a)
+\end{align}
+
+Because this convention has $X$ and $P$ as exactly the real and imaginary parts of $a$ it is best suited to classical signal procession where this is no regard for commutation relations or a Hamiltonian.
+
+\subsection{$M=\frac{1}{2}$, $N=\frac{1}{2}$}
+
+I will call this the bosonic expansion or optomechanics convention. In this convention the expansion of $X$ and $P$ in terms of $a$ and $a^{\dag}$ is as simple as possible. When I was doing theory for E3 optodynamics this was the convention I used. Here we take $M=\frac{1}{2}$ which sets $N=\frac{1}{2}$.
+
+\begin{align}
+H &= \frac{1}{4}\hbar \omega (X^2 + P^2) = \hbar \omega \left(a^{\dag}a+\frac{1}{2}\right)\\
+[a, a^{\dag}] &= 1\\
+[X,P] &= 2i\\
+a &= \frac{1}{2}(X + i P)\\
+a^{\dag} &= \frac{1}{2}(X - i P)\\
+X &= a^{\dag} + a = 2\text{Re}(a)\\
+P &= i(a^{\dag} - a) = 2\text{Im}(a)
+\end{align}
+
+This convention is often found in, for example, optomechanics literature where one is often working with interaction Hamiltonians of the form $\hbar G a^{\dag}a(b^{\dag} + b) = \hbar G n_a X_B$ or $\hbar G(a^{\dag} + a)(b^{\dag} + b) = \hbar G X_a X_b$ where $a$ and $b$ are both bosonic annihilation operators and $G$ is a coupling frequency. In this convention the translation between back and forth between $X$ and $a$ and $a^{\dag}$ is very simple so it facilitates regularly moving between those two ways of thinking about the problem.
+
+\subsection{$M = \frac{1}{\sqrt{2}}$, $N=1$}
+
+This is the Unitary convention. I call it unitary because the matrix representing the translation between the real and complex basis is a unitary matrix. Intuitively, we will see that this transformation is the most symmetric in that we always must multiply by $\frac{1}{\sqrt{2}}$. It may be the easiest to remember but it requires writing down the most characters every time so it is annoying from that perspective. In this convention we take $M=\frac{1}{\sqrt{2}}$ which sets $N=1$.
+
+\begin{align}
+H &= \frac{1}{2}\hbar \omega (X^2 + P^2) = \hbar \omega \left(a^{\dag}a+\frac{1}{2}\right)\\
+[a, a^{\dag}] &= 1\\
+[X,P] &= i\\
+a &= \frac{1}{\sqrt{2}}(X + i P)\\
+a^{\dag} &= \frac{1}{\sqrt{2}}(X - i P)\\
+X &= \frac{1}{\sqrt{2}}(a^{\dag} + a) = \sqrt{2}\text{Re}(a)\\
+P &= \frac{i}{\sqrt{2}}(a^{\dag} - a) = \sqrt{2}\text{Im}(a)
+\end{align}
+
+We can write the transformation matrix as
+
+\begin{align}
+\bv{a} = 
+\begin{bmatrix}
+a\\a^{\dag}
+\end{bmatrix}
+= \frac{1}{\sqrt{2}}
+\begin{bmatrix}
+1 && i\\
+1 && -i\\
+\end{bmatrix}
+\begin{bmatrix}
+X\\P
+\end{bmatrix} = \bv{T}\bv{x}
+\end{align}
+
+We can see that
+
+\begin{align}
+\bv{T}^{\dag} \bv{T} = \frac{1}{2}\begin{bmatrix}
+1 && i\\
+1 && -i\\
+\end{bmatrix}
+\begin{bmatrix}
+1 && 1\\
+-i && i\\
+\end{bmatrix}
+= \frac{1}{2}
+\begin{bmatrix}
+2 && 0\\
+0 && 2\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 && 0\\
+0 && 1\\
+\end{bmatrix}
+=
+\mathbbm{1}
+\end{align}
+
+So that $\bv{T}^{\dag} = \bv{T}^{-1}$. This means $\bv{T}$ is unitary, hence the name for the convention.
+
+The main practical advantage of this convention is that it is easiest to remember because every conversion has the same factor. It is also equally difficult in terms of conversions no matter what application you are working with. The unitarity of the transformation may come in handy from certain perspectives but I am not exactly sure how that advantage might arise.
+
+\section{Rotated Quadrature Operators}
+
+$X$ and $P$ can be considered ``quadrature'' operators because they represent the projected of the complex $a$ operator onto two orthogonal axes. We can also define rotated quadrature operators.
+
+Let's first briefly consider the time evolution of the $a$ operator. The Heisenberg equation of motion tells us that the time evolution for any operator $O$ is given by $\dot{O} = -\frac{i}{\hbar}[O,H]$. This tells us
+
+\begin{align}
+\dot{a} = -\frac{i}{\hbar}[a, H] = -\frac{i}{\hbar} \hbar \omega a = -i\omega a
+\end{align}
+
+The solution to this equation of motion is
+
+\begin{align}
+a(t) = e^{-i\omega t}a
+\end{align}
+
+We thus see that if $a$ is plotted in a complex phase space with $X$ on the horizontal (real) axis and $P$ on the vertical (imaginary) axis that $a$ rotates clockwise in phase space. This motivates the definition of a rotated amplitude operator:
+
+\begin{align}
+a^{\phi} &= e^{-i\phi}a\\
+a^{\dag \phi} &= e^{+i\phi}a^{\dag}
+\end{align}
+
+So that
+
+\begin{align}
+a(t) = a^{\omega t}
+\end{align}
+
+In addition, it will be useful to defined rotated quadrature operators so that we can consider quadrature operators which ``rotate along with'' the state. To that end we define
+
+\begin{align}
+X^{\phi} &= \frac{1}{2M}(a^{\dag \phi} + a^{\phi}) = \frac{1}{M}\text{Re}(a^{\phi})\\
+P^{\phi} &= \frac{i}{2M}(a^{\dag \phi} - a^{\phi}) = \frac{1}{M} \text{Im}(a^{\phi})
+\end{align}
+
+Note that generally $P^{\phi} = X^{\phi - \frac{\pi}{2}}$ so in particular $P = P^0 = X^{-\frac{\pi}{2}}$.
+
+We can expand these operators out to determine $X^{\phi}$ and $P^{\phi}$ in terms of $X$ and $P$.
+
+\begin{align}
+X^{\phi} &= \frac{1}{2M}(a^{\dag\phi} + a^{\phi}) = \frac{1}{2M}(e^{i\phi}a^{\dag} + e^{-i\phi}a)\\
+&= \frac{1}{2M} \left((\cos(\phi)+i\sin(\phi))M(X-iP) + (\cos(\phi) - i\sin(\phi))M(X+iP)\right)\\
+&= \cos(\phi)X + \sin(\phi)P\\
+P^{\phi} &= \frac{i}{2M}(a^{\dag\phi} - a^{\phi}) = \frac{i}{2M}(e^{i\phi}a^{\dag} - e^{-i\phi}a)\\
+&= \frac{i}{2M} \left((\cos(\phi)+i\sin(\phi))M(X-iP) - (\cos(\phi) - i\sin(\phi))M(X+iP)\right)\\
+&= -\sin(\phi)X + \cos(\phi)P
+\end{align}
+
+To summarize all of this we have
+
+\begin{align}
+a^{\phi} &= e^{-i\phi}a\\
+a^{\dag \phi} &= e^{i\phi}a^{\dag}\\
+X^{\phi} &= \cos(\phi)X + \sin(\phi)P\\
+P^{\phi} &= -\sin(\phi)X + \cos(\phi)P
+\end{align}
+
+And exactly as before we have
+
+\begin{align}
+a^{\phi} &= M(X^{\phi} + i P^{\phi})\\
+a^{\dag \phi} &= M(X^{\phi} - i P^{\phi})\\
+X^{\phi} &= \frac{1}{2M}(a^{\dag \phi} + a^{\phi}) = \frac{1}{M}\text{Re}(a^{\phi})\\
+P^{\phi} &= \frac{i}{2M}(a^{\dag \phi} - a^{\phi}) = \frac{1}{M} \text{Im}(a^{\phi})
+\end{align}
+
+with all of the same possible convention choices for $M$. Note that in the definition of $a^{\phi}$ we multiply $a$ be $e^{-\phi}$. The minus sign here is yet another convention choice. We could have chosen to multiply by $e^{+\phi}$. I think this convention makes somewhat sense because if it means that $a^{\phi}$, for positive $\phi$, constitutes a rotation of $a$ in the same direction as $a(t)$, for positive $t$, constitutes a rotation of $a$. The argument for the alternative convention would be if one desired rotations in the counter-clockwise direction to be consistent with the definition of the polar angle which defines the angle of complex numbers in the complex plane.
+
+\section{General Notes}
+I'll make a few general notes here. First a remark comparing the harmonic oscillator and spin operators. One can make an identification between $a$ and $\sigma^-$ and $a^{\dag}$ and $\sigma^+$. Almost all of the equations can be ported over if you additionally identify $X$ and $\sigma^1$ and $P$ and $\sigma^2$. There is a pesky minus sign in $\sigma^2$ that makes this not exact however. This comparison can be extended if attention is restricted to perturbations away from the ground state in which case $\ket{e}\bra{e}$ can be neglected and we get $\sigma^3 \approx - \mathbbm{1}$.
+
+The other note I will make is that for the Harmonic oscillator quadrature operators there are more possible conventions. For example, in the negative mass oscillator work it became apparent that, following certain rules, it was possible to map a ``negative mass'' spin oscillator onto a harmonic oscillator with $[X,P]$ negative. This corresponded in some sense to a left-handed coordinate system. Or perhaps a right handed coordinate system where the oscillator rotated the other direction in phase space. In any case, it is just to say that the logic here for choosing the different conventions is not the only logic possible, it just happens to be what makes the most sense for me.
+
+
+\end{document}

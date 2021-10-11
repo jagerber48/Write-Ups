@@ -1,0 +1,1761 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{ND}
+\usepackage{tcolorbox}
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+\usepackage{bussproofs}
+
+\newtheorem{definition}{Definition}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+
+\begin{document}
+\title{Logic Notes}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section*{Old Introduction}
+
+In this document I will try to get straight some of my thoughts on formal logic. At the moment the goal is to build up to a metalogic proof, in an extended Lemmon system of logic, that extensions by definition are conservative extensions to a formal theory. A lot of the difficulty comes from 1) the fact that the Lemmon system does not seem to be heavily used in the logic community so there are not really references; when syntactic (as opposed to semantic) proofs are given they often use the Hilbert system and 2) many references use semantic arguments to complete the proof (such as the completeness theorem and model theory generally) and I would like to see a purely syntactical proof.
+
+I am following two references. ``Modern Logic: A Text in Elementary Symbolic Logic'' by Graehme Forbes and ``Lectures in Logic and Set Theory: Volume I'' by George Tourlakis. The former is my reference on Lemon logic and the rules therein while The Tourlakis book is more rigorous and does a cleaner job introducing ideas with the metalanguage or metatheory including the concept of inducting on formulas using the metalanguage. However, Tourlakis uses the Hilbert system and semantic proofs in cases which is why I need to adapt both approaches.
+
+\section*{Preface}
+The previous introduction was written around February 2019, the last time I took up investigations into formal logic. I'm revisiting formal logic again (Aug 2021). 
+Typically I find myself looking into formal logic after the following sequence of events. 
+1) I am interested in some physics topic, typically somewhat mathematically oriented in nature, 2) I look into the math supporting this topic, 3) I get curious about the deep mathematical definitions or theorems involved in the math topic 4) I get into very deep math subjects such as topology or the very definitions of functions 5) I finally find myself back facing formal logic.
+
+Back in 2019 I believe I was interested in the relationship between classical and quantum random variables. 
+This led me to look into mathematical formulations of probability theory which took me eventually to measure theory.
+In learning measure theory I was attempting to learn about Borel sets and some basic topology again.
+I believe I then got curious about the definition of infinite unions and this brought me down to formal logic.
+I was then curious at the time about how to build from ZFC up to larger mathematical theories.
+
+Such an undertaking requires the extension by definition of a logical theory.
+Extension by definition of a logical theory involves introducing a new symbol to the language and adding a ``defining'' axiom for that logic into the theory.
+For appropriate defining axioms the new symbol should not change the theory in the sense that the extension of the theory is conservative.
+An extension of a theory is conservative if a formula of the new language, which is a valid formula of the old language, can be deduced in the new theory exactly when it can be deduced in the old theory.
+The challenge I faced last time was trying to prove the claim that appropriate extensions by definition are conservative.
+
+I learned a lot about formal logic and had some luck, but the approach I was taking ended up being too tedious.
+Two references I utilized addressed the problem: \textit{Lectures in Logic and Set Theory: Volume I} by George Tourlakis and \textit{Introduction to Mathematical Logic} by Elliott Mendelson.
+However, both of these books were based on Hilbert style formal logic.
+
+At the time I found this frustrating.
+My background in formal logic (from a course I took my freshman year in college in 2009) was from an introductory textbook called \textit{Modern Logic: A Text in Elementary Symbolic Logic} by Graehme Forbes.
+This book used a natural deduction approach for proofs and visualized proofs using a Lemmon logic tabular proof style.
+I found this latter style to be very natural, and, combined with self study on the Zermelo-Fraenkel axioms of set theory, I, at least subconsciously, understood that it would be possible to put all of mathematics into this mathematical formalism.
+
+I found the axiomatic approaches in the Hilbert style logic to be unnatural and annoying.
+A theory didn't seem elegant when all tautologies are assumed as axioms.
+It was much more natural to me to have a theory which has no ``logical'' axioms, but from which tautologies could be derived via the rules of inference.
+This is of course the same story as the origin of Gentzen's natural deduction.
+
+I have recently revisited this problem.
+The physics problem I was trying to understand is how to derive the 3D multipole vector fields describing electromagnetic radiation from multipole charge and current distributions.
+This led me to try to understand some theorems about differential equations.
+In learning about existence theorems for solutions to, for example, the Laplace equation, i was directed towards, simultaneously, it seems, complex analysis and the fundamental theorem of algebra. 
+In proving the fundamental theorem of algebra I found myself visiting some familiar topics in multivariable calculus.
+At this time I hit upon a confusion/frustration that has cropped its head up for me time and time again.
+This frustration regards the notation for partial derivatives.
+
+We often have, for example $\partial f/\partial x$.
+It is implicitly understood that this means differentiation with respect to the `first parameter' of the function $f$.
+In cases of nested functions the notation gets complicated, confusing, and sometimes ambiguous so I seek a rigorous definition. 
+A long story short, this led me to try to understand a set theoretic definition of a multivariable function.
+Finally, in the context of ZFC set theory, function notation arises from symbols which have been added to the theory via extensions by definition.
+This brought me back to formal logic.
+
+I walked over many of the tracks I had explored before.
+One thing I understood then and I understand now is that much of my difficulty in developing the proof I was interested in was that I did not have a formal enough definition of the rules of inference.
+I was relying on the rules of inference as they were laid out in the Graehme textbook.
+Unfortunately the definitions there were too heavily tied to the Lemmon tabular proof structure making it very difficult to reason generally about proof structure.
+
+Just recently I came to a more thorough understanding of the sequent calculus.
+I believe that the sequent calculus provides rigorous enough definitions of inference rules for me to complete the proof I am interested in now.
+Additionally, I've hit upon a reference which is close to the flavor of formal logic I am interested in.
+This is \textit{Structural Proof Theory} by Sara Negri and Jan Von Plato.
+In fact, I learned that exactly what I am trying to do is a topic in the field of structural proof theory.
+
+One of the major difficulties I found when trying to proof extensions by definition are conservative in the past is the fact that natural deduction logic typically has many inference rules.
+When developing an inductive metalogic proof it is necessary to induct over all of these different rules making the proof extremely tedious.
+To this end I became very curious if any of the inference rules are redundant.
+That is, it is known that some logical connectives can be written in terms of others.
+For example: $\mc{A}\land\mc{B} \equiv \lnot(\mc{A}\implies \lnot\mc{B})$.
+If the rules of inference involving $\land$ could be derived from the rules of inference for $\implies$ and $\lnot$ then it would be possible to dispense with the $\land$ symbol as a native part of the language and simply maintain it as an abbreviation for the above expression, also taking the corresponding inference rules as derived rules.
+The would reduce the number of cases over which we need to induct for the metalogical proofs that follow.
+I believe this program is possible and that will be part of this document.
+
+Another difficulty I faced was that the rules of inference involving quantifiers sometimes involve various restrictions on the formulas which are being replaced.
+Without a nice way to notate these restrictions I've found it difficult to work with these rules in metalogical proofs.
+I hope that in this revisit I'll be able to overcome this difficulty.
+
+
+\newpage
+\section{Introduction}
+
+In this work I hope to give a thorough treatment of the basics of formal logic with the goal of proving that extensions by definition to a formal theory are conservative extensions.
+To build to this result I will outline my version of the lexicon and syntax for the language of first order logic (\textbf{LFOL}).
+The conventions chosen in my definitions for \textbf{LFOL} are chosen with the goal of easing the proof about definition by extension to follow.
+For example, to minimize metalogical inductive cases, I restrict to using a small subset of connectives, rather than the full inuitive set sometimes chosen.
+
+After this I delve into proof theory by defining the concept of a proof theoretic, or syntactic natural deduction framework and the corresponding rules of deduction.
+As first demonstrations of this framework I will recover the omitted connectives by defining these connectives to be abbreviations of more complex statements written in LFOL as defined above and providing proofs of the corresponding rules of inference from the set of base inference rules.
+
+Next I will define a logical theory based on a set of axioms.
+At this point I will then define a conservative extension to a theory, and an extension by definition to a theory.
+There are two types of extensions by definition.
+We either define new predicate symbols, or new function symbols.
+In the remainder of this document I will prove that these two forms of extensions by definition to a logical theory are in fact conservative extensions.
+These proofs will utilize metalogical induction.
+
+Note that it is my goal in this document to give a purely syntactic approach to formal logic.
+That is, I am specifically trying to avoid any reference to semantics, or reasoning about or based on the truth value of any logical statements or Wffs. 
+This is because I would like this document to be in line with and in support of a game formalist philosophy of mathematics.
+That is, mathematics can be thought of entirely as a symbol game.
+That said, thinking about formal logic in terms of semantics can help logicians and mathematics intuitively understand the symbol patterns and consequences. 
+Many of the definitions that follow are motivated by considering the consequences of the definitions in case that the logical statements did in fact have semantic meaning.
+In some cases, then, I will have some short discussions of the semantics of some Wff or deduction, but these cases should be understood  as aids to the readers intuition, rather than fundamental to the proof theory itself. 
+That is, definitions that follow will in some cases be intuitively motivated by semantics, but the definitions themselves in no way rely on semantics.
+
+\newpage
+\section{The Language of First Order Logic (LFOL)}
+
+At the basis of a formal language is a sets of symbols which can be concatenated together to form strings.
+If a string follow certain allowed construction rules, specified by the syntax of the language, then the string is said to be a well-formed formula, or Wff.
+
+There are multiple classes of symbol objects, each of which plays a different role in the syntax of the language. 
+We first distinguish between logical and non-logical symbols. 
+Logical symbols are symbols which are related purely to the formal presentation of the language.
+Logical symbols include things like logical connectives and parentheses.
+The second main class of symbols is the class of non-logical symbols.
+The non-logical symbols include the predicate and function symbols.
+The symbols included in the non-logical symbols may vary from one application of the formal language to the next.
+
+
+\subsection*{The Lexicon of LFOL:}
+\subsubsection*{Logical Symbols:}
+\begin{itemize}
+\item{\textbf{Variables:} Variable symbols such as $x_1, x_2, \ldots, v_1, v_2, \ldots$. We will try to use lower case letters from near the end of the alphabet for variables. The set of all variables is denoted $\textbf{Var}$.}
+\item{\textbf{Logical Operators:} The logical operators for implication: $\implies$, and negation: $\lnot$. The set of all logical operators is denoted $\textbf{Lop}$.}
+\item{\textbf{Quantifiers:} The for all quantifier: $\forall$. The set of all quantifiers is denoted $\textbf{Quant}$.}
+\item{\textbf{Punctuation Marks:} Parenthesis $($ and $)$. The set of all punctuation marks is denoted $\textbf{Punct}$.}
+\end{itemize}
+
+The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \sqcup \textbf{Lop} \sqcup \textbf{Quant} \sqcup \textbf{Punct}$.
+
+\subsubsection*{Non-Logical Symbols:}
+\begin{itemize}
+\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
+\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^\infty \textbf{Func}_i$.}
+\end{itemize}
+
+The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoin union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$.
+
+The set of all symbols in the language is denoted $\textbf{Symb}$ and is the disjoint union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \sqcup \textbf{NonLogSymb}$.
+
+\hrulefill
+
+I have chosen to use a restricted set of logical operators in the theory to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
+This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs. 
+However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as abbreviations and metalogically derive the appropriate corresponding rules of inference.
+
+\subsection*{The Syntax of LFOL}
+
+Strings in the language are strings of symbols of the language. For example ``$x_1 \lnot Q \curlywedge ($'' is a string in the language. We can think of a string as an ordered tuple of elements from $\textbf{Symb}$. The set of all strings is denoted by $\textbf{Str}$.
+We consider the symbols in $\textbf{Symb}$ to be length 1 strings so that $\textbf{Symb} \subset \textbf{Str}$.
+
+Below we will see rules for constructing `sensible' strings or `well-formed-formulas' (Wffs) in the language. Note that for the metalogic proofs it may be useful to write down something like $\mc{A} \equiv (\lnot(B\implies C))$ to indicate that the metalanguage symbol $\mc{A}$ represents the same string as $(\lnot(B \implies C))$.
+
+String $\mc{B}$ appears in string $\mc{A}$, or is a substring of string $\mc{A}$, iff there are (possibly empty) strings $\mc{C}$ and $\mc{D}$ such that $\mc{B}\equiv \mc{C}\mc{B}\mc{D}$.
+
+\newpage
+We build up the defining characteristics of Wffs by defining the smallest meaningful strings that can be formed in the language.
+These are the terms which represent either objects of study (constants or functions of constants) or variables into which we can plug in objects of study.
+
+
+\hrulefill
+\subsubsection*{Terms}
+$t \in \textbf{Term}$ iff $t \in \textbf{Str}$ and satisfies one of
+\begin{itemize}
+\item{\textbf{Variables:} $t \in \textbf{Var}$.}
+\item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\vec{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
+\end{itemize}
+
+\hrulefill
+
+In the language if we `plug in' terms into a predicate we get a statement about those terms.
+We call this statement an atomic formula.
+
+\hrulefill
+\subsubsection*{Atomic Formulas}
+
+$\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
+
+\begin{itemize}
+\item{\textbf{Atoms:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\vec{t})$. In our notation $\curlywedge$ is an atomic formula.}
+\end{itemize}
+
+\hrulefill
+
+Finally, these statements about objects of the language, atomic formulas, can be combined into more complex statements using the logical symbols.
+The ways in which atomic formulas can be combined form the formation rules for Wffs.
+
+\hrulefill
+\subsubsection*{Well-Formed Formulas}
+We denote the set of all Wffs as $\textbf{Wff}$.
+$\mc{A} \in \textbf{Wff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
+
+\begin{itemize}
+\item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula.}
+\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{Wff}$.}
+\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{Wff}$.}
+\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{Wff}$, and $\mc{B}$ contains $x$ as a substring but does not contain $(\forall x)$ as a substring. We say $\mc{B}$ and all substrings of $\mc{B}$ are in the scope of $(\forall x)$} 
+\end{itemize}
+
+\hrulefill
+
+The formation rules are all straightforward with the exception of quantification.
+For the quantification formation rule we include 2 provisos.
+The first proviso is that $\mc{B}$ must contain the variable $x$ as a substring.
+We will see below that this is equivalent to requiring the variable $x$ to appear in the set of free variables of $\mc{B}$.
+This proviso allows us to avoid so-called redundant quantification such as in the expression $((\forall x)((\forall y) P_y))$.
+Here the $\forall x$ quantifier does nothing to change the meaning of the expression, and, when rendered into English, the expression doesn't quite make sense.
+The second proviso is that we can not quantify twice over the same variable.
+This would be double quantification.
+This allows us to avoid an expression like $((\forall x)((\forall x)(P_{xx})))$.
+It is possible to develop formal logic in ways to allow redundant and double quantification.
+However, in the interest of preserving `naturalness' of the language, we restrict to avoid them.
+This may have the consequence of making some metalogical proofs and definitions more complicated.
+
+Terms are the smallest meaningful elements of the language.
+A term is thought of either as a concrete object, for example if it only contains functions\footnote{recall that constants are 0-ary functions}, or as a placeholder into which objects can be plugged in if it involves variables.
+In a semantic sense, terms cannot take on truth values.
+Rather, they are objects about which truth statements could be constructed.
+Examples of terms include $0$, $x$, $f(3)$ and $g(y)$.
+
+Atomic formulas consist of terms plugged into $n$-ary predicates.
+We think of atomic formulas as expressions about objects (the terms) which can take on truth values.
+If the terms of the predicate are all functions (including constants) then atomic formula is the type of object which may have a truth value\footnote{Naively I would say that an atomic formula with functions in its arguments \textit{does} have a truth value. However, we can have an incomplete theory which complicates this subject. Note that I am mostly interested in the syntax of logic, rather than the semantics. I'm not especially worried about which objects can be true or false etc. I am merely illustrating these topics here about Wffs to give the reader a better intuition for these objects.}. 
+Examples of atomic formulas include $f(x) < 3$ or $3 < f(5)$.
+
+Wffs are similar to atomic formulas in that we think of them as statements about objects.
+Wffs can simply include more complex logical combinations of atomic formulas.
+
+Terms are understood to be the smallest meaningful elements of the language. 
+A term should be thought of as an ``object'' that can be ``plugged in'' to other expressions, in particular into predicates.
+Note that LFOL can operate without the inclusion of any functions.
+
+We introduce a number of logical abbreviations to allow us to express the usual full range of logical connectives.
+
+\hrulefill
+\begin{itemize}
+\item{\textbf{Conjunction:} We let $(\mc{A}\land \mc{B})$ abbreviate $(\lnot(\mc{A}\implies(\lnot\mc{B})))$}
+\item{\textbf{Disjunction:} We let $(\mc{A} \lor \mc{B})$ abbreviate $((\lnot\mc{A}) \implies \mc{B})$}
+\item{\textbf{Equivalence:} We let $(\mc{A} \iff \mc{B})$ abbreviate $((\mc{A} \implies \mc{B}) \land (\mc{B} \implies \mc{A}))$}
+\item{\textbf{Existential Quantification:} We let $((\exists x)\mc{A})$ abbreviate $(\lnot((\forall x)(\lnot \mc{A})))$.}
+\end{itemize}
+\hrulefill
+
+We also introduce abbreviations for removing parentheses. 
+This abbreviation language is copied directly from Tourlakis.
+
+\hrulefill
+\begin{itemize}
+\item{\textbf{Parentheses:} ``To minimize the use of brackets in the metanotation we adopt standard \textit{priorities} of connectives: $\forall, \exists,$ and $\lnot$ have the highest, and then we have (in decreasing order of priority) $\land, \lor, \implies, \iff$, and we agree not to use outermost brackets. all \textit{associativities} are \textit{right} - that is if we write $\mc{A} \implies \mc{B} \implies \mc{C}$, then it is a (sloppy) counterpart for $(\mc{A} \implies ( \mc{B} \implies \mc{C}))$.''}
+\end{itemize}
+\hrulefill
+
+\subsection*{Variable/Term Manipulation}
+\subsubsection*{Free Variables}
+We define inductively the set of free variables in a term or Wff $\mc{A}$.
+
+\hrulefill
+\begin{itemize}
+\item{if $\mc{A}\equiv x$ is a variable then $FV(x) = \{x\}$.}
+\item{if $\mc{A} \equiv ft_1\ldots t_n$ then $FV(ft_1\ldots t_n) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
+\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(Pt_1\ldots t_n) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
+\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
+\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
+\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ if $\mc{A}$ is a Wff.}
+\end{itemize}
+\hrulefill
+
+We say than an instance of a variable $x$ within a Wff $\mc{A}$ is bound if it appears in the scope of a quantifier $(\forall x)$, otherwise the instance is a free variable and we can see that it is appears in $FV(\mc{A})$.
+
+Note that a variable can appear both free and bound in a Wff.
+For example, $x$ appears both free and bound in the Wff $(Px \land ((\forall x)Qxy))$.
+While this is valid, it would be less confusing if we instead had $(Px \land ((\forall z)Qzy))$.
+These two expression can be shown to be logically equivalent using the inference rules which will follow.
+
+If a Wff contains any free variables then we say that it is \textit{open}.
+Otherwise we say the \textit{Wff} is closed.
+A closed Wff has had functions or constants plugged in for all variables.
+Intuitively this means it is a candidate expression for having a truth value. 
+An open Wff still has free variables so we cannot say whether the expression is true or not.
+For example, $3=5$ is a closed Wff and we would say it is false.
+$x=5$ is an open expression, we don't know if it is true or false until we `plug something in' for $x$.
+if $\mc{A}$ has $FV(\mc{A}) = \{x_1, \ldots, x_n\}$ then we say that
+$$
+\bar{\mc{A}} \equiv ((\forall x_1)(\ldots((\forall x_n)(\mc{A}))))
+$$
+is the closure of $\mc{A}$.
+$FV(\bar{\mc{A}}) \equiv \emptyset$ so $\bar{\mc{A}}$ is closed.
+
+\subsubsection*{Term Replacement}
+
+It will be very important to carefully define term replacement. 
+
+\hrulefill
+\begin{itemize}
+\item{If $\mc{A}\equiv y$ is a variable then $y[t/x] \equiv t$ if $y\equiv x$, otherwise $y[t/x]\equiv y$ if $y\not\equiv x$.}
+\item{If $\mc{A}\equiv fs_1\ldots s_n$ is an $n$-ary function then $fs_1\ldots s_n[t/x] \equiv f s_1[t/x]\ldots s_n[t/x]$. Note that this implies $f[t/x]\equiv f$ for a 0-ary function.}
+\item{If $\mc{A}\equiv Ps_1\ldots s_n$ is an $n$-ary predicate then $Ps_1\ldots s_n[t/x] \equiv P s_1[t/x]\ldots s_n[t/x]$. Note that this implies $P[t/x]\equiv P$ for a 0-ary predicate such as $\curlywedge$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}[t/x] \equiv (\lnot \mc{B}[t/x])$.}
+\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then if $y\not \equiv x$ then $\mc{A}[t/x] \equiv ((\forall y)\mc{B}[t/x]$. If $y\equiv x$ then $\mc{A}[t/x] \equiv \mc{A}$.}
+\end{itemize}
+\hrulefill
+
+Our rule for replacement in a quantifier Wff says to replace all free occurrences of $x$ by $t$.
+We would typically expect the replacement of free variables to have no effect on the semantics of the formula in question.
+Unfortunately our definition of term replacement is slightly too general and simple to ensure this.
+Consider the expression $\mc{A} \equiv ((\forall y)Pxy)$.
+We can construct $\mc{A}[y/x] \equiv ((\forall y)Pyy)$.
+We see that the replacement is valid and allowed because $y\not \equiv x$, but unfortunately we can see that $\mc{A}$ and $\mc{A}[y/x]$ are not logically equivalent.
+What has happened here is that the variable $y$, which appeared in the replacement term, was captured by the quantifier $(\forall y)$ when replaced into $\mc{A}$.
+When we define the rules of inference we will have to take special care to ensure no capture of replacement terms occurs.
+
+An alternative approach would be to add a proviso to the term replacement rule that no replacement occurs if $y$ appears in $t$.
+However, we will take the philosophical view that replacement should be a simple operation on strings independent of the anticipated logical manipulation.
+Instead we will define the concept of substitutability.
+The idea is that if construction $\mc{A}[t/x]$ results in no capture of any variables that we would like to say $t$ is substitutable for $x$ in $\mc{A}$.
+In this case we write $\mc{S}(\mc{A}, t, x)$.
+If it is the case that $\mc{S}(\mc{A}, t, x)$ then we notationally indicate $\mc{A} \equiv _{[t/x]}\mc{A}$.
+We define substitutability as follows.
+
+\hrulefill
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula then $\mc{S}(\mc{A}, t, x)$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$ and $\mc{S}(\mc{C}, t, x)$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$.}
+\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$ and $y\not\in FV(t)$ or $x\not \in FV(\mc{B})$.}
+\end{itemize}
+\hrulefill
+
+The first restriction of substitutability in a quantifier expression ensures that if a replacement is made that there is no capture of a variable $y$ that might appear in $t$.
+However, if $x \not \in FV(\mc{B})$ we allow the substitution to take place even if $y$ appears in $t$.
+This is because if $x\not \in FV(\mc{B})$ then the replacement won't result in any change of the expression, so there is no issue with it. 
+
+Finally, it will also be valuable for us to introduce notation for when a term does not appear in an expression.
+If $t$ does not appear in $\mc{A}$ we write $_{\{t\}}\mc{A} \equiv \mc{A}$.
+If $t$ does not appear in $\mc{A}$ and $t$ is substitutable for $x$ in $\mc{A}$ then we write $_{[t/x], \{t\}}\mc{A}$.
+
+\newpage
+
+\section{Formal Proof}
+\subsection*{Sequents}
+Syntactically, we represent the idea that Wff $\mc{A}$ logically follows from a set of Wffs $\Gamma$ using a sequent, or judgment, which we express as
+
+$$\Gamma \vdash \mc{A}$$.
+
+The symbol in the middle, $\vdash$, is the turnstile symbol.
+The Wffs in the set $\Gamma$ on the left hand side are called the antecedents of the sequent and the Wff $\mc{A}$ on the right hand side is called the subsequent.
+We say the subsequent $\mc{A}$ is derivable from the antecedents $\Gamma$.
+A more concrete example of a sequent is 
+
+$$
+\{(\mc{A}\implies \mc{B}), \mc{A}\} \vdash \mc{B}.
+$$
+
+We will use a shorthand notation for the antecedents of sequents.
+For sets of Wffs labeled $\Gamma_i$ and for Wffs $\mc{A}_i$ we can write
+
+\begin{align}
+\Gamma_1, \ldots, \Gamma_n, \mc{A}_1, \ldots, \mc{A}_n \vdash \mc{B}
+\end{align}
+
+as an abbreviation for
+
+\begin{align}
+\Gamma_1 \cup \ldots \cup \Gamma_n \cup \{\mc{A}_1\} \cup \ldots \cup \{\mc{A}_n\} \vdash \mc{B}
+\end{align}
+
+That is Wffs are replaced by singleton sets containing those Wffs and commas are replaced by the set union operation.
+
+In some of what follows it will be important to indicate that a particular variable, $x$, doesn't appear free in any of a set of Wffs. If $\Gamma = \{\mc{A}_1, \ldots , \mc{A}_n\}$ where $x$ doesn't appear free in any of $\mc{A}_i$ (that is $_{\{x\}}\mc{A}_i$) then we let $\Gamma \equiv _{\{x\}}\Gamma$.
+
+$\Gamma_1 \backslash \Gamma_2$ denotes the subtraction of set $\Gamma_2$ from $\Gamma_1$.
+
+In what follows, we will develop our proof theoretic framework which is essentially a calculus of the $\vdash$ symbol.
+The framework will be based around rules of inference which allow us to derive new sequents from old sequents.
+
+\subsection*{Proof Table}
+
+In logical proofs we begin with a set of premises, and, through logical manipulations, we draw new conclusions.
+In the context of syntactic proof theory the premises serve as the starting point for a logical symbol game and rules of inference allows us to infer new logical statements dependent on the premises and other derived statements.
+
+I will present proofs in a tabular format with premises listed at the top of the table.
+The steps of the proof will be written as new lines in the table, where each line must be justified by some rule of inference which may involve earlier lines. 
+
+One of the simplest example of a logical proof would be
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{2cm} }
+(1) & $\Gamma \vdash (\mc{A} \land \mc{B})$ & Prem\\
+(2) & $\Gamma \vdash \mc{A}$ & $\land E$, 1\\
+\end{tabular}
+\end{center}
+
+We see that each line of the proof is numbered at the far left.
+In the center of each line we see a sequent with a set of antecedents and a subsequent.
+At the right we see the logical justification for writing down each line.
+For the first line the logical justification is that we take that sequent as a premise.
+In this case no further logical justification is needed.
+On the second line we have leveraged the rule of $\land E$, shorthand for `conjunction elimination' and applied it to the first line.
+This is an example of one of the inference rules which we be described shortly.
+
+All of the premises for a proof must be written as the first lines in the proof.
+If we have any proof table which obeys the rules of inference faithfully, then for any line of the proof we say that the proof table constitutes a proof of the sequent on that line from the set of premise sequents.
+
+\subsection*{Inference Rules}
+
+Below I will write down all of the native inference rules for this system of natural deduction.
+Each of these rules can be used in a formal proof as described above.
+
+As explained, above, each line of our proof will express a sequent.
+The proof will then derive new sequents from old sequents.
+Alternatively, it is possible to develop a natural deduction in which the lines of the proofs are Wffs rather than sequents.
+The advantage of deriving new sequents from old sequents, as opposed to simply deriving new Wffs from old Wffs, is that it is natural to keep track of on which premises any particular conclusion relies.
+
+The rules of inference will be notated as one set of sequents above a line and one sequent below the line with the idea that the set of sequents above the line (the premises) logically allow the deduction of the sequent below the line (the conclusion). 
+
+\newpage
+
+\hrulefill
+
+\textbf{Rule of Prem (Premise)}
+
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$\Gamma \vdash \mc{A}$}
+\end{prooftree}
+
+We can start a proof with any (closed) sequent as a premise. Premises must appear at the top lines of a proof.
+
+\hrulefill
+
+\textbf{Rule of A (Assumption)}
+
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$\mc{A}\vdash \mc{A}$}
+\end{prooftree}
+
+We can always assume that a (closed) Wff $\mc{A}$ derives itself from no premises.
+
+\hrulefill
+
+\textbf{Rule of W (Weakening)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \mc{A}$}
+\UnaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{A}$}
+\end{prooftree}
+
+Note that $\Gamma_2$ may be the empty set. This allows us to derive a sequent that has already been derived on a later line. This will be useful to allow to rewrite the same sequent with the inclusion or exclusions of convenient abbreviations. ($\Gamma_2$ must be closed)
+
+\hrulefill
+
+\textbf{Rule of $\implies I$ (Implication Introduction)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash \mc{B}$}
+\UnaryInfC{$\Gamma\backslash \{\mc{A}\} \vdash (\mc{A} \implies \mc{B})$}
+\end{prooftree}
+
+Note that $\mc{A}$ need not appear in $\Gamma$ for this inference rule. ($\mc{A}$ must be closed).
+
+\hrulefill
+
+\textbf{Rule of $\implies E$ (Implication Elimination)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash (\mc{A} \implies \mc{B})$}
+\AxiomC{$\Gamma_2 \vdash \mc{A}$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{B}$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\lnot E$ (Negation Elimination)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \mc{A}$}
+\AxiomC{$\Gamma_2 \vdash (\lnot \mc{A})$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \curlywedge$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\lnot I$ (Negation Introduction)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash \curlywedge$}
+\UnaryInfC{$\Gamma \backslash \{\mc{A}\} \vdash (\lnot \mc{A})$}
+\end{prooftree}
+
+Note that $\mc{A}$ need not appear in $\Gamma$. ($\mc{A}$ must be closed.)
+
+\hrulefill
+
+\textbf{Rule of $DN$ (Double Negation)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\lnot(\lnot \mc{A}))$}
+\UnaryInfC{$\Gamma \vdash \mc{A}$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\forall I$ (Universal Introduction/Generalization)}
+
+\begin{prooftree}
+\AxiomC{$_{\{t\}}\Gamma \vdash \left(_{[t/x], \{t\}}\mc{A}\right)[t/x]$}
+\UnaryInfC{$\Gamma \vdash ((\forall x) \mc{A})$}
+\end{prooftree}
+
+$x$ must be in $FV(\mc{A})$.
+
+\hrulefill
+
+\textbf{Rule of $\forall E$ (Universal Elimination/Instantiation/Specification)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash ((\forall x)_{[t/x]}\mc{A})$}
+\UnaryInfC{$\Gamma \vdash \mc{A}[t/x]$}
+\end{prooftree}
+
+\hrulefill
+
+Recall that when we have a proof table we say can say that we have proven the sequent appearing on any line (typically the last line) from the premises.
+Whenever we prove one sequent from some set of sequents we can introduce a new derived inference rule.
+Specifically, if we have $n$ premises of the form $\Gamma_i \vdash \mc{A}_i$ and we derive $\Theta \vdash \mc{B}$ then we can introduce a new derived inference rule:
+
+\hrulefill
+
+\textbf{Rule of [Der] (Derived Inference Rule)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \mc{A}_1, \ldots, \Gamma_n \vdash \mc{A}_n$}
+\UnaryInfC{$\Theta \vdash \mc{B}$}
+\end{prooftree}
+
+\hrulefill
+
+A derived inference rule can be thought of as an abbreviation for the proof that justifies the introduction of that derived rule.
+That is, rather than repeat the proof of the derived inference in a new proof, one can skip the proof and simply use the derived inference rule.
+
+\newpage
+
+\section*{Deriving Inference Rules for Abbreviated Logical Symbols}
+
+We will now derive the inference rules for the abbreviation logical symbols $\land, \lor, \iff$ and $\exists$.
+We will first introduce some convenience inference rules.
+
+\subsection*{Convenience Inference Rules}
+
+\subsubsection*{Weaker $\implies I$}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{2cm} }
+(1) & $\Gamma, \mc{A} \vdash \mc{B}$ & Prem\\
+(2) & $\Gamma/\{\mc{A}\} \vdash (\mc{A} \implies \mc{B})$ & $\implies I$, 1\\
+(3) & $\Gamma \vdash (\mc{A} \implies \mc{B})$ & $W$, 2
+\end{tabular}
+\end{center}
+
+\subsubsection*{Weaker $\lnot I$}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{2cm} }
+(1) & $\Gamma, \mc{A} \vdash \curlywedge$ & Prem\\
+(2) & $\Gamma/\{\mc{A}\} \vdash (\lnot \mc{A})$ & $\lnot I$, 1\\
+(3) & $\Gamma \vdash (\lnot \mc{A})$ & $W$, 2
+\end{tabular}
+\end{center}
+
+These gives us the weaker, but useful, versions of the inference rules.
+On the surface these inference rules look similar, but they are different in the case that $\mc{A} \in \Gamma$.
+This is because $(\Gamma \cup \{\mc{A}\})/\{\mc{A}\} = \Gamma / \{\mc{A}\}$ which is not necessarily equal to $\Gamma$.
+
+\hrulefill
+
+\textbf{Rule of $\implies I_W$ (Implication Introduction - Weak)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma, \mc{A} \vdash \mc{B}$}
+\UnaryInfC{$\Gamma \vdash (\mc{A} \implies \mc{B})$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\lnot I_W$ (Negation Introduction - Weak)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma, \mc{A} \vdash \curlywedge$}
+\UnaryInfC{$\Gamma \vdash (\lnot \mc{A})$}
+\end{prooftree}
+
+\hrulefill
+
+\subsection*{Modus Tollens}
+
+I'll prove three forms of Modus Tollens and give three corresponding derived rules.
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(1) & $\Gamma_1 \vdash (\mc{A} \implies \mc{B})$ & Prem\\
+(2) & $\Gamma_2 \vdash (\lnot \mc{B})$ & Prem\\
+(3) & $\mc{A} \vdash \mc{A}$ & A\\
+(4) & $\Gamma_1, \mc{A} \vdash \mc{B}$ & $\implies E$, 1, 3\\
+(5) & $\Gamma_1, \Gamma_2, \mc{A} \vdash \curlywedge$ & $\lnot E$, 2, 4\\
+(6) & $\Gamma_1, \Gamma_2 \vdash (\lnot \mc{A})$ & $\lnot I_W$, 5
+\end{tabular}
+\end{center}
+
+From this we get our first form of the Modus Tollens derived inference rule.
+
+\hrulefill
+
+\textbf{Rule of $MT1$ (Modus Tollens)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash (\mc{A} \implies \mc{B})$}
+\AxiomC{$\Gamma_2 \vdash (\lnot \mc{B})$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash (\lnot \mc{A})$}
+\end{prooftree}
+
+\hrulefill
+
+We can use the derived inference rule to derive two closely related forms of the Modus Tollens inference rule.
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(1) & $\Gamma \vdash (\mc{A}\implies \mc{B})$ & Prem\\
+(2) & $(\lnot \mc{B}) \vdash (\lnot \mc{B})$ & A\\
+(3) & $\Gamma, (\lnot \mc{B}) \vdash (\lnot \mc{A})$ & $MT1$, 1, 2\\
+(4) & $\Gamma \vdash ((\lnot \mc{B}) \implies (\lnot \mc{A}))$ & $\implies I_W$, 3
+\end{tabular}
+\end{center}
+
+\hrulefill
+
+\textbf{Rule of $MT2$ (Modus Tollens)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\mc{A} \implies \mc{B})$}
+\UnaryInfC{$\Gamma, (\lnot \mc{B}) \vdash (\lnot \mc{A})$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $MT3$ (Modus Tollens)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\mc{A} \implies \mc{B})$}
+\UnaryInfC{$\Gamma \vdash ((\lnot \mc{B}) \implies (\lnot \mc{A}))$}
+\end{prooftree}
+
+\hrulefill
+
+\subsection*{Conjunction Inference Rules}
+\subsubsection*{Proof for Right Conjunction Elimination}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{2cm} }
+(1) & $\Gamma \vdash (\mc{A}\land\mc{B})$ & Prem\\
+(2) & $\Gamma \vdash (\lnot(\mc{A}\implies(\lnot\mc{B})))$ & $W$, 1\\
+(3) & $(\lnot\mc{B}) \vdash (\lnot\mc{B})$ & $A$ \\
+(4) & $(\lnot \mc{B}) \vdash (\mc{A} \implies (\lnot \mc{B}))$ & $\implies I$, 3\\
+(5) & $\Gamma, (\lnot \mc{B})\vdash \curlywedge$ & $\lnot E$, 2, 4\\
+(6) & $\Gamma \vdash (\lnot(\lnot \mc{B}))$ & $\lnot I_W$, 5\\
+(7) & $\Gamma \vdash \mc{B}$ & $DN$, 6
+\end{tabular}
+\end{center}
+
+\hrulefill
+
+\textbf{Rule of $\land E_R$ (Conjunction Elimination - Right)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\mc{A} \land \mc{B})$}
+\UnaryInfC{$\Gamma \vdash \mc{B}$}
+\end{prooftree}
+
+
+\hrulefill
+
+\subsubsection*{Proof for Left Conjunction Elimination}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{2cm} }
+(1) & $\Gamma \vdash (\mc{A}\land\mc{B})$ & Prem\\
+(2) & $\Gamma \vdash (\lnot(\mc{A}\implies(\lnot\mc{B})))$ & $W$, 1\\
+(3) & $(\lnot\mc{A})\vdash (\mc{\lnot A})$ & A\\
+(4) & $\mc{A} \vdash \mc{A}$ & A\\
+(5) & $\mc{A}, (\lnot \mc{A}) \vdash \curlywedge$ & $\lnot E$, 3, 4\\
+(6) & $\mc{A}, (\lnot \mc{A}) \vdash (\lnot \mc{B})$ & $\lnot I$, 5\\
+(7) & $(\lnot \mc{A}) \vdash (\mc{A} \implies (\lnot \mc{B})$ & $\implies I$, 6\\
+(8) & $\Gamma, (\lnot \mc{A}) \vdash \curlywedge$ & $\lnot E$, 2, 7\\
+(9) & $\Gamma \vdash (\lnot (\lnot \mc{A}))$ & $\lnot I_W$, 8\\
+(10) & $\Gamma \vdash \mc{A}$ & $DN$ 9
+\end{tabular}
+\end{center}
+
+\hrulefill
+
+\textbf{Rule of $\land E_L$ (Conjunction Elimination - Left)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\mc{A}\land \mc{B})$}
+\UnaryInfC{$\Gamma \vdash \mc{A}$}
+\end{prooftree}
+
+\hrulefill
+
+\subsection*{Proof for Conjunction Introduction}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(1) & $\Gamma_1 \vdash \mc{A}$ & Prem\\
+(2) & $\Gamma_2 \vdash \mc{B}$ & Prem\\
+(3) & $(\mc{A} \implies (\lnot \mc{B})) \vdash (\mc{A} \implies (\lnot \mc{B}))$ & A\\
+(4) & $\Gamma_1, (\mc{A} \implies (\lnot \mc{B})) \vdash (\lnot \mc{B})$ & $\implies E$, 1, 3\\
+(5) & $\Gamma_1, \Gamma_2, (\mc{A} \implies (\lnot \mc{B})) \vdash \curlywedge$ & $\lnot E$, 2, 4\\
+(6) & $\Gamma_1, \Gamma_2 \vdash (\lnot (\mc{A} \implies (\lnot \mc{B})))$ & $\lnot I_W$ 5\\
+(7) & $\Gamma_1, \Gamma_2 \vdash (\mc{A} \land \mc{B})$ & $W$, 6
+\end{tabular}
+\end{center}
+
+\hrulefill
+
+\textbf{Rule of $\land I$ (Conjunction Introduction)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \mc{A}$}
+\AxiomC{$\Gamma_2 \vdash \mc{B}$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash (\mc{A} \land \mc{B})$}
+\end{prooftree}
+
+\hrulefill
+\subsection*{Proof for Disjunction Elimination}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(1) & $\Gamma_1 \vdash (\mc{A} \lor \mc{B})$ & Prem\\
+(2) & $\Gamma_2 \vdash (\mc{A} \implies \mc{C})$ & Prem\\
+(3) & $\Gamma_3 \vdash (\mc{B} \implies \mc{C})$ & Prem\\
+(4) & $\Gamma_1 \vdash ((\lnot \mc{A}) \implies \mc{B})$ & $W$, 1\\
+(5) & $(\lnot \mc{C}) \vdash (\lnot \mc{C})$ & A\\
+(6) & $\Gamma_2, (\lnot \mc{C}) \vdash (\lnot \mc{A})$ & $MT$, 2, 5\\
+(7) & $\Gamma_1, \Gamma_2, (\lnot \mc{C}) \vdash \mc{B}$ & $\implies E$, 4, 6\\
+(8) & $\Gamma_1, \Gamma_2, \Gamma_3, (\lnot \mc{C}) \vdash \mc{C}$ & $\implies E$, 3, 7\\
+(9) & $\Gamma_1, \Gamma_2, \Gamma_3, (\lnot \mc{C}) \vdash \curlywedge$ & $\lnot E$, 5, 8\\
+(10) & $\Gamma_1, \Gamma_2, \Gamma_3 \vdash (\lnot(\lnot \mc{C}))$ & $\lnot I_W$, 9\\
+(11) & $\Gamma_1, \Gamma_2, \Gamma_3 \vdash \mc{C}$ & $DN$, 10
+\end{tabular}
+\end{center}
+
+\subsection*{Proof for Left Disjunction Introduction}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(1) & $\Gamma \vdash \mc{A}$ & Prem\\
+(2) & $(\lnot \mc{A}) \vdash (\lnot \mc{A})$ & A\\
+(3) & $\Gamma, (\lnot \mc{A}) \vdash \curlywedge$ & $\lnot E$, 1, 2\\
+(4) & $\Gamma/\{(\lnot \mc{B})\}, (\lnot \mc{A}) \vdash (\lnot (\lnot \mc{B}))$ & $\lnot I$, 3\\
+(5) & $\Gamma/\{(\lnot \mc{B})\}, (\lnot \mc{A}) \vdash \mc{B}$ & $DN$, 4\\
+(6) & $\Gamma/\{(\lnot \mc{B})\} \vdash ((\lnot \mc{A}) \implies \mc{B})$ & $\implies I_W$, 5\\
+(7) & $\Gamma \vdash ((\lnot \mc{A}) \implies \mc{B})$ & $W$, 6\\
+(8) & $\Gamma \vdash (\mc{A} \lor \mc{B})$ & $W$, 7
+\end{tabular}
+\end{center}
+
+
+\subsection*{Proof for Right Disjunction Introduction}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(1) & $\Gamma \vdash \mc{B}$ & Prem\\
+(2) & $\Gamma/\{(\lnot \mc{A})\} \vdash ((\lnot \mc{A}) \implies \mc{B})$ & $\implies I$, 1\\
+(3) & $\Gamma \vdash ((\lnot \mc{A}) \implies \mc{B})$ & $W$, 2\\
+(4) & $\Gamma \vdash (\mc{A} \lor \mc{B})$ & $W$, 3
+\end{tabular}
+\end{center}
+
+With this we introduce the inference rules for disjunction:
+
+\hrulefill
+
+\textbf{Rule of $\lor E$ (Disjunction Elimination)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash (\mc{A}\lor \mc{B})$}
+\AxiomC{$\Gamma_2 \vdash (\mc{A} \implies \mc{C})$}
+\AxiomC{$\Gamma_3 \vdash (\mc{B} \implies \mc{C})$}
+\TrinaryInfC{$\Gamma_1, \Gamma_2, \Gamma_3 \vdash \mc{C}$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\lor I_L$ (Disjunction Introduction - Left)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash \mc{A}$}
+\UnaryInfC{$\Gamma \vdash (\mc{A}\lor \mc{B})$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\lor I_R$ (Disjunction Introduction - Right)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash \mc{B}$}
+\UnaryInfC{$\Gamma \vdash (\mc{A}\lor \mc{B})$}
+\end{prooftree}
+
+\hrulefill
+
+\subsection*{Biconditional Inference Rules}
+\subsubsection*{Proof for Biconditional Introduction}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{7cm} p{3cm} }
+(1) & $\Gamma_1 \vdash (\mc{A} \implies \mc{B})$ & Prem\\
+(2) & $\Gamma_2 \vdash (\mc{B} \implies \mc{A})$ & Prem\\
+(3) & $\Gamma_1, \Gamma_2 \vdash ((\mc{A} \implies \mc{B}) \land (\mc{B}\implies \mc{A}))$ & $\land I$, 1, 2\\
+(4) & $\Gamma_1, \Gamma_2 \vdash (\mc{A} \iff \mc{B})$ & $W$, 3
+\end{tabular}
+\end{center}
+
+\subsubsection*{Proof for Left Biconditional Elimination}
+\begin{center}
+\begin{tabular}{ p{1cm} p{7cm} p{3cm} }
+(1) & $\Gamma \vdash (\mc{A} \iff \mc{B})$ & Prem\\
+(2) & $\Gamma \vdash ((\mc{A} \implies \mc{B}) \land (\mc{B} \implies \mc{A}))$ & $W$, 1\\
+(3) & $\Gamma \vdash (\mc{A} \implies \mc{B})$ & $\land E_L$, 2\\
+(4) & $\Gamma \vdash (\mc{B} \implies \mc{A})$ & $\land E_R$, 2
+\end{tabular}
+\end{center}
+
+We get two new inference rules from the last two lines of this proof.
+The inference rules for biconditional are
+
+\hrulefill
+
+\textbf{Rule of $\iff I$ (Biconditional Introduction)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash (\mc{A}\implies\mc{B})$}
+\AxiomC{$\Gamma_2 \vdash (\mc{B} \implies \mc{A})$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash (\mc{A} \iff \mc{B})$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\iff E_L$ (Biconditional Elimination - Left)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\mc{A} \iff \mc{B})$}
+\UnaryInfC{$\Gamma \vdash (\mc{A} \implies \mc{B})$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\iff E_R$ (Biconditional Elimination - Right)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\mc{A} \iff \mc{B})$}
+\UnaryInfC{$\Gamma \vdash (\mc{B} \implies \mc{A})$}
+\end{prooftree}
+
+\hrulefill
+
+\subsection*{Inference Rules for Existence}
+
+We now must derive the inference rule for existence introduction and elimination.
+For reference I repeat the rules for universal introduction and elimination.
+
+\hrulefill
+
+\textbf{Rule of $\forall I$ (Universal Introduction/Generalization)}
+
+\begin{prooftree}
+\AxiomC{$_{\{t\}}\Gamma \vdash {_{[t/x], \{t\}}\mc{A}}[t/x]$}
+\UnaryInfC{$\Gamma \vdash ((\forall x) \mc{A})$}
+\end{prooftree}
+
+\hrulefill
+
+\textbf{Rule of $\forall E$ (Universal Elimination/Instantiation/Specification)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash ((\forall x)_{[t/x]}\mc{A})$}
+\UnaryInfC{$\Gamma \vdash \mc{A}[t/x]$}
+\end{prooftree}
+
+\hrulefill
+
+The rules for existential introduction and elimination will be
+
+\hrulefill
+
+\textbf{Rule of $\exists I$ (Existential Introduction/Generalization)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash {_{[t/x]}\mc{A}}[t/x]$}
+\UnaryInfC{$\Gamma \vdash ((\exists x)\mc{A})$}
+\end{prooftree} 
+
+\hrulefill
+
+\textbf{Rule of $\exists E$ (Existential Elimination/Instantiation/Specification)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash ((\exists x)\mc{A})$}
+\AxiomC{$_{\{t\}}\Gamma_2 \vdash ({_{[t/x], \{t\}}\mc{A}}[t/x] \implies {_{\{t\}}\mc{B}})$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{B}$}
+\end{prooftree}
+
+\hrulefill
+
+\subsubsection*{Proof for Existential Introduction}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{7cm} p{3cm} }
+(1) & $\Gamma \vdash {_{[t/x]}\mc{A}}[t/x]$ & Prem\\
+(2) & $((\forall x)(\lnot \mc{A})) \vdash ((\forall x)(\lnot \mc{A}))$ & A\\
+(3) & $((\forall x)(\lnot \mc{A})) \vdash ((\forall x)(\lnot _{[t/x]}\mc{A}))$ & $W$, 2\\
+(4) & $((\forall x)(\lnot \mc{A})) \vdash ((\forall x)_{[t/x]}(\lnot \mc{A}))$ & $W$, 3\\
+(5) & $((\forall x)(\lnot \mc{A})) \vdash (\lnot \mc{A})[t/x]$ & $\forall E$, 4\\
+(6) & $((\forall x)(\lnot \mc{A})) \vdash (\lnot \mc{A}[t/x])$ & $W$, 5\\
+(7) & $\Gamma, ((\forall x)(\lnot \mc{A})) \vdash \curlywedge$ & $\lnot E$, 1, 6\\
+(8) & $\Gamma \vdash (\lnot ((\forall x) (\lnot \mc{A})))$ & $\lnot I_W$, 7\\
+(9) & $\Gamma \vdash ((\exists x) \mc{A})$ & $W$, 8
+\end{tabular}
+\end{center}
+
+This proof had some subtlety involving replacement and substitutability.
+The inferences from line 1 to line 2 and from line 2 to line 3 follow from the rules for substitutability.
+Note that these inferences were labeled as abbreviations.
+This is because lines 2, 3, and 4 indicate the same sequents, just with different metalogical annotations.
+Similarly, line 6 follows from line 5 by the rules for term replacement.
+
+I repeat the proof above with the metalogical notation carried out implicitly.
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{7cm} p{3cm} }
+(1) & $\Gamma \vdash \mc{A}[t/x]$ & Prem\\
+(2) & $((\forall x)(\lnot \mc{A})) \vdash ((\forall x)(\lnot \mc{A}))$ & A\\
+(3) & $((\forall x)(\lnot \mc{A})) \vdash (\lnot \mc{A}[t/x])$ & $\forall E$, 2\\
+(4) & $\Gamma, ((\forall x)(\lnot \mc{A})) \vdash \curlywedge$ & $\lnot E$, 1, 3\\
+(5) & $\Gamma \vdash (\lnot ((\forall x) (\lnot \mc{A})))$ & $\lnot I_W$, 4\\
+(6) & $\Gamma \vdash ((\exists x) \mc{A})$ & $W$, 5
+\end{tabular}
+\end{center}
+
+
+\subsubsection*{Proof for Existential Elimination}
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{7cm} p{3cm} }
+(1) & $\Gamma_1 \vdash ((\exists x)\mc{A})$ & Prem\\
+(2) & $_{\{t\}}\Gamma_2 \vdash ({_{[t/x], \{t\}}\mc{A}}[t/x] \implies {_{\{t\}}\mc{B}})$  & Prem\\
+(3) & $_{\{t\}}\Gamma_2,  (\lnot {_{\{t\}}\mc{B}}) \vdash (\lnot {_{[t/x], \{t\}}\mc{A}}[t/x])$ & $MT2$, 2\\
+(4) & $_{\{t\}} \Gamma_2, {_{\{t\}}(\lnot \mc{B})} \vdash {_{[t/x], \{t\}}(\lnot \mc{A})}[t/x]$ & $W$, 3\\
+(5) & $\Gamma_2, (\lnot \mc{B}) \vdash ((\forall x)(\lnot \mc{A}))$ & $\forall I$, 4\\
+(6) & $\Gamma_1 \vdash (\lnot ((\forall x)(\lnot \mc{A})))$ & $W$, 1\\
+(7) & $\Gamma_1, \Gamma_2, (\lnot \mc{B}) \vdash \curlywedge$ & $\lnot E$, 5, 6\\
+(8) & $\Gamma_1, \Gamma_2 \vdash (\lnot(\lnot \mc{B}))$ & $\lnot I_W$, 7\\
+(9) & $\Gamma_1, \Gamma_2 \vdash \mc{B}$ & $DN$, 8
+\end{tabular}
+\end{center}
+
+I repeat this proof with implicit metalogical notation.
+
+\begin{center}
+\begin{tabular}{ p{1cm} p{7cm} p{3cm} }
+(1) & $\Gamma_1 \vdash ((\exists x)\mc{A})$ & Prem\\
+(2) & $\Gamma_2 \vdash (\mc{A}[t/x] \implies \mc{B})$  & Prem\\
+(3) & $\Gamma_2,  (\lnot \mc{B}) \vdash (\lnot \mc{A})[t/x]$ & $MT2$, 2\\
+(4) & $\Gamma_2, (\lnot \mc{B}) \vdash ((\forall x)(\lnot \mc{A}))$ & $\forall I$, 3\\
+(5) & $\Gamma_1 \vdash (\lnot ((\forall x)(\lnot \mc{A})))$ & $W$, 1\\
+(6) & $\Gamma_1, \Gamma_2, (\lnot \mc{B}) \vdash \curlywedge$ & $\lnot E$, 4, 5\\
+(7) & $\Gamma_1, \Gamma_2 \vdash (\lnot(\lnot \mc{B}))$ & $\lnot I_W$, 6\\
+(8) & $\Gamma_1, \Gamma_2 \vdash \mc{B}$ & $DN$, 7
+\end{tabular}
+\end{center}
+
+These proofs complete the derivation of the inference rules for the existence quantifier.
+
+\section{Wff Atom Replacement}
+
+If $\mc{A}$ is a Wff, $\mc{X}$ is an atomic formula, and $\mc{P}$ is a Wff then we define the replacement of $\mc{X}$ by $\mc{P}$ in $\mc{A}$, notated as $\mc{A}[\mc{P}/\mc{X}]$, by:
+
+\hrulefill
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then if $\mc{A}\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{P}$. If $\mc{A}\not\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{A}$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ the $\mc{A}[\mc{P}/\mc{X}] \equiv (\lnot \mc{B}[\mc{P}/\mc{X}])$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{A}[\mc{P}/\mc{X}] \equiv (\mc{B}[\mc{P}/\mc{X}] \implies \mc{C}[\mc{P}/\mc{X}])$.}
+\item{If $\mc{A} \equiv ((\forall x)\mc{B})$ then $\mc{A}[\mc{P}/\mc{X}] \equiv ((\forall x) (\mc{B}[\mc{P}/\mc{X}])$.}
+\end{itemize}
+\hrulefill
+
+Note that $\mc{A}[\mc{P}/\mc{X}]$ is not necessarily a Wff due to constraints with respect to quantification.
+For $\mc{A}[\mc{P}/\mc{X}]$ to be a Wff it is necessary that, if $\mc{P}$ has any quantifier $(\forall x)$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier within $\mc{A}$.
+
+Similarly to term replacement, we must also define a concept of substitutability for atoms. We say $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ to mean that $\mc{P}$ is substitutable for $\mc{X}$ in $\mc{A}$. $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ if (1) if $(\forall x)$ appear in $\mc{P}$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier in $\mc{A}$ and (2) no  
+
+\section{Wff Breakdown Tree}
+
+Consider a Wff $\mc{A}$.
+In what follows we will be interested in identifying particular Wff substrings of $\mc{A}$ such as $\mc{P}$.
+For example, we may be interested in the Wff $\mc{A}$ with one instance of $\mc{P}$ replaced by $\mc{Q}$.
+Unfortunately if $\mc{A} \equiv (\mc{P} \implies \mc{P})$, for example, then this sentence is ambiguous. 
+To resolve this problem we will come up with a rigorous schematic to uniquely specify an instance of a substring Wff in a main Wff.
+
+We first define the overall depth of a Wff which, in some way, encodes the complexity of the Wff.
+We will often induct on the depth of a Wff to prove metalogical theorems.
+
+\hrulefill
+\subsubsection*{Wff Depth}
+
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula then $D(\mc{A}) = 0$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $D(\mc{A}) = \text{max}(D(\mc{B}) + D(\mc{C})) + 1$.}
+\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
+\end{itemize}
+\hrulefill
+
+We now need the ability to break a Wff down into its constituent parts.
+The constituent parts of a Wff are contained in its parsing tree $T(\mc{A})$.
+We develop the parsing tree $T(\mc{A})$ by applying a recursive algorithm on the Wff. 
+For any Wff we can find it's children by noticing its main connective, or top-level structure.
+The elements of the parsing tree will be 4-tuples.
+The first element of the tuple is one of $\{\text{Wff}, A, \lnot, \implies, \forall\}$.
+This first element indicates how the sub-part is brought into $\mc{A}$. 
+The second element is an integer indicating the depth of the part within the overall Wff.
+The third element is an integer indicating the branch number of the part within the Wff.
+And finally the fourth element is a Wff representing the part.
+
+We extract the children of a top level Wff $\mc{A}$ via $C(\mc{A})$.
+If $C(\mc{A})$ is the children tree for $\mc{A}$ then $C_{+n, +m}(\mc{A})$ is the same tree but with $n$ added to the second element of every tuple and $m$ added to the third element of every tuple.
+
+
+\hrulefill
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $C(\mc{A}) = \emptyset$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $C(\mc{A}) = \{(\lnot, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$. Let $b$ equal the maximum branch number in $C(\mc{B})$. then $C(\mc{A}) = \{(\implies_L, 1, 1, \mc{B}), (\implies_R, 1, b+1, \mc{C})\} \cup C_{+1, +0}(\mc{B}) \cup C_{+1, +b}(\mc{C})$.}
+\item{If $\mc{A} \equiv ((\forall x)\mc{B})$ then $C(\mc{A}) \equiv \{(\forall, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$.}
+\end{itemize}
+\hrulefill
+
+Finally the total parsing tree for Wff $\mc{A}$ is
+
+$$
+T(\mc{A}) = \{(\text{Wff}, 0, 1, \mc{A})\} \cup C(\mc{A})
+$$
+
+\subsection{Parsing Tree Unique Numbers}
+
+\subsubsection{Smallest Depth and Branch Number}
+Here we will prove that $C(\mc{A})$ contains no depth or branch number less than 1. We prove this by induction on the depth of $\mc{A}$, $D(\mc{A})$.
+
+If $D(\mc{A}) = 1$ the $\mc{A}$ is atomic so $C(\mc{A}) = \emptyset$. There are no depth and branch numbers appearing in $C(\mc{A})$ so the condition is satisfied.
+
+Now for the induction hypothesis we assume that if $D(\mc{B}) < n$ then $C(\mc{A})$ contains no depth or branch numbers less than 1.
+
+Consider $\mc{A}$ with $D(\mc{A}) = n > 1$. $\mc{A}$ must not be atomic since $D(\mc{A}) \neq 1$.
+
+If $\mc{A} \equiv (\lnot \mc{B})$ then $C(\mc{A}) = \{(\lnot, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$. Since $D(\mc{B}) < D(\mc{A}) = n$ no depth or branch number smaller than 1 appear in $C(\mc{B})$ by the induction hypothesis. We see then that no depth or branch number smaller than 1 appears in $C(\mc{A})$.
+
+If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $C(\mc{A}) = \{(\implies_L, 1, 1, \mc{B}), (\implies, 1, b+1, \mc{C})\} \cup C_{+1, +0}(\mc{B}) \cup C_{+1, +b}(\mc{C})$ with $b$ the maximum branch number in $C(\mc{B})$. Since $D(\mc{B}), D(\mc{C}) < D(\mc{A}) = n$ no depth or branch number smaller than 1 appears in either $C(\mc{B})$ or $C(\mc{C})$ by the induction hypothesis. We see then that no depth or branch number smaller than 1 appears in $C(\mc{A})$.
+
+If $\mc{A} \equiv ((\forall x)\mc{B})$ then $C(\mc{A}) = \{(\forall, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$. Since $D(\mc{B}) < D(\mc{A}) = n$ no depth or branch number smaller than 1 appears in $C(\mc{B})$. We see therefore that no depth or branch number smaller than 1 appears in $C(\mc{A})$.
+
+\subsubsection{Unique Depth and Branch Numbers}
+
+We now prove that the tuple $(n, m)$ specifying the depth and branch number for every element of $C(\mc{A})$ is unique within $C(\mc{A})$. 
+
+If $D(\mc{A}) = 1$ then $\mc{A}$ is atomic so $C(\mc{A}) = \emptyset$. There are no elements in $C(\mc{A})$ so the condition is vacuously satisfied.
+
+For the induction hypothesis we assume that if $D(\mc{B}) < n$ then the depth and branch number tuples in $C(\mc{B})$ are unique.
+
+Suppose $D(\mc{A}) = n > 1$. $\mc{A}$ cannot be atomic.
+
+If $\mc{A} \equiv (\lnot \mc{B})$ then $C(\mc{A}) = \{(\lnot, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$. Since $D(\mc{B}) < D(\mc{A}) = n$ all of the tuples in $C(\mc{B})$ are unique by the induction hypothesis. There is no depth number smaller than 1 in $C(\mc{B})$ by the previous theorem so there is no depth number in $C_{+1, +0}(\mc{B})$ smaller than 2. This means all of the tuples in $C(\mc{A})$ are unique since $C(\mc{A})$ only adds one tuple, with depth number 1, to $C_{+1, +0}(\mc{B})$.
+
+If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $C(\mc{A}) = \{(\implies, 1, 1, \mc{B}), (\implies, 1, b+1, \mc{C})\} \cup C_{+1, +0}(\mc{B}) \cup C_{+1, +b}(\mc{C})$ with $b$ the maximum branch number in $C(\mc{B})$. Since $D(\mc{B}), D(\mc{C}) < D(\mc{A}) = n$ all of the tuples in $C(\mc{B})$ are unique and all of the tuples in $C(\mc{C})$ are unique by the induction hypothesis. However, there is not yet guarantee against duplication of tuples between $C(\mc{B})$ and $C(\mc{C})$. There is no depth number smaller than 1 in both $C(\mc{B})$ and $C(\mc{C})$ by the previous theorem. Therefore, there is no depth number smaller than 2 in either $C_{+1, +0}(\mc{B})$ or $C_{+1, +b}(\mc{C})$. In particular this means that the set of depth and branch numbers from $\{(\implies, 1, 1, \mc{B})\} \cup C_{+1, +0}$ are unique amongst each other and the set of depth and branch numbers from $\{(\implies, 1, b+1, \mc{C})\} \cup C_{+1, +b}(\mc{C})$ are also unique amongst each other. There is no branch number smaller than 1 appearing in $C(\mc{C})$ so the smallest branch number appearing in the latter set from the previous sentence is $b+1$. This means the branch numbers between the two sets are unique since the former has a largest branch number of $b$ and the latter has a smaller branch number of $b+1$. This concludes the proof that if $\mc{A} \equiv (\mc{B} \implies \mc{C})$ that all depth and branch tuples in $C(\mc{A})$ are unique.
+
+If $\mc{A} \equiv ((\forall x)\mc{B})$ then $C(\mc{A}) = \{(\forall, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$. Since $D(\mc{B}) < D(\mc{A}) = n$ all of the tuples in $C(\mc{B})$ are unique by the induction hypothesis. There is no depth number smaller than 1 in $C(\mc{B})$ by the previous theorem so the smallest depth number in $C_{+1, +0}(\mc{B})$ is 2. This means all of the tuples in $C(\mc{A})$ are unique.
+
+\subsubsection{Unique Depth and Branch Numbers for Full Tree}
+
+Since no depth number smaller than 1 appears in $C(\mc{A})$, we have that the depth and branch numbers in 
+
+$$
+T(\mc{A}) = \{(\text{Wff}, 0, 1, \mc{A})\} \cup C(\mc{A})
+$$
+
+are unique.
+
+
+\subsubsection{Maximum Depth Number is Equal to Wff Depth}
+
+If $\mc{A}$ is atomic then $D(\mc{A}) = 1$ and $C(\mc{A}) = \{(A, 1, 1, \mc{A})\}$ so we see the maximum depth number is 1 as needed.
+
+For the induction hypothesis we assume that if $D(\mc{B}) < n$ then the maximum depth number in $C(\mc{B})$ is equal to $D(\mc{B})$.
+
+If $\mc{A} \equiv (\lnot \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$ and $C(\mc{A}) = \{(\lnot, 1, 1, \mc{B})\} \cup C_{+1, +0}(\mc{B})$. The maximum depth number in $C(\mc{B})$ is $D(\mc{B})$ by induction hypothesis so the maximum depth number in $C(\mc{A})$ is $D(\mc{B}) + 1 = D(\mc{A})$ as needed.
+
+If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $D(\mc{A}) = \text{max}(\mc{B}, \mc{C}) + 1$. The maximum depth number in $C(\mc{B})$ is $D(\mc{B})$ and the maximum depth number in $C(\mc{C})$ is $D(\mc{C})$ by the induction hypothesis. The maximum depth number in $C(\mc{A})$ is then $\text{max}(D(\mc{B}) + 1, D(\mc{C})+1) = \text{max}(D(\mc{B}), D(\mc{C})) + 1$ as needed.
+
+If $\mc{A} \equiv ((\forall x)\mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$. The maximum depth number in $C(\mc{B})$ is $D(\mc{B})$ by the induction hypothesis so the maximum depth number in $C(\mc{A})$ is $D(\mc{B}) + 1$ as needed.
+
+It is clear than the maximum depth number in $T(\mc{A})$ is also equal to $D(\mc{A})$.
+
+\newpage
+
+\section{Proof for Equivalent Wff Replacement}
+
+Consider the closed Wff $\mc{A}$.
+Suppose the Wff $\mc{P}$ is a part of $\mc{A}$. By this we mean that $\mc{P}$ appears as the fourth element of one of the tuples listed in $T(\mc{A})$. In this case we say $\mc{P} \in T(\mc{A})$ (with a slight abuse of notation).
+Suppose we have another Wff $\mc{Q}$ with $FV(\mc{Q}) \subset FV(\mc{P})$ and we have
+
+$$
+\nu \vdash ((\forall x_1)(\ldots((\forall x_n) (\mc{P} \iff \mc{Q})))).
+$$
+
+Let $\mc{A}' \equiv B\mc{Q}C$. I will now prove that $\nu \vdash (\mc{A} \iff \mc{A}')$. 
+For this I will need to define the depth of a Wff, $D(\mc{A})$.
+
+
+
+We will prove the desired theorem by metalogical strong induction on the depth of the Wff $\mc{A}$.
+That is, we will prove that the theorem holds in the case when $D(\mc{A}) = 1$.
+Then, if $D(\mc{A}) = n$, we will assume the theorem holds for all integers $<n$ and the prove again that the theorem holds by $n$. 
+In this way we will be assured the theorem holds for all Wff depths.
+
+\subsection*{Base Case}
+
+If $D(\mc{A}) = 1$ then $\mc{A}$ is an atomic Wff.
+Since $\mc{A}$ contains $\mc{P}$ as a substring $\mc{P}$ must also be atomic and we must have $\mc{A} \equiv \mc{P}$.
+We then also have that $\mc{A}' \equiv \mc{Q}$.
+Note that we must have $FV(\mc{P}) = FV(\mc{Q}) = \emptyset$ since $\mc{A}$ is an atomic closed Wff.
+It is then the case that $(\mc{A} \iff \mc{A}') \equiv (\mc{P} \iff \mc{Q})$, but we already have that $\nu \vdash (\mc{P} \iff \mc{Q})$.
+
+\subsection*{Induction Step}
+
+Suppose $D(\mc{A}) = n$.
+We have that 
+$$
+\nu \vdash ((\forall x_1)(\ldots((\forall x_n) (\mc{P} \iff \mc{Q})))).
+$$
+We assume then that, for any Wff $\mc{B}$ with $D(\mc{B}) < n$ which contains $\mc{P}$ as a substring that we also can derive
+$$
+\nu \vdash (\mc{B} \iff \mc{B}')
+$$
+where $\mc{B}'$ is the result of replacing $\mc{P}$ by $\mc{Q}$ as above.
+
+
+\section{Theories}
+
+A logical theory $\mc{T}$ consists of a language $\mc{L}$, a set of (NOTE: perhaps add the constraint the axioms are all closed WFFs?) Wffs $\Gamma = \{\gamma_1, \ldots, \gamma_N\}$ in the language $\mc{L}$ which are referred to as the axioms of the theory, and a set of inference rules $\mc{R}$ such as those given above.
+A proof in $\mc{T}$ is any proof that begins with $N$ premises of the form $\Gamma \vdash \gamma_i$ and uses the inference rules $\mc{R}$.
+If it is possible to prove $\Gamma \vdash \mc{A}$ under these circumstance then we write
+
+$$
+\Gamma \vdash_{\mc{T}} \mc{A}
+$$
+
+Though we often drop the $\mc{T}$ subscript when the context of the theory is clear.
+We would like to collect all of the Wffs which are derivable from $\Gamma$ under the inference rules $\mc{R}$.
+If $\Gamma \vdash_{\mc{T}} \mc{A}$ and $\mc{T}$ is the theory with axioms $\Gamma$ and inference rules $\mc{R}$ then we write
+
+$$
+\mc{A} \in \Phi_{\mc{T}}
+$$
+
+$\Phi_{\mc{T}}$ is the set of all Wffs derivable under theory $\mc{T}$.
+
+\subsection*{Extension}
+Suppose $\mc{T}_1$ and $\mc{T}_2$ are theories with languages $\mc{L}_1$ and $\mc{L}_2$, axioms $\Gamma_1$ and $\Gamma_2$ and inference rules $\mc{R}_1$ and $\mc{R}_2$. We say that $\mc{T}_2$ is an extension of $\mc{T}_1$ if $\mc{L}_1 \subset \mc{L}_2$ (this means that $\mc{L}_1$ and $\mc{L}_2$ share their syntax rules but $\mc{L}_2$ has the same, or additional predicate or function symbols compared to $\mc{L}_1$), $\mc{R}_2 = \mc{R}_1$, and $\Gamma_1 \subset \Gamma_2$.
+So we see that $\mc{T}_2$ may have more logical symbols than $\mc{T}_1$ and also may have more axioms than $\mc{T}_1$.
+
+\subsection*{Conservative Extension}
+If $\mc{T}_2$ is an extension of $\mc{T}_1$ and $\Phi_{\mc{T}_2} \cap \mc{L}_1 = \Phi_{\mc{T}_1}$ then we say that $\mc{T}_2$ is a conservative extension of $\mc{T}_1$.
+That is, every Wff which is provable in $\mc{T}_1$ is also provable and $\mc{T}_2$ and every Wff of $\mc{L}_1$ which is provable in $\mc{T}_2$ is also provable in $\mc{T}_1$.
+
+\subsection*{Extension by Definition}
+There are two ways we can extend a theory by definition. 
+We can either introduce a new predicate or new function symbol and a corresponding axiom.
+The concept of extension by function definition requires equality $=$ to be included in the language.
+We will not yet include equality so we will save the description of that for later.
+
+\subsubsection*{New Predicate Symbol}
+
+Suppose $\mc{T}_1$ is a theory with language $\mc{L}_1$, axioms $\Gamma_1$ and inference rules $\mc{R}$.
+Suppose $P$ is not a symbol in $\mc{L}_1$.
+Suppose $\mc{Q}$ is a Wff in $\mc{L}_1$ with $FV(\mc{Q}) = \{x_1, \ldots , x_N\}$.
+Let $\mc{L}_2$ be the same as $\mc{L}_1$ but with the addition of the $n$-ary predicate symbol $P$.
+Let $\nu\in \mc{L}_2$ be the Wff
+
+\begin{align*}
+\nu \equiv& ((\forall x_1) (\ldots (\forall x_N) (P(x_1, \ldots, x_N) \iff \mc{Q}) \ldots ))\\
+\equiv& \forall x_1,\ldots,x_N (P(x_1, \ldots, x_N) \iff \mc{Q})
+\end{align*}
+
+Let $\mc{R}_2 = \mc{R}_1$ and $\Gamma_2 = \Gamma_1 \cup \{\nu\}$.
+The theory $\mc{T}_2$ determined by $\mc{L}_2, \Gamma_2$ and $\mc{R}_2$ is an extension by predicate definition of $\mc{T}_1$.
+
+\section{Proof that Extension by Predicate Definition is a Conservative Extension}
+
+Suppose $\mc{T}_2$ is an extension by predicate definition of $\mc{T}_1$ as in the previous section.
+We will now prove that $\mc{T}_2$ is a conservative extension of $\mc{T}_1$.
+For this we must prove that
+
+$$
+\Phi_{\mc{T}_2} \cap \mc{L}_1 = \Phi_{\mc{T}_1}
+$$
+
+Suppose $\mc{A} \in \Phi_{\mc{T}_1}$.
+Then $\Gamma_1 \vdash_{\mc{T}_1} \mc{A}$.
+We can apply the weakening inference rule ($W$) in $\mc{T}_2$ to then prove that $\Gamma_2 = \Gamma_1 \cup \{\nu\} \vdash_{\mc{T}_2} \mc{A}$.
+This means $\mc{A} \in \Phi_{\mc{T}_2}$.
+Since $\mc{A} \in \Phi_{\mc{T}_2}$ and $\mc{A} \in \mc{L}_1$ this means that
+
+$$
+\Phi_{\mc{T}_1} \subset \Phi_{\mc{T}_2} \cap \mc{L}_1
+$$
+
+The challenge for this proof is to prove that 
+
+$$
+\Phi_{\mc{T}_2} \cap \mc{L}_1 \subset \Phi_{\mc{T}_1}
+$$
+
+Suppose $\mc{A} \in \Phi_{\mc{T}_2} \cap \mc{L}_1$.
+This means that $\mc{A} \in \mc{L}_1$ and $\mc{A} \in \Phi_{\mc{T}_2}$.
+Because $\mc{A} \in \Phi_{\mc{T}_2}$ so that there is a proof tree in $\mc{T}_2$ concluding $\Gamma_2 \vdash_{\mc{T}_2} \mc{A}$.
+Our goal is to prove that $\Gamma_1 = \Gamma_2 \backslash \{\nu\} \vdash_{\mc{T}_1} \mc{A}$.
+
+We will prove this in a few steps.
+First we must define the concept of the translation of a Wff from $\mc{L}_2$ into $\mc{L}_1$.
+Suppose $\mc{A} \in \mc{L}_2$. 
+We then define $\mc{A}^\# \in \mc{L}_1$ by induction.
+
+\hrulefill
+\subsubsection*{Wff Translation}
+\begin{itemize}
+\item{\textbf{Atomic Formulas:} If $\mc{A}$ is an atomic formula then if $\mc{A} \equiv Pt_1\ldots t_n$ then $\mc{A}^\# \equiv \mc{Q}$}
+\end{itemize}
+\hrulefill
+
+
+We will accomplish this by metalogically deconstruction of the $\mc{T}_2$ proof of $\Gamma_2 \vdash_{\mc{T}_2} \mc{A}$.
+This proof has length $N$.
+We will prove by metalogical induction on proof length that if $\Gamma_2 \vdash_{\mc{T}_2} \mc{A}$ via a proof of length $N$, then it is possible to find a proof of $\Gamma_1 \vdash_{\mc{T}_1} \mc{A}$ (of unspecified length).
+
+Suppose we have a proof that concludes $\Gamma \vdash_{\mc{T}} \mc{A}$. 
+We define the length of the proof to be the line number on which $\Gamma \vdash_{\mc{T}} \mc{A}$ appears minus the number of premises.
+This means that if $\mc{A}$ is an axiom of $\mc{T}$ then it is possible to prove $\Gamma \vdash_{\mc{T}} \mc{A}$ in zero steps.
+
+For induction we first work with a proof of length zero as our base case.
+If $\Gamma \vdash_{\mc{T}_2} \mc{A}$ in zero steps then $\mc{A}$ is an axiom of $\mc{T}_2$.
+This means that $\mc{A} \in \Gamma \cup \{\nu\}$
+
+
+
+\newpage
+\section{OLD}
+
+\hrulefill
+\begin{ND}[Rule of $\land I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}$}{}
+\ndljg{Y}{(k)}{$\mc{B}$}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{A}\land\mc{B})$}{$j,k,\land I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\land E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\land\mc{B})$}{}
+\ndljg{X}{(k)}{$\mc{A}$}{$j,\land E$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{X}{(k)}{$\mc{B}$}{$j,\land E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lor I$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{ }
+\ndljg{j}{(k)}{$(\mc{A} \lor \mc{B})$}{$j,\lor I$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{j}{(k)}{$(\mc{B} \lor \mc{A})$}{$j,\lor I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lor E$][][][][.6\linewidth]
+\ndljg{X}{(g)}{$(\mc{A}\lor\mc{B})$}{}
+\ndljg{h}{(h)}{$\mc{\mathcal{A}}$}{$A$}
+\ndljg{Y}{(i)}{$\mc{C}$}{}
+\ndljg{j}{(j)}{$\mc{B}$}{$A$}
+\ndljg{Z}{(k)}{$\mc{C}$}{}
+\ndljg{X\cup Y/h \cup Z/j}{(l)}{$\mc{C}$}{$g,h,i,j,k,\lor E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\implies I$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{$A$}
+\ndljg{X}{(k)}{$\mc{B}$}{}
+\ndljg{X/j}{(l)}{$(\mc{A}\implies \mc{B})$}{$j,k,\implies I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\implies E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\implies\mc{B})$}{}
+\ndljg{Y}{(k)}{$\mc{A}$}{}
+\ndljg{X\cup Y}{(l)}{$\mc{B}$}{$j,k,\implies E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\iff I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\implies\mc{B})$}{}
+\ndljg{Y}{(k)}{$(\mc{B}\implies\mc{A})$}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{A}\iff \mc{B})$}{$j,k,\iff I$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{B}\iff \mc{A})$}{$j,k,\iff I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\iff E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\mc{A}\iff\mc{B})$}{}
+\ndljg{X}{(k)}{$(\mc{A}\implies\mc{B})$}{$j,\iff E$}
+\ndljg{}{\text{or}}{}{}
+\ndljg{X}{(k)}{$(\mc{B}\implies\mc{A})$}{$j,\iff E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lnot I$][][][][.6\linewidth]
+\ndljg{j}{(j)}{$\mc{A}$}{$A$}
+\ndljg{X}{(k)}{$\curlywedge$}{ }
+\ndljg{X/j}{(l)}{$(\lnot \mc{A})$}{$j,k,\lnot I$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\lnot E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\lnot\mc{A})$}{}
+\ndljg{Y}{(k)}{$\mc{A}$}{ }
+\ndljg{X\cup Y}{(l)}{$\curlywedge$}{$j,k,\lnot E$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $DN$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$(\lnot(\lnot\mathcal{A}))$}{}
+\ndljg{X}{(k)}{$\mathcal{A}$}{$j,DN$}
+\end{ND}
+\hrulefill
+\begin{ND}[Rule of $\exists I $][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}[v\leftarrow t]$}{}
+\ndljg{X}{(k)}{$((\exists v)\mc{A})$}{$j,\exists I$}
+\end{ND}
+
+$t$ is a closed term and $v$ must appear free and not bound in $\mc{A}$
+
+\hrulefill
+\begin{ND}[Rule of $\exists E$][][][][.6\linewidth]
+\ndljg{X}{(i)}{$((\exists x)\mc{A})$}{}
+\ndljg{j}{(j)}{$\mc{A}[x\leftarrow t]$}{$A$}
+\ndljg{Y}{(k)}{$\mc{B}$}{}
+\ndljg{X\cup Y/j}{(l)}{$\mc{B}$}{$i,j,k,\exists E$}
+\end{ND}
+$t$ is a closed term which does not appear in $\mc{A}, \mc{B}$ or any of the lines $Y$ other than $j$.
+
+\hrulefill
+\begin{ND}[Rule of $\forall I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}[v\leftarrow t]$}{}
+\ndljg{X}{(k)}{$((\forall v)\mc{A})$}{$j,\forall I$}
+\end{ND}
+
+$t$ is a closed term which does not appear\footnote{The requirement that $t$ does not appear in $\mc{A}$ ensures that all occurrences of $t$ are replaced by $v$ after the quantifier is introduced.} in $\mc{A}$ or any of the lines $X$. $v$ must appear free and not bound in $\mc{A}$.
+
+
+
+\hrulefill
+\begin{ND}[Rule of $\forall E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$((\forall x)\mathcal{A})$}{}
+\ndljg{X}{(k)}{$\mathcal{A}[x\leftarrow t]$}{$j,\forall E$}
+\end{ND}
+$t$ is a closed term.
+
+\hrulefill
+\begin{ND}[Rule of $=I$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$t=t$}{$=I$}
+\end{ND}
+$t$ is a closed term
+
+\hrulefill
+\begin{ND}[Rule of $=E$][][][][.6\linewidth]
+\ndljg{X}{(j)}{$t_1=t_2$}{}
+\ndljg{Y}{(k)}{$\mc{A}[v\leftarrow t_1]$}{}
+\ndljg{X\cup Y}{(l)}{$\mc{A}[v \leftarrow t_2]$}{$j,k,=E$}
+\end{ND}
+$t_1$ and $t_2$ are closed terms and $v$ appears free in $\mc{A}$.
+
+\hrulefill
+
+We can call the set of all inference rules $\bc{I}$.
+
+Here I have followed most of Forbes' inference rules, however I have modified, in particular, the quantifier introduction rules in a way which makes their state in terms of Tourlakis' notion of substitution much more clear. I think this improvement should help with the subsequent proofs.
+
+\section*{Theories and Extensions}
+
+Let $\gamma \subset \mathbf{Wff}$ be a set of formulas in $\mc{L}$. We will call these formulas axioms and take them as premises in what is to come. If we start out with premises $\Gamma$ and we are able to derive, using the rules of inferences, $\bc{I}$, above, another Wff, $\mc{A}\in\textbf{Wff}$ then we say that $\mc{A}$ is a $\Gamma$-Theorem. The set of all $\Gamma$-Theorems is denoted by $\mathbf{Thm}_{\Gamma,\bc{I}}$. If $\mc{A} \in \mathbf{Thm}_{\Gamma,\bc{I}}$ then we say $\mc{A}$ syntactically follows from, or follows from the axioms $\bv{\Gamma}$ and we write
+
+\begin{equation}
+\begin{split}
+\Gamma &\vdash \mc{A}
+\end{split}
+\end{equation}
+
+
+We can define a mathematical theory as
+
+\begin{equation}
+\bc{T} = (\bv{\mc{L}}, \bc{I}, \Gamma)
+\end{equation}
+
+The set $\mathbf{Thm}_{\Gamma,\bc{I}}$ are the set of theorems of $\bc{T}$. If $\mc{A} \in \textbf{Thm}_{\Gamma,\bc{I}}$ we say
+
+\begin{equation}
+\vdash_{\bc{T}} \mc{A}
+\end{equation}
+
+Often it is clear from context what set of inference rules $\bc{I}$ is being used so we can drop that index and simply write $\textbf{Thm}_{\Gamma}$.
+
+
+\subsection*{Extension of a Theory}
+
+Consider two theories
+
+\begin{equation}
+\begin{split}
+\bc{T} &= (\bv{\mc{L}},\bc{I},\Gamma)\\
+\bc{T}' &= (\bv{\mc{L}}',\bc{I},\Gamma')
+\end{split}
+\end{equation}
+
+With
+
+\begin{equation}
+\begin{split}
+\bv{\mc{L}} &= (\textbf{Symb},\textbf{Term},\textbf{Wff})\\
+\bv{\mc{L}'} &= (\textbf{Symb}',\textbf{Term}',\textbf{Wff}')
+\end{split}
+\end{equation}
+
+Suppose that $\textbf{Symb} \subset \textbf{Symb}'$. This means, assuming the two languages use the same rules of syntax, that anything expressible in $\bv{\mc{L}}$ is expressible in $\bv{\mc{L}}'$.
+
+We then say that $\bc{T}'$ is an \textit{extension} of $\bc{T}$ (symbolized as $\bc{T} \le \bc{T}'$) if $\Gamma \subset \Gamma'$. 
+
+$\bc{T}'$ is a \textit{conservative extension} of $\bc{T}$ if $\bc{T}'$ is an extension of $\bc{T}$ and
+
+$$
+\textbf{Thm}_{\Gamma'} \cap \textbf{Wff} = \textbf{Thm}_{\Gamma}
+$$
+
+In words this says, first, that for all formula in $\mc{A} \in \textbf{Wff}$ we have that $\vdash_{\bc{T}} \mc{A}$ implies that $\vdash_{\bc{T}'} \mc{A}$. This is because $\textbf{Thm}_{\Gamma}\subset \textbf{Thm}_{\Gamma'}$. However, it also says that any theorem of $\bc{T}'$ which is expressible in $\bv{\mc{L}}$ (that is $\textbf{Thm}_{\Gamma'} \cap \textbf{Wff}$) is also a theorem of $\bc{T}$. If $\bc{T}'$ is a conservative extension of $\bc{T}$ then the two theories agree on any formulas which are expressible in the first language, $\bv{\mc{L}}$. This is why we say the extension is conservative, it doesn't add any \textit{new} features to the previous theory, just some new \textit{symbols}. Said more succinctly, if for all $\mc{A} \in \textbf{Wff}$ we have that $\vdash_{\bc{T}} \mc{A}$ exactly when $\vdash_{\bc{T}'} \mc{A}$ then $\bc{T}'$ is a conservative extension of $\bc{T}$.
+
+\subsection{Extension by Definition}
+
+We are now coming to the idea of an extension by definition. The idea of a \textit{definition} is that we want to define a new symbol to capture a complex expression in a theory so that in the future we do not need to write down proofs with so many symbols from the bare language. We see that then from the above discussion that since a definition introduces a new symbol it forces us to work in a new language. In addition, it is also necessary to add an axiom to the new theory which describes the behavior of the new symbol. 
+
+The goal in this document is to give a definition for extensions by definition in LFOL and use the inference rules laid out above to prove that extensions by definition are conservative extensions.
+
+We can introduce two sorts of non-logical symbols into a theory. Either a predicate symbol or a function symbol. There will be different rules for each.
+
+In the following we abbreviate $x_1,\ldots,x_n$ as $\vec{x}$.
+
+Suppose we have a theory $\bc{T} = (\bv{\mc{L}},\bc{I},\Gamma)$ which we will extend by definition into a new theory $\bc{T}' = (\bv{\mc{L}}',\bc{I},\Gamma')$. We will extend the theory one definition at a time always. If $\bc{T}_1$ is a conservative extension of $\bc{T}_0$ and $\bc{T}_n$ is a conservative extension of $\bc{T}_{n-1}$ then it is not too hard to prove by induction that $\bc{T}_n$ is also a conservative extension of $\bc{T}_0$. This means we are justified in extending the theory one definition at a time.
+
+\subsubsection*{New Predicate}
+
+To add a new $n$-ary predicate to the theory we append the predicate symbol $P$ to the set of symbols $\mathbf{Symb}$ to construct $\mathbf{Symb}' = \mathbf{Symb}\cup \{P\}$ for $\bv{\mc{L}}'$.
+
+We introduce the axiom
+
+\begin{equation}
+\textbf{def} \equiv (P\vec{x} \iff \mc{Q}(\vec{x}))
+\end{equation}
+
+and define $\Gamma' = \Gamma \cup \{\textbf{def}\} \}$
+
+The notation $\mc{Q}(\vec{x})$ indicates that $\mc{Q}$ is a Wff whose only free variables are $\vec{x}$.
+
+\subsubsection*{New Function or Constant}
+
+To add a new $n$-ary function to the theory we append the function symbol $f$ to the set of symbols $\textbf{Symb}$ to construct $\textbf{Symb}' = \textbf{Symb}\cup\{f\}$ for $\bv{\mc{L}}$.
+
+We introduce the axiom
+
+\begin{equation}
+\textbf{def} \equiv \forall \vec{x} \forall y(y=f(\vec{x})\iff \mc{Q}(\vec{x},y))
+\end{equation}
+
+and define $\Gamma' = \Gamma \cup \{\textbf{def}\}$.
+
+In addition we require that the formula
+
+\begin{equation}
+\Gamma \vdash (\forall \vec{x})(\exists! y) \mc{Q}(\vec{x},y) \equiv K
+\end{equation}
+
+is a theorem of $\bc{T}$.
+
+Unique quantification here is defined as follows. Suppose $y$ appears free in $\mc{A}$.
+
+\begin{equation}
+((\exists!y)\mc{A}) \equiv ((\exists y)(\mc{A} \land ((\forall z)\mc{A}[y\leftarrow z] \implies y=z)))
+\end{equation}
+
+The intuitive reason we require $\Gamma \vdash K$ is because if we did not then it would be possible for $f(\vec{x})$ to refer to multiple different 'objects' so it would not be entirely unambiguous how to interpret a Wff involving $f$. More rigorously, we will see that this formula $K$ will be necessary in proving that the new theory $\bc{T}'$ is in fact a conservative extension of $\bc{T}$.
+
+\section{Definition Translation}
+
+To prove extensions by definition are conservative we will need the notion of the translation of a formula from $\bv{\mc{L}}'$ into $\bv{\mc{L}}$. Since $\bv{\mc{L}}'$ contains more symbols than $\bv{\mc{L}}$ it is of course not possible to express all formulas in $\bv{\mc{L}}'$ in language $\bv{\mc{L}}$, but the idea is that for every $\phi$ of $\bv{\mc{L}}'$ there is a sentence $\phi^\sharp$ in $\bv{\mc{L}}$ with the property that $\vdash_{\bc{T}'}\phi$ if and only if $\vdash_{\bc{T}}\phi^{\sharp}$. This is the sense in which $\phi$ and $\phi^{\sharp}$ are equivalent, even though they may be different strings.
+
+That task is then to define $\phi^{\sharp}$ for a given $\phi$ as well as to prove that if $\vdash_{\bc{T}'}\phi$ that $\vdash_{\bc{T}}\phi^{\sharp}$. Note that the converse is easy to prove. Also note that once we have proven this then it will follow immediately that $\bc{T}'$ is a conservative extension of $\bc{T}$ because we can apply the above rule to a sentence $\phi \in \textbf{Wff}$ which would mean $\phi^{\sharp} \equiv \phi$.
+
+First we define the translation of a sentence in the case that $\bc{T}'$ extends $\bc{T}$ by adding the preposition $P$ and axiom $\textbf{def}$ above for prepositions.
+
+We define $\phi^{\sharp}$ recursively on the structure of the Wff for $\phi$. 
+
+\begin{itemize}
+\item{If $\mc{A}$ is atomic and $\mc{A} \equiv P(\vec{x})$ then $(\mc{P}(\vec{x}))^{\sharp} \equiv \mc{Q}(\vec{x})$. Otherwise $\mc{A}^{\sharp} \equiv \mc{A}$.}
+\item{$(\mc{A}\land \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \land \mc{B}^{\sharp})$}
+\item{$(\mc{A} \lor \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \lor \mc{B}^{\sharp})$}
+\item{$(\mc{A} \implies \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \implies \mc{B}^{\sharp})$}
+\item{$(\mc{A}\iff \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \iff \mc{B}^{\sharp})$}
+\item{$(\lnot \mc{A})^{\sharp} \equiv (\lnot \mc{A}^{\sharp})$}
+\item{$((\exists x)\mc{A})^{\sharp} \equiv ((\exists v)(\mc{A}[x\leftarrow v])^{\sharp})$ where $v$ is the first unused variable.}
+\item{$((\forall x)\mc{A})^{\sharp} \equiv ((\forall v)(\mc{A}[x\leftarrow v])^{\sharp})$ where $v$ is the first unused variable.}
+\item{$(t_1=t_2)^{\sharp} \equiv t_1=t_2$}
+\end{itemize}
+
+\subsection*{Translating Formulas with Variable Changes}
+
+$(\mc{A}[x\leftarrow y])^{\sharp}$
+
+vs.
+
+$(\mc{A}^{\sharp})[x\leftarrow y]$
+
+Variable substitution defined above should be thought of as free free variable substitution. No attempt is made to change any bound variables. Any free variable can be substituted as
+
+
+\section*{Translation proof for New Predicate}
+
+I would like to prove that if $\vdash_{\bc{T}'}\phi$ that $\vdash_{\bc{T}}\phi^{\sharp}$. To do this I will induct on proof steps in a Lemmon style proof. I will do this by performing metatheorems on lines of Lemmon style proofs. What I will prove is the following.
+
+Suppose that the following line appears in a Lemmon style derivation:
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(k)}{$\phi$}{$R$}
+\end{ND}
+
+for any rule $R$.
+Suppose also that $\textbf{Def}$, the definition axiom, appears on line $d$. It then follows that it is possible to derive
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X^{\sharp}/d}{(l)}{$\phi^{\sharp}$}{$R^{\sharp}$}
+\end{ND}
+
+Where for each $i\in X$ with $\psi_i$ appearing on line $i$ we have a corresponding $j \in X^{\sharp}$ with $\psi^{\sharp}$ appearing on line $j$ and no additional elements in $X^{\sharp}$. There is no constraint on $R^{\sharp}$.
+
+I will prove this by inducting on the line number on which $\phi$ appears.
+
+\subsection*{Base Case}
+
+Suppose that $\phi$ appears on line 1 of a derivation. This could have happened if 1) $\phi \in \Gamma'$ and was introduced as a premise, 2) $\phi$ was introduced as an assumption using rule $A$ (and depends only on line 1, or 3) $\phi \equiv t=t$ for some term $t$ and was introduced by $=I$. We work out each case. Note that in each case the derived statement $\phi$ depends one line 1 and no other lines
+
+\subsubsection*{$\phi \in \Gamma'$ arising as premise}
+
+If $\phi \in \Gamma'$ then either $\phi \in \Gamma$ or $\phi \equiv \textbf{def} (\equiv P\vec{x} \iff \mc{Q}(\vec{x}))$. If $\phi \in \Gamma \subset \textbf{Wff}$ then $\phi^{\sharp} \equiv \phi$ and it is possible to derive $\phi^{\sharp} \in \Gamma$ as a premise using $\bc{T}$. We see that $\phi^{\sharp}$ would depend on line 1.
+
+If $\phi\equiv \textbf{def}\equiv(P\vec{x}\iff \mc{Q}(\vec{x}))$ then $\phi^{\sharp} \equiv (\mc{Q}(\vec{x})\iff\mc{Q}(\vec{x}))$. This statement is a tautology which can be derived depending on no lines in $\mc{T}$! This is exactly what is needed since in this case we have that $X=\{1\}$ and $d=1$ so $X/d = X/1 = \{\}$.
+
+\subsubsection*{$\phi$ Assumed}
+
+if $\phi$ was assumed at line 1 then we could equivalently assume $\phi^{\sharp}$ at line 1 using $\bc{T}$.
+
+\subsubsection*{Equality Introduction}
+
+If $\phi\equiv t=t$ for some term $t$ then it is impossible for any predicates to appear so $\phi \equiv \phi^{\sharp}$ so $\phi^{\sharp}$ also could have been derived in one line using $=I$ in $bc{T}$.
+
+\subsection{Induction Step}
+
+For the induction step we assume that the theorem holds for lines $1\ldots n-1$. That is, if the following line appears with $k < n$
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(k)}{$\phi$}{$R$}
+\end{ND}
+
+then we assume it is possible to derive
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X^{\sharp}/d}{(l)}{$\phi^{\sharp}$}{$R^{\sharp}$}
+\end{ND}
+
+With $X^{\sharp}$ defined as above. The goal then, is to prove that the same holds for $k=n$. I will do this by ``adding the last step of the proof in by hand''. That is, if the derivation of $\phi$ in $\bc{T}'$ is $n$ steps long then the inductions hypothesis guarantees that all of the lines through $n-1$ can be derived in $\bc{T}$. The goal is to then use a final inference rule to derive $\phi^{\sharp}$ in $\bc{T}$
+
+Unfortunately we need to break out into cases for each possible final rule used in the proof of $\phi$.
+
+\hrulefill
+
+\subsubsection{Rule of $A$}
+
+If the last line of the proof for $\phi$ is an assumption introduction then it only depends on line $n$ and $\phi^{\sharp}$ can simply be assumed in $\bc{T}$.
+
+\hrulefill
+
+\subsection{Rule of $\land I$}
+
+If the last rule is $\land I$ then we have
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(j)}{$\mc{A}$}{}
+\ndljg{Y}{(k)}{$\mc{B}$}{}
+\ndljg{X\cup Y}{(l)}{$(\mc{A}\land\mc{B})$}{$j,k,\land I$}
+\end{ND}
+
+The induction hypothesis gives us
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X^{\sharp}/d}{(j^{\sharp})}{$\mc{A}^{\sharp}$}{}
+\ndljg{Y^{\sharp}/d}{(k^{\sharp})}{$\mc{B}^{\sharp}$}{}
+\end{ND}
+
+From which we see can easily derive
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{(X^{\sharp/d}\cup Y^{\sharp/d})}{(l^{\sharp})}{$(\mc{A}^{\sharp}\land\mc{B}^{\sharp})$}{$j^{\sharp},k^{\sharp},\land I$}
+\end{ND}
+
+and we note that $(\mc{A}^{\sharp}\land\mc{B}^{\sharp})\equiv (\mc{A}\land\mc{B})^{\sharp})\equiv \phi^{\sharp}$ and $(X^{\sharp}/d\cup Y^{\sharp}/d) = (X\cup Y)^{\sharp}/d$.
+
+
+\hrulefill
+
+\section*{Translation proof for New Predicate}
+
+I will now prove, using the definition of $\phi^{\sharp}$ above that if $\vdash_{\bc{T}'}\phi$ that $\vdash_{\bc{T}}\phi^{\sharp}$. We will induct on the length of the proof for $\vdash{\bc{T}'}\phi$.
+
+\subsubsection*{Base Case}
+First suppose that $\vdash_{\bc{T}'}\phi$ in 0 steps. This means that $\phi \in \Gamma'$. This means either $\phi \in \Gamma$ or $\phi \equiv \textbf{Def}$. 
+
+If $\phi \in \Gamma$ then $P$ does not appear in $\phi$ since $\Gamma \subset \textbf{Wff}$ so $\phi^{\sharp} \equiv \phi$. Since $\phi \equiv \phi^{\sharp} \in \Gamma$ we have that $\vdash_{\bc{T}}\phi^{\sharp}$ as desired.
+
+If $\phi \equiv \textbf{Def} \equiv (P\vec{x} \iff \mc{Q}(\vec{x}))$ then $\phi^{\sharp} \equiv (\mc{Q}(\vec{x}) \iff \mc{Q}(\vec{x}))$ which is a tautology (which can be proven from $\bc{I}$) so we again have that $\vdash_{\bc{T}}\phi^{\sharp}$ as desired.
+
+\subsubsection*{Induction Step}
+We now suppose that for all $\psi\in \textbf{Wff}'$ that if $\psi$ appears on line $n-1$ or lower of any derivation depending on lines $X$ that it is possible to provide a derivation in $\bc{T}$ which results in $\psi^{\sharp}$ depending on lines $X^{\sharp}$ where each of the lines appearing in $X^{\sharp}$ is the translated version of the corresponding line appearing in $X$.
+
+The goal then is to show that if $\phi$ appears on line $n$ of a derivation and depends on $\Gamma'$ (or more generally $X$) that it is possible to provide a derivation in $\bc{T}$ which results in $\phi^{\sharp}$  depending on lines $(\Gamma')^{\sharp}$
+
+$n-1$ or fewer steps then $\vdash_{\bc{T}}\psi^{\sharp}$. Now suppose that $\vdash_{\bc{T}'}\phi$ in $n$ steps. The goal is to show that $\vdash_{\bc{T}}\phi^{\sharp}$.
+
+The strategy here will be to ``deconstruct'' and translate the last step of the proof. Essentially the induction hypothesis says that for if any intermediate line (step $<n$) of the proof for $\phi$ reads as $\psi$ then we assume we can prove $\psi^{\sharp}$ in $\bc{T}$. The question is then from all of the translated lines if it is possible to derive the translated final line $\phi^{\sharp}$.
+
+It shouldn't be too hard to prove since there is only one line of the proof which we need to complete. Unfortunately, the final line of the proof for $\phi$ could use any of the many induction rules so to be rigorous we would need to provide a proof for each possible induction. I'll start on that project now and see how it goes...
+
+\hrulefill
+\subsubsection{Rule of $A$}
+The last line of the proof $\phi_{\bc{T}'}$ cannot be an assumption of $\phi$ because that would only show $\Gamma,\phi \vdash \phi$ since the assumption line dependence would not yet be discharged so we need not consider this case.
+
+\hrulefill
+
+\subsubsection*{Rule of $\land I$}
+Suppose the last line of the proof follows from an $\land I$ on previous lines $\mc{A}$ and $\mc{B}$ resulting in $\phi \equiv (\mc{A} \land \mc{B})$ so that $\phi^{\sharp} \equiv (\mc{A} \land \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp}\land \mc{B}^{\sharp})$ Then, by induction hypothesis, we have that $\vdash_{\bc{T}} \mc{A}^{\sharp}, \mc{B}^{\sharp}$ so we can use $\land I$ to prove $(\mc{A}^{\sharp} \land \mc{B}^{\sharp}) \equiv \phi^{\sharp}$ so that $\vdash_{\bc{T}} \phi^{\sharp}$ as needed.
+
+\hrulefill
+
+\subsubsection*{Rule of $\land E$}
+Suppose the last line of the proof follows from a $\land E$ on previous line $(\mc{A} \land \mc{B})$ resulting in $\mc{A}\equiv\phi$ (without loss of generality since $((\mc{A} \land \mc{B}) \iff (\mc{B} \land \mc{A}))$) so that $\phi^{\sharp} \equiv \mc{A}^{\sharp}$. Then, by the induction hypothesis we have that $\vdash_{\bc{T}}(\mc{A}\land\mc{B})^{\sharp}\equiv (\mc{A}^{\sharp} \land \mc{B}^{\sharp})$ and we can derive using $\land E$ $\mc{A}^{\sharp} \equiv \phi^{\sharp}$ so that $\vdash_{\bc{T}} \phi^{\sharp}$ as needed.
+
+\hrulefill
+
+\subsubsection*{Rule of $\lor I$}
+Suppose the last line of the proof follows from a $\lor I$ on previous line $\mc{A}$ resulting in $(\mc{A} \lor \mc{B})$ (without loss of generality since $((\mc{A}\lor \mc{B})\iff(\mc{B} \lor \mc{A}))$) so that $\phi^{\sharp} \equiv (\mc{A} \lor \mc{B}) \equiv (\mc{A}^{\sharp} \lor \mc{B}^{\sharp})$. Then, by the induction hypothesis we have that $\vdash_{\bc{T}}\mc{A}^{\sharp}$ and we can derive using $\lor I$ $(\mc{A}^{\sharp} \lor \mc{B}^{\sharp}) \equiv \phi^{\sharp}$ so that $\vdash_{\bc{T}}\phi^{\sharp}$ as needed.
+
+\hrulefill
+
+\subsubsection*{Rule of $\lor E$}
+
+Now things get a little more tricky I think.. Suppose the last line of the proof for $\vdash_{\bc{T}'} \phi$ is of the form
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(g)}{$(\mc{A}\lor \mc{B})$}{}
+\ndljg{h}{(h)}{$\mc{A}$}{$A$}
+\ndljg{Y}{(i)}{$\mc{C}$}{}
+\ndljg{j}{(j)}{$\mc{B}$}{$A$}
+\ndljg{Z}{(k)}{$\mc{C}$}{}
+\ndljg{X\cup Y/h \cup Z/j}{(l)}{$\mc{C}\equiv\phi$}{$g,h,i,j,k,\lor E$}
+\end{ND}
+
+We can see that since $(\mc{A} \lor \mc{B})^{\sharp} \equiv (\mc{A}^{\sharp} \lor \mc{B}^{\sharp}$ that the final line of this rule would follow if each of the intermediate lines were translated using ${}^{\sharp}$ so we see that since $\bc{T}$ can prove any of the intermediate lines by the induction hypothesis that we also have $\vdash_{\bc{T}'} \phi^{\sharp}$ as needed.
+
+\section{Conservative Extension Proof for New Predicate}
+
+In this section I will prove that the extension by definition which arises when adding a new predicate is a conservative extension.
+
+Suppose $\bc{T}'$ is an extension by definition of $\bc{T}$ which arose by adding the new predicate symbol $P$. It is clear that for $\phi \in \textbf{Wff}$ if $\Gamma \vdash \phi$ then $\Gamma' \vdash \phi$. The question is if $\Gamma' \vdash \phi$ does $\Gamma \vdash \phi$? The problem is that the proof for $\Gamma' \vdash \phi$ in $\bc{T}'$ may involve many instances of the new symbol $P$. It is not then a priori obvious that a proof could be constructed purely in the language $\bv{\mc{L}}$. Here I will show that it is in fact possible to construct such a proof.
+
+Suppose $\phi \in \textbf{Wff}$ and $\Gamma' \vdash \phi$. We must prove $\Gamma \vdash \phi$. Suppose the proof of $\Gamma' \vdash \phi$ consists of $n$ steps. We will induct on the length $n$ of this proof. 
+
+If the proof $\Gamma' \vdash \phi$ is $0$ steps then this means that $\phi \in \Gamma'$ and since $\phi \in \textbf{Wff}$ this means that $\phi \in \Gamma$ as well. This means we also have a 0-step proof that $\Gamma \vdash \phi$.
+
+Now assume that for all $\psi \in \textbf{Wff}$ that if $\Gamma' \vdash \psi$ with a proof of length $n-1$ that we are able to supply a proof that $\Gamma \vdash \psi$. The goal is to show  if $\Gamma' \vdash \phi$ with a proof of length $n$ that ew are able to supply a proof of $\Gamma \vdash \phi$. Basically the logic is to use the fact that we can 
+
+
+%\section{Tourlakis Free and Bound Variables}
+
+%\hrulefill
+%\subsection*{Free and Bound Variables}
+%\subsubsection*{Free Variables}
+%\begin{itemize}
+%\item{Variable $x$ appears free in term $t$ or atomic formula $\mc{A}$ if $x$ appears in $t$ or $\mc{A}$ as a substring}
+%\item{Variable $x$ appears free in $(\mc{A} \land \mc{B})$, $(\mc{A} \lor \mc{B})$, $(\mc{A}\implies \mc{B})$, or $(\mc{A}\iff \mc{B})$ if $x$ appears free in at least one of $\mc{A}$ or $\mc{B}$.}
+%\item{Variable $x$ appears free in $(\lnot \mc{A})$ if $x$ appears free in $\mc{A}$.}
+%\item{Variable $x$ appears free in $((\exists y)\mc{A})$ or $((\forall y)\mc{A})$ if $x$ appears free in $\mc{A}$ and $x \not\equiv y$}
+%\end{itemize}
+%\subsubsection*{Bound Variables}
+%\begin{itemize}
+%\item{There are no bound variables in terms or atomic formulas}
+%\item{Variable $x$ appears bound in $(\mc{A} \land \mc{B})$, $(\mc{A} \lor \mc{B})$, $(\mc{A}\implies \mc{B})$, or $(\mc{A}\iff \mc{B})$ if $x$ appears bound in at least one of $\mc{A}$ or $\mc{B}$.}
+%\item{Variable $x$ appears bound in $(\lnot \mc{A})$ if $x$ appears bound in $\mc{A}$.}
+%\item{Variable $x$ appears bound in $((\exists y)\mc{A})$ or $((\forall y)\mc{A})$ if $x\equiv y$.}
+%\end{itemize}
+%\hrulefill
+
+\end{document}
+
+

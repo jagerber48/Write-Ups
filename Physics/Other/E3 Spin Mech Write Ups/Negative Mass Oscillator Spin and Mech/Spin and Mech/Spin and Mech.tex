@@ -1,0 +1,479 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\begin{document}
+\title{Spin and Mechanics Theory Reference}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this document I will calculate the linearized optomechanical equations of motion for the situation where our cavity field intensity is coupled linearly to both the mechanical and spin degrees of freedom of our atomic gas.
+
+\section{Spin + Mech Hamiltonian}
+I will start from eq (82) in Jonathan's ``spin.pdf'' write up but neglect the 2nd order (tensor) shifts. Furthermore I'll only consider probing with $\sigma_+$ light so that $\hat{n} = \hat{n}_+$ and $\hat{n}_- = 0$. This is the Hamiltonian for a single atom.
+
+\begin{equation}
+\widehat{\mathcal{H}}_{eff} = \hbar \frac{g_0^2}{\Delta_{CA}} 
+\hat{n} \left[ \xi + \nu \hat{S}_z \right]
+\end{equation}
+
+In our case $g_0 \rightarrow g_0(\hat{z}) = g_0 \text{Sin}(k_p \hat{\tilde{z}})$ where $k_p$ is the probe wave vector. $\xi = \frac{2}{3}$ and $\nu = \frac{1}{6}$. We also must sum over atoms that may be at many positions. For coordinates we will fix some arbitrary reference point (say a cavity mirror) and take $z_0$ to be location of the center of the optical dipole trap in which the atoms sit. $\tilde{z}_i$ will represent the location of the $i^{th}$ atoms with respect to that origin. $z_i$ will represent the location of the atom with respect to the center of the trap. $Z_{CM}$ will represent the location of the center of mass of all the atoms with respect to the trap center. $\delta z_i$ will represent the location of the $i^{th}$ atoms with respect to the center of mass. In summary:
+\[ \tilde{z}_i = z_0 + z_i \hspace{1 cm} Z_{CM} = \frac{1}{N} \sum_i z_i \hspace{1 cm} z_i = Z_{CM} + \delta z_i\]
+
+We will also define
+\[ g_c = \frac{g_0^2}{\Delta_{CA}} \]
+Writing out the full Hamiltonian including the interaction Hamiltonian above as well as the light cavity Hamiltonian, the center of mass harmonic oscillation, and the spin-magnetic Hamiltonian due to a magnetic field in the x direction we find:
+
+\begin{equation}
+ \widehat{\mathcal{H}} = 
+\hbar \omega_c \hat{a}^{\dag} \hat{a} 
++ \hbar \omega_M \hat{b}^{\dag}_{CM} \hat{b}_{CM} 
++ \hbar \Omega_L \sum_i \hat{S}_{x,i} 
++ \hbar g_c \hat{a}^{\dag} \hat{a} \sum_i \text{Sin}^2(k_p \hat{\tilde{z}}_i) \left[ \xi + \nu \hat{S}_{z,i} \right]     
+\end{equation}
+
+\[\Omega_L = \frac{g_F \mu_B |\vec{B}|}{\hbar}\] 
+
+Note that we are using units where $\hat{\vec{S}}$ is unitless. In different units $\hat{\vec{S}}$ would have units of $\hbar$ - angular momentum. Also note that we (subtly) make a convention choice about the lande-g factor. For clarity I'll explain that here. The magnetic Hamiltonian is always taken (classically and quantum mechanically) to be
+\[H_B = - \vec{\mu}\cdot\vec{B} \]
+We then have the relation that
+\[\vec{\mu} = \gamma_{gy} \vec{F}\]
+Where $\vec{F}$ is the angular momentum of the system and $\gamma_{gy}$ is the gyromagnetic ratio. The important intuition here is that the magnetic moment of a charged system should be proportional to the angular momentum of the system. This is evident classically because a charge moving with angular momentum creates a current loop which creates a magnetic field. The Dirac equation tells us that the proportionality holds even for intrinsic spin. Next we have
+\[\gamma_{gy} = -g_F \mu_B\]
+The intuition here is that for a classical system you can show the proportionality constant is just the Bohr magneton, $\mu_B$ where $\mu_B = \frac{\hbar |e|}{2 m_e}$ (charge and mass of the electron) so $\gamma_{gy}$ should be related to that. The lande-g factor, $g_F$ captures the fact that our system is not the exact same as a classical electron moving in a circle. It is a fudge factor of order $1$ which more precisely relates the angular momentum and magnetic moment. Of course we can calcuate or look up $g_F$ for the relevant states we work with. Note that a few convention choices are being made. 1) $\mu_b$ is positive and 2) the minus sign in the definition of $\gamma_{gy}$. Under this convention $g_F$ can be positive or negative depending on the relative contributions of $\vec{J}$ and $\vec{I}$ to the total angular momentum $\vec{F}$. In other conventions $g_F$ is always positive and you have to ``just know'' when the gyromagnetic ration should be positive or  negative. Anyways, the net result of these conventions is we can write:
+\[H_B = -\vec{\mu}\cdot \vec{B} = + g_F \mu_B |B| S_{\hat{n}}\]
+Where $S_{\hat{n}}$ is the projection of $\vec{S}$ onto the unit vector in the direction of the magnetic field, $\hat{n}$. From this we identify $+g_F \mu_B |B| = \hbar{\Omega_L}$ so that $H_B = +\hbar \Omega_L S_x$ in the case of our system with a magnetic field in the $\hat{x}$ direction.
+
+A nice reference number is that $\frac{\mu_B}{\hbar} = \frac{e}{2m_e} = 1.4 \frac{\text{MHz}}{\text{G}}$. In other words, this tells you how to convert magnetic fields into Larmor frequencies and vice-versa (making sure to take into account the hyperfine $g_F$ factor).
+
+
+
+Under the assumption that all of the atoms are at the same location and move exactly in the same way (rigid body center of mass mode) we have that $\hat{b}_{CM} = \frac{1}{\sqrt{N}} \hat{b}_i$ - see Justin's lab notebook for details. This is also related to
+\[ Z_{HO,CM} = \frac{Z_{HO}}{\sqrt{N}} \hspace{1cm} P_{HO,CM} = \sqrt{N} P_{HO} \]
+
+
+
+
+We can now start chewing on this. The magnetic term simplifies to $\hbar \Omega_L \hat{S}_{x,T}$ where the $T$ subscript denotes the total spin. $\hat{\vec{S}}_T = \sum_i \hat{\vec{S}}_i$. Let's focus on the cavity coupling term.
+
+\begin{equation}
+\widehat{\mathcal{H}}_{eff} = \hbar g_c \hat{a}^{\dag} \hat{a} \sum_i \text{Sin}^2(k_p \hat{\tilde{z}}_i) \left[ \xi + \nu \hat{S}_{z,i} \right]
+\end{equation}
+
+We define $k_p z_0 = \phi_0$ and expand the Sin according to 
+\[
+\text{Sin}^2(k_p \hat{\tilde{z}}_i) = 
+\text{Sin}^2(k_p (z_0+\hat{z}_i)) = 
+\text{Sin}^2(\phi_0) + \text{Sin}(2\phi_0) k_p \hat{z}_i
+\]
+
+I will consider loading at the linear spot where $\phi_0=\pm \frac{\pi}{4}$ so that $\text{Sin}^2(\phi_0) = \frac{1}{2}$ and $\text{Sin}(2\phi) = \pm 1 = \beta$. The $\pm$ captures the fact that we can load at one of two different linear spots where the slope of the probe intensity either increases or decreases with $z$. The variable $\beta$ captures which linear spot we are loading at. Expand: 
+
+\begin{equation}
+\widehat{\mathcal{H}}_{eff} = \hbar g_c \hat{a}^{\dag} \hat{a} 
+\sum_i 
+\left[\frac{1}{2} + \beta k_p \hat{z}_i\right]
+\left[ \xi + \nu \hat{S}_{z,i} \right]
+\end{equation}
+
+\begin{equation}
+= \hbar g_c \hat{a}^{\dag} \hat{a} 
+\sum_i \big[
+\frac{\xi}{2}
++ \beta \xi k_p \hat{z}_i
++ \frac{\nu}{2} \hat{S}_{z,i}
++ \beta \nu k_p \hat{z}_i \hat{S}_{z,i} \big]
+\end{equation}
+
+We now apply the summation remembering that $\sum_i \hat{z}_i = N_a \hat{Z}_{CM}$ and $\hat{z}_i = \hat{Z}_{CM} + \delta \hat{z}_i$.
+
+\begin{equation}
+= \hbar g_c \hat{a}^{\dag} \hat{a} \left[
+\frac{\xi}{2} N_a 
++ \beta \xi N_a k_p \hat{Z}_{CM} 
++ \frac{\nu}{2} \hat{S}_{z,T}
++ \beta \nu k_p \hat{Z}_{CM} \hat{S}_{z,T}
++ \beta \nu \sum_i k_p \delta \hat{z}_i \hat{S}_{z,i}
+\right]
+\end{equation}
+
+We will drop the last term consistent with the assumptions that only the center of mass mode is populated. The first term represents the static cavity shift. The second term gives us optomechanics. The third term gives us spin optodynamics. The fourth term gives us a probe mediated coupling between the total spin and the center of mass motion of the atoms, the static gradient. The final term represents a coupling between the motion of single atoms and the spin of those individual atom. Perhaps it can be thought of a coupling between each of the normal modes of the atomic gas and the corresponding spin normal modes.
+
+We put together our total Hamiltonian:
+
+\begin{align}
+ \widehat{\mathcal{H}} =& 
+\hbar \omega_c \hat{a}^{\dag} \hat{a} 
++ \hbar \omega_M \hat{b}^{\dag}_{CM} \hat{b}_{CM} 
++ \hbar \Omega_L \hat{S}_{x,T} \\
+&+ \hbar g_c \hat{a}^{\dag} \hat{a} \left[
+\frac{\xi}{2} N_a 
++ \beta \xi N_a k_p \hat{Z}_{CM} 
++ \frac{\nu}{2} \hat{S}_{z,T}
++ \beta \nu k_p \hat{Z}_{CM} \hat{S}_{z,T}
+\right]
+\end{align}
+
+\section{Equations of Motion}
+
+We now find the Heisenberg equations of motion for each of these operators recalling that for any operator $\hat{A}$ we have
+
+\[ \frac{d \hat{A}}{dt} = -\frac{i}{\hbar} [ \hat{A}, \hat{\mathcal{H}}] \]
+
+The variables we are concerned with are $\hat{a}, \hat{Z}_{CM}, \hat{P}_{CM}, \hat{S}_{x,T}, \hat{S}_{y,T}, \text{ and } \hat{S}_{z,T}$.
+For this we indicate a few important commutation relations.
+
+\begin{align}
+&[\hat{a}, \hat{a}^{\dag}\hat{a}] = \hat{a} \hspace{2 cm} 
+[\hat{Z}_{CM}, \hat{b}^{\dag}_{CM} \hat{b}_{CM}] = i \frac{Z_{CM,HO}}{P_{CM,HO}} = \frac{i}{m_T \omega_M} \hat{P}_{CM} \\
+&[\hat{S}_{i,T},\hat{S}_{j,T}] = i \epsilon_{ijk} \hat{S}_{k,T} \hspace{1 cm}&\\
+&[\hat{P}_{CM}, \hat{b}^{\dag}_{CM} \hat{b}_{CM}] = -i \frac{P_{CM,HO}}{Z_{CM,HO}} = -i m_T \omega_M \hat{Z}_{CM}&\\
+&[\hat{Z}_{CM},\hat{P}_{CM}] = i\hbar &\\
+&Z_{CM,HO} = \sqrt{\frac{\hbar}{2 m_T \omega_M}} \hspace{2cm}
+P_{CM,HO} = \sqrt{\frac{\hbar m_T \omega_M}{2}} \hspace{2cm}\\
+&\frac{Z_{CM,HO}}{P_{CM,HO}} = \frac{1}{m_T \omega_M} \hspace{2cm}
+Z_{CM,HO} P_{CM,HO} = \frac{\hbar}{2}
+\end{align}
+
+$m_T = N_a m$ where $m$ is the mass of a single atom. With these in hand we can calculate the equations of motion.
+
+\begin{align}
+\dot{\hat{Z}}_{CM} &= \frac{1}{m_T} \hat{P}_{CM} \\
+\dot{\hat{P}}_{CM} &= -m_T \omega_M^2 \hat{Z}_{CM} - \beta \hbar g_c N_a k_p \hat{a}^{\dag} \hat{a} \left(\xi + \frac{\nu}{N_a} \hat{S}_{z,T}\right) \\
+\dot{\hat{S}}_{z,T} &= \Omega_L \hat{S}_{y,T} \\
+\dot{\hat{S}}_{y,T} &= -\Omega_L \hat{S}_{z,T} + g_c \hat{a}^{\dag} \hat{a} \left( \frac{\nu}{2} + \beta \nu k_p \hat{Z}_{CM}\right) \hat{S}_{x,T} \\
+\dot{\hat{S}}_{x,T} &= -g_c \hat{a}^{\dag} \hat{a} \left( \frac{\nu}{2} + \beta \nu k_p \hat{Z}_{CM}\right) \hat{S}_{y,T} \\
+\dot{\hat{a}} &= \left( i\Delta_{PC} - i g_c \left( \frac{\xi}{2}N_a + \beta N_a \xi k_p \hat{Z}_{CM} + \frac{\nu}{2} \hat{S}_{z,T} + \beta \nu k_p \hat{Z}_{CM} \hat{S}_{z,T} \right) - \kappa \right)\hat{a} + \sqrt{2\kappa} \hat{a}^{\text{in}} 
+\end{align}
+
+A few notes. We have gone into a rotating frame with respect to the probe field. We applied the unitary transformation i.e. $\hat{U}^{\dag} = e^{+i \omega_p \hat{a}^{\dag} \hat{a} t}$. It is from this that $\Delta_{PC} = \omega_p - \omega_c$, the cavity probe detuning arises. The term which goes like $-\kappa \hat{a}$ can be derived from input-output formalism and corresponds to energy decaying out of the cavity at rate $\kappa$. The final term with $\hat{a}^{\text{in}}$ can also be derived from input-output formalism and represents an input pump field or white noise stochastic drive.
+
+Next we will do a coordinate transformation so that we work in dimensionless variables. There are an infinite number of ways to do this transformation. I'll pick one just so that I can be deliberate about the choice of convention to avoid confusion down the road, but first an interlude for Holstein-Primakoff to be clear about how we're converting spin operators into bosonic operators. Also from this point on I will drop the $T$ subscript on total spin operators.
+
+\section{Holstein-Primakoff Transformation}
+The H-P Transformation is typically done for a spin up oscillator. I'll present the results for both spin up and spin down here since they're both relevant. Also, I will show the results taking the quantization axis to be $x$ rather than $z$ (in other words I will work in basis where $\ket{\uparrow}=\ket{S=F N_a,m_S=F N_a}$ represents an eigenstate of the $\hat{S}_{x,T}$ operator).
+For this we have the spin raising and lowering operators obtained by taking the formula for $S_+^{(z)}$ and permuting $x\rightarrow y \rightarrow z \rightarrow x$.
+
+\begin{equation}
+\hat{S}_+^{(x)} = \hat{S}_y + i \hat{S}_z \hspace{1cm}
+\hat{S}_-^{(x)} = \hat{S}_y - i \hat{S}_z
+\end{equation}
+
+I'll drop the $(x)$ superscript now.
+\subsection{Spin Up}
+\begin{equation}
+\hat{S}_+ = \sqrt{2S - \hat{c}^{\dag} \hat{c}} \hat{c} \approx \sqrt{2S} \hat{c} \hspace{1cm}
+\hat{S}_- = \hat{c}^{\dag} \sqrt{2S - \hat{c}^{\dag} \hat{c}} \approx \hat{c}^{\dag} \sqrt{2S} \hspace{1cm} \hat{S}_x = S- \hat{c}^{\dag} \hat{c}
+\end{equation}
+Here $S$ is the value for the total spin. In our case $S = N_a F$ where $F$ is the total hyperfine angular momentum of a single atom. Typically $F=2$ for our measurements. Note that removing a spin excitation with $\hat{S}_-$ corresponds to creating a harmonic oscillator excitation with $\hat{c}^{\dag}$. It can be shown that if $[\hat{c}, \hat{c}^{\dag}]=1$ this leads to the usual spin commutation relations. See Justin's notebook for proof.
+
+\subsection{Spin Down}
+The equations reverse for spin down.
+\begin{equation}
+\hat{S}_+ = \hat{c}^{\dag} \sqrt{2S - \hat{c}^{\dag} \hat{c}} \approx \hat{c}^{\dag} \sqrt{2S} \hspace{1cm}
+\hat{S}_- = \sqrt{2S - \hat{c}^{\dag} \hat{c}} \hat{c} \approx \sqrt{2S} \hat{c} \hspace{1cm} \hat{S}_x = -(S- \hat{c}^{\dag} \hat{c})
+\end{equation}
+The commutation relations work out under the same conditions. Here adding a spin excitation corresponds to adding a harmonic oscillator excitation.
+
+
+\section{Dimensionless Units}
+There are a variety of ways to make the variables used in these equations dimensionless. We typically make dynamical variables dimensionless by multiplying them by some scale factor. In classical mechanics if you want to perform a canonical transformation (preserve Hamilton's equations of motion in the simple form we learn them and the Poisson bracket) if you multiply $z$ by $A$ then you must divide $p$ by $A$. In this way you can split the units equally between $z$ and $p$ but you can't actually get rid of the units entirely if you are restricted to canonical transformations. The new variables we use in that case would be 
+\[
+\tilde{z} = \sqrt{m_T \omega_M} z \hspace{1cm} \tilde{p} = \frac{p}{\sqrt{m_T \omega_M}} \]
+which transforms the Hamiltonian to
+\[ \mathcal{H} = \frac{\omega_M}{2} \left( \tilde{z}^2 + \tilde{p}^2 \right) \]
+
+However, quantum mechanically the situation is a little different. First of all, in quantum mechanics we typically find equations of motion for variables (operators) using Heisenberg's equation of motion. This generalizes the Poisson bracket formulation of Hamiltonian mechanics ($\dot{z} = \left\lbrace z,\mathcal{H}\right\rbrace$). I believe it turns out that that formulation works even for noncanonical transformations (whereas $\dot{z} = \frac{d\mathcal{H}}{dt}$... doesn't work) which is why Heisenberg's equations of motion work even for noncanonical transformations. In short, since we are using Heisenberg's equations of motion we won't restrict ourselves to canonical transformations, we will just make sure to keep track of the relevant commutation relations and their rescalings.
+
+Since we are relaxing that constraint we can now make $\tilde{z}$ and $\tilde{p}$ unitless. The logic goes as follows. $\hat{b}$ is constructed by making a complex number out of the split unit variables $\hat{\tilde{z}}$ and $\hat{\tilde{p}}$ with $\hat{b} = M (\hat{\tilde{z}} + i \hat{\tilde{p}})$. M is restricted by demanding $[\hat{b},\hat{b}^{\dag}] = 1$ which is a constraint we WILL keep because that ensures the creation and annihilation operators create number excitations rather than some other rescaled excitation. This constraint fixes $M=\sqrt{\frac{1}{2\hbar}}$. Summary:
+\begin{align}
+\hat{b} = \sqrt{\frac{1}{2\hbar}}(\hat{\tilde{z}} + i \hat{\tilde{p}}) &\hspace{1cm}
+\hat{b}^{\dag} = \sqrt{\frac{1}{2\hbar}}(\hat{\tilde{z}} - i \hat{\tilde{p}}) \\
+\hat{\tilde{z}} =  \sqrt{\frac{\hbar}{2}} (\hat{b}^{\dag} + \hat{b}) &\hspace{1cm}
+\hat{\tilde{p}} = i \sqrt{\frac{\hbar}{2}} (\hat{b}^{\dag} - \hat{b})
+\end{align}
+
+Or written in terms of the non unit-split variables $\hat{z}$ and $\hat{p}$:
+
+\begin{align}
+\hat{b} = \sqrt{\frac{m_T \omega_M}{2\hbar}}\left(\hat{z} + i \frac{\hat{p}}{m \omega_M}\right) &\hspace{1cm}
+\hat{b}^{\dag} = \sqrt{\frac{m_T \omega_M}{2\hbar}}\left(\hat{z} - i \frac{\hat{p}}{m \omega_M}\right) \\
+\hat{z} =  \sqrt{\frac{\hbar}{2}\frac{1}{m_T \omega_M}} (\hat{b}^{\dag} + \hat{b}) &\hspace{1cm}
+\hat{p} = i \sqrt{\frac{\hbar}{2} m_T \omega_M} (\hat{b}^{\dag} - \hat{b})
+\end{align}
+
+We can do an arbitrary scaling of $\hat{z}$ and $\hat{p}$ in terms of $\hat{b}$ and $\hat{b}^{\dag}$.
+
+\begin{align}
+\hat{z}_{sc} =  M_{sc,x} (\hat{b}^{\dag} + \hat{b}) &\hspace{1cm}
+\hat{p}_{sc} = i M_{sc,p} (\hat{b}^{\dag} - \hat{b})
+\end{align}
+
+It can easily be shown that if we want $[\hat{z}_{sc}, \hat{p}_{sc}] = i \hbar$ (in other words if we want \textit{canonical} variables) we must choose $M_{sc,x}$ and $M_{sc,p}$ such that $M_{sc,x} M_{sc,p} = \frac{\hbar}{2}$. This is a proof that it is impossible to find a canonical transformation that removes the units of each variable. But we already decided we weren't going to restrict ourselves to canonical transformations. Thinking about it this way, the most obvious (symmetric) way to remove units is to choose $M_{a,x} = M_{a,p} = \sqrt{\frac{1}{2}}$. Under this scaling $[\hat{z}_{a},\hat{p}_{a}] = i$ which is nice and all of the transformations between variables and creation/annihilation operators have a prefactor of $\sqrt{\frac{1}{2}}$.
+
+\textit{However}, this is \textbf{not} the scaling we will choose. Instead we will choose the scaling $M_{M,x} = M_{M,p} = 1$. As a cautionary note, in this scaling $[\hat{z}_{M},\hat{p}_{M}] = 2i$. Here are the transformations.
+
+\begin{align}
+\hat{b} = \frac{1}{2} \left(\hat{z}_M + i \hat{p}_M\right) &\hspace{1cm}
+\hat{b}^{\dag} = \frac{1}{2}\left(\hat{z}_M - i \hat{p}_M\right) \\
+\hat{z}_M = \hat{b}^{\dag} + \hat{b} &\hspace{1cm}
+\hat{p}_M = i(\hat{b}^{\dag} - \hat{b})
+\end{align}
+
+
+This form obviously has the advantage that $\hat{z}_M$ and $\hat{p}_M$ have simple formulas in terms of the bosonic operators. It also has the advantage that this is most easily mapped onto the existing optomechanical literature. E.g. the optomechanical interaction term is often written $\hat{\mathcal{H}}_{OM} = \hbar g_0 \hat{a}^{\dag} \hat{a} (\hat{b}^{\dag} + \hat{b}) = \hbar g_{OM} \hat{n} \hat{z}_M$. In other words the optomechanical coupling is the coefficient of the coupling term when this particular scaling is used.
+I have gone through such detail in this section because I want to be deliberate when picking a scaling for the spin operators.
+
+\subsection{Position and Momentum Operators for Spin}
+From the H-P transformation we have bosonic operators for the spin. This means we can think of the spin as a harmonic oscillator and correspondingly we can construct position and momentum operators for the spin.
+
+I've spent some time going back and forth on which convention it makes sense to choose for converting the spin operators $\hat{S}_z$ and $\hat{S}_y$ into effective oscillator operators $z_s$ and $p_s$. There are pros and cons to each way. Here I summarize two possible conventions. In the rest of the write up I will go forward with convention 1.
+I also define the variable $\gamma$ which captures whether we are working with a positive or negative mass oscillator. $\gamma=+1$ for a positive mass (spin down) oscillator and $\gamma = -1$ for a negative mass (spin up) oscillator.
+\subsubsection{Convention 1}
+In this convention we ensure that the canonical commutation relation $[\hat{z},\hat{p}]=2i$ is preserved for the new effective operators.
+
+Spin Down:
+\begin{align}
+\hat{S}_z &= \frac{1}{2i}\left(\hat{S}_+-\hat{S}_-\right) = \frac{1}{2i}\sqrt{2S}(\hat{c}^{\dag}-\hat{c}) = -i\sqrt{\frac{S}{2}}(\hat{c}^{\dag}-\hat{c}) = \sqrt{\frac{S}{2}}\hat{z}_s\\
+\hat{S_y} &= \frac{1}{2} \left( \hat{S}_+ + \hat{S}_- \right) = \frac{1}{2} \sqrt{2S} \left( \hat{c} + \hat{c}^{\dag} \right) =  \sqrt{\frac{S}{2}} \left(\hat{c}^{\dag} + \hat{c}\right) = \sqrt{\frac{S}{2}} \hat{p}_S
+\end{align}
+
+Rewriting:
+\begin{align}
+\hat{z}_S &= -i(\hat{c}^{\dag} - \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_z \\
+\hat{p}_S &= (\hat{c}^{\dag} + \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_y 
+\end{align}
+
+Spin Up:
+\begin{align}
+\hat{S}_z &= \frac{1}{2i}\left(\hat{S}_+-\hat{S}_-\right) = \frac{1}{2i}\sqrt{2S}(\hat{c}-\hat{c}^{\dag}) = i\sqrt{\frac{S}{2}}(\hat{c}^{\dag}-\hat{c}) = -\sqrt{\frac{S}{2}}\hat{z}_s\\
+\hat{S_y} &= \frac{1}{2} \left( \hat{S}_+ + \hat{S}_- \right) = \frac{1}{2} \sqrt{2S} \left( \hat{c} + \hat{c}^{\dag} \right) =  \sqrt{\frac{S}{2}} \left(\hat{c}^{\dag} + \hat{c}\right) = \sqrt{\frac{S}{2}} \hat{p}_S
+\end{align}
+
+Rewriting:
+\begin{align}
+\hat{z}_S &= -i(\hat{c}^{\dag} - \hat{c}) = -\sqrt{\frac{2}{S}} \hat{S}_z \\
+\hat{p}_S &= (\hat{c}^{\dag} + \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_y 
+\end{align}
+
+We can summarize this convention by saying we use the bosonic operators to define $\hat{z}_s$ as $-i(\hat{c}^{\dag}-\hat{c})$ in both the spin up and spin down case and then examine the relationship between those chosen operators and $\hat{S}_z$ to determine the relationship between $\hat{z}_s$ and $\hat{S}_z$. Note that in terms of the bosonic operators $\hat{p}_s$ looks like what we usually call a position operator and $\hat{z}_s$ looks like what we normally call the negative of the momentum operator. $\hat{z}\rightarrow -\hat{p}$ and $\hat{p}\rightarrow \hat{z}$ corresponds to a simple rotation in phase space by $\frac{\pi}{2}$ so it will preserve all important properties of position and momentum including the canonical commuation relations. A summary of the important quantities:
+
+\begin{align}
+\hat{z}_s &= - i (\hat{c}^{\dag}-\hat{c}) = \gamma\sqrt{\frac{2}{S}} \hat{S}_z \\
+\hat{p}_s &= (\hat{c}^{\dag} + \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_y \\
+\hat{S}_x &= -\gamma(S-\hat{c}^{\dag}\hat{c})\\
+[\hat{z}_s,\hat{p}_s] &= 2i\\
+[\hat{z}_s,\hat{c}^{\dag}\hat{c}] &= i \hat{p}_s\\
+[\hat{p}_s,\hat{c}^{\dag}\hat{c}] &= -i \hat{z}_s
+\end{align}
+
+\subsubsection{Convention 2}
+In this convention, instead of ensuring the canonical commuation relation is preserved we ensure that $\hat{z}_s$ is always identified with $\hat{S}_z$ directly.
+
+Spin Down:
+\begin{align}
+\hat{S}_z &= \frac{1}{2i}\left(\hat{S}_+-\hat{S}_-\right) = \frac{1}{2i}\sqrt{2S}(\hat{c}^{\dag}-\hat{c}) = -i\sqrt{\frac{S}{2}}(\hat{c}^{\dag}-\hat{c}) = \sqrt{\frac{S}{2}}\hat{z}_s\\
+\hat{S_y} &= \frac{1}{2} \left( \hat{S}_+ + \hat{S}_- \right) = \frac{1}{2} \sqrt{2S} \left( \hat{c} + \hat{c}^{\dag} \right) =  \sqrt{\frac{S}{2}} \left(\hat{c}^{\dag} + \hat{c}\right) = \sqrt{\frac{S}{2}} \hat{p}_S
+\end{align}
+
+Rewriting:
+\begin{align}
+\hat{z}_S &= -i(\hat{c}^{\dag} - \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_z \\
+\hat{p}_S &= (\hat{c}^{\dag} + \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_y 
+\end{align}
+
+Spin Up:
+\begin{align}
+\hat{S}_z &= \frac{1}{2i}\left(\hat{S}_+-\hat{S}_-\right) = \frac{1}{2i}\sqrt{2S}(\hat{c}-\hat{c}^{\dag}) = i\sqrt{\frac{S}{2}}(\hat{c}^{\dag}-\hat{c}) = \sqrt{\frac{S}{2}}\hat{z}_s\\
+\hat{S_y} &= \frac{1}{2} \left( \hat{S}_+ + \hat{S}_- \right) = \frac{1}{2} \sqrt{2S} \left( \hat{c} + \hat{c}^{\dag} \right) =  \sqrt{\frac{S}{2}} \left(\hat{c}^{\dag} + \hat{c}\right) = \sqrt{\frac{S}{2}} \hat{p}_S
+\end{align}
+
+Rewriting:
+\begin{align}
+\hat{z}_S &= i(\hat{c}^{\dag} - \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_z \\
+\hat{p}_S &= (\hat{c}^{\dag} + \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_y 
+\end{align}
+
+We can summarize this convention by saying we define $\hat{z}_s = \sqrt{\frac{2}{S}}$ for spin up and spin down and examine the relationship between $\hat{S}_z$ and $\hat{c}^{\dag}$ and $\hat{c}$ to determine the relationship between $\hat{z}_s$ and the bosonic operators.
+For spin down we get the same results as before. However, for spin up there is a relative minus sign in the definition of $\hat{z}_s$. For spin up operators in this convention we have that $\hat{z}_s$ looks like a momentum operators (in terms of the bosonic operators) and $\hat{p}_s$ looks like a position operators. That is we have $\hat{z}\leftrightarrow \hat{p}$ which corresponds to an inversion in phasespace. This results in a negative sign in the commutation relation. This will show up in a few spots. We summarize the important relationships in this convention:
+
+\begin{align}
+\hat{z}_s &= -\gamma i (\hat{c}^{\dag}-\hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_z \\
+\hat{p}_s &= (\hat{c}^{\dag} + \hat{c}) = \sqrt{\frac{2}{S}} \hat{S}_y\\
+\hat{S}_x &= -\gamma(S-\hat{c}^{\dag}\hat{c})\\
+[\hat{z}_s,\hat{p}_s] &= \gamma 2i\\
+[\hat{z}_s,\hat{c}^{\dag}\hat{c}] &= \gamma i \hat{p}_s\\
+[\hat{p}_s,\hat{c}^{\dag}\hat{c}] &= -\gamma i \hat{z}_s
+\end{align}
+
+
+\section{EoMs in More Dimensionless Units}
+Now we can rewrite the equations of motion in terms of $\hat{z}_M$, $\hat{z}_S$, $\hat{p}_M$, and $\hat{p}_S$. Finally I will summarize these transformations and other helpful relations. Note there are two ways to get at the dimensionless expressions. One is to directly translate the equations of motion from above. The other is to translate the Hamiltonian into the new variables and rederive the new equations of motion. It's not clear which is easier but I've done both and they give the same answer.
+\begin{align}
+\hat{Z}_{CM} = Z_{CM,HO} \hat{z}_M \hspace {1cm}
+\hat{P}_{CM} = P_{CM,HO} \hat{p}_M \hspace {1cm}
+\hat{S}_z = \gamma\sqrt{\frac{S}{2}} \hat{z}_S \hspace{1cm}
+\hat{S}_y = \sqrt{\frac{S}{2}} \hat{p}_S \\
+Z_{CM,HO} = \sqrt{\frac{\hbar}{2 m_T \omega_M}} \hspace{1cm}
+P_{CM,HO} = \sqrt{\frac{\hbar m_T \omega_M}{2}} \hspace{1cm}\\
+\frac{Z_{CM,HO}}{P_{CM,HO}} = \frac{1}{m_T \omega_M} \hspace{1cm}
+Z_{CM,HO} P_{CM,HO} = \frac{\hbar}{2}
+\end{align}
+
+We also define $g_{OM} = g_c N_a k_p Z_{CM,HO}$.
+
+Here is the translated Hamiltonian:
+\begin{align}
+ \widehat{\mathcal{H}} =& 
+\hbar \omega_c \hat{a}^{\dag} \hat{a} 
++ \hbar \omega_M \hat{b}^{\dag} \hat{b} 
+- \gamma \hbar \Omega_L (S-\hat{c}^{\dag} \hat{c}) \\
+&+ \hbar \hat{a}^{\dag} \hat{a} \left[
+\frac{\xi}{2} g_c N_a 
++ \beta \xi g_{OM} \hat{z}_{M} 
++ \gamma g_c \frac{\nu}{2} \sqrt{\frac{S}{2}} \hat{z}_{s}
++ \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \hat{z}_{M} \hat{z}_{S}
+\right]
+\end{align}
+
+Note that by using convention 1 we get a few appearances of $\gamma$ in the Hamiltonian.
+
+
+Here are the rewritten equations of motion.
+\begin{align*}
+\dot{\hat{z}}_M &= \omega_M \hat{p}_M \\
+\dot{\hat{p}}_M &= -\omega_m \hat{z}_M - \beta g_{OM} \hat{a}^{\dag}\hat{a} \left( 2\xi + \gamma \frac{\nu}{N_a} \sqrt{2S} \hat{z}_S \right) \\
+\dot{\hat{z}}_S &= \gamma \Omega_L \hat{p}_S \\
+\dot{\hat{p}}_S &= -\gamma \Omega_L \hat{z}_S + \hat{a}^{\dag} \hat{a} \left( g_c \frac{\nu}{2} + \beta \frac{\nu}{N_a} g_{OM} \hat{z}_M \right) \sqrt{\frac{2}{S}} \hat{S}_x \\
+\dot{\hat{S}}_x &= -\hat{a}^{\dag}\hat{a} \sqrt{\frac{S}{2}} \hat{p}_S\left( g_c \frac{\nu}{2} + \beta \frac{\nu}{N_a} g_{OM} \hat{z}_M \right) \\
+\dot{\hat{a}} &= \left( i \Delta_{PC} - i \left(\frac{\xi}{2} g_c N_a + \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S + \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \hat{z}_M \hat{z}_S \right) - \kappa   \right)\hat{a} \\
+& \hspace{4 in} + \sqrt{2 \kappa} \hat{a}^{\text{in}}
+\end{align*}
+
+Again we have a few factors of $\gamma$. I'll just state that if we had used convention 2 there would be no explicit factors of $\gamma$ in the equation of motion at this point. However, in either convention $\hat{S}_x$ carries an implicit factor of $\gamma$ since as I'll explain later $\hat{S}_x \approx -\gamma S$ in the limit that the spin is near the pole.
+
+Next we must linearize these equations of motion about their fixed point. First we can find this fixed point. A fixed point is a set of values for all of the variables such that all time derivatives are 0. I will denote the value of a variable at its fixed point with a bar. $\bar{n} = \bar{a}^* \bar{a}$. Setting all derivatives to 0 we find:
+
+\begin{align}
+\bar{p}_M &= 0 \\
+\bar{p}_S &= 0 \\
+\omega_M \bar{z}_M &= -2\beta g_{OM} \bar{n} \left( \xi + \gamma \frac{\nu}{N_a} \sqrt{\frac{S}{2}} \bar{z}_S \right) \\
+\Omega_L \bar{z}_S &= \gamma \bar{n} \left( g_c \frac{\nu}{2} + \beta \frac{\nu}{N_a} g_{OM} \bar{z}_M \right) \sqrt{\frac{2}{S}} \bar{S}_x \\
+\bar{a} &= \frac{\sqrt{2 \kappa} \bar{a}^{\text{in}}}{\kappa - i\left( \Delta_{PC} - \frac{\xi}{2} g_c N_a + \beta \xi g_{OM} \bar{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \bar{z}_S + \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \bar{z}_M \bar{z}_S\right)}
+\end{align}
+
+Note that the value of $\bar{S}_x$ is constrained by $\bar{S}_x^2+\bar{S}_y^2+\bar{S_z}^2 = S^2 = S(S+1)$. We expand around this fixed point. To do so we write for each variable $\hat{x} = \bar{x} + \delta \hat{x}$ where $\delta \hat{x}$ represents the deviations of the variable $\hat{x}$ from its fixed point. However, for ease of notation we will replace $\delta \hat{x} \rightarrow \hat{x}$ resulting in $\hat{x} \rightarrow \bar{x} + \hat{x}$. Of course the process of linearizing the equations of motion includes neglecting terms of order $\delta \hat{x}^2$ and higher so I will drop those terms in doing the next expansion. Furthermore, the neat trick here is that by virtue of the equations which define the fixed points above, any terms which contain \textbf{no} factors of order $\delta \hat{x}$ will cancel out to 0 so those terms will be dropped as well (but this is not an approximation). I will also take $\bar{a} \rightarrow \alpha$ to stay consistent with other references. I will also take $\alpha$ to be real so that $\alpha = \sqrt{\bar{n}}$.
+
+\begin{align*}
+\dot{\hat{z}}_M & = \omega_M \hat{p}_M \\
+\dot{\hat{p}}_M & = -\omega_M \hat{z}_M - \gamma \beta g_{OM} \bar{n}\frac{\nu}{N_a} \sqrt{2S} \hat{z}_S -  \beta g_{OM} \sqrt{\bar{n}} (\hat{a}^{\dag} + \hat{a})\left(2\xi + \gamma\frac{\nu}{N_a} \sqrt{2S} \bar{z}_S \right) \\
+\dot{\hat{z}}_S & = \gamma \Omega_L \hat{p}_S \\
+\dot{\hat{p}}_S & = -\gamma \Omega_L \hat{z}_S + \beta\frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{\frac{2}{S}} \bar{S}_x \hat{z}_M + \sqrt{\bar{n}} \sqrt{\frac{2}{S}} \bar{S}_x (\hat{a}^{\dag} + \hat{a}) \left( g_c \frac{\nu}{2} + \beta \frac{\nu}{N_a}  g_{OM} \bar{z}_M \right)\\
+& \hspace{2.5 in} + \bar{n} \sqrt{\frac{2}{S}} \hat{S}_x \left( g_c \frac{\nu}{2} + \beta \frac{\nu}{N_a}  g_{OM} \bar{z}_M \right)\\
+\dot{\hat{S}}_x & = - \bar{n} \sqrt{\frac{S}{2}} \left(g_c \frac{\nu}{2} + \beta \frac{\nu}{N_a} g_{OM} \bar{z}_M \right) \hat{p}_S \\
+\dot{\hat{a}} & =  \left( i \Delta_{PC} - i \left(\frac{\xi}{2} g_c N_a + \beta \xi g_{OM} \bar{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \bar{z}_S + \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \bar{z}_M \bar{z}_S \right) - \kappa   \right)\hat{a} \\
+& - i \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S + \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} (\hat{z}_M \bar{z}_S + \bar{z}_M \hat{z}_s) \right) + \sqrt{2 \kappa} \hat{\eta}
+\end{align*}
+
+
+For the $\hat{S}_x$ equation we recall $\bar{p}_S = 0$
+
+Now we will make a few approximations. First we assume $N_a \gg \sqrt{N_a} \gg 1$ so that we can drop terms based on their scaling with atom number. Next we will assume $\hat{S}_x \ll 1$ and that $\bar{S} \approx -\gamma S$. This is saying that the spins are almost entirely pointing in the $x$ direction due to the large transverse magnetic field and that the fixed point is at the axis. I think it comes in at the same order as assuming $\bar{z}_M = \bar{z}_S = 0$.
+We also define the static cavity shift and renormalized probe cavity detuning $\tilde{\Delta}_{PC} = \Delta_{PC} -\Delta_N$:
+
+\begin{equation}
+\Delta_N = \frac{\xi}{2} g_c N_a + \beta \xi g_{OM} \bar{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \bar{z}_S + \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \bar{z}_M \bar{z}_S
+\end{equation}
+
+When we put in these approximations we find:
+
+\begin{align*}
+\dot{\hat{z}}_M & = \omega_M \hat{p}_M \\
+\dot{\hat{p}}_M & = -\omega_M \hat{z}_M - \gamma \beta \frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{2S} \hat{z}_S - 2 \beta \xi g_{OM} \sqrt{\bar{n}} (\hat{a}^{\dag} + \hat{a})\\
+\dot{\hat{z}}_S & = \gamma \Omega_L \hat{p}_S \\
+\dot{\hat{p}}_S & = -\gamma \Omega_L \hat{z}_S - \gamma \beta\frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{2S} \hat{z}_M - \gamma  \sqrt{\bar{n}} \sqrt{2S} g_c \frac{\nu}{2} (\hat{a}^{\dag} + \hat{a}) \\
+\dot{\hat{S}}_x & = - \bar{n} \sqrt{\frac{S}{2}} g_c \frac{\nu}{2}  \hat{p}_S \\
+\dot{\hat{a}} & =  \left( i \tilde{\Delta}_{PC} - \kappa   \right)\hat{a} - i \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + \sqrt{2 \kappa} \hat{a}^{\text{in}}\\
+\dot{\hat{a}}^{\dag} & =  \left( -i \tilde{\Delta}_{PC} - \kappa   \right)\hat{a}^{\dag} + i \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + \sqrt{2 \kappa} (\hat{a}^{\text{in}})^{\dag}
+\end{align*}
+
+We'll furthermore go ahead and take the approximation that $\dot{\hat{S}}_x = 0$ bearing in mind that if $\hat{S}_x$ changes appreciably from zero out Holstein-Primakoff approximation breaks down anyways.
+
+\section{Adiabatic Limit and Solving for Motion}
+
+Our system is in the unresolved sideband (fast cavity) regime, $\kappa \gg \omega_M$. In this regime we can make the adiabatic approximation that  $\dot{\hat{a}} = 0$ and then solve for $\hat{a}$. We find
+
+\begin{equation}
+\hat{a} = \frac{-i \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + \sqrt{2 \kappa} \hat{a}^{\text{in}}}{\kappa - i \tilde{\Delta}_{PC}}
+\end{equation}
+
+It will help to find the real and imaginary parts of this expression which correspond to fluctuations in the I and Q quadratures.
+
+\begin{align*}
+\hat{a} = \frac{1}{\kappa^2 + \tilde{\Delta}_{PC}^2} \Biggl[\left( \tilde{\Delta}_{PC} \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + \kappa \sqrt{2 \kappa} \hat{a}^{\text{in}}\right)\\
+ -i \left(\kappa \sqrt{n}  \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) -\tilde{\Delta}_{PC} \sqrt{2 \kappa} \hat{a}^{\text{in}}  \right) \Biggr]
+\end{align*}
+
+So we find
+
+\begin{align}
+\hat{a}_+ = \hat{a} + \hat{a}^{\dag} = \frac{1}{\kappa^2 + \tilde{\Delta}_{PC}^2} 2 \left( \tilde{\Delta}_{PC} \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + \kappa \sqrt{2 \kappa} \hat{a}^{\text{in}}\right)\\
+\hat{a}_- = i(\hat{a}^{\dag} - \hat{a}) = \frac{1}{\kappa^2 + \tilde{\Delta}_{PC}^2} 2 \left( -\kappa \sqrt{n}  \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) +\tilde{\Delta}_{PC} \sqrt{2 \kappa} \hat{\eta}  \right)
+\end{align}
+
+If we look at the equations of motion we see that $\hat{a}_+$ drives both $\hat{p}_M$ and $\hat{p}_S$. We can plug in what we have found for $\hat{a}_+$ into those equations to find new equations coupling $\hat{z}_M$ and $\hat{z}_S$
+We define the Lorentzian functions $F(\tilde{\Delta}_{PC}) = \frac{\tilde{\Delta}_{PC}}{\kappa^2 + \tilde{\Delta}_{PC}^2}$ and $G(\kappa) = \frac{\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}$
+
+We find
+\begin{align}
+\dot{\hat{p}}_M  &= -\omega_M \hat{z}_M - \gamma \beta \frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{2S} \hat{z}_S - \\
+ &2 \beta \xi g_{OM} \sqrt{\bar{n}} 2\left( F(\tilde{\Delta}_{PC}) \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + G(\kappa) \sqrt{2 \kappa} \hat{a}^{\text{in}}    \right) \\
+ \dot{\hat{p}}_S & = -\gamma \Omega_L \hat{z}_S - \gamma \beta \frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{2S} \hat{z}_M - \\
+& \gamma \sqrt{\bar{n}} \sqrt{2S} g_c \frac{\nu}{2} 2 \left(  F(\tilde{\Delta}_{PC}) \sqrt{\bar{n}} \left( \beta \xi g_{OM} \hat{z}_M + \gamma \frac{\nu}{2} \sqrt{\frac{S}{2}} g_c \hat{z}_S \right) + G(\kappa) \sqrt{2 \kappa} \hat{a}^{\text{in}} \right)
+\end{align}
+
+Each of these equations has 3 terms. Take $\dot{\hat{p}}_M$. The first term, the self oscillation term, is proportional to $\hat{z}_M$. The second term is the coupling term which is proportional to $\hat{p}_M$. The final term is the shot noise driving/backaction term which is proportional to $\hat{\eta}$. I will call the coefficients of each of these terms $\omega_M^*$, $\omega_{MS}$, and $\omega_{BA,M}$.
+We can calculate these 6 coefficients and find:
+
+\begin{align}
+\omega_M^* & = \omega_M + 4 \beta^2 \xi^2 g_{OM}^2 \bar{n} F(\tilde{\Delta}_{PC}) \\
+\gamma \beta\omega_{MS} & = \gamma \beta \frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{2S} + \gamma \beta \xi \nu g_{OM} g_c \bar{n} \sqrt{2S} F(\tilde{\Delta}_{PC}) \\
+\beta \omega_{BA,M} & = 4 \beta \xi g_{OM} \sqrt{\bar{n}} \sqrt{2 \kappa} G(\kappa) \\
+\omega_S^* & = \gamma \Omega_L + \frac{1}{2} \nu^2 \bar{n} S g_c^2 F(\tilde{\Delta}_{PC}) \\
+\gamma \beta \omega_{SM} & = \gamma \beta \frac{\nu}{N_a} g_{OM} \bar{n} \sqrt{2S} + \gamma \beta \xi \nu g_{OM} g_c \bar{n} \sqrt{2S} F(\tilde{\Delta}_{PC}) \\
+\gamma \omega_{BA,S} & = \gamma \nu g_c \sqrt{\bar{n}}  \sqrt{2S} \sqrt{2 \kappa} G(\kappa)
+\end{align}
+
+\[
+\omega_{MS} = \omega_{SM} = \omega_C = \nu \bar{n} g_{OM} \sqrt{2S} \left(\frac{1}{N_a} + \xi g_c F(\tilde{\Delta}_{PC})\right)
+\]
+
+There are two sources of coupling. The first source is the term proportional to $\frac{1}{N_a}$. This is due to the static gradient coupling between spin and mechanics. Seen two ways: 
+
+(1) the probe field creates an effective magnetic field gradient in the $\hat{z}$ direction (cavity axis) which is proportional to the probe intensity which in our case varies linearly (because we are at the linear spot). This effective magnetic field is transverse to the predominant $\hat{x}$ component of the spin. As each individual atom oscillates back and forth (due to the mechanical oscillation) along the $\hat{z}$ axis this effective magnetic field is seen by the spins as a modulated transverse $\vec{B}$ field. When $\omega_S = \omega_L$ this field is modulated at precisely the Larmor precession frequency. From MRI we know that small transverse magnetic field modulated at the Larmor frequency causes a spin flip. Thus, the spin and mechanics are coupled by a static gradient.
+
+(2) the mechanical motion of the atoms experiences the linear intensity of the probe field as gradient. In other words, the probe puts a force on the atoms. However, the magnitude of this force 
+
+\begin{align}
+\dot{\hat{z}}_M &= \omega_M \hat{p}_M \\
+\dot{\hat{p}}_M &= -\omega_M^* \hat{z}_M -\gamma \beta\omega_c \hat{z}_S - \beta\omega_{BA,M} \hat{\eta} \\ 
+\dot{\hat{z}}_S &= \gamma \Omega_l \hat{p}_S \\
+\dot{\hat{p}}_S &= -\gamma \omega_S^* \hat{z}_S - \gamma \beta  \omega_c \hat{z}_M - \gamma \omega_{BA,S} \hat{\eta} \\ 
+\end{align}
+
+These equations of motion can now, without too much difficulty, be put into matrix form and eigenvalues and eigenvectors can be found to determine the normal modes and normal mode frequencies.
+
+\end{document}

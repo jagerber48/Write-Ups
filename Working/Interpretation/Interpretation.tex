@@ -1,0 +1,147 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Time Evolution and Pictures In Quantum Mechanics}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this document I will give a clear and thorough explanation of time-evolution in quantum mechanics. 
+
+At least my own understanding of time-evolution in quantum mechanics has been very muddied by confused ideas about the different pictures (Schrodinger, Heisenberg, Interaction, Rotating Frame..) of quantum mechanics. Part of this confusion has stemmed from the fact that 1) all of the pictures are supposed to be equivalent descriptions of reality yet 2) all presentations I find of the description of time-evolution in quantum mechanics seem to assume we start off in the Schrodinger picture. I've finally come to an understanding which circumvents these issues.
+
+First I will state the time evolution postulate of quantum mechanics in a novel way which does not privilege any picture of quantum mechanics over any other. I might hedge that it does privilege a particular picture (as I will define the concept of a ``picture'' of quantum mechanics later) but this picture is canonical and is not one of the pictures typically encountered.
+
+After introducing the time-evolution postulate I will define what is meant by a ``picture'' of quantum mechanics or a choice of frame. This definition will be closely related to the time-evolution postulate.
+
+Next I will derive the time evolution for kets and operators in a general picture of quantum mechanics. After this derivation it will be straightforward to specify to any of the familiar pictures as I will show.
+
+\section{Time Evolution Postulate}
+
+We keep with the usual formalism that states of a quantum system are described by kets which are elements of a given Hilbert space: $\ket{\psi} \in \mathcal{H}$. The Hilbert space is also comes equipped with linear operators $\hat{O}$ which can act on the kets. The Hermitian subset of these linear operators should be thought of as being in correspondence with physical observables. In particular, if there is a physical observable $O$ in the physical system then there should be a operator $\hat{O}$ on the Hilbert space which corresponding to that observable.
+
+We take very seriously the idea that quantum mechanics only makes statistical predictions. This may makes the quantum theory appear lame in its explanatory power. However, here I want to emphasize a point which is not, if ever, emphasized. \textit{In addition to predicting simple expectation values of the measurements of physical observables, quantum mechanics can also make predictions about the measured values of statistical correlation functions, temporal and otherwise, of physical observables.} The time evolution postulate I state here will make this critical feature of the quantum theory manifest.
+
+\subsection{Quantum Predictions of Measurement Outcomes}
+
+Quantum mechanics makes statistical predictions. I argue that the fundamental ``predictive'' unit of quantum mechanics is the ability for it to determine that an observable $O$ takes on a particular value at any moment in time. First some machinery, then an explanation of the rule. Given a basis for $\mathcal{H}$, $\{\ket{\phi_i}\}$, Any operator can be written as
+
+\begin{align}
+\hat{O} = \sum_{i,j} \bra{\phi_i}\hat{O}\ket{\phi_j} \ket{\phi_i}\bra{\phi_j}
+\end{align}
+
+ The spectral theorem tells us that $\hat{O}$ has eigenvectors which form a basis for the Hilbert space $\mathcal{H}$. The eigenvectors are defined by
+
+\begin{align}
+\hat{O} \ket{\phi_i} = o_i \ket{\phi_i}
+\end{align}
+
+Where $o_i$ is the $i^{th}$ eigenvalue. In this basis we have that $\hat{O}$ is diagonal.
+
+\begin{align}
+\hat{O} = \sum_i o_i \ket{\phi_i}\bra{\phi_i}
+\end{align}
+
+To specify a quantum mechanical problem we must specify the Hilbert space which we are concerned with as well as the relevant observables in the system. This amounts to a specification of the physical degrees of freedom. In addition we must specify a ket, $\ket{\psi_0}$ which represents the initial state of the system at an initial time, $t_0$.
+
+The fundamental postulate of quantum mechanics is that there is a time-dependent Unitary operator $T(t,t_0)$ and the probability that a physical observable $O$ takes on its eigenvalue, $o_i$, at moment $t$ in time is given by
+
+\begin{align}
+P(O=o_i, t_0) = |\bra{\phi_i} \hat{T}(t,t_0) \ket{\psi_0}|^2
+\end{align}
+
+The time evolution operator, $\hat{T}$ satisfies
+
+\begin{align}
+\hat{T}(t,t_0)^{-1} &= \hat{T}(t,t_0)^{\dag}\\
+\hat{T}(t,t) &= 1\\
+\hat{T}(t_2,t_1)\hat{T}(t_1,t_0) &= \hat{T}(t_2,t_0)
+\end{align}
+
+In the case of a multicomponent system the ket describing the state of the system lives in a composite Hilbert space which is the tensor product of smaller Hilbert spaces.
+
+\begin{align}
+\mathcal{H} = \bigotimes_{i=1}^N \mathcal{H}_i
+\end{align}
+
+Consider the system starting in an initial state given by
+
+\begin{align}
+\ket{\psi_0} = \bigotimes_{i=1}^N \ket{\psi^i}
+\end{align}
+
+Now consider observables $O^i$ where $i$ indexes the Hilbert space with which each observable is associated. We write the $j^{th}$ eigenvector equation for each corresponding operator:
+
+\begin{align}
+\hat{O}^i \ket{\phi^i_j} = o^i_j \ket{\phi^i_j}
+\end{align}
+
+The fundamental quantum postulate then gives the joint probability for each of the observables $O^i$ to be found to take on value $o^i_j$ at moment $t$ as
+
+\begin{align}
+P\left(O^1=o^1_j, \ldots, O^N = o^N_j\right) = \Bigg\lvert\left(\bigotimes_{i=1}^N \bra{\phi^i_j} \right) \hat{T}(t,t_0) \ket{\psi_0}\Bigg\rvert^2
+\end{align}
+
+
+\subsection{Quantum Predictions of Measurement Outcomes}
+
+If $O$ is an arbitrary observable whose value can be repeatedly measured under similar physical circumstances then, after recording the result of many iterations of the experiment, we can calculate the measured value of
+
+\begin{align}
+\Braket{O_{\psi}}_N = \frac{1}{N}\sum_{i=1}^N O_{\psi,j}
+\end{align}
+
+Where $O_{\psi,j}$ is the outcome of the $j^{th}$ iteration of the experiment.
+This is the expected value of the measurement of the physical observable $O$ under that set of physical circumstances specified. Of course in the quantum theory we identify a ket, $\ket{\psi}$ to correspond to those physical circumstances indicated by $\psi$ in the formula above. 
+
+\begin{tcolorbox}
+\textbf{Observable Expectation Values}\\
+Quantum theory makes the prediction that
+
+\begin{align}
+\Braket{O_{\psi}} = \lim_{N\rightarrow \infty} \Braket{O_{\psi}}_N = \bra{\psi} \hat{O} \ket{\psi}
+\end{align}
+
+\end{tcolorbox}
+
+Often the $N\rightarrow 
+\infty$ is included only included implicitly in the definition of $\Braket{O}_{\psi}$. I am being particular explicit here about definitions and such because I want to be clear which mathematical elements are the result of physical experiments (data points) and which are theoretical elements (theory prediction lines). I will drop the subscript $\psi$ in $\Braket{O}_{\psi}$ but it should be remembered that the measured value $\Braket{O}$ is always measured with respect to a particular set of physical circumstances, that is, it is always correspondent with a particular quantum state $\ket{\psi}$. 
+
+With modern experimental techniques it is possible to prepare systems in particular and known states $\ket{\psi}$ such that the quantities and expressions above can be respectively measured and calculated and subsequently compared to ensure the validity of the theory under question. Alternatively, of course, instead of preparing the state $\ket{\psi}$ for the purpose of subsequent measurement and comparison with quantum theory, one can prepare the state $\ket{\psi}$ to exploit its predicted properties (such as $\Braket{O}_{\psi}$) for utility in a subsequent physical process. This latter method is how quantum systems are leveraged into quantum technologies.
+
+\subsection{Time Evolution}
+
+Theories in physics are generally work within the framework in which initial conditions and dynamics are specified and then final conditions are predicted. This has great utility because we can implement experimental control to prepare a system in a particular physical state \textit{now} and then rely on the dynamics of the system to take it into a new physical state which we may be more interested in. Alternatively, if we have information about the state of a system \textit{now}, we can use our knowledge of the dynamical evolution to predict what the state will be in the future and use this information to our advantage. Quantum theory is no different in this regard. However, we must always recall that quantum theory only makes statistical predictions. Thus, what we seek is a formula which, 
+
+
+
+
+\end{document}

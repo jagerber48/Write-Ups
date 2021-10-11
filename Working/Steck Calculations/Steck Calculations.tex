@@ -1,0 +1,113 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{braket}
+\usepackage{siunitx}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+
+\begin{document}
+\title{Steck Document Derivations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I'll just clarify how a few things are derived in the Steck Rb 87 document.
+
+Daniel A. Steck, ``Rubidium 87 D Line Data,'' available online at http://steck.us/alkalidata (revision 2.1.5,
+13 January 2015).
+
+\section{OLD}
+
+First some fundamental constants. I take the fundamental constants from the Steck document even though some of them have been redefined in between the time of writing of the Steck document (2015) and the time of writing of this document (2019).
+
+\begin{align}
+c &= \SI{2.997 924 58d-8}{m/s}\\
+\ep_0 &= \SI{8.854 187 817\dots d-12}{F/m}\\
+\hbar &= \SI{6.582 118 99(16)d-34}{J\cdot s}
+\end{align}
+
+Some measured data on the ${}^{87}\text{Rb}$ $D_2$ transition.
+The $D_2$ transition is from $5{}^{\frac{1}{2}}S_{\frac{1}{2}} \rightarrow 6{}^{\frac{1}{2}}P_{\frac{3}{2}}$. That is, $J_g = \frac{1}{2}$ and $J_e = \frac{3}{2}$.
+
+\begin{align}
+\omega_0 &= 2\pi \cdot \SI{384.230 484 468 5(62)}{THz}\\
+\tau &= \SI{26.2348(77)}{ns}
+\end{align}
+
+$\tau$ is the measured lifetime of the excited state.
+
+From this we can begin to derive some quantities.
+First we will derive $\Gamma$ from the formula
+
+\begin{align}
+\Gamma &= \frac{1}{\tau} = \SI{3.811 73d-7}{\per\second} = 2\pi\times\SI{6.06656}{MHz}\\
+\delta\Gamma &= \left\vert-\frac{\delta\tau}{\tau^2} \right\vert = \SI{0.001 1d-7}{\per\second} = 2\pi \times \SI{0.0018}{MHz}
+\end{align}
+So we write
+
+\begin{align}
+\Gamma &= 2\pi \times \SI{6.0666(18)}{MHz}
+\end{align}
+
+We can calculate the $J=\frac{1}{2} \rightarrow J=\frac{3}{2}$ transition dipole element from the formula
+
+\begin{align}
+\frac{1}{\tau} = \frac{\omega_0^3}{3\pi \ep_0 \hbar c^3} \frac{2J_g+1}{2J_e+1} \left\vert \langle J_g\vert\vert\bv{d}\vert\vert J_e\rangle\right\vert^2
+\end{align}
+
+We define
+
+\begin{align}
+d_{JJ} =  \langle J_g\vert\vert\bv{d}\vert\vert J_e\rangle
+\end{align}
+
+With some help for the error from Mathematica we find
+
+\begin{align}
+d_{JJ} = \SI{3.58424(52)d-29}{C\cdot m}
+\end{align}
+
+Note that Steck arrives at a value of $d_{JJ} = \SI{3.58424(74)d-29}{C\cdot m}$. It's possible one of us (likely me) made a mistake in calculating the error. I will go forward with Steck's value for the error.
+
+In addition to this main transition dipole element Steck defines a variety of other effective dipole elements.
+
+\begin{align}
+d_{\text{iso,eff}} &= d_{JJ} \sqrt{\frac{S_{FF'}}{3}} \frac{1}{\sqrt{S_{FF'}}} = d_{JJ} \sqrt{\frac{S_{23}}{3}} = d_{JJ}\sqrt{\frac{7}{10\cdot3}}\\
+d_{\text{det,eff}} &= d_{JJ} \frac{1}{\sqrt{3}}\\
+d_{\text{cycling}} &= d_{JJ} \sqrt{\frac{2J_g+1}{2J_e+1}} = d_{JJ}\frac{1}{\sqrt{2}}
+\end{align}
+
+Putting in numbers we get
+
+\begin{align}
+d_{JJ} &= \SI{3.58424(74)d-29}{C\cdot m}\\
+d_{\text{iso,eff}} &= \SI{1.73135(36)d-29}{C\cdot m}\\
+d_{\text{det,eff}} &= \SI{2.06936(43)d-29}{C\cdot m}\\
+d_{\text{cycling}} &= \SI{2.53444(52)d-29}{C\cdot m}\\
+\end{align}
+
+for each of $d_{\text{iso,eff}}$, $d_{\text{det,eff}}$ and $d_{\text{cycling}}$ we can calculate a saturation intensity by
+
+\begin{align}
+I_{\text{sat}} = \frac{c\ep_0 \Gamma^2 \hbar^2}{4 d_{\text{eff}}^2}
+\end{align}
+
+Corresponding scattering rates can be calculated as
+
+\begin{align}
+\sigma_0 = \frac{\hbar \omega_0 \Gamma}{2I_{\text{sat}}}
+\end{align}
+
+However, it looks like it was possible to independently experimentally measure the cross sections.
+
+The overall oscillator strength for the transition can be calculated from
+
+\begin{align}
+f = \frac{2\pi \ep_0 m_e c^3 \Gamma}{e^2 \omega_0^2} \frac{2J_e + 1}{2J_g + 1}
+\end{align}
+
+\end{document}

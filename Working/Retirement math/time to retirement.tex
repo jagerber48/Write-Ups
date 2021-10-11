@@ -1,0 +1,338 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Early Retirement Math}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I will derive the algebra math for a certain (very simplified) strategy for early retirement.
+At the end I will contrast the line of argumentation presented here with the argumentation based on safe withdrawal rates and the Trinity study.
+Note that I am not saying what I have produced here is an improvement on the trinity study or a strategy that I am advocating for.
+Rather, I am presenting a very simple strategy that is not too difficult to capture mathematically.
+
+This simple model is interesting because it is able to capture, with very few inputs, many of the critical details of retirement.
+It is then very easy to explore the effect of these small number of input parameters on the trajectory of a retirement plan
+
+The goals of this document are to come up with formulas for 1) the number of years to retire based on a certain savings rate and real rate of return and 2) ot come up with formulas for working years and retirement years financial trajectories given savings rate, real rate of return, and certain retirement goals.
+
+\section{Future Value Formula}
+
+This is just the derivation of the future value of a growing annuity formula. 
+Skip to the boxed equation at the end if you're not interested in this.
+
+First we derive the basic formula for geometric growth. We wish to calculate
+
+\begin{align}
+\sum_{n=a}^b r^n = S =& r^a + r^{a+1} + \ldots + r^{b-1} + r^b\\
+rS =& r^{a+1} + r^{a+2} + \ldots + r^b + r^{b+1}\\
+rS - S = S(r-1) =& r^{b+1} - r^{a}\\
+S = \frac{r^{b+1} - r^a}{r-1}
+\end{align}
+
+We now consider the future value of a growing annuities. 
+We imagine $N$ calculation periods. 
+The first period is $T_0$ and the last period is $T_N$. 
+In each period the following occur:
+
+\begin{itemize}
+\item{Pay period $n$ begins with amount $V_0[n]$.}
+\item{Next interest is collect on amount $V_0[n]$. That is $V_0[n] \rightarrow (1+r)V_0[n]$ where $r$ is the interest rate ($r=0.07$ for $7\%$ interest rate, for example.)}
+\item{Next a contribution amount $C[n]$ is made, $V_0[n](1+r) \rightarrow V_0[n](1+r) + C[n]$.}
+\item{So the value of the annuity is given by $V_0[n+1] = V_F[n] = V[n](1+r) + C[n]$.}
+\item{At the end of each pay period the contribution amount for the next pay period $C[n+1]$ is set to $C[n+1] = C[n](1+g)$ where $g$ is the growth rate for the contribution, to be contrasted with the interest rate for the annuity. Later $g$ will represent the inflation rate. We can see from this that $C[n] = C[1](1+g)^{n-1}$}
+\end{itemize}
+
+We now wish to determine the total value of the annuity after (meaning \textit{at the end of}) $N$ pay periods. 
+One easy way to understand this is to think about each contribution on its own.
+If the total duration is $N$ pay periods then we see that the initial amount $V[0]$ will collect interest $N$ times so we have
+
+\begin{align}
+V[0] \rightarrow V[1](1+r)^N
+\end{align}
+
+We can also see that the contribution $C[0]$ in pay period $0$ collects interest $N$ times and more generally the contribution $C[n]$ in pay period $n$ collects interest $N-n$ times
+
+\begin{align}
+C[n] \rightarrow C[n](1+r)^{N-n} = C[1](1+g)^{n-1}(1+r)^{N-n}
+\end{align}
+
+The total value at the end of the annuity is then given by
+
+\begin{align}
+V_F[N] =& V_0[1](1+r)^N + \sum_{n=1}^N C[1](1+g)^{n-1}(1+r)^{N-n}\\
+=& V_0[1](1+r)^N + C[1]\frac{(1+r)^N}{1+g}\sum_{n=1}^N \left(\frac{1+g}{1+r}\right)^n\\
+=& V_0[1](1+r)^N + C[1]\frac{(1+r)^N}{1+g} \frac{\left(\frac{1+g}{1+r}\right)^{N+1} - \frac{1+g}{1+r}}{\frac{1+g}{1+r} - 1}\\
+=& V_0[1](1+r)^N + C[1] \frac{(1+g)^N - (1+r)^N}{g-r}\\
+\end{align}
+\begin{equation}
+\boxed{
+V_F[N] = V_0[1](1+r)^N + C[1] \frac{(1+r)^N - (1+g)^N}{r-g}
+}
+\end{equation}
+
+This is the formula for the future value of a growing annuity.
+
+\section{Retirement Calculations}
+
+There are a few ways to think about retirement. 
+Here we will consider the following.
+\begin{itemize}
+\item{Initially there is an empty account.}
+\item{During working years contributions of the amount $S$ (savings) are made (increasing due to inflation by $1+g$ each year).}
+\item{Each year the account appreciates by $1+r$ (and contributions also increase by $1+g$) as described above} 
+\item{This is done for $N_W$, the total number of working years after which retirement starts.}
+\item{At this time the total amount in the account, $V_F[N_W]$ is called the nest egg, $T$.}
+\item{During retirement withdrawals are made, initially in the amount of $E(1+g)^{N_W}$.
+Here $E$ represent the expenses expressed in current dollars so that $E(1+g)^{N_W}$ is the value of the current expenses at the time of retirement, after $N_W$ working years.}
+\item{Each year expenses increase by $1+g$}
+\item{Retirement ends when the account reaches zero.}
+\end{itemize}
+
+The strategy we will take to determine how much is needed for retirement is as follows. 
+We will fix the amount of money saved $S$ during working years as well as expenses during retirement years, $E$.
+All of the calculations assume $r$ and $g$ are always constant.
+We will then determine under what conditions a nest egg $T$ can be formed, given the expenses $E$ and return/inflation rates $r$ and $g$ specified, such that it will last a specified number of years, $N_R$, this will determine the necessary size of the nest egg $T$.
+We will then determine how many years $N_W$, with annual savings of $S$, it will take to form the nest egg $T$, again taking into account return/inflation rates.
+
+Note that there is no `withdrawal' rate or safe withdrawal rate in this strategy.
+See below for a discussion of the 4\% rule and why this strategy differs from strategies based on a safe withdrawal rate.
+
+First we determine the amount needed for a nest egg that lasts $N_R$ years.
+We can consider the account during retirement to be a growing annuity where the contributions are negative (they are expenses to the account):
+
+\begin{align}
+V_F[N_R] = T(1+r)^{N_R} - E(1+g)^{N_W} \frac{(1+r)^{N_R} - (1+g)^{N_R}}{r-g}
+\end{align}
+
+We are interested in the condition when this drops to zero, $V_F[N_R] = 0$:
+
+\begin{align}
+T(1+r)^{N_R} =& E(1+g)^{N_W} \frac{(1+r)^{N_R} - (1+g)^{N_R}}{r-g}\\
+T =& E(1+g)^{N_W} \frac{1 - \left(\frac{1+g}{1+r}\right)^{N_R}}{r-g}
+\end{align}
+
+An interesting limit arises if we ignore inflation $g=0$ and require retirement to last arbitrarily long, $N_R \rightarrow \infty$.
+In this case the factor $\left(\frac{1+g}{1+r}\right)^{N_R} \rightarrow 0$ and we get
+
+\begin{align}
+T = \frac{E}{r}
+\end{align}
+
+This makes a lot of sense. 
+The nest egg will appreciate from $T$ to $T(1+r)$ each year.
+The interest collected is equal to $Tr$ each year.
+Thus, if expenses each year are equal or less than $Tr$ then the account will stay positive forever.
+This is roughly the idea of a safe withdrawal rate and the $4\%$ rule, that is, one can determine a withdrawal rate by comparing expenses to interest earned on a nest egg assuming a certain growth rate. More on this below.
+
+given $r, g, E$ and $N_W$, we can now calculate the nest egg needed to last $N_R$ years.
+Let's determine how long it would take to save that amount given annual savings of $S$.
+We assume the account initially begins at 0.
+
+\begin{align}
+V_F[N_W] = T =& S\frac{(1+r)^{N_W} - (1+g)^{N_W}}{r-g} = E \frac{(1+g)^{N_W}}{r-g}\left[1-\left(\frac{1+g}{1+r}\right)^{N_R}\right]\\
+\end{align}
+
+Note that $S$ and $E$ are the savings and expense amounts expressed in present dollars.
+
+We now manipulate this expression
+
+\begin{align}
+\frac{S}{E}\left[\left(\frac{1+r}{1+g}\right)^{N_W} - 1\right] = 1-\left(\frac{1+g}{1+r}\right)^{N_R}
+\end{align}
+
+
+We notice that the rates $r$ and $g$ show up in the form $\frac{1+r}{1+g}$. 
+This factor is an effective return rate, for $r,g \ll1$ this factor will be close to 1 as well.
+This means we can define a real rate of return:
+
+\begin{align}
+1+\alpha = \frac{1+r}{1+g}
+\end{align}
+
+if $g, r \ll 1$ then we can Taylor expand $\frac{1}{1+g}\approx 1-g$ and get
+
+\begin{align}
+1+\alpha \approx& (1+r)(1-g) = 1 + r - g - rg \approx 1 + r - g\\
+\alpha \approx& r-g
+\end{align}
+
+With this real rate of return defined we move on.
+
+\begin{align}
+\frac{S}{E}\left[(1+\alpha)^{N_W} - 1\right] = 1-(1+\alpha)^{-N_R}
+\end{align}
+
+We want to solve for the number of working years needed to save amount $T$.
+This means we want to solve for $N_W$.
+
+\begin{align}
+(1+\alpha)^{N_W} =& \frac{E}{S}\left[1-(1+\alpha)^{-N_R}\right] + 1\\
+N_W\log(1+\alpha) =& \log\left[\frac{E}{S}\left[1-(1+\alpha)^{-N_R}\right] + 1\right]\\
+\label{eqes}
+N_W =& \frac{\log\left[\frac{E}{S}\left[1-(1+\alpha)^{-N_R}\right] + 1\right]}{\log(1+\alpha)}
+\end{align}
+
+This final expression is what we were seeking.
+It expresses the number of working years needed assuming amount $S$ is saved during those working years, amount $E$ is spent during retirement, and a real rate of return of $\alpha$.
+
+We now want to re-express all of this in terms of a ``savings rate'' $\gamma$.
+This savings rate is a proxy figure of merit used by the personal finance and FIRE community to help determine one's trajectory towards retirement.
+Without getting into particulars of how to define savings rate\footnote{There are many many details about what should be included in income, pretax or post tax? should saving for a house be considered saving towards retirement etc. Here we neglect all of those subtleties.}, we will define the savings rate as the ratio of savings to total income $\gamma = \frac{S}{I}$.
+Note that this savings rate is typically calculated \textit{During one's working years}. 
+During working years, in our simple model, ones income is the sum of savings plus working year expenses: $I = S+E_W$.
+Note that nothing in the equation above depends on working year expenses, rather it all depends on expenses during retirement $E = E_R$.
+However, one can't predict the future so it is hard to know ones expenses during retirement, however, current expenses during working years is a good starting point to estimate expenses during retirement so for this model we will assume working year expenses equal retirement year expense: $E_W = E_R = E$.
+With all of this we can write
+
+\begin{align}
+\gamma = \frac{S}{I} = \frac{S}{S+E}
+\end{align}
+
+In Eq. (\ref{eqes}) we have $\frac{E}{S}$ appear so we work out
+
+\begin{align}
+\frac{1}{\gamma} =& \frac{S+E}{S} = \frac{S}{S} + \frac{E}{S} = 1 + \frac{E}{S}\\
+\frac{E}{S} =&\frac{1}{\gamma} - 1
+\end{align}
+
+This allows us to rewrite
+
+\begin{align}
+N_W =& \frac{\log \left[\left(\frac{1}{\gamma}-1\right) \left[1-(1+\alpha)^{-N_R}\right] + 1\right]}{\log(1+\alpha)}\\
+=& \frac{\log\left[\frac{1}{\gamma} - \left(\frac{1}{\gamma} - 1\right)(1+\alpha)^{-N_R}\right]}{\log(1+\alpha)}
+\end{align}
+
+\begin{align}
+\label{eqworkyears}
+\boxed{
+N_W = \frac{\log\left[\frac{1}{\gamma} - \left(\frac{1}{\gamma} - 1\right)(1+\alpha)^{-N_R}\right]}{\log(1+\alpha)}
+}
+\end{align}
+
+In the limit that we want retirement to last forever, $N_R\rightarrow\infty$ this reduces to (assuming $\alpha >0$):
+
+\begin{align}
+\label{eqinfret}
+N_W = \frac{\log\left(\frac{1}{\gamma}\right)}{\log(1+\alpha)}
+\end{align}
+
+In Fig. (\ref{figinfret}) we plot this quantity for a range of values of $\alpha$ as a function of ``savings rate'' $\gamma$:
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{retirementyears.png}
+  \caption{Number of years to retire as a function of savings rate and real rate of return. This is a visualization of Eq. (\ref{eqinfret}), imagining an infinite length retirement.}
+  \label{figinfret}
+\end{figure}
+
+The figure captures the essence of why the FIRE community focuses so heavily on savings rate.
+The length of ones working years, the quantity which FIRE seekers wish to reduce, drops precipitously as savings rate is increased.
+There are many subtleties that are glossed over in such a figure, not the least of which being how savings rate should be practically calculated, however the message from the plot is clear: SAVE AS MUCH AS POSSIBLE!
+
+In Fig. (\ref{figlenret})We plot the full extend of Eq. (\ref{eqworkyears}) as a function of savings rates for different lengths of retirement. We assume a real rate of return of 4\% in this figure.
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{lenret.png}
+  \caption{Visualization of Eq. (\ref{eqworkyears}) for a range of values of $N_R$. $\alpha=4\%$ in the plot.}
+  \label{figlenret}
+\end{figure}
+
+\section{Retirement Trajectories over time}
+
+Given the equations above it is not too much work to come up with formulas for the value of ones retirement account from the start of work until the end of retirement.
+
+We assume the account balance starts at 0 and we let year 0 be the start of working life (this can of course be adjusted by shifting the x axis on the entire plot..)
+The account balance during working years is described by
+
+\begin{align}
+V_W[N] = S\frac{(1+r)^N - (1+g)^N}{r-g}
+\end{align}
+
+The is just the future value of a growing annuity with zero initial value and contribution amount $S$.
+Growth continues under this formula for $N_W$ years, where $N_W$ is the number of working years required to accumulate the appropriate nest egg $T$ for a successful retirement.
+$N_W$ is calculated using Eq. (\ref{eqworkyears}).
+
+During retirement the account balance is given by
+
+\begin{align}
+V_R[N] = T(1+r)^{N-N_w} - E(1+g)^{N_W} \frac{(1+r)^{N-N_W} - (1+g)^{N-N_W}}{r-g}
+\end{align}
+
+Here $N-N_W$ expresses the years since retirement and $E(1+g)^{N_W}$ represents expenses at the time of retirement adjusted for inflation.
+
+We can then plot these different trajectories in Fig. (\ref{figtraj}).
+
+\begin{figure}
+  \includegraphics[width=\linewidth]{retirementtrajectory.png}
+  \caption{Retirement account trajectory over time. This assumes working years start at age 20, a `savings rate' of 40\%, a real rate of return of 4\% and a retirement length of 50 years. The various lines show different inflation rates. Note that in all lines the real rate of return is fixed at 4\%. This means the nominal rate of return must adjust accordingly with inflation to ensure the real rate of return is kept fixed. The real rate of return is defined by $1+\alpha = \frac{1+r}{1+g} \approx 1+r-g$.}
+  \label{figtraj}
+\end{figure}
+
+\section{The 4\% rule and safe withdrawal rates}
+
+Many FIRE blogs highlight the 4\% rule as an approximate method for determining how much is needed for retirement. 
+This rule says that you are ready to retire when your expenses in retirement are equal to 4\% of your nest egg.
+If we use current expenses as a proxy for future expenses (expenses during retirement) then we can figure out how much is needed in the nest egg by taking current expenses and multiplying by $25 = \frac{1}{0.04}$.
+
+What is the logic behind the 4\% rule?
+I can come up with two related arguments for the 4\% rule.
+
+The first is based on the trinity study.
+In the trinity study researchers simulated portfolios held at different points in time.
+They imagined retirees began with some nest egg in some year with some portfolio.
+They then imagined that retiree withdrawing a certain fixed percentage of the nest egg each year.
+The portfolio was then run through a gamut of historical stock markets.
+
+For low withdrawal rates the retirements were successful (the account did not hit zero over the course of a retirement with a fixed number of years) but for high rates they were unsuccessful. 
+The study found that if the withdrawal rate was 4\% a high percent (if not all?) retirements were successful.
+
+There is another cruder way to justify the 4\% rule.
+This approach says that if you look at market growth averaged over long time periods (20 years, say) that the market grows by 7\% on average.
+If you look at inflation averaged you see that it is roughly 3\%.
+This means the real rate of return of the stock market is 4\% averaged over long time periods.
+Thus, if you have a nest egg, you can (crudely) predict that it will grow 4\% each year, so if your expenses during retirement are less than 4\% of your nest egg you can live off of the returns for a very long time (if not forever if you assume all of these things are fixed).
+This is what was described in the text above.
+
+The trinity study is more rigorous than the logic given in the above paragraph because it takes into account market fluctuations and sequence of return risk in particular.
+However, I think it is not a coincidence that these two methods of argumentation lead to the same result.
+The second argument above is crude approximate calculation that motivates the more rigorous trinity study (an more rigorous studies yet could be and surely have been performed since the trinity study).
+
+Note that the strategy I am outlining in this document is different than the strategy taken in the trinity study.
+
+
+
+\end{document}

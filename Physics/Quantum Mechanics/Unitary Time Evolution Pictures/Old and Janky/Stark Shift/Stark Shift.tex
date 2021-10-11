@@ -1,0 +1,144 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Interaction picture Stark shift}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+
+I have come up with an answer to this question. I've actually been toying with this problem for a very long time now and it ended up being much more of a bear than I ever imagined it might be. I had to finally learn some details of the Baker-Campbell-Hausdorff formula which I'd been able to avoid up until now.
+
+If I have time I'll clean up the question, but I'll clarify here that my goal was always to derive the effective Hamiltonian which governs the time evolution of $\sigma^-_F$, not just the equations of motion for $\sigma^-_F$. I have already shown a way to derive the desired equations of motion in my first approach. Here I will show how to derive the desired ``rotating frame'' Hamiltonian. I'm curious to hear if anyone can answer this in a simpler way.
+
+As I mentioned in my comment above the problem with the argument presented in the question is that in the second apporoach it is assumed that
+
+$$
+\frac{d}{dt} U_z = i\omega (|e \rangle \langle e|)_H U_z
+$$
+
+However, this would only be the case if $(|e \rangle \langle e|)_H$ were time independent. However, this is not the case because it is a Heisenberg operator that evolves under the given Hamiltonian. This led to the contradiction presented in the question above. The treatment must be adjusted.
+
+However, it is still true that $\sigma_F$ as defined above is equal to $\sigma_N$ and thus $\sigma_F$ DOES have the correct equations of motion. This means that the $U_z$ defined above is the appropriate operator to transform us into the rotating frame, it will just be more difficult to tease out the Hamiltonian/equations of motion than I initially attempted.
+
+It can be shown that when a unitary transformation of the sort given above is applied we can get the following equation of motion for the transformed operator.
+
+$$
+\frac{d}{dt} \sigma^-_F = -i \left[\sigma^-_F, H_F + i U^{\dagger}_z \frac{d}{dt}U_z\right]
+$$
+
+This can be shown using the definition of $\sigma_F^-$ and the product rule for derivatives. The proof is for the reader, but similar proofs are found in the literature. The goal is to show that
+
+$$
+H_F + i U_z^{\dagger} \frac{d}{dt}U_z
+$$
+
+gives the desired Hamiltonian. Namely
+
+$$
+H_D = -\Delta (|e\rangle \langle e|)_F + \frac{\Omega}{2}\left(\sigma^-_F + \sigma^+_F \right)
+$$
+
+For brevity let me introduce the operator $\epsilon = |e\rangle \langle e|$. 
+
+$H_F$ is easy to calculate. $H_F = U_z^{\dagger} H_H U_z$ so it is the same as $H_H$ but with all of the $H$'s replaced by $F$'s. The problem is that $H_F$ still contains explicit exponential time dependence. We will see that this is canceled by the second term.
+
+We now set to work to calculate $\frac{d}{dt}U_z$. For reference I write down
+
+$$
+U_z = e^{i \omega \epsilon_H t}
+$$
+
+Recalling that $\epsilon_H$ is a time dependent Heisenberg operator. There is a Baker-Hausdorff formula which tells us how to calculate derivatives of exponential operators. I first came across it HERE (note I think there is a mistake in the formula given here) and on this WIKIPEDIA PAGE. The formula is that
+
+$$
+\frac{d}{dt} e^{M(t)} = \sum_{n=0}^{\infty} \frac{1}{(n+1)!} \left[M(t),\left[\ldots\left[M(t),\frac{d}{dt}M(t)\right]\ldots \right]\right] e^{M(t)}
+$$
+
+Here there are $n$ commutators in each term. Specifically, there are enough commutation operations here such that the operator $M$ appears $n$ times.
+In my case $M(t) = i \omega \epsilon_H t$. We need $\frac{d}{dt}M(t)$.
+
+$$
+\frac{d}{dt}M(t) = i\omega\left(\epsilon_H + \frac{d}{dt}\epsilon_H t\right)
+$$
+
+I'll note that $M(t)$ will commute with the first term here so we can ignore it for all terms with $n>0$, however it will show up in the $n=0$ term. I'll ignore this part and add it back in at the end. We need to calculate the second term. Here is the first point where we need to plug in the Heisenberg Hamiltonian of interest for this specific problem to determine $\frac{d}{dt}\epsilon_H$.
+
+$$
+\frac{d}{dt}\epsilon_H = -i[\epsilon_H, H_H] = -i\frac{\Omega}{2}\left(e^{+i\omega t}(-\sigma^-_H) + e^{-i\omega t}\sigma^+_H \right)
+$$
+
+Now we are making progress. Note that since we have the property that $[\epsilon_H,\sigma_H^{\pm}] = \mp \sigma_H^{\pm}$ we will be able to calculate the chain of commutators above and end up with things proportional to $\sigma^{\pm}$
+
+$$
+\frac{d}{dt} U_z = \sum_{n=0}^{\infty} \frac{(i\omega t)^{n+1}}{(n+1)!} \left(-i\frac{\Omega}{2}\right)\left[\epsilon_H,\left[\ldots\left[\epsilon_H,e^{+i\omega t}(-\sigma^-_H) + e^{-i\omega t}\sigma^+_H\right]\ldots \right]\right] U_z
+$$
+
+We can split this into two separate commutator chains and apply the commutation $n$ times to find
+
+$$
+= \left(-i\frac{\Omega}{2}\right)\left[\sum_{n=0}^{\infty} \frac{(-i \omega t)^{n+1}}{(n+1)!} \sigma^-_H e^{+i\omega t} + \sum_{n=0}^{\infty} \frac{(i \omega t)^{n+1}}{(n+1)!} \sigma^+_H e^{-i\omega t}\right]U_z
+$$
+
+However we recognize these power series as $e^{\mp i\omega t}-1$. We can look ahead and see that the part coming from the $-1$ will cancel the pesky time dependence in $H_F$ that has bothered me for a very long time and the part coming from the $e^{\mp i \omega t}$ will cancel the time dependence appearing here resulting in the desired Hamiltonian. That is the answer there but for my own reference I'll carefully flesh out the details here. We also must recall to add back in the relevant part of $\frac{d}{dt}M(t)$ from $(1)$ which was ignored for the past few steps
+
+$$
+\frac{d}{dt}U_z = \left(-i\frac{\Omega}{2} \right)\left( \left(e^{-i\omega t}-1\right) \sigma^-_H e^{+i\omega t} + \left(e^{+i\omega t}-1\right)\sigma^+_H e^{-i\omega t}\right)U_z + i\omega \epsilon_HU_z
+$$
+
+$$
+= -\left(-i\frac{\Omega}{2}\right)\left(\sigma^-_H e^{+i\omega t} + \sigma^+_H e^{-i\omega t} \right)U_z + \left(-i\frac{\Omega}{2}\right)\left(\sigma^-_H + \sigma^+_H \right)U_z + i\omega \epsilon_H U_z
+$$
+
+I'll write out
+
+$$
+i U_z^{\dagger}\frac{d}{dt}U_z = -\frac{\Omega}{2}\left(\sigma^-_F e^{+i\omega t} + \sigma^+_F e^{-i\omega t} \right) + \frac{\Omega}{2}\left(\sigma^-_F  + \sigma^+_F \right) - \omega \epsilon_F
+$$
+
+The operators changed from $H$ to $F$ because they were conjugated by $U_z$.
+Adding this to
+
+$$
+H_F = \omega_0 \epsilon_F + \frac{\Omega}{2}\left(\sigma^-_F e^{+i\omega t} + \sigma^+_F e^{-i\omega t} \right)
+$$
+
+We can finally see that
+
+$$
+\frac{d}{dt}\sigma^-_F = -i\left[\sigma^-_F,-\Delta \epsilon_F + \frac{\Omega}{2}\left(\sigma^-_F + \sigma^+_F \right) \right]
+$$
+
+$$
+\frac{d}{dt}\sigma^-_F = -i\left[\sigma^-_F, H_D\right]
+$$
+
+So we see that $\sigma^-_F$ (and in fact any operator in this frame) evolves under the desired Hamiltonian. It is evident that this will lead to the desired equations of motion which are first order with constant coefficients and thus easier to work with than the time-dependent equations of motion.
+
+
+
+\end{document}

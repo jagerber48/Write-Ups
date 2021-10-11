@@ -1,0 +1,1327 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{braket}
+\usepackage{siunitx}
+\usepackage[bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+
+\newcommand{\ep}{\epsilon}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\unitvec}[1]{\hat{\boldsymbol{#1}}}
+
+\begin{document}
+\title{Cavity Energy Flow}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+Here I will calculate the energy for an optical cavity. 
+The basic picture is that there is an optical cavity which is driven by a beam of power $P_{in}$.
+Some light is reflected from the cavity, some is transmitted, and some is lost.
+There is also energy stored inside of the cavity.
+The purpose of this document is to get the pre-factors on all of the energy and power terms correct.
+
+\section{Poynting's Theorem}
+
+We are considering here with the power and energy carried by electromagnetic field.
+To that end I'd like to re-visit Poynting's Theorem which relates the power flowing out of a region of space (the divergence of the Poytning vector) to the time derivative of the energy within that region.
+In this case the region of space is the volume of the optical cavity and the power flowing in and out is the input, transmitted and reflected fields.
+
+Maxwell's equations are
+
+\begin{align}
+\nabla \cdot \vec{E} =& \frac{\rho}{\ep_0}\\
+\nabla \cdot \vec{B} =& 0\\
+\nabla \times \vec{E} =& -\frac{\partial}{\partial t}\vec{B}\\
+\nabla \times \vec{B} =& \mu_0 \ep_0 \frac{\partial}{\partial t}\vec{E} + \mu_0 \vec{J}
+\end{align}
+
+The basic definitions for energy density and energy flux density are
+
+\begin{align}
+u =& \frac{1}{2}\left(\ep_0 \vec{E}\cdot\vec{E} + \frac{1}{\mu_0}\vec{B}\cdot\vec{B}\right)\\
+\vec{S} =& \frac{1}{\mu_0}\vec{E}\times \vec{B}
+\end{align}
+
+Let us consider $\dot{u}$.
+
+\begin{align}
+\frac{\partial}{\partial t}u =& \ep_0 \vec{E} \cdot \frac{\partial}{\partial t}\vec{E} + \frac{1}{\mu_0} \vec{B}\cdot \frac{\partial}{\partial t}\vec{B}\\
+=& \frac{1}{\mu_0} \left(\vec{E} \cdot \nabla \times \vec{B} - \vec{B} \cdot \nabla \times \vec{E}\right) - \vec{E}\cdot\vec{J}
+\end{align}
+
+We now work out a vector identity for $\nabla \cdot \vec{S}$.
+
+\begin{align}
+\mu_0\nabla \cdot \vec{S} =& \mu_0\partial_i \vec{S}_i = \partial_i \ep_{ijk} E_j B_k = \ep_{ijk} (\partial_i E_j)B_k + \ep_{ijk} E_j (\partial_i B_k)\\
+=& B_k(\epsilon_{kij} \partial_i E_j) - E_j(\epsilon_{jik} \partial_i B_k)\\
+=& -\vec{E}\cdot \nabla \times \vec{B} + \vec{B}\cdot \nabla\times \vec{E}
+\end{align}
+
+With this identity we can see that
+
+\begin{align}
+\frac{\partial}{\partial t}u = -\nabla\cdot \vec{S} -\vec{E}\cdot{J}
+\end{align}
+
+or
+
+\begin{align}
+-\frac{\partial}{\partial t}u = \nabla \cdot \vec{S} + \vec{E}\cdot{J}
+\end{align}
+
+\section{Electromagnetic Plane Waves}
+
+Let's consider Maxwell's equations without sources, $\rho =0$ and $\vec{J}=0$.
+If we take the time-derivative of the two curl equations we get
+
+\begin{align}
+\nabla \times \frac{\partial}{\partial t}\vec{E} =& -\frac{\partial^2}{\partial t^2} \vec{B}\\
+= \frac{1}{\mu_0 \ep_0} \nabla \times\left(\nabla \times \vec{B}\right) =& -\frac{\partial^2}{\partial t^2}\vec{B}
+\end{align}
+
+There is an identity for the triple cross product:
+
+\begin{align}
+\left(\nabla \times\left(\nabla\times\vec{B}\right)\right)_i =& \ep_{ijk} \partial_j \ep_{klm}\partial_l B_m = (\delta_{il}\delta_{jm} - \delta_{im}\delta_{jl}) \partial_j \partial_l B_m\\
+=& \partial_i \partial_m B_m - \partial_l \partial_l B_i\\
+=&  \left(\nabla(\nabla \cdot \vec{B}) - \nabla^2 \vec{B}\right)_i
+\end{align}
+
+In the case of $\vec{E}$ and $\vec{B}$ for sourceless conditions the divergence term is zero.
+We then have
+
+\begin{align}
+\frac{1}{\mu_0 \ep_0} \nabla^2 \vec{B} = \frac{\partial^2}{\partial t^2} \vec{B}
+\end{align}
+
+This is a vector wave equation with velocity $c^2 = \frac{1}{\ep_0 \mu_0}$.
+
+Likewise we can derive for $\vec{E}$
+
+\begin{align}
+\nabla \times \frac{\partial}{\partial t}\vec{B} =& \mu_0\ep_0 \frac{\partial^2}{\partial t^2}\vec{E}\\
+-\nabla \times (\nabla \times \vec{E}) =& \mu_0 \ep_0 \frac{\partial^2}{\partial t^2} \vec{E}\\
+\frac{1}{\mu_0 \ep_0} \nabla^2 \vec{E} =& \frac{\partial^2}{\partial t^2} \vec{E}
+\end{align}
+
+So we see that both $\vec{E}$ and $\vec{B}$ satisfy the same vector wave equation.
+
+we consider an Ansatz
+
+\begin{align}
+\vec{E}(\vec{r},t) =& \tilde{E}_0 \unitvec{\ep}^E e^{i(\vec{k}\cdot\vec{r} - \omega t)}\\
+\vec{B}(\vec{r},t) =& \tilde{B}_0 \unitvec{\ep}^B e^{i(\vec{k}\cdot\vec{r} - \omega t)}
+\end{align}
+
+Each vector field has its own complex amplitude $\tilde{E}_0 = |\tilde{E}_0|e^{i\phi_E}$ and $\tilde{B}_0 = |\tilde{B}_0|e^{i\phi_B}$ and polarization vector $\unitvec{\ep}^{E,B}$.
+The two fields share the same temporal angular frequency $\omega$ which we take to be real\footnote{Below I consider the possibility that $\vec{k}$ is complex. One might ponder if we could allow $\omega$ to be complex as well. My intuition is that we could but that it does not correspond to a steady-state or monochromatic solution so we ignore the possibility.}.
+$\vec{k}$ is the common wavevector for the two fields.
+
+Generally $\vec{k}$ is regarded as a real vector.
+In this case one ends up with far-field plane waves with which introductory electricity and magnetism students are familiar.
+However, we will see below that the magnitude of $\vec{k}$, and therefore each of its components, is bounded by $\frac{\omega}{c}$.
+This means that the spatial frequencies of any of these far field plane wave are limited in magnitude.
+It is precisely this limitation in spatial frequencies which leads to the far-field diffraction limit.
+It is possible to beat the diffraction limit by utilizing so called near-field or evanescnet solutions of Maxwell's equations.
+These are solution in which $\vec{k}$ is in fact a \textit{complex} vector.
+Unlike for a vector in $\mathbb{R}^3$, it is possible for one of the components of a vector in $\mathbb{C}^3$ to have a magnitude which is greater than that of the overall vector.
+This means one can have larger spatial frequencies than $\frac{\omega}{c}$.
+The price however is that the field will decay exponentially in the direction which has the imaginary component of $\vec{k}$.
+In this section I will presume that $\vec{k}$ is real and in a later section I will consider the possibility of complex $\vec{k}$.
+However, where possible I will keep the derivations general to apply to both real and complex $\vec{k}$.
+
+Finally in addition to $\tilde{E}_0$, $\tilde{B}_0$, $\omega$, and $\vec{k}$ the ansatz includes polarization vectors $\unitvec{\ep}^E$ and $\unitvec{\ep}^B$. 
+We will presume these vector are normalized so that
+
+\begin{align}
+\left|\unitvec{\ep}^E\right|^2 =& \Braket{\unitvec{\ep}^E, \vec{\ep}^E} = \unitvec{\ep}^{E*} \cdot \unitvec{\ep}^E = 1\\
+\left|\unitvec{\ep}^B\right|^2 =& \Braket{\unitvec{\ep}^B, \vec{\ep}^B} = \unitvec{\ep}^{B*} \cdot \unitvec{\ep}^B = 1
+\end{align}
+
+Here I distinguish between the inner product $\Braket{\cdot, \cdot}$ on $\mathbb{C}^3$ and the usual dot product.
+While above we assumed that $\vec{k}$ is real we not assume that the polarization vectors are real.
+This is because we would like to be able to easily describe circularly polarized light.
+I'll note here that the inner-product of the polarization vectors with themselves is constrained but the dot product is not necessarily constrained.
+For example, in the case that $\unitvec{\ep}^E$ corresponds to linearly polarized light then $\unitvec{\ep}^E \cdot \unitvec{\ep}^E = \Braket{\unitvec{\ep}^E, \unitvec{\ep}^E} = 1$.
+However for circularly polarized light we will see $\unitvec{\ep}^E \cdot \unitvec{\ep}^E = 0$.
+
+Lets check if one of these ansatz solutions satisfies its respective vector wave equation.
+
+\begin{align}
+\left(\nabla^2 \vec{E}\right)_i =& \tilde{E}_0 \ep_i^E \partial_j \partial_j e^{i(k_l r_l - \omega t)}\\
+=& \tilde{E}_0 \ep_i^E (ik_j) (ik_j) e^{i(k_l r_l - \omega t)}\\
+=& \left(-(\vec{k}\cdot\vec{k}) \vec{E}\right)_i = \left(-k^2\vec{E}\right)_i
+\end{align} 
+
+Note that this looks like we just replace $\nabla \rightarrow i\vec{k}$. 
+We will see that this general rule will hold generally for taking spatial derivatives of plane waves.
+I have defined
+
+\begin{align}
+k^2 = \vec{k}\cdot\vec{k}
+\end{align}
+
+Note that for real $\vec{k}$ this is fine.
+However, for complex $\vec{k}$ we should recall that in general $\vec{k}\cdot\vec{k} \neq \left|\vec{k}\right|^2$.
+We also define
+
+\begin{align}
+\unitvec{k} = \frac{\vec{k}}{k}
+\end{align}
+
+Noting again that $\unitvec{k}\cdot\unitvec{k} = 1 \neq \left|\unitvec{k}\right|^2$ for complex $\vec{k}$.
+
+Next
+
+\begin{align}
+\frac{\partial^2}{\partial t^2}\vec{E} = (-i\omega)^2 \vec{E} = -\omega^2 \vec{E}
+\end{align}
+
+We see that we replace $\frac{\partial}{\partial t} \rightarrow -i\omega$
+
+Plugging this into the wave equation we get
+
+\begin{align}
+\frac{1}{\mu_0\ep_0} (-k^2)\vec{E} = -\omega^2 \vec{E}
+\end{align}
+
+so we see that
+
+\begin{align}
+c^2 k^2 =& \omega^2\\
+\frac{|\omega|}{|k|} = c
+\end{align}
+
+So the wave equation puts a constraint on the relationship between the spatial and temporal frequencies of the waves.
+We find the same analysis by looking at $\vec{B}$.
+This means that if $\frac{|\omega|}{|k|} = c$ then both the Ansatz for $\vec{E}(\vec{r},t)$ and $\vec{B}(\vec{r},t)$ do in fact satisfy their respective wave equation.
+
+However, Maxwell's equations couple $\vec{E}$ and $\vec{B}$ such that there are additional constraints on the overall solution. 
+In particular we will find relationships between $\unitvec{\ep}^E$, $\unitvec{\ep}^B$, $\vec{k}$ and the magnitudes and phases of $\tilde{E}_0$ and $\tilde{B}_0$.
+
+We consider
+
+\begin{align}
+\nabla \cdot \vec{E} =& \tilde{E}_0 \partial_i \ep_i^E e^{i (k_j r_j - \omega t)}\\
+=& \tilde{E}_0 \ep_i^E (ik_i) e^{i(k_jr_j-\omega t)}\\
+=& \tilde{E}_0 i e^{i(\vec{k}\cdot\vec{r} - \omega t)} \vec{k}\cdot \unitvec{\ep}^E = 0
+\end{align}
+
+We see that we can again make the replacement $\nabla \rightarrow i\vec{k}$.
+We will find the same for $\unitvec{\ep}^B$:
+
+\begin{align}
+\vec{k} \cdot \unitvec{\ep}^E =& 0\\
+\vec{k} \cdot \unitvec{\ep}^B =& 0
+\end{align}
+
+If $\vec{k}$ is real then these relations imply that $\unitvec{\ep}^{E,B}$ are both orthogonal to $\vec{k}$ in the sense of the inner product on $\mathbb{C}^3$.
+If $\vec{k}$ is complex then these relations still hold, but they do not necessarily imply orthogonal in the inner-product sense.
+
+We now consider
+
+\begin{align}
+\nabla \times \vec{E} = -\frac{\partial}{\partial t} \vec{B}
+\end{align}
+
+on the LHS we have
+
+\begin{align}
+\left(\nabla \times \vec{E}\right)_i =& \tilde{E}_0 \ep_{ijk} \partial_j \ep_k^E e^{i(k_lr_l - \omega t)}\\
+=& \tilde{E}_0 \ep_{ijk} (ik_j) \ep_k^E e^{i(k_lr_l - \omega t)} = \left((i\vec{k})\times \vec{E}\right)_i
+\end{align}
+
+So we get
+
+\begin{align}
+i\vec{k}\times  \vec{E} =& i\omega \vec{B}\\
+\tilde{E}_0 \vec{k}\times \unitvec{\ep}^E =& \omega \tilde{B}_0 \unitvec{\ep}^B\\
+\unitvec{\ep}^B =& \frac{1}{\omega}\frac{\tilde{E}_0}{\tilde{B}_0} \left(\vec{k}\times \unitvec{\ep}^E\right)\\
+\unitvec{\ep}^B =& \frac{\tilde{E}_0}{c\tilde{B}_0} \left(\unitvec{k}\times\unitvec{\ep}^E\right)
+\end{align}
+
+Note, it is tempting here to conclude thta since $\unitvec{\ep}^B$ and $(\unitvec{k}\times \unitvec{\ep}^E)$ are unit vectors that $\tilde{E}_0 = c\tilde{B}_0$.
+Or at least that the magnitudes should be equal.
+However, for complex wavevector and polarization vectors we must take care since our intuition is for real vectors which have the property, for example, that the dot product is an inner product which breaks down for complex vectors.
+
+We then check
+
+\begin{align}
+\unitvec{k}\cdot \unitvec{\ep}^B =& \frac{\tilde{E}_0}{c\tilde{B}_0} \unitvec{k}\cdot\left(\unitvec{k}\times \unitvec{\ep}^E\right) = 0\\
+\unitvec{\ep}^E \cdot \unitvec{\ep}^B =& \frac{\tilde{E}_0}{c\tilde{B}_0} \unitvec{\ep}^E \cdot \left(\unitvec{k}\times \unitvec{\ep}^E\right) = 0
+\end{align}
+
+The first of which is required by $\nabla \cdot \vec{B}=0$ and the second of which is nice to know.
+Again, depending on whether these are real or complex the interpretation varies.
+If they are real (linear polarized light) we see that this relation implies the vectors are orthogonal in real space and the vector space.
+
+The above tells us that if we are able to find a normalized $\unitvec{\ep}^E$ which satisfies $\vec{k}\cdot \unitvec{\ep}^E=0$ then we can in turn find $\unitvec{\ep}^B$.
+
+Summarizing we get, from Maxwell's equations, four relations that hold whether any of these vectors are real or complex:
+
+\begin{align}
+\vec{k}\cdot\vec{k} =& k^2 = \frac{\omega^2}{c^2}\\
+\vec{k}\cdot \unitvec{\ep}^E =& 0\\
+\vec{k}\cdot \unitvec{\ep}^B =& 0\\
+\unitvec{\ep}^E \cdot \unitvec{\ep}^B =& 0
+\end{align}
+
+Let us  now seek more information about $\tilde{E}_0$ and $\tilde{B}_0$.
+Let us consider the magnitude of $\unitvec{\ep}^B$.
+
+\begin{align}
+\left|\unitvec{\ep}^B\right|^2 = \unitvec{\ep}^{B*}\cdot\unitvec{\ep}^B =1 = \frac{1}{\omega^2} \frac{|\tilde{E}_0|^2}{|\tilde{B}_0|^2} \left[\left(\vec{k}^*\times\unitvec{\ep}^{E*}\right)\cdot\left(\vec{k}\times\unitvec{\ep}^E\right)\right]
+\end{align}
+
+We expand
+
+\begin{align}
+\left(\vec{k}^*\times \unitvec{\ep}^{E*}\right)\cdot\left(\vec{k}\times \unitvec{\ep}^E\right) =&
+\ep_{ijk} k^*_j \ep^{E*}_k \ep_{ilm} k_l \ep^E_m\\
+=&(\delta_{jl}\delta_{km} - \delta_{jm}\delta_{kl}) k^*_j \ep^{E*}_k k_l \ep^E_m\\
+=& k^*_l k_l \ep^{E*}_m\ep^E_m - k^*_m\ep^E_m \ep^{E*}_lk_l\\
+=& \left(\vec{k}^*\cdot\vec{k}\right)\left(\unitvec{\ep}^{E*}\cdot\unitvec{\ep}^E\right) - \left(\vec{k}^*\cdot\unitvec{\ep}^E\right)\left(\unitvec{\ep}^{E*}\cdot\vec{k}\right)
+\end{align}
+
+Note that this can be slightly simplified by noting $\unitvec{\ep}^{E*}\cdot\unitvec{\ep}^E=1$.
+However, unfortunately, this cannot be reduced further without further assumptions.
+At this point we will assume that $\vec{k} = k\unitvec{k}$ is real.
+This allows us to then simplify
+
+\begin{align}
+\left(\vec{k}^*\times \unitvec{\ep}^{E*}\right)\cdot\left(\vec{k}\times \unitvec{\ep}^E\right) = k^2
+\end{align}
+
+This gives us
+
+\begin{align}
+1 =& \frac{k^2}{\omega^2} \frac{|\tilde{E}_0|^2}{|\tilde{B}_0|^2} = \frac{1}{c^2}\frac{|\tilde{E}_0|^2}{|\tilde{B}_0|^2}\\
+c |\tilde{B}_0| =& |\tilde{E}_0|
+\end{align}
+
+So we see that for the case of real $\vec{k}$ the magnitude of the electric and magnetic field are related by $c$.
+What about the phases of $\tilde{E}_0 = |\tilde{E}_0|e^{i\phi_E}$ and $\tilde{B}_0 = |\tilde{B}_0| e^{i\phi_B} = \frac{1}{c}|\tilde{E}_0|e^{i\phi_B}$?
+
+We have from above
+
+\begin{align}
+\omega |\tilde{B}_0|e^{i\phi_B} \unitvec{\ep}^B =& k |\tilde{E}_0|e^{i\phi_E} \unitvec{k}\times \unitvec{\ep}^E\\
+e^{i\phi_B}\unitvec{\ep}^B =& e^{i\phi_E}\unitvec{k}\times \unitvec{\ep}^E
+\end{align}
+
+We see that it is possible for $\tilde{E}_0$ and $\tilde{B}_0$ to have different phases, however, any such phase difference will simply be absorbed into the definition for $\unitvec{\ep}^B$ to compensate.
+Noting that $\tilde{B}_0$ always appears with $\unitvec{\ep}^B$ we can see that a phase difference $\phi_E-\phi_B$ has no physical consequence.
+We therefore assume that $\phi_B = \phi_E = \phi$ so that
+
+\begin{align}
+c\tilde{B}_0 =& \tilde{E}_0\\
+\unitvec{\ep}^B =& \unitvec{k}\times \unitvec{\ep}^E
+\end{align}
+
+We can take the cross product with $\unitvec{\ep}^{E*}$ from the left to find
+
+\begin{align}
+\left(\unitvec{\ep}^{E*} \times \unitvec{\ep}^B\right)_i =& \left(\unitvec{\ep}^{E*}\times\left(\unitvec{k}\times\unitvec{\ep}^E\right)\right)_i\\
+=&\ep_{ijk} \ep^{E*}_j \ep_{klm} \hat{k}_l\ep^E_{m} = \ep_{kij}\ep_{klm}\ep^{E*}_j\hat{k}_l\ep^E_m\\
+=& (\delta_{il}\delta_{jm} - \delta_{im}\delta_{lj})\ep^{E*}_j\hat{k}_l\ep^E_m\\
+=& \ep_m^{E*}\ep_m^E \hat{k}_i - \ep^{E*}_l \hat{k}_l \ep^E_m\\
+=& \hat{k}_i
+\end{align}
+
+So we see
+
+\begin{align}
+\unitvec{\ep}^{E*}\times\unitvec{\ep}^B =& \unitvec{k}
+\end{align}
+
+We summarize by writing
+
+\begin{align}
+\vec{E}(\vec{r},t) =& \tilde{E}_0 \unitvec{\ep}^E e^{i(\vec{k}\cdot\vec{r}-\omega t)}\\
+\vec{B}(\vec{r},t) =& \tilde{B}_0 \unitvec{\ep}^B e^{i(\vec{k}\cdot\vec{r}-\omega t)}\\
+=& \frac{1}{c}\tilde{E}_0 \unitvec{k}\times \unitvec{\ep}^E e^{i(\vec{k}\cdot\vec{r}-\omega t)}
+\end{align}
+
+Is a general solution to Maxwell's equations with real $\vec{k}$ and $\omega$ with
+
+\begin{align}
+\left|\vec{k}\right|^2 = \vec{k}\cdot\vec{k} =& k^2 = \frac{\omega^2}{c^2}\\
+\vec{k} =& k\unitvec{k}\\
+\left|\unitvec{\ep}^E\right|^2 = \unitvec{\ep}^{E*}\cdot\unitvec{\ep}^E =& 1\\
+\unitvec{\ep}^B =& \unitvec{k}\times \unitvec{\ep}^E\\
+\unitvec{\ep}^{E*}\times\unitvec{\ep}^B =& \unitvec{k}\\
+\left|\unitvec{\ep}^B\right|^2 =\unitvec{\ep}^{B*}\cdot\unitvec{\ep}^B =& 1\\
+\unitvec{k}\cdot\unitvec{\ep}^E =& 0\\
+\unitvec{k}\cdot\unitvec{\ep}^B =& 0\\
+\unitvec{\ep}^E\cdot\unitvec{\ep}^B =& 0\\
+\tilde{B}_0 =& \frac{1}{c}\tilde{E}_0
+\end{align}
+
+\section{Complex Representation of a Plane Wave}
+
+Above I have shown the plane wave solution to the simultaneous vector wave equations and Maxwell's equations. 
+The physical electromagnetic field has the additional constraint that at all points it is real valued, unlike the complex valued plane wave explored above.
+We can turn the complex valued plane wave into a real plane wave by adding its complex conjugate.
+
+Let
+
+\begin{align}
+\vec{E}_{\vec{k},\omega}^{(+)}(\vec{r}, t) = \tilde{E}_{\vec{k},\omega}^{(+)} \unitvec{\ep}^E e^{i(\vec{k}\cdot \vec{r} - \omega t)}
+\end{align}
+
+We saw above that this field and the corresponding magnetic field satisfies Maxwell's equations and the vector wave equations.
+It can be seen that Maxwell's equations are invariant under the transformation $\vec{E} \rightarrow \vec{E}^*$, $\vec{B} \rightarrow \vec{B}^*$ meaning that
+
+\begin{align}
+\vec{E}_{\vec{k}, \omega}^{(-)}(\vec{r}, t) = \left(\vec{E}_{\vec{k}, \omega}^{(+)}\right)^* = \tilde{E}_{\vec{k},\omega}^{(-)} e^{-i(\vec{k}\cdot \vec{r} - \omega t)}
+\end{align}
+
+is also a solution to Maxwell's equations.
+Since Maxwell's equations are linear the sum of these two solutions is also a solution.
+Notably these two are complex conjugates meaning their sum is real.
+The real plane wave solutions to Maxwell's equations with wavevector $\vec{k}$ and frequency $\omega$ is
+
+\begin{align}
+\vec{E}_{\vec{k}, \omega}(\vec{r}, t) =& \vec{E}_{\vec{k} \omega}^{(+)}(\vec{r}, t) + \vec{E}_{\vec{k} \omega}^{(-)}(\vec{r}, t) = 2 \text{Re}\left\{\vec{E}^{(+)}_{\vec{k}, \omega}(\vec{r}, t) \right\}\\
+\end{align}
+
+Note that this is twice the real part of one of the complex components.
+Some authors choose an alternative convention whereby
+
+\begin{align}
+\vec{E}_{\vec{k}, \omega}^{\text{alt}}(\vec{r}, t) =& \frac{1}{2}\left(\vec{E}_{\vec{k} \omega}^{(+)}(\vec{r}, t) + \vec{E}_{\vec{k} \omega}^{(-)}(\vec{r}, t)\right) = \text{Re}\left\{\vec{E}^{(+)}_{\vec{k}, \omega}(\vec{r}, t) \right\}\\
+\end{align}
+
+Each convention has various pros and cons.
+It is important to know which convention is chosen, especially when trying to determine, for example, the time-averaged power in a plane wave using the complex representation.
+
+
+\section{Polarization for Far-Field Plane Waves}
+
+In the case that $\vec{k}$ is real the magnitude of the electric field is constant everywhere. 
+We will see that any imaginary component of $\vec{k}$ will lead to exponential damping in some direction.
+For this reason if $\vec{k}$ is real we say that field is a plane wave and that it is in the far-field because it does not decay.
+
+If $\unitvec{k}$ is real we have that $\Braket{\unitvec{k},\unitvec{\ep}^E} = \Braket{\unitvec{k},\unitvec{\ep}^B}=0$ so that $\unitvec{\ep}^E$ and $\unitvec{\ep}^B$ live in the subspace perpendicular to $\unitvec{k}$.
+Above I showed how a choice of $\unitvec{\ep}^E$ determines the choice for $\unitvec{\ep}^B$, however, I gave no indication as how $\unitvec{\ep}^E$ might be chosen other than noting that $\unitvec{k}\cdot\unitvec{\ep}^E = 0$.
+
+In practice any vector in the space perpendicular to $\unitvec{k}$ will suffice.
+For this reason we see that we can come up with two linearly independent plane wave solutions by choosing two linearly independent vectors for $\unitvec{\ep}^E$.
+For this purpose we choose two vectors which represent a basis for the 2D space perpendicular to $\unitvec{k}$ and express a general solution as a sum of the plane waves with opposite polarizations.
+
+\begin{align}
+\vec{E}(\vec{r},t) =& \left(\tilde{E}_{0,1} \unitvec{\ep}^E_1 + \tilde{E}_{0,2}\unitvec{\ep}^E_2\right)e^{i(\vec{k}\cdot\vec{r} - \omega t)}\\
+\vec{B}(\vec{r},t) =& \left(\tilde{B}_{0,1} \unitvec{\ep}^B_1 + \tilde{B}_{0,2}\unitvec{\ep}^B_2\right)e^{i(\vec{k}\cdot\vec{r} - \omega t)}\\
+\end{align}
+
+Where the amplitudes and polarization vectors for $\vec{B}$ are related to those of $\vec{E}$ for the same polarization component as above.
+
+There are two conventional choices for the basis $\unitvec{\ep}^E_1$ and $\unitvec{\ep}^E_2$.
+In what follows we assume that $\unitvec{k} = \unitvec{z}$.
+
+\subsection{Linear Polarization}
+ 
+The obvious natural choice for the two vectors to span the space perpendicular to $\unitvec{k}=\unitvec{z}$ are $\unitvec{x}$ and $\unitvec{y}$.
+Such a choice leads to horizontal and vertical linear polarized modes.
+
+\begin{align}
+\unitvec{\ep}^E_H =& \unitvec{x}\\
+\unitvec{\ep}^E_V =& \unitvec{y}
+\end{align}
+
+
+Noting that 
+\begin{align}
+\unitvec{\ep}^{E*}\times\unitvec{\ep}^B = \unitvec{x}\times \unitvec{y} = \unitvec{z} = \unitvec{k}
+\end{align}
+ensures the direction of $\unitvec{\ep}^B$ has been chosen correctly.
+
+We write out $\vec{E}_{\vec{k}\omega}(\vec{r}, t)$ and $\vec{B}_{\vec{k}\omega}(\vec{r}, t)$ for horizontally polarized light (dropping many subscripts and labels):
+
+\begin{align}
+\vec{E}_H =& 2 |\tilde{E}_0| \cos\left(k z - \omega t + \phi\right) \unitvec{x}\\
+\vec{B}_H =& 2 |\tilde{B}_0| \cos\left(k z - \omega t + \phi\right) \unitvec{y}
+\end{align}
+
+
+Vertically polarized light is defined as
+
+\begin{align}
+\unitvec{\ep}^E_V =& \unitvec{y}\\
+\unitvec{\ep}^B_V =& -\unitvec{x}
+\end{align}
+
+with real electric and magnetic fields given by
+
+\begin{align}
+\vec{E}_V =& 2 |\tilde{E}_0| \cos\left(k z - \omega t + \phi\right) \unitvec{y}\\
+\vec{B}_V =& -2 |\tilde{B}_0| \cos\left(k z - \omega t + \phi\right) \unitvec{x}
+\end{align}
+
+We note for both polarizations that $|\tilde{B}_0| = \frac{|\tilde{E}_0|}{c}$.
+
+The factors of 2 here are an unfortunately result of the convention choice chose for combining complex plane waves into real planes waves.
+Had we chosen the alternate convention these factors of two would not have arisen.
+This is the main advantage of the alternate convention.
+However, in cases when you deal exclusively with the complex form and avoid forays into real expressions the convention chosen is preferable.
+
+\subsection{Circular Polarization}
+
+The other conventional basis chosen for spanning the 2D space perpendicular to $\unitvec{k}$ is the circular basis.
+The two circular basis vectors are
+
+\begin{align}
+\unitvec{\ep}^{\pm} = \frac{1}{\sqrt{2}}(\unitvec{x} \pm i \unitvec{y})
+\end{align}
+
+We see that
+
+\begin{align}
+\unitvec{\ep}^+ \cdot \unitvec{\ep}^{+*} =& \unitvec{\ep}^+\cdot \unitvec{\ep}^- = 1\\
+\unitvec{\ep}^{\pm} \cdot \unitvec{\ep}^{\pm*} =& 0
+\end{align}
+
+And these are both clearly orthogonal to $\unitvec{z}$.
+
+Motivated by $\unitvec{\ep}^{B} = \unitvec{k} \times \unitvec{\ep}^E$ we now calculate
+
+\begin{align}
+\unitvec{z} \times \unitvec{\ep}^{\pm} =& \frac{1}{\sqrt{2}}\unitvec{z}\times(\unitvec{x} \pm i \unitvec{y})\\
+=&\frac{\mp i}{\sqrt{2}}(\unitvec{x} \pm i\unitvec{y}) = \mp i \unitvec{\ep}^{\pm}
+\end{align}
+
+So we see that the magnetic field is in some sense ``parallel'' to the electric field in that the polarization vectors are proportional to each other.
+However, we will see shortly that the multiplication by $\mp i$ corresponds to a phase shift between the two components.
+Furthermore, we can see that the magnetic field and electric field polarization vectors are still orthogonal in the complex inner product sense defined above.
+
+We now write out the electric and magnetic field for circularly polarized light.
+I will label the two polarizations as $\pm$ for now but after showing the expressions and brief discussion I will define and identify left and right circularly polarizations.
+
+\begin{align}
+\vec{E}_{\pm} =& \frac{1}{\sqrt{2}} |\tilde{E}_0| e^{i(kz-\omega t + \phi)}(\unitvec{x} \pm i\unitvec{y}) + \frac{1}{\sqrt{2}} |\tilde{E}_0| e^{-i(kz-\omega t + \phi)}(\unitvec{x} \mp i\unitvec{y})\\
+=& \frac{|\tilde{E}_0|}{\sqrt{2}} \left[\left(e^{i(kz-\omega t + \phi)} + e^{-i(kz-\omega t + \phi)} \right)\unitvec{x} \pm \left(ie^{i(kz-\omega t + \phi)} - ie^{-i(kz-\omega t + \phi)}\right)\unitvec{y}\right]\\
+=& \frac{2}{\sqrt{2}}|\tilde{E}_0|\left[\cos(kz-\omega t + \phi)\unitvec{x} \mp \sin(kz-\omega t + \phi)\unitvec{y}\right]
+\end{align}
+
+We see that for $kz-\omega t + \phi=0$ the electric field starts in the $\unitvec{x}$ direction but as we increase $z$ or $t$ the component in $\unitvec{x}$ diminishes the the component in $\unitvec{y}$ increases.
+In particular for fixed $z$ and variable $t$ the electric field rotates in the $x-y$ plane and likewise for fixed $t$ and variable $z$.
+The electric field rotates in a circle in time and in a helix in space.
+
+Note that, in contrast to linearly polarized light, the electric field is non-zero at all points in space and time but continuously changes its direction.
+Linearly polarized light oscillates in magnitude and direction while always pointing along the same axis.
+Note also that the peak amplitude of circular polarized light is smaller than the peak amplitude of linearly polarized light by a factor of $\sqrt{2}$ for the same complex field. 
+We will see below that one of the consequences of this reduction is that the two fields in fact have the same total time-averaged intensity despite having varying peak amplitudes.
+
+The corresponding magnetic field is given by
+
+\begin{align}
+\vec{B}_{\pm} =& \frac{1}{\sqrt{2}} |\tilde{B}_0| e^{i(kz-\omega t + \phi)}(\mp i)(\unitvec{x} \pm i\unitvec{y}) + \frac{1}{\sqrt{2}} |\tilde{B}_0| e^{-i(kz-\omega t + \phi)}(\pm i)(\unitvec{x} \mp i\unitvec{y})\\
+=& \frac{|\tilde{B}_0|}{\sqrt{2}} \left[\pm\left(-ie^{i(kz-\omega t + \phi)} + ie^{-i(kz-\omega t + \phi)} \right)\unitvec{x} + \left(e^{i(kz-\omega t + \phi)} + e^{-i(kz-\omega t + \phi)}\right)\unitvec{y}\right]\\
+=& \frac{2}{\sqrt{2}}|\tilde{B}_0|\left[\pm\sin(kz-\omega t + \phi)\unitvec{x} + \cos(kz-\omega t + \phi)\unitvec{y}\right]
+\end{align}
+
+We see that the magnetic field is $\frac{\pi}{2}$ out of phase with the electric field but also orthogonal at all points in space.
+
+
+We now define left and right circularly polarized light.
+We will implement the following convention for determining handedness of light.
+Consider a point fixed in space, for example $z = -\frac{\phi}{k}$. 
+Right hand circular light will be light such that the electric field rotates in a way following a right hand rule where one's right thumb points along the propagation axis, $\unitvec{k}$ and ones right handed fingers rotate in the sense of the electric field. 
+Left hand circular light follows the corresponding left hand rule.
+
+Let us consider right-hand circular polarized light propagating along the $+\hat{z}$ axis.
+Following the convention I described an electric field point along $\hat{x}$ would shortly evolve to an electric field pointing along $\hat{y}$ at later time.
+We see that this is the case for light polarized with $\unitvec{\ep}^+$ polarization above.
+
+We summarize
+
+\begin{align}
+\vec{E}_{RCP} = \vec{E}_+ =& \sqrt{2}|\tilde{E}_0|\left[\cos(kz-\omega t + \phi) \unitvec{x} - \sin(kz-\omega t + \phi)\unitvec{y}\right]\\
+\vec{B}_{RCP} = \vec{B}_+ =& \sqrt{2}|\tilde{B}_0|\left[\sin(kz-\omega t + \phi) \unitvec{x} + \cos(kz-\omega t + \phi)\unitvec{y}\right]
+\end{align}
+
+and
+
+\begin{align}
+\vec{E}_{LCP} = \vec{E}_- =& \sqrt{2}|\tilde{E}_0|\left[+\cos(kz-\omega t + \phi) \unitvec{x} + \sin(kz-\omega t + \phi)\unitvec{y}\right]\\
+\vec{B}_{LCP} = \vec{B}_- =& \sqrt{2}|\tilde{B}_0|\left[-\sin(kz-\omega t + \phi) \unitvec{x} + \cos(kz-\omega t + \phi)\unitvec{y}\right]
+\end{align}
+
+We note for both polarizations that $|\tilde{B}_0| = \frac{|\tilde{E}_0|}{c}$.
+
+\section{Complex Wave Vector}
+
+Let us now consider the implications for when $\vec{k}$ is generally complex.
+A number of relations from above still hold.
+
+\begin{align}
+k^2 = \vec{k}\cdot \vec{k} =& \frac{\omega^2}{c^2} \neq \Braket{\vec{k},\vec{k}} = \left|\vec{k}\right|^2\\
+\vec{k}\cdot\unitvec{\ep}^E =&0\\
+\vec{k}\cdot\unitvec{\ep}^B =&0\\
+\left|\unitvec{\ep}^E\right| = \unitvec{\ep}^{E*}\cdot\unitvec{\ep}^E =&1\\
+\left|\unitvec{\ep}^B\right| = \unitvec{\ep}^{B*}\cdot\unitvec{\ep}^B =&1\\
+\unitvec{\ep}^B =& \frac{1}{\omega}\frac{\tilde{E}_0}{\tilde{B}_0} \left(\vec{k}\times \unitvec{\ep}^E\right)\\
+\unitvec{\ep}^E\cdot\unitvec{\ep}^B =&0
+\end{align}
+
+This however is about where the relations end.
+Let us look at
+
+\begin{align}
+\vec{k}\cdot\vec{k} =& \left(\vec{k}_R + i\vec{k}_I\right)\cdot\left(\vec{k}_R + i\vec{k}_I\right) = \frac{\omega^2}{c^2}\\
+=& \left(\vec{k}_R\cdot\vec{k}_R - \vec{k}_I\cdot\vec{k}_I\right) + 2i\left(\vec{k}_R\cdot\vec{k}_I\right) = \frac{\omega^2}{c^2}
+\end{align}
+
+with $\vec{k}_R$ and $\vec{k}_I$ real.
+Since $\omega$ and $c$ are real we have that this expression must be purely real meaning
+
+\begin{align}
+\vec{k}_R\cdot\vec{k}_R - \vec{k}_I\cdot\vec{k}_I = k_R^2 - k_I^2 =& k^2 = \frac{\omega^2}{c^2}\\
+\vec{k}_R\cdot\vec{k}_I = 0
+\end{align}
+
+With $\vec{k}_R^2 = \vec{k}_R\cdot\vec{k}_R$ and $\vec{k}_I^2 = \vec{k}_I\cdot\vec{k}_I$.
+
+Because $k_R^2 - k_I^2 = k^2$ it is possible to introduce a real evanescence angle $\theta$ such that
+
+\begin{align}
+\cosh(\theta) =& \frac{k_R}{k}\\
+\sinh(\theta) =& \frac{k_I}{k}\\
+\cosh^2(\theta) - \sinh^2(\theta) =& 1
+\end{align}
+
+Note that $k_R>k_I$ for all $\theta$.
+As $\theta\rightarrow 0$ we have $k_I \rightarrow 0$ and $k_R \rightarrow k$.
+
+Since $\vec{k}_R$ and $\vec{k}_I$ are real we can easily define
+
+\begin{align}
+\unitvec{k}_R =& \frac{\vec{k}_R}{k_R}\\
+\unitvec{k}_I =& \frac{\vec{k}_I}{k_I}
+\end{align}
+
+With this we have
+
+\begin{align}
+\unitvec{k} = \cosh(\theta) \unitvec{k}_R + i \sinh(\theta)\unitvec{k}_I
+\end{align}
+
+The spatial exponential can be written as
+
+\begin{align}
+e^{i\vec{k}\cdot\vec{r}} = e^{-\vec{k}_I\cdot\vec{r}}e^{i\vec{k}_R\cdot\vec{r}}
+\end{align}
+
+We see that $\vec{k}_R$ leads to spatial oscillation in direction $\vec{k}_R$ as before but $\vec{k}_I$ leads to spatial decay in the direction of $\vec{k}_I$.
+I note that these two direction must be orthogonal.
+It will be helpful to think of $\vec{k}_R$ as the `propagation` direction, and in fact, we will see that this is the direction of energy flow.
+
+These two directions naturally give rise to a third direction
+
+\begin{align}
+\unitvec{k}_O = \unitvec{k}_I\times\unitvec{k}_R
+\end{align}
+
+From which it follows that
+
+\begin{align}
+\unitvec{k}_O \cdot \unitvec{k}_O =&1\\
+\vec{k}\cdot\unitvec{k}_O =& 0\\
+\unitvec{k}_I\times\unitvec{k}_O =& -\unitvec{k}_R\\
+\unitvec{k}_R \times \unitvec{k}_O =& \unitvec{k}_I
+\end{align}
+
+We will then take $\unitvec{k}_O$ to be the first polarization vector this evanescent light.
+
+\begin{align}
+\unitvec{\ep}^E = \unitvec{k}_O = \unitvec{k}_I\times\unitvec{k}_R
+\end{align}
+
+We can then derive 
+
+\begin{align}
+\unitvec{\ep}^B =& \frac{\tilde{E}_0}{c\tilde{B}_0} \unitvec{k}\times \unitvec{\ep}^E = \frac{\tilde{E}_0}{c\tilde{B}_0}\left(\frac{k_R}{k}\unitvec{k}_R + i\frac{k_I}{k}\vec{k}_I\right)\times \unitvec{\ep}^E\\
+=& \frac{\tilde{E}_0}{c\tilde{B}_0}\left(\frac{k_R}{k} \unitvec{k}_I - i \frac{k_I}{k}\unitvec{k}_R\right)\\
+=& \frac{\tilde{E}_0}{c\tilde{B}_0}\left(- i \sinh(\theta)\unitvec{k}_R + \cosh(\theta) \unitvec{k}_I \right)
+\end{align}
+
+We see that $\unitvec{\ep}^E\cdot\unitvec{\ep}^B = \unitvec{k}\cdot\unitvec{\ep}^B=0$.
+Let us pause to consider the dynamics of these polarization vectors.
+We will neglect the prefactors for now.
+
+First it is surprising to see a component of the magnetic field parallel to the propagation direction $\unitvec{k}_R$.
+We see that this component has a phase shift of $i$ relative to the other component and to $\unitvec{\ep}^E$.
+This longitudinal component also vanishes for $\theta\rightarrow 0$, as the wave loses its evanescent character.
+The $-i$ phase shift of the longitudinal component will cause the field to `cartwheel' in the propagation direction in the $\unitvec{k}_R-\unitvec{k}_I$ plane in a way which is not possible for transverse plane waves.
+This cartwheeling will be in phase with linear oscillation of the electric field along the $\unitvec{k}_O$ axis.
+There is another mode of polarization in which the electric field is cartwheeling and the magnetic field is oscillating transversely.
+We will explore that below.
+
+The component of $\unitvec{\ep}^B$ in the $\unitvec{k}_I$ direction is more familiar.
+This component is perpendicular to $\unitvec{\ep}^E$ and the propagation direction $\unitvec{k}_R$.
+Generally there are two `linear' polarization modes. 
+One mode in which the electric field is `normal' and linear polarized perpendicular to $\unitvec{k}_I$ and $\unitvec{k}_R$ and the magnetic field cartwheels in the $\unitvec{k}_R-\unitvec{k}_I$ plane and vice-versa.
+These two polarization components can be added together to create more general polarizations. 
+The $\unitvec{k}_O$ and $\unitvec{k}_I$ components can be added together to give sorts of circular or elliptical polarizations while the out of phase $\unitvec{k}_R$ component must come along with the $\unitvec{k}_I$ component (the magnitudes of these two are tied together).
+
+Finally we explore the magnitude of $\unitvec{\ep}^B$.
+
+\begin{align}
+\unitvec{\ep}^{B*} \cdot\unitvec{\ep}^B = 1 = \frac{|\tilde{E}_0|^2}{c^2 |\tilde{B}_0|^2} \left(\cosh^2(\theta) + \sinh^2(\theta)\right) = \frac{|\tilde{E}_0|^2}{c^2 |\tilde{B}_0|^2} \cosh(2\theta)
+\end{align}
+
+We see now that
+
+\begin{align}
+|\tilde{B}_0|^2 = \frac{\cosh(2\theta)}{c^2} |\tilde{E}_0|^2
+\end{align}
+
+The amplitude of the magnetic field in the cartwheeling mode relative to the electric field magnitude is enhanced by a factor of $\sqrt{\cosh(2\theta)}$ as compared to the free space magnitude.
+
+For the phase of $\tilde{B}_0$ we return to the same argument as before
+
+\begin{align}
+\tilde{B}_0 \unitvec{\ep}^B = \frac{1}{c}\tilde{E}_0 \unitvec{k}\times \unitvec{\ep}^E
+\end{align}
+
+Any relative phase difference between $\tilde{B}_0$ and $\tilde{E}_0$ will be absorbed into the definition of $\unitvec{\ep}^B$ so we can take $\tilde{B}_0$ and $\tilde{E}_0$ to have the same phase.
+
+We can now work out the second polarization.
+For the second polarization of the electric field we simply note the cartwheeling mode was orthogonal (in some sense) to $\unitvec{\ep}^E$ and satisfied $\unitvec{k}\cdot \unitvec{\ep}^B = 0$. 
+We then take
+
+\begin{align}
+\unitvec{\ep}^E = \frac{1}{\sqrt{\cosh(2\theta)}} \left(-i\sinh(\theta)\unitvec{k}_R + \cosh(\theta)\unitvec{k}_I\right)
+\end{align}
+
+Where the prefactor ensures normalization $\left|\unitvec{\ep}^E\right| = 1$.
+Recalling $\unitvec{k} = \cosh(\theta)\unitvec{k}_R + i \sinh(\theta)\unitvec{k}_I$ we calculate
+
+\begin{align}
+\unitvec{\ep}^B = \frac{\tilde{E}_0}{c\tilde{B}_0} \unitvec{k}\times \unitvec{\ep}^E\\
+=& \frac{\tilde{E}_0}{c\tilde{B}_0} \frac{1}{\sqrt{\cosh(2\theta)}} \left(\sinh^2(\theta)\unitvec{k}_O -\cosh^2(\theta)\unitvec{k}_O\right)\\
+=& - \frac{\tilde{E}_0}{c\tilde{B}_0} \frac{1}{\sqrt{\cosh(2\theta)}} \unitvec{k}_O
+\end{align}
+
+Normalization tells us
+
+\begin{align}
+|\tilde{B}_0|^2 = \frac{1}{c^2\cosh(2\theta)} |\tilde{E}_0|^2
+\end{align}
+
+We see now that the cartwheeling electric field is enhanced relative to the linear magnetic field by a factor of $\sqrt{\cosh(2\theta)}$ compared to the propagating far-field solution.
+
+\section{Polarization Modes for Near-Field Solutions}
+
+I'll now write out the two full solutions for these near-field modes.
+
+Recall that we have
+
+\begin{align}
+\vec{k} = \vec{k}_R + i \vec{k}_I
+\end{align}
+
+with $\vec{k}_R$ and $\vec{k}_I$ real and
+
+\begin{align}
+\vec{k}_R =& k_R\unitvec{k}_R\\
+\vec{k}_I =& k_I\unitvec{k}_I\\
+\unitvec{k}_R\cdot\unitvec{k}_I =&0\\
+k^2 =& \vec{k}\cdot\vec{k} = \frac{\omega^2}{c^2}\\
+k_R^2 - k_I^2 =& (\cosh^2(\theta) - \sinh^2(\theta))k^2 = k^2\\
+\unitvec{k} =& \frac{\vec{k}}{k} = \cosh(\theta)\unitvec{k}_R + i\sinh(\theta)\unitvec{k}_I
+\end{align}
+
+
+Let's take $\unitvec{k}_R = \unitvec{x}$, $\unitvec{k}_I=\unitvec{z}$ so that $\unitvec{k}_O = \unitvec{k}_I\times\unitvec{k}_R = \unitvec{y}$.
+
+
+
+We will call $\unitvec{\ep}^E_L$ the linearly polarized electric field mode
+
+\begin{align}
+\unitvec{\ep}^E_L =& \unitvec{y}\\
+\unitvec{\ep}^B_L =& \frac{1}{\sqrt{\cosh(2\theta)}}\left(-i\sinh(\theta)\unitvec{x} + \cosh(\theta)\unitvec{z}\right)
+\end{align}
+
+The real electric and magnetic fields are then given by
+
+\begin{align}
+\vec{E}_L =& 2|\tilde{E}_{0,L}|e^{-k_I z}\cos(k_R x - \omega t + \phi)\unitvec{y}\\
+\end{align}
+\begin{align}
+\vec{B}_L = \frac{2|\tilde{B}_{0,L}|}{\sqrt{\cosh(2\theta)}} e^{-k_I z}\Big(&\sinh(\theta)\sin(k_R x - \omega t + \phi)\unitvec{x}\\
+ + &\cosh(\theta)\cos(k_R x- \omega t + \phi)\unitvec{z} \Big)
+\end{align}
+
+Here we have $\frac{|\tilde{B}_{0,L}|}{\sqrt{\cosh(2\theta)}} = \frac{|\tilde{E}_{0,L}|}{c}$.
+
+For the cartwheeling mode we have
+
+\begin{align}
+\unitvec{\ep}^E_C =& \frac{1}{\sqrt{\cosh(2\theta)}}\left(-i\sinh(\theta)\unitvec{x} + \cosh(\theta)\unitvec{z}\right)\\
+\unitvec{\ep}^B =& -\unitvec{y}
+\end{align}
+
+With the real electric and magnetic fields given by
+
+\begin{align}
+\vec{E}_C = \frac{2|\tilde{E}_{0,C}|}{\sqrt{\cosh(2\theta)}} e^{-k_I z}\Big(&\sinh(\theta)\sin(k_R x - \omega t + \phi)\unitvec{x}\\
++&\cosh(\theta)\cos(k_R x - \omega t + \phi)\unitvec{z}\Big)
+\end{align}
+\begin{align}
+\vec{B}_C = -2|\tilde{B}_{0,C}| e^{-k_I z}\cos(k_R x - \omega t + \phi) \unitvec{y}
+\end{align}
+
+Here we have $|\tilde{B}_{0,C}| = \frac{|\tilde{E}_{0,C}|}{c\sqrt{\cosh(2\theta)}}$.
+
+
+
+
+
+The most common occurrence of near-field or evanescent modes of light is in the case of total internal reflection.
+In this case light is incident on a dielectric boundary at a large angle.
+The angle is large enough, and the index of refraction difference across the boundary large enough, that the transverse periodicity of the light is too large to support a far-field mode on the opposite side of the dielectric boundary.
+Instead the energy remains contained in the first medium and a near-field solution is found on the other side of the boundary.
+
+Two polarizations can be defined with respect to the boundary.
+The plane of incidence is defined as the plane which contains the wavevector of the far-field incident beam as well as the normal vector to the interface.
+If the far-field has its electric field in the plane of incidence it is called p-polarized.
+The opposite polarization with the electric field normal to the plane of incidence is called s-polarized.
+S-polarized light will give rise to a near-field which has a linear electric field and cartwheeling magnetic field.
+P-polarized light will give rise to a cartwheeling electric field and linear magnetic field.
+
+
+\section{Poynting Vector}
+
+We now consider the intensity or Poynting Vector for a Plane Wave.
+The Poynting vector for a single polarization is given by
+
+\begin{align}
+\vec{S} =& \frac{1}{\mu_0} \vec{E} \times \vec{B}\\
+=& \frac{1}{\mu_0}\left(\tilde{E}_0 \unitvec{\ep}^E e^{i(\vec{k}\cdot\vec{r}-\omega t)} + c.c.\right)\left(\tilde{B}_0 \unitvec{\ep}^B e^{i(\vec{k}\cdot\vec{r} - \omega t)} + c.c.\right)\\
+=& \frac{1}{\mu_0}\Big[\left(\tilde{E}_0\tilde{B}_0 \unitvec{\ep}^E\times \unitvec{\ep}^B e^{i(2\vec{k}\cdot\vec{r}-2\omega t)} + c.c. \right)\\
++&\left(\tilde{E}_0^*\tilde{B}_0 \unitvec{\ep}^{E*}\times \unitvec{\ep}^B + c.c\right)  \Big]
+\end{align}
+
+We see that of the four terms two of them are rapidly oscillating, varying in time at a frequency $2\omega$.
+Often we are interested in only the time-averaged intensity or Poynting vector $\Braket{\vec{S}}$ which is found by dropping these rapidly oscillating terms.
+
+\begin{align}
+\Braket{\vec{S}} = \frac{2}{\mu_0}\text{Re}\left(\tilde{E}_0^*\tilde{B}_0 \unitvec{\ep}^{E*}\times \unitvec{\ep}^B\right)
+\end{align}
+
+Let's work this out. 
+Recall
+
+\begin{align}
+\unitvec{\ep}^B = \frac{\tilde{E}_0}{c\tilde{B}_0} \unitvec{k}\times\unitvec{\ep}^E
+\end{align}
+
+and that $\phi_E=\phi_B=\phi$.
+This relation leads to
+
+\begin{align}
+\Braket{\vec{S}} = \frac{2|\tilde{E}_0|^2}{\mu_0 c} \text{Re}\left(\unitvec{\ep}^{E*}\times (\unitvec{k}\times \unitvec{\ep}^E)\right)
+\end{align}
+
+We saw above that for $\vec{k}$ real that $\unitvec{\ep}^{E*}\times (\unitvec{k}\times \unitvec{\ep}^E) = \unitvec{k}$ but let's explore this expression without making that assumptions.
+Using the $\vec{BAC}-\vec{CAB}$ identity we have
+
+\begin{align}
+\unitvec{\ep}^{E*}\times (\unitvec{k}\times \unitvec{\ep}^E) =& \unitvec{k}(\unitvec{\ep}^{E*}\cdot\unitvec{\ep}^E) - \unitvec{\ep}^E(\unitvec{\ep}^{E*}\cdot \unitvec{k})\\
+=& \unitvec{k} - \unitvec{\ep}^E\left(\unitvec{\ep}^E\cdot \unitvec{k}^*\right)^*
+\end{align}
+
+We need to work out $\unitvec{\ep}^E\cdot\unitvec{k}^*$.
+Recall
+
+\begin{align}
+\vec{k} =& \vec{k}_R + i \vec{k}_I\\
+\unitvec{\ep}^E\cdot\vec{k} =& \unitvec{\ep}^E\cdot \vec{k}_R + i \unitvec{\ep}^E\cdot\vec{k}_I = 0\\
+\unitvec{\ep}^E\cdot\vec{k}_R =& -i\unitvec{\ep}^E\cdot\vec{k}_I
+\end{align}
+
+From this we have
+
+\begin{align}
+\unitvec{\ep}^E\cdot\vec{k}^* =& \unitvec{\ep}^E\cdot \vec{k}_R - i \unitvec{\ep}^E\cdot\vec{k}_I = -2i\unitvec{\ep}^E \cdot \vec{k}_I\ = 2\unitvec{\ep}^E\cdot\vec{k}_R\\
+\unitvec{\ep}^E \cdot \unitvec{k}^* =& -2i \sinh(\theta) \unitvec{\ep}^E \cdot \unitvec{k}_I = 2\cosh(\theta)\unitvec{\ep}^E\cdot\unitvec{k}_R
+\end{align}
+
+We have
+
+\begin{align}
+\Braket{\vec{S}} = 2\ep_0 c|\tilde{E}_0|^2\text{Re}\left(\unitvec{k} -2i \sinh(\theta) \unitvec{\ep}^E\left(\unitvec{\ep}^E\cdot\unitvec{k}_I\right)^*\right)
+\end{align}
+
+Let's consider the projection of this onto the three directions $\unitvec{k}_R$, $\unitvec{k}_I$ and $\unitvec{k}_O$. 
+First we note that
+
+\begin{align}
+\text{Re}\left(\unitvec{k}\right) = \cosh(\theta)\unitvec{k}_R
+\end{align}
+
+So
+
+\begin{align}
+\Braket{\vec{S}} = 2\ep_0 c|\tilde{E}_0|^2\left[\cosh(\theta)\unitvec{k}_R - 2 \sinh(\theta)\text{Re}\left(i\unitvec{\ep}^E\left(\unitvec{\ep}^E\cdot\unitvec{k}_I\right)^*\right)\right]
+\end{align}
+
+We now calculate
+
+\begin{align}
+\Braket{\vec{S}}\cdot \unitvec{k}_I =& 2\ep_0c|\tilde{E}_0|^2 \left[0 - 2\sinh(\theta)\text{Re}\left(i\left(\unitvec{\ep}^E\cdot\unitvec{k}_I\right)\left(\unitvec{\ep}^E\cdot\unitvec{k}_I\right)^*\right)\right] =0 
+\end{align}
+
+We see that the terms inside of the $\text{Re}(\cdot)$ are purely imaginary meaning this term vanishes.
+
+We can see also that
+
+\begin{align}
+\Braket{\vec{S}}\cdot\unitvec{k}_O = 0
+\end{align}
+
+because $\unitvec{k}_R\cdot\unitvec{k}_O=0$ and because either $\unitvec{\ep}^E\cdot\unitvec{k}_O = 0$ or $\unitvec{\ep}^E\cdot\unitvec{k}_I=0$ based on the polarizations we have defined.
+
+The formula for $\Braket{\vec{S}}\cdot\unitvec{k}_R$ is more complicated and in factor differs depending on which polarization we are considering (at least when expressed in terms of $|\tilde{E}_0|^2$.
+
+As a reminder the two polarization modes are
+
+\begin{align}
+\unitvec{\ep}^E_L =& \unitvec{k}_O\\
+\unitvec{\ep}^E_C =& \frac{1}{\sqrt{\cosh(2\theta)}}\left(-i\sinh(\theta)\unitvec{k}_R + \cosh(\theta)\unitvec{k}_I\right)
+\end{align}
+
+We use the formula
+
+\begin{align}
+\Braket{\vec{S}} = 2\ep_0 c|\tilde{E}_0|^2 \left[\cosh(\theta)\unitvec{k}_R - 2\cosh(\theta)\text{Re}\left(\unitvec{\ep}^E\left(\unitvec{\ep}^E\cdot\unitvec{k}_R\right)^*\right)\right]
+\end{align}
+
+For the linearly polarized mode since $\unitvec{\ep}^E\cdot\unitvec{k}_R =0 $ we quickly see
+
+\begin{align}
+\Braket{\vec{S}}\cdot\unitvec{k}_R = 2\ep_0c|\tilde{E}_0|^2 \cosh(\theta)
+\end{align}
+
+Recall that for this mode we have
+
+\begin{align}
+|\tilde{E}_0| = c|\tilde{B}_0|\frac{1}{\sqrt{\cosh(2\theta)}}
+\end{align}
+
+For the cartwheel polarized mode we must use
+
+\begin{align}
+\unitvec{\ep}^E\cdot\unitvec{k} = -i\frac{\sinh(\theta)}{\sqrt{\cosh(2\theta)}}
+\end{align}
+
+and we see
+
+\begin{align}
+\Braket{\vec{S}}\cdot\unitvec{k}_R = 2\ep_0c|\tilde{E}_0|^2 \left(\cosh(\theta) - 2\cosh(\theta)\frac{\sinh^2}{\cosh(2\theta)}\right)
+\end{align}
+
+We have
+
+\begin{align}
+1-2\frac{\sinh^2(\theta)}{\cosh(2\theta)} = \frac{\cosh^2(\theta)+\sinh^2(\theta)-2\sinh^2(\theta)}{\cosh(2\theta)} = \frac{1}{\cosh(2\theta)}
+\end{align}
+
+So we get
+
+\begin{align}
+\Braket{\vec{S}}\cdot\unitvec{k}_R = 2\ep_0c|\tilde{E}_0|^2 \frac{\cosh(\theta)}{\cosh(2\theta)}
+\end{align}
+
+Recall that for this mode
+
+\begin{align}
+|\tilde{E}_0| = c|\tilde{B}_0| \sqrt{\cosh(2\theta)}
+\end{align}
+
+So we see that the power carried per unit electric field is different for the two different polarization.
+However, if our answer was expressed in terms of $|\tilde{E}_0||\tilde{B}_0|$ we would get the same answer.
+I think this is a statement that the propagation impedance is different for these two different polarizations.
+I think we would see a corresponding difference in the energy stored in a given volume for fields in one more versus the other.
+Basically the idea is that for these modes the field can `tie up' some of its energy in the longitudinal component of either the electric or magnetic field.
+This component stores energy and contributes to the total field magnitude but it does not propagate.
+
+The general formula I can present then is that
+
+\begin{align}
+\Braket{\vec{S}} = 2\ep_0 c^2|\tilde{E}_0||\tilde{B}_0| \frac{\cosh(\theta)}{\sqrt{\cosh(2\theta)}} \unitvec{k}_R
+\end{align}
+
+Where we recall for real $\vec{k}$ we have
+
+\begin{align}
+\theta =&0\\
+\unitvec{k}_R =& \unitvec{k}\\
+c|\tilde{B}_0| =& |\tilde{E}_0|
+\end{align}
+
+In which case
+
+\begin{align}
+\Braket{\vec{S}} = 2\ep_0c|\tilde{E}_0|^2\unitvec{k}
+\end{align}
+
+\section{Energy}
+
+I am now going to leave behind the story of complex wave-vectors and return to far-field optics.
+This write-up began with Poytning's theorem which relates the energy density for an electromagnetic field to the divergence of the Poynting vector.
+In the previous section I calculated the Poynting vector for fair-field and evanescent waves.
+In this section I would like to calculate the energy density for a standing wave far-field mode.
+Recall the energy density is given by
+
+\begin{align}
+u = \frac{1}{2}\left(\ep_0 \vec{E}\cdot\vec{E} + \frac{1}{\mu_0}\vec{B}\cdot\vec{B}\right)
+\end{align}
+
+The basic idea I want to get across is that when we are working with fields composed of plane waves and taking temporal and spatial averages the energy is equally shared in electric and magnetic field modes.
+
+This follows \textit{roughly} because, as we saw above
+
+\begin{align}
+\vec{B} \sim \frac{1}{c}\vec{E}
+\end{align}
+
+and $\frac{1}{\mu_0 c^2} = \ep_0$.
+This means to calculate the total field energy density it will suffice to calculate the energy contained in the electric field and the multiply by two.
+While this equivalence is not necessarily true at each point in space and time it is true if we average over a time larger than an optical period or over a space larger than an optical wavelength.
+
+We will work this out more in more detail in this section.
+
+A standing mode has the representation
+
+\begin{align}
+\vec{E} =& |\tilde{E}_0| \unitvec{\ep}^E e^{i(-\omega t +\phi)}\left(e^{ikz} + e^{-ikz}\right) + c.c.\\
+\vec{B} =& |\tilde{B}_0| \unitvec{\ep}^B e^{i(-\omega t +\phi)}\left(e^{ikz} - e^{-ikz}\right) + c.c.
+\end{align}
+
+Here I have assumed $\unitvec{k}=\unitvec{z}$ so the polarization vector can be linear or circularly polarized in the $\unitvec{x}-\unitvec{y}$ plane.
+Here we've also assumed that $\unitvec{\ep}^E$ is the same for the waves propagating in both directions.
+This means that the overall sign of $\unitvec{\ep}^B$ must flip for the two different waves since $\unitvec{k}$ flips and $\unitvec{\ep}^B$ arises from a cross product of $\unitvec{k}$ and $\unitvec{\ep}^E$.
+
+Let us consider $\vec{E}\cdot\vec{E}$
+
+\begin{align}
+\Braket{\vec{E}\cdot\vec{E}} = 8|\tilde{E}_0|^2\cos^2(kz)
+\end{align}
+
+Each term of $\vec{E}$ carries on factor of two because $e^{ikz} + e^{-ikz} = 2\cos(kz)$ and there is an additional factor of two because the multiplication results in two non-rapidly varying terms.
+Likewise we have
+
+\begin{align}
+\Braket{\vec{B}\cdot\vec{B}} = 8|\tilde{B}_0|^2\sin^2(kz) = \frac{1}{c}8|\tilde{E}_0|^2\sin(kz)
+\end{align}
+
+if we integrate these fields over $z$ for a range $L \gg \frac{2\pi}{k} = \lambda$ we get
+
+\begin{align}
+\int_{z=0}^L \cos^2(kz) dz \approx \frac{L}{2} + \frac{\sin(2kL)}{4k}
+\end{align}
+
+The second term oscillates between $\frac{\pm \lambda}{8\pi} \ll \frac{L}{2}$ so it is negligible.
+
+We then have 
+
+\begin{align}
+\int \ep_0\Braket{\vec{E}\cdot\vec{E}} dz \approx& 4L \ep_0|\tilde{E}_0|^2\\
+\int \frac{1}{\mu_0} \Braket{\vec{B}\cdot\vec{B}} dz \approx& 4L \ep_0 |\tilde{E}_0|^2 = \int \ep_0\Braket{\vec{E}\cdot\vec{E}}dz\\
+\end{align}
+
+We then have
+
+\begin{align}
+\int \Braket{u} dz = \frac{1}{2} 2\ep_0 \int \Braket{\vec{E}\cdot\vec{E}} dz = 4L\ep_0|\tilde{E}_0|^2
+\end{align}
+
+Note that $|\tilde{E}_0|$ is the \textit{complex} amplitude of \textit{one} of the constituent plane waves.
+The \textit{real} amplitude of one of the plane waves would be $2|\tilde{E}_0|$.
+If the field is linearly polarized then the peak-to-peak amplitude of the standing wave would be given by $4|\tilde{E}_0|$.
+
+Some intuition here is that the peak amplitude of $\Braket{\vec{E}\cdot\vec{E}}$ is $16|\tilde{E}_0|^2$.
+Time averaging cuts this down by one factor of $2$ and spatial averaging cuts it down by another factor of $2$ to get the average energy density.
+
+If instead the field had been circularly polarized then we would find the peak real field amplitude to be constant in time but suppressed by a factor of $\sqrt{2}$ (arising in the normalization for the circular polarization vectors).
+This would lead to the same energy density for complex electric field magnitude.
+
+\section{Optical Cavity Energy Flow}
+
+We are now finally in a position to determine the energy flow in an optical cavity.
+We are concerned with 5 fields describing the optical cavity.
+Here I am dropping all phase factors as they will not contribute to energy or power and I've set $r_1=r_2=1$.
+
+\begin{align}
+E^{(+)}_{in} =& E^{(+)}_{in}\\
+E^{(+)}_T(t) =& E^{(+)}_{in} t_1t_2\frac{\mathcal{F}}{\pi} \chi(\Delta)\\
+E^{(+)}_R(t) =& E^{(+)}_{in}\left(1-t_1^2\frac{\mathcal{F}}{\pi}\chi(\Delta)\right)\\
+E^{(+)}_{cav,R}(z,t) =& E^{(+)}_{in} t_1\frac{\mathcal{F}}{\pi}e^{ikz}\chi(\Delta)\\
+E^{(+)}_{cav,L}(z,t) =& E^{(+)}_{in} t_1\frac{\mathcal{F}}{\pi}e^{-ikz}\chi(\Delta)\\
+\end{align}
+
+The intracavity field can be written as
+
+\begin{align}
+E_{cav}(z,t) = E^{(+)}_{cav,R}(z, t) + E^{(+)}_{cav,L}(z, t) + c.c.
+\end{align}
+
+The input power *****THIS SHOULD BE INTENSITY EVERYWHERE****** is given by
+
+\begin{align}
+P_{in} = 2\ep_0 c |E_{in}^{(+)}|^2
+\end{align}
+
+The transmitted and reflected power are given by
+
+\begin{align}
+P_T =& 2\ep_0 c |E_{in}^{(+)}|^2 T_1 T_2 \frac{\mathcal{F}^2}{\pi^2} |\chi(\Delta)|^2\\
+P_R =& 2\ep_0 c |E_{in}^{(+)}|^2 \left|1 - T_1\frac{\mathcal{F}}{\pi}\chi(\Delta)\right|^2
+\end{align}
+
+We define the cavity coupling efficiencies:
+
+\begin{align}
+\eta_1 =& T_1 \frac{\mathcal{F}}{2\pi}\\
+\eta_2 =& T_2 \frac{\mathcal{F}}{2\pi}\\
+\eta_L =& L \frac{\mathcal{F}}{2\pi}
+\end{align}
+
+with
+
+\begin{align}
+\frac{\mathcal{F}} =& \frac{2\pi}{T_1+T_2 + L}\\
+\eta_1 + \eta_2 + \eta_L = 1
+\end{align}
+
+which gives 
+
+\begin{align}
+P_T =& P_{in} 4\eta_1\eta_2 |\chi(\Delta)|^2\\
+P_R =& P_{in}\left|1-2\eta_1\chi(\Delta)\right|^2\\
+=& P_{in}\left(1 + 4\eta_1^2|\chi(\Delta)|^2 - 4\eta_1\text{Re}\left(\chi(\Delta)\right)\right)
+\end{align}
+
+The three terms in $P_R$ have the following interpretation.
+The $1$ represents that the input field is basically entirely reflected off of the highly reflective input mirror.
+The $4\eta_1^2$ term represents light inside of the cavity leaking out through the input mirror.
+The final term involving $\text{Re}(\chi(\Delta))$ represents an interference term between the promptly reflected light and light leaking out of the cavity.
+
+We consider
+
+\begin{align}
+\frac{P_T+P_R}{P_{in}} = 4\eta_1\eta_2|\chi(\Delta)|^2 + 1 + 4\eta_1^2|\chi(\Delta)|^2 - 4\eta_1\text{Re}(\chi(\Delta))
+\end{align}
+
+If we plug in $\eta_2 = 1-\eta_1 - \eta_L$ we get
+
+\begin{align}
+\frac{P_T+P_R}{P_{in}} = 1 + 4\eta_1(|\chi(\Delta)|^2 - \text{Re}(\chi(\Delta))) - 4\eta_1\eta_L |\chi(\Delta)|^2
+\end{align}
+
+We have
+
+\begin{align}
+\chi(\Delta) =& \frac{\frac{\kappa}{2}}{\frac{\kappa}{2}-i\Delta}\\
+|\chi(\Delta)|^2 =& \frac{\frac{\kappa^2}{4}}{\frac{\kappa^2}{4} + \Delta^2}\\
+\text{Re}(\chi(\Delta)) =& \frac{\frac{\kappa^2}{4}}{\frac{\kappa^2}{4} + \Delta^2}
+\end{align}
+
+Somewhat surprisingly (to me) we have $\text{Re}(\chi(\Delta)) = |\chi(\Delta)|^2$ so that
+
+\begin{align}
+\frac{P_T+P_R}{P_{in}} = 1 - 4\eta_1\eta_L |\chi(\Delta)|^2
+\end{align}
+
+We can define the lost power
+
+\begin{align}
+P_L = 4\eta_1\eta_L P_{in} |\chi(\Delta)|^2
+\end{align}
+
+Note that
+
+\begin{align}
+P_T =& 4\eta_1\eta_2P_{in}|\chi(\Delta)|^2\\
+P_{R,\text{leak}} =& 4\eta_1\eta_2P_{in}|\chi(\Delta)|^2\\
+P_L =& 4\eta_1 \eta_L P_{in}|\chi(\Delta)|^2
+\end{align}
+
+We see that each of these terms has a common factor $4\eta_1|\chi(\Delta)|^2$. 
+We will see that this term is directly related to the energy stored in the cavity.
+
+From the discussion above we see that the column integrated energy density along the cavity axis is given by
+
+\begin{align}
+\Braket{U} = \int \Braket{u} dz =& L 4 \ep_0\left|E^{(+)}_{in}t_1\frac{\mathcal{F}}{\pi}\chi(\Delta)\right|^2\\
+=& L4 \ep_0 |E_{in}^(+)|^2 T_1\frac{\mathcal{F}^2}{\pi^2}|\chi(\Delta)|^2\\
+=& L4 \ep_0 |E_{in}^{(+)}|^2 2\eta_1 \frac{\mathcal{F}}{\pi}|\chi(\Delta)|^2\\
+=& \frac{2L}{c} 2\ep_0 c |E_{in}^{(+)}|^2 4\eta_1 \frac{\mathcal{F}}{2\pi} |\chi(\Delta)|^2\\
+=& \frac{\mathcal{F}}{2\pi f_{FSR}} P_{in} 4\eta_1 |\chi(\Delta)|^2\\
+=& \frac{1}{\kappa} 4\eta_1 P_{in} |\chi(\Delta)|^2
+\end{align}
+
+From this we see
+
+\begin{align}
+P_T =& \kappa \eta_2 \Braket{U}\\
+P_{R,\text{leak}} =& \kappa \eta_1 \Braket{U}\\
+P_L =& \kappa \eta_L \Braket{U}
+\end{align}
+
+This tells us that the total rate which energy leaks out of the cavity is $\kappa$ and the different efficiencies tells us to which channel the energy is leaking.
+
+\section{Useful Trig Identities}
+
+\subsection{Levi-Civita Delta Identity}
+The first important identity to prove is 
+
+\begin{align}
+\ep_{ijk} \ep_{ilm} = \delta_{jl}\delta_{km} - \delta_{jm}\delta_{kl}
+\end{align}
+
+We prove this as follows.
+Consider 
+
+\begin{align}
+\ep_{ijk}\ep_{lmn}
+\end{align}
+
+If any of $i$, $j$, and $k$ or any of $l$, $m$, $n$ are equal then the expression is 0.
+Since there are only three options for each of these this means that the indices for the two levi-civita symbols must come in pairs.
+We can enumerate each based on the definition of the symbol.
+If $lmn$ is an even permutation of $ijk$ then the expression is positive, if it is an odd permutation then expression is negative.
+If $lmn$ is not a permutation of $ijk$ then the expression is zero.
+
+\begin{align}
+\ep_{ijk}\ep_{lmn} = &\delta_{il}\delta_{jm}\delta_{kn} + \delta_{im}\delta_{jn}\delta_{kl} + \delta_{in}\delta_{jl}\delta_{km}\\
+-&\delta_{in}\delta_{jm}\delta_{kl} - \delta_{il}\delta_{jn}\delta_{km} - \delta_{im}\delta_{jl}\delta_{kn}
+\end{align}
+
+Now let us set $l=i$ (and sum over $i$ using Einstein summation convention)
+
+\begin{align}
+\ep_{ijk}\ep_{imn} = &3\delta_{jm}\delta_{kn} + \delta_{km}\delta_{jn} + \delta_{jn}\delta_{km}\\
+-& \delta_{kn}\delta_{jm} - 3\delta_{jn}\delta_{km} - \delta_{jm}\delta_{kn}\\
+=& \delta_{jm}\delta_{kn} - \delta_{jn}\delta_{km}
+\end{align}
+
+Which is the desired identity with relabeling.
+
+\subsection{BAC-CAB rule}
+
+The classic vector calculus identity is
+
+\begin{align}
+\vec{A}\times(\vec{B}\times\vec{C})
+\end{align}
+
+In index notation
+
+\begin{align}
+\left[\vec{A}\times(\vec{B}\times\vec{C})\right]_i =& \ep_{ijk}A_j\ep_{klm}B_lC_m\\
+=&\ep_{kij}\ep_{klm} A_jB_lC_m\\
+=& (\delta_{il}\delta_{jm} - \delta_{im}\delta_{jl}) A_jB_lC_m\\
+=& A_m B_i C_m - A_l B_l C_i\\
+=& B_i (\vec{A}\cdot\vec{C}) - C_i (\vec{A}\cdot\vec{B})
+\end{align}
+
+So we get the $\vec{BAC}-\vec{CAB}$ rule.
+
+\begin{align}
+\vec{A}\times(\vec{B}\times\vec{C}) = \vec{B}(\vec{A}\cdot\vec{C}) - \vec{C}(\vec{A}\cdot\vec{B})
+\end{align}
+
+\subsection{Dot Product of Cross Products}
+Next we will calculate
+
+\begin{align}
+(\vec{A}\times\vec{B})\cdot(\vec{C}\times\vec{D}) =& \ep_{ijk}A_jB_k\ep_{ilm}C_lD_m\\
+=&(\delta_{jl}\delta_{km} - \delta_{jm}\delta_{kl})A_jB_kC_lD_m\\
+=&A_lB_mC_lD_m - A_mB_lC_lD_m\\
+=& (\vec{A}\cdot\vec{C})(\vec{B}\cdot\vec{D}) - (\vec{A}\cdot\vec{D})(\vec{B}\cdot\vec{C})
+\end{align}
+
+\subsection{Cross Product is Orthogonal to Constituents}
+
+Consider
+
+\begin{align}
+\vec{A}\cdot(\vec{A}\times\vec{B}) =& A_i \ep_{ijk} A_jB_k = \ep_{ijk} A_i A_j B_k\\
+=& -\ep_{jik} A_i A_j B_k = -A_j\ep_{jik}A_i B_k = -\vec{A}\cdot(\vec{A}\times\vec{B}) = 0
+\end{align}
+
+and likewise for $\vec{B}$.
+
+\subsection{Orthonormal Triplet}
+
+Suppose $\vec{A}$ and $\vec{B}$ are orthonormal so that
+
+\begin{align}
+\vec{A}\cdot\vec{A} = \vec{B}\cdot\vec{B} =& 1\\
+\vec{A}\cdot\vec{B} = 0
+\end{align}
+
+Then $\vec{C}=\vec{A}\times\vec{B}$ should be a third vector orthonormal to the original two.
+Indeed
+
+\begin{align}
+\vec{C}\cdot\vec{C} =& (\vec{A}\times\vec{B})\cdot(\vec{A}\times\vec{B})\\
+=& (\vec{A}\cdot\vec{A})(\vec{B}\cdot\vec{B}) - (\vec{A}\cdot\vec{B})(\vec{B}\cdot\vec{A}) = 1\\
+\vec{C}\cdot\vec{A} = \vec{C}\cdot\vec{B} =& 0
+\end{align}
+
+We have also
+
+\begin{align}
+\vec{A}\times\vec{C} = \vec{A}\times(\vec{A}\times\vec{B}) =& -\vec{B}\\
+\vec{B}\times\vec{C} = \vec{B}\times(\vec{A}\times\vec{B}) =& \vec{A}
+\end{align}
+
+Summarizing
+
+\begin{align}
+\vec{A}\times\vec{B} =& \vec{C}\\
+\vec{B}\times\vec{C} =& \vec{A}\\
+\vec{C}\times\vec{A} =& \vec{B}
+\end{align}
+
+We see a cyclic permutation pattern.
+
+\subsection{Double Curl Identity}
+The same identities hold if we replace any of the vectors with $\nabla$.
+For example
+
+\begin{align}
+\left[\nabla\times(\nabla\times\vec{A})\right]_i =& \ep_{ijk}\partial_j\ep_{klm}\partial_lA_m\\
+=&\ep_{kij}\ep_{klm} \partial_j\partial_lA_m\\
+=& (\delta_{il}\delta_{jm} - \delta_{im}\delta_{jl}) \partial_j\partial_lA_m\\
+=& \partial_m \partial_i A_m - \partial_l \partial_l A_i\\
+=& \partial_i (\nabla\cdot\vec{A}) - (\nabla\cdot\nabla)A_i
+\end{align}
+
+So that
+
+\begin{align}
+\nabla \times(\nabla \times \vec{A}) =& \nabla (\nabla \cdot \vec{A}) - (\nabla\cdot\nabla)\vec{A}\\
+=&\nabla (\nabla \cdot \vec{A}) - \nabla^2 \vec{A}
+\end{align}
+
+\subsection{Divergence of a Cross Product}
+We are also interested in
+
+\begin{align}
+\nabla \cdot (\vec{A}\times \vec{B}) =& \partial_i \ep_{ijk} A_jB_k\\
+=& \ep_{ijk} \left[(\partial_iA_j)B_k + A_j (\partial_i B_k)\right]\\
+=& (\ep_{kij} \partial_iA_j)B_k - A_j(\ep_{jik\partial_i B_k})\\
+=& (\nabla\times \vec{A})\cdot\vec{B} - \vec{A}\cdot(\nabla \times \vec{B})
+\end{align}
+
+\end{document}

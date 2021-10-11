@@ -1,0 +1,360 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+\usepackage{bussproofs}
+
+\newtheorem{definition}{Definition}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+
+\begin{document}
+\title{Rotations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Vector Manipulations}
+
+\subsection{Expansion into a Basis}
+Consider vector $\ket{v} \in V$.
+Suppose we have an orthonormal basis $\{\ket{A_i}\}$ which we notate as $A$.
+We calculate the components of $\ket{v}$ with respect to $A$, ${^A[v]}$:
+
+\begin{align}
+\ket{v} =& \ket{A_i}{^{A}[v]}_i\\
+\braket{A_j|v} =& \braket{A_j|A_i} {^{A}[v]}_i\\
+\braket{A_j|v} =& \delta_{ji} {^{A}[v]}_i \\
+{^{A}[v]}_j = & \braket{A_j|v}\\
+\end{align}
+
+In full Dirac notation
+
+\begin{align}
+\ket{v} =& \ket{A_i}\braket{A_i|v}
+\end{align}
+
+\subsection{Change of Basis}
+Suppose we have another orthonormal basis $\{\ket{B}_i\}$ denoted $B$.
+
+\begin{align}
+\ket{v} =& \ket{B_j}  {^{B}[v]_j}\\
+\braket{A_i|v} = {^{A}[v]_i} =& \braket{A_i|B_j} {^{B}[v]_j}\\
+{^{A}[v]_i} =& {^{A}_{B}S_{ij}} {^{B}[v]_j}\\
+{^A[v]} =& {^{A}_{B}S} {^B[v]}\\
+\end{align}
+
+with
+
+\begin{align}
+{^A_B S_{ij}} = \braket{A_i|B_j} = {^A[B_j]_i}
+\end{align}
+
+in full Dirac notation
+
+\begin{align}
+\braket{A_i|v} =& \braket{A_i|B_j} \braket{B_j |v}
+\end{align}
+
+Here ${^A_B S}$ is the change of basis matrix which takes the components of a vector expressed with respect to basis $B$, ${^B[v]}$, and gives the components of the vector expressed with respect to the basis $A$, ${^A[v]}$.
+We can see that the components of the change of basis vector ${^A_B S}$ are given by the components of the basis vectors of $B$ with respect to the basis $A$: ${^A[B_j]_i}$.
+
+\subsection{Vector Transformation}
+Consider the transformation $T:\mathbb{R}^N\rightarrow\mathbb{R}^N$.
+
+\begin{align}
+\ket{v'} =& T \ket{v}\\
+\braket{A_i|v'} =& \bra{A_i}T\ket{A_j}{^A[v]_j}\\
+{^A[v']_i} =& {^A_A[T]}_{ij} {^A[v]_j}\\
+{^A[v']} =& {^A_A[T]}{^A[v]}
+\end{align}
+
+with
+
+\begin{align}
+{^A_A[T]_{ij}} = \bra{A_i}T\ket{A_j} = {^A[A'_j]_i}
+\end{align}
+
+In full Dirac notation
+
+\begin{align}
+\braket{A_i|v'} = \bra{A_i} T \ket{A_j} \braket{A_j | v}
+\end{align}
+
+Here we've expressed the components of the transformed vector (in terms of basis $A$), ${^A[v']}$ in terms of the components of the untransformed vector (in terms of basis $A$), ${^A[v]}$.
+We see that the two are related by the matrix representing the transformation $T$ (in terms of basis $A$), ${^A_A[T]}$.
+Note that the elements of the matrix ${^A_A[T]}$ are equal to the components of the transformed basis vectors, $\ket{A'_i} = T\ket{A_i}$ expressed in terms of the original basis $A$.
+
+More generally we define
+
+\begin{align}
+{^A_B[T]_{ij}} = \bra{A_i}T\ket{B_j}
+\end{align}
+
+With this we can see that
+
+\begin{align}
+{^A_B S_{ij}} = \braket{A_i | B_j} = \bra{A_i}I\ket{B_j} =  {^A_B [I]_{ij}}
+\end{align}
+
+Where $I$ is the identity operator.
+
+\subsection{Resolution of the Identity}
+
+Consider the operator
+
+\begin{align}
+\ket{A_i}\bra{A_i}
+\end{align}
+
+defined by
+
+\begin{align}
+(\ket{A_i}\bra{A_i})\ket{v} = \ket{A_i}\braket{A_i|v} = \ket{A_i} {^A[v]_i} = \ket{v}
+\end{align}
+
+This means that the operator $\ket{A_i}\bra{A_i}$ acts like the identity.
+It can be proven that we can insert the resolution of the identify at various locations in vector equations and then `split it' down the middle.
+For example
+
+We can insert the resolution of the identity between a bra (dual vector) and ket (vector):
+\begin{align}
+\braket{B|C} = \bra{B}\left(\ket{A_i}\bra{A_i}\right) \ket{C} = \braket{B|A_i}\braket{A_i|C}
+\end{align}
+
+We can also insert the resolution of the identity between two operators
+
+\begin{align}
+\bra{A_i}T_1T_2\ket{A_j} =& \bra{A_i}T_1\left(\ket{A_k}\bra{A_k}\right) \ket{A_j} = \braket{A_i | T_1 | A_k}\braket{A_k | T_2 | A_j}\\
+=& {^A_A [T_1]_{ik}}{^A_A[T_2]_{kj}} = {^A_A[T_1 T_2]_{ij}}
+\end{align}
+
+I could have been more rigorous in my proofs that you can insert the identity anywhere and remove the parentheses so that you can split it up and have the ket get attached to whatever is on the left and the bra get attached to whatever is on the right.
+
+\subsection{Inverse Transformation}
+
+Consider the inverse transformation $T^{-1}$.
+
+\begin{align}
+&\bra{A_i}T^{-1}T\ket{A_j} = \bra{A_i}TT^{-1}\ket{A_j} = \braket{A_i | A_j}\\
+=& \bra{A_i}T^{-1}\ket{A_k}\bra{A_k}T\ket{A_j} = \bra{A_i}T\ket{A_k}\bra{A_k}T^{-1}\ket{A_j} = \braket{A_i | A_j}\\
+=& {^A_A[T^{-1}]_{ik}} {^A_A[T]_{kj}} = {^A_A[T_{ik}]}{^A[T^{-1}]_{kj}} = \delta_{ij} = {^A_A[I]_{ij}}
+\end{align}
+
+So that
+
+\begin{align}
+{^A_A[T^{-1}]}{^A[T]} = {^A_A[T]}{^A_A[T^{-1}]} = {^A_A[I]}
+\end{align}
+
+This tells us that
+
+\begin{align}
+{^A_A[T^{-1}]} = \left({^A_A[T]}\right)^{-1}
+\end{align}
+
+That is the matrix representing $T^{-1}$ with respect to $A$ is the inverse of the matrix representing $T$ with respect to $A$.
+
+\subsection{Change of Basis the Other Way}
+
+Above we showed
+
+\begin{align}
+{^A[v]} = {^A_B S} {^B[v]}
+\end{align}
+
+By the same logic replacing $A\leftrightarrow B$ we can derive
+
+\begin{align}
+{^B[v]} = {^B_A S} {^A[v]}
+\end{align}
+
+with
+
+\begin{align}
+{^B_A S_{ij}} = \braket{B_i | A_j} = {^B[A_j]_i}
+\end{align}
+
+We see that
+
+\begin{align}
+{^A[v]} =& {^A_B S} {^B_A S} {^A[v]}\\
+{^B[v]} =& {^B_A S} {^A_B S} {^B[v]}
+\end{align}
+
+So we see that
+
+\begin{align}
+{^B_A S} = \left({^A_B S}\right)^{-1}
+\end{align}
+
+\subsection{$T$ rotates $A$ onto $B$}
+
+Suppose that $T$ is the particular transformation which transforms the basis $\{A_i\}$ into the basis $\{B_i\}$ such that
+
+\begin{align}
+\ket{A'_i} = T\ket{A_i} = \ket{B_i}
+\end{align}
+
+Then we have that
+
+\begin{align}
+\bra{A_i} T \ket{A_j} =& \braket{A_i | B_j}\\
+{^A_A[T]_{ij}} =& {^A_B S_{ij}}\\
+{^A_A[T]} =& {^A_B S}
+\end{align}
+
+So if $T$ is the transformation that rotates $A$ onto $B$ then we see that the components of $T$ with respect to $A$ are the same as the change-of-basis matrix which converts coordinates from $B$ into coordinates from $A$.
+Equivalently, we can say that the change of basis matrix ${^A_B S}$ which changes coordinates with respect to $B$ into coordinates with respect to $A$ is also the matrix that rotates the basis vectors of $A$ onto the basis vectors of $B$.
+
+Note that in this case we have
+
+\begin{align}
+{^A[v']} =& {^A_B S}{^A[v]}\\
+{^B[v]} =& {^B_A S}{^A[v]}
+\end{align}
+
+We can see that the coordinates of the rotated vector, $\ket{v'}$, in the original frame are NOT the same as the coordinate of the original vector, $\ket{v}$ in the new frame $B$.
+Sometimes active and passive transformations are characterized as a pair of transformations which have such a property.
+
+\subsection{Components of Transformed Vector Equal Components of Original Vector in New Basis}
+
+Suppose instead we would like the transformation $T$ to satisfy that the components of the transformed vector (with respect to the old basis $A$) are the same as the components of the original vector with respect to the new basis $B$.
+
+\begin{align}
+{^A[v']} = {^A_A[T]}{^A[v]} = {^B_A S} {^A[v]} = {^B[v]}
+\end{align}
+
+So we see that under this condition
+
+\begin{align}
+{^A_A[T]} = {^B_A S}
+\end{align}
+
+In this case we see that $T$ transforms the basis $B$ onto the basis $A$.
+
+\begin{align}
+\left({^A_A[T]}\right)^{-1} = {^A_A[T^{-1}]} = {^A_B S}
+\end{align}
+
+Equivalently, we see that $T^{-1}$ transforms the basis $A$ onto the basis $B$.
+So in this case, while $T$ transforms $\ket{v}$ into $\ket{v'}$, it is $T^{-1}$ that transforms the basis $A$ onto the basis $B$.
+
+
+\section{Rotations}
+
+We now would like to consider the expression of rotations as extrinsic and intrinsic Euler rotations.
+
+In any basis we have three fundamental rotation matrices.
+
+\begin{align}
+X[\theta] = {^A[R^{A_1}(\theta)]} =& \begin{pmatrix}
+1 && 0 && 0\\
+0 && \cos(\theta) && -\sin(\theta)\\
+0 && \sin(\theta) && \cos(\theta)
+\end{pmatrix}\\
+Y[\theta] = {^A[R^{A_2}(\theta)]} =& \begin{pmatrix}
+\cos(\theta) && 0 && \sin(\theta)\\
+0 && 1 && 0\\
+-\sin(\theta) && 0 && \cos(\theta)
+\end{pmatrix}\\
+Z[\theta] = {^A[R^{A_3}(\theta)]} =& \begin{pmatrix}
+\cos(\theta) && -\sin(\theta) && 0\\
+\sin(\theta) && \cos(\theta) && 0\\
+0 && 0 && 1
+\end{pmatrix}\\
+\end{align}
+
+Here I've given the components of the rotation matrices about the basis vectors $\{A_i\}$ of the frame $A$ expressed with respect to the frame $A$. The expression would have been the same had $A$ been any other basis such as $B$ with basis vectors $\{\ket{B_i}\}$. Note that $X$, $Y$, and $Z$ are not defined in any basis, but rather describe the rotation matrices on the right hand side independent of choice of basis.
+
+In components:
+
+\begin{align}
+{^A_A[R^{A_1}(\theta)]_{ij}} = \bra{A_i} R^{A_1}(\theta) \ket{A_j}
+\end{align}
+
+An extrinsic rotation is given by 
+
+\begin{align}
+R_{A_1 A_2 A_3}(\alpha, \beta, \gamma) = R^{A_1}(\alpha)R^{A_2}(\beta)R^{A_3}(\gamma)
+\end{align}
+
+The components are calculated as
+
+\begin{align}
+{^A_A[R_{A_1A_2A_3}(\alpha, \beta, \gamma)]} = {^A_A[R^{A_1}(\alpha)]}{^A_A[R^{A_2}(\beta)]}{^A_A[R^{A_3}(\gamma)]} = X(\alpha)Y(\beta)Z(\gamma)
+\end{align}
+
+That is the matrix of the total rotation is equal to the products of the matrices of the fundamental rotations which make it up.
+
+We now consider an intrinsic rotation:
+
+\begin{align}
+R_{A_3A_2'A_1''}(\gamma, \beta, \alpha) =R^{A_1''}(\alpha) R^{A_2'}(\beta) R^{A_3}(\gamma)
+\end{align}
+
+We now want to find the matrix expression for ${^A_A[R_{A_3A_2'A_1''}(\gamma, \beta, \alpha)]}$, the components of the intrinsic Euler rotation with respect to the original basis $A$.
+The problem here is that the rotations are not all about basis vectors from the original basis $A$.
+We could insert resolutions of the identity to express all of these transformations with respect to basis $A$, but we do not immediately know the form of, for example
+
+\begin{align}
+{^A_A[R^{A'_2}(\beta)]}
+\end{align}
+
+We must take a different approach to resolve this intrinsic Euler rotation.
+Let us define 3 new sets of bases: $A'$, $A''$, and $B$ such that $R^{A_3}(\gamma)$ rotates $A$ into $A'$, $R^{A'_2}(\beta)$ rotates $A'$ into $A''$ and $R^{A''_1}(\alpha)$ rotates $A''$ into $B$.
+In this case we can see that the total rotation $R_{A_3 A'_2 A''_1}(\gamma, \beta, \alpha)$ rotates the original basis $A$ onto the final basis $B$.
+Recall that if $T$ rotates basis $A$ onto basis $B$ then ${^A[T]} = {^A_B S}$.
+We then have
+
+\begin{align}
+{^{A}_{A'} S} =& {^A_A[R^{A_3}(\gamma)]} = Z(\gamma)\\
+{^{A'}_{A''} S} =&{^{A'}_{A'}[R^{A'_2}(\beta)]} = Y(\beta)\\
+{^{A''}_{B} S} =& {^{A''}_{A''}[R^{A''_1}(\alpha)]} = X(\alpha)\\
+{^A_B S} = & {^A_A [R_{A_3 A'_2 A''_1}(\gamma, \beta, \alpha)]}
+\end{align}
+
+On each of the first 3 lines we have expressed the rotation transformation involved in the intrinsic Euler rotation in terms of the basis which includes the vector about which the rotation is defined.
+This means that the matrix expression for the rotation in this frame is given by one of the 3 fundamental rotation matrices.
+This idea is expressed on the right hand equality.
+The left hand equality indicates the relationship between the rotation matrix and the matrix which changes basis between two bases or which rotates one basis into the other.
+
+We can write
+
+\begin{align}
+{^A_B S}_{il} = \braket{A_i | B_l} = \braket{A_i | A'_j} \braket{A'_j | A''_k} \braket{A''_k B_l} = {^A_{A'} S_{ij}} {^{A'}_{A''} S_{jk}} {^{A''}_B S_{kl}}
+\end{align}
+
+So that
+
+\begin{align}
+{^A_B}S = {^{A}_{A'}S} {^{A'}_{A''}S} {^{A''}_{B} S}
+\end{align}
+
+From which we see
+
+\begin{align}
+{^A[R_{A_3 A'_2 A''_1}(\gamma, \beta, \alpha)]} = {^A[R^{A_3}(\gamma)]} {^A[R^{A_2}(\beta)]} {^A[R^{A_1}(\alpha)]} = {^A[R_{A_1 A_2 A_3}(\alpha, \beta, \gamma)]}
+\end{align}
+
+Surprising the rotation matrix for Euler intrinsic rotations about $A_3, A'_2, A''_1$ by angles $\gamma, \beta, \alpha$ is the exact same as the rotation matrix for Euler extrinsic rotations about $A_1, A_2, A_3$ by $\alpha, \beta \gamma$.
+
+
+\end{document}

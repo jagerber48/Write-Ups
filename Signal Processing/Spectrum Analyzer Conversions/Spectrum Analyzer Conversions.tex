@@ -1,0 +1,338 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{biblatex}
+\usepackage{bbm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{braket}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{siunitx}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+\bibliography{refs}
+
+\begin{document}
+\title{Spectrum Analyzer Conversions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+A spectrum analyzer works as follows. 
+I will consider a ``complex'' spectrum analyzer at first because it is mathematically simpler. We have a signal $S(t)$. 
+which enters the device. 
+It is then downconverted by mixing with a local oscillator at frequency $f_{LO}$. 
+It then passes through a high quality bandpass filter called the IF filter centered at frequency $f_{IF}$ and with bandwidth $\Delta f_{IF}$. 
+For example, if the signal was a tone at \SI{1}{\MHz}, the IF was centered at \SI{100}{\kHz} and the LO was set to \SI{900}{\kHz} then the signal would pass through the filter.
+
+After passing through the IF filter we must now detect the power in the signal. In practice this is done by squaring the signal (in theory this could be done by operating in the non-linear region of the diode, in practice it can be done with more careful envelope detection electronics).
+After squaring, the signal is passed through a low pass filter called the video filter.
+The output of this filter is the envelope of squared signal and is proportional to the signal power.
+It is important to note that spectrum analyzer has a \SI{50}{\ohm} input impedance which means that the measured power is the power of the signal when \SI{50}{\ohm} terminated 
+This filter is called the video filter because its bandwidth tells you how fast you can update the reading of the spectrum analyzer on the video screen.
+
+\section{Main}
+
+We have complex signal $S(t)$.
+We demodulate it by mixing with frequency $f_{LO}$ to generate the downconverted signal $S_{down}(t)$.
+
+\begin{align}
+S_{down}(t) = e^{-i2\pi f_{LO} t}S(t)
+\end{align}
+
+In Fourier space this gives us
+
+\begin{align}
+\tilde{S}_{down}(f) = \tilde{S}(f + f_{LO})
+\end{align}
+
+Similarly, we have a shifted bandpass filter:
+
+\begin{align}
+F_{f_{IF}}(t) =& e^{+i2\pi f_{IF} t} F_0(t)\\
+\tilde{F}_{f_{IF}}(f) =& F_0(f-f_{IF})
+\end{align}
+
+After downconversion we pass the signal through the IF filter:
+
+\begin{align}
+\left(F_{f_{IF}} \ast S_{down}\right)(t)
+\end{align}
+
+Then we take the complex square:
+
+\begin{align}
+\left|\left(F_{f_{IF}} \ast S_{down}\right)(t)\right|^2
+\end{align}
+
+We then pass through the video filter:
+
+\begin{align}
+\left(G \ast \left|\left(F_{f_{IF}} \ast S_{down}\right)\right|^2\right)(t)
+\end{align}
+
+This gives us the output of the spectrum analyzer at analysis frequency $f_{SA} = f_{IF} + f_{LO}$ as a function of time.
+Note that the time dependence will vanish for stationary input signals as we will see in two examples below.
+
+We can expand the various convolution expressions.
+
+\begin{align}
+C(f_{SA}, t) =& \left(G \ast \left|\left(F_{f_{IF}} \ast S_{down}\right)\right|^2\right)(t)\\
+= \int \int \int &G(t-t_1) F_{f_{IF}}(t_1-t_2)F^*_{f_{IF}}(t_1-t_3)\\
+\times& S_{down}(t_2)S_{down}^*(t_3) dt_1 dt_2 dt_3
+\end{align}
+
+We can re-express this in terms of $S(t)$ and $F_0(t)$ as
+
+\begin{align}
+=\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)S(t_2)S^*(t_3)\\
+\times& e^{+i2\pi f_{IF}(t_1 - t_2)} e^{-i2\pi f_{IF}(t_1-t_3)} e^{-i2\pi f_{LO}t_2}e^{+i2\pi f_{LO}t_3} dt_1dt_2dt_3\\
+=\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)S(t_2)S^*(t_3)\\
+\times& e^{-i2\pi (f_{LO}+f_{IF})t_2} e^{+i2\pi (f_{LO}+f_{IF})t_3} dt_1 dt_2 dt_3\\
+=\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)S(t_2)S^*(t_3)\\
+\times& e^{-i2\pi f_{SA} t_2} e^{+i2\pi f_{SA}t_3} dt_1 dt_2 dt_3\\
+\end{align}
+
+
+Let's pause to have a quick look at the dimensions of this expressions.
+First, I'll assume that the IF and video filters are unity gain filters meaning $\tilde{F_0}(f)$ and $\tilde{G}(f)$ are dimensionless:
+
+\begin{align}
+[\tilde{G}(f)] = [\tilde{F_0}(f)] = [1]
+\end{align}
+
+This means that their Fourier transforms have dimensions of $\left[\frac{1}{T}\right]$.
+This is because, for example $G(0) = \int \tilde{G}(f) df$ and $[f] = \left[\frac{1}{T}\right]$
+
+\begin{align}
+[G(t)] = [F_0(t)] = \left[\frac{1}{T}\right]
+\end{align}
+
+We'll assume the signal has dimensions of $[V]$
+
+\begin{align}
+[S(t)] =& [V]\\
+[\tilde{S}(f)] =& [VT]
+\end{align}
+
+
+With this we can see the dimensions of the spectrum analyzer output are
+
+\begin{align}
+[C(f_{SA}, t)] = [V^2]
+\end{align}
+
+Recalling that for electric signals $P = IV = \frac{V^2}{R}$ we can define the power output of the analyzer as
+
+\begin{align}
+P(f_{SA}, t) =& \frac{1}{\SI{50}{\ohm}} C(f_{SA}, t)\\
+\left[P(f_{SA}, t)\right] =& \left[W\right]
+\end{align}
+
+which has dimensions of power.
+This output is interpreted as the electrical power (driven into a \SI{50}{\ohm} load) which passes through the IF filter.
+
+I'll also specify that the video filter satisfies
+
+\begin{align}
+\int G(t) dt = \tilde{G}(0) = 1
+\end{align}
+
+And the IF filter satisfies
+
+\begin{align}
+\int |F_0(f)|^2 df = \Delta f_{IF}
+\end{align}
+
+Where $\Delta f_{IF}$ is the noise-equivalent bandwidth for the IF filter.
+
+I now want to reduce this to two special cases.
+
+\section{White Noise}
+
+For white noise we consider a signal which behaves like
+
+\begin{align}
+\Braket{S(t)S^*(t')} = N_S\delta(t - t')
+\end{align}
+
+Recall that a delta function integrates over its argument to unity. This means that 
+
+\begin{align}
+[\delta(x)] = \left[\frac{1}{x}\right]
+\end{align}
+
+Which implies in this case that
+
+\begin{align}
+[N_S] = [V^2T]
+\end{align}
+
+This might be read as volts-squared-per-hertz.
+These are dimensions of power spectral density because, when integrated over frequency, they give a power.
+
+In this case we get
+
+\begin{align}
+\Braket{C(f_{SA},t)} =\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)\Braket{S(t_2)S^*(t_3)}\\
+\times& e^{-i2\pi f_{SA} t_2} e^{+i2\pi f_{SA}t_3} dt_1 dt_2 dt_3\\
+=N_S\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)\delta(t_2-t_3)\\
+\times& e^{-i2\pi f_{SA} t_2} e^{+i2\pi f_{SA}t_3} dt_1 dt_2 dt_3\\
+=& N_S \int \int G(t-t_1) |F_0(t_1 - t_2)|^2 dt_1 dt_2
+\end{align}
+
+We can calculate by a change of variables and Parseval's theorem
+
+\begin{align}
+\int |F_0(t_1-t_2)|^2dt_2 = \int |F_0(\tau)|^2d\tau = \int|\tilde{F}_0(f)|^2 df = \Delta f_{IF}
+\end{align}
+
+And also
+
+\begin{align}
+\int G(t-t_1) dt_1 = \int G(\tau) d\tau =1
+\end{align}
+
+So that
+
+\begin{align}
+\Braket{C(f_{SA}, t)} = N_S \Delta f_{IF}
+\end{align}
+
+Note that this result, the power which passes through the bandpass filter, depends linearly on the filter bandwidth $f_{IF}$ as well as on the strength of the white noise $N_S$.
+
+\section{Pure Tone}
+
+We now consider the case the $S(t)$ is a pure tone with amplitude $S_0$.
+
+\begin{align}
+S(t) = S_0 e^{+i2\pi f_S t}
+\end{align}
+
+We then have
+
+\begin{align}
+C(f_{SA},t) =\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)S(t_2)S^*(t_3)\\
+\times& e^{-i2\pi f_{SA} t_2} e^{+i2\pi f_{SA}t_3} dt_1 dt_2 dt_3\\
+=|S_0|^2\int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)e^{+i2\pi f_St_2}e^{-i2\pi f_St_3}\\
+\times& e^{-i2\pi f_{SA} t_2} e^{+i2\pi f_{SA}t_3} dt_1 dt_2 dt_3\\
+= |S_0|^2 \int \int \int &G(t-t_1)F_0(t_1-t_2)F_0^*(t_1-t_3)\\
+\times& e^{-i2\pi (f_{SA}-f_S) t_2} e^{+i2\pi (f_{SA}-f_S)t_3} dt_1 dt_2 dt_3
+\end{align}
+
+We perform changes of variables $t_1-t_2 \rightarrow \tau_2$ and $t_1-t_3 \rightarrow \tau_3$ which results in
+
+\begin{align}
+C(f_{SA},t) =|S_0|^2\int \int \int &G(t-t_1) F_0(\tau_2)F_0^*(\tau_3) e^{-i2\pi(f_S-f_{SA})\tau_2}e^{+i2\pi(f_S-F_{SA})} dt_1d\tau_2d\tau_3\\
+ =& |S_0|^2\int G(t-t_1) dt_1 |F_0(f_S-f_{SA})|^2\\
+ =& |S_0|^2 |F_0(f_S-f_{SA})|^2
+\end{align}
+
+That is the spectrum analyzer records the amplitude of the signal squared, $|S_0|^2$ multiplied by the filter function evaluated at the detuning $f_S - f_{SA}$ between the analysis frequency and the signal frequency.
+The spectrally narrow input signal analyzes the IF filter in this case.
+Note that the peak signal level does not vary as the IF filter is changed.
+
+\section{Real Spectrum Analyzer}
+
+Above, for simplicity, I have described the operation of a \textit{complex} spectrum analyzer. 
+In the lab we work with signals and signal processing elements which are real valued.
+This can result in a tricky factor of two.
+
+In frequency space any real signal is symmetric about zero.
+That is, if it has a component at frequency $f_0$ it has a component at frequency $-f_0$ which carries equal power.
+The same goes for filters.
+A bandpass filter centered at $f_0$ has a non-zero transfer function at both $f_0$ and $-f_0$.
+A little bit of caution needs to be taken when thinking about the LO demodulation process as well since you are in fact demodulation with both $f_{LO}$ and $f_{-LO}$, but the problematic sum-frequency terms are typically out of the bandwidth of the IF filter and thus do not pose a problem.
+
+This essentially means that, compared to the complex spectrum analyzer, the real spectrum analyzer will read twice the signal of a complex spectrum analyzer.
+
+Care has to be taken when defining the bandwidth of the IF filter.
+In a real context the bandwidth is typically reported as
+
+\begin{align}
+\Delta f_{IF} = \int_{f=0}^{\infty} \left|\tilde{F}_{IF}(f)\right|^2 df
+\end{align}
+
+This means that while $\Delta f_{IF}$ of bandwidth is captured in the positive frequency range, this same bandwidth is captured in the negative frequency range resulting in twice the total power you might expect.
+
+Consider a cosine signal at frequency $f_S$.
+
+\begin{align}
+S(t) = S_0 \cos(2\pi f_S t) = \frac{S_0}{2} \left(e^{+i 2\pi f_S t} + e^{-i 2\pi f_S t}\right)
+\end{align}
+
+Here each exponential will contribute $\frac{|S_0|^2}{4}$ to the measured power spectrum evaluated at $f_{SA} = f_S$:
+
+\begin{align}
+C(f_S, t) = \frac{|S_0|^2}{4} + \frac{|S_0|^2}{4} = \frac{|S_0|^2}{2}
+\end{align}
+
+We can take the square root of this to find the RMS voltage within the IF filter bandwidth:
+
+\begin{align}
+\sqrt{C(f_S,t)} = \frac{|S_0|}{\sqrt{2}}
+\end{align}
+
+Here we see the familiar $\sqrt{2}$ relationship between the sinusoidal amplitude and RMS amplitude of a signal.
+
+For a white noise signal with noise variance $N_S$ the white noise would be collected in both positive and negative frequency ranges resulting in
+
+\begin{align}
+C(f_{SA}, t) = 2 N_S \delta f_{IF}
+\end{align}
+
+We see the twice the power as in the case of a complex spectrum analyzer.
+
+\section{Actual Spectrum Analyzer Output Conversions}
+
+In this section I'll describe the various units/formats which can be used to display the measured output of a spectrum analyzer.
+I am working with the Agilent 4395A spectrum/network analyzer in the lab.
+First, this particular unit can be operated either a spectrum or network analyzer.
+We will concern ourselves only with spectrum analyzer mode here.
+
+Next it can be in either Spectrum or Noise format.
+Finally, it can report it's output in the following `units': Watts, dBm, Volts, dBV, dBuV.
+
+I want to explain how to go from $C(f)$ which I have defined above to the output expressed in any of the above formats.
+
+First I will describe the various outputs in spectrum format.
+
+\begin{align}
+C_{S, W}(f) =& \frac{1}{\SI{50}{\ohm}} C(f)\\
+C_{S, dBm}(f) =& 10 \times \log_{10}\left(\frac{C_{S, W}(f)}{\SI{1}{\mW}}\right)\\
+C_{S, V}(f) =& \sqrt{C(f)}\\
+C_{S, dBV}(f) =& 20 \times \log_{10}\left(\frac{C_{S, V}(f)}{\SI{1}{V}}\right)\\
+C_{S, dB\mu V}(f) =& 20 \times \log_{10}\left(\frac{C_{S, V}(f)}{\SI{1}{\mu V}}\right)\\
+\end{align}
+
+The two voltage readings have a factor of 20 out in front because decibel readings are meant to represent power.
+That is, a change of $\SI{10}{\dB}$ should always represent an order of magnitude increase in \textit{power} whether or not it is referenced to a power level or a signal level.
+Power is proportional to $V^2$, hence the factor of two outside the logarithm.
+
+The readings in noise format are in some sense normalized to the IF filter bandwidth.
+This is to, for example, give readings which can be integrated to determine the power in certain bandwidths and to give readings which are independent of IF filter bandwidth for white noise sources.
+
+\begin{align}
+C_{N, W/Hz}(f) =& \frac{1}{\Delta f_{IF}}\frac{1}{\SI{50}{\ohm}} C(f)\\
+C_{N, dBm/Hz}(f) =& 10 \times \log_{10}\left(\frac{C_{N, W/Hz}(f)}{\SI{1}{\mW / \Hz}}\right)\\
+C_{N, V/\sqrt{Hz}}(f) =& \sqrt{\frac{C(f)}{\Delta f_{IF}}}\\
+C_{N, dBV/\sqrt{Hz}}(f) =& 20 \times \log_{10}\left(\frac{C_{N, V/\sqrt{Hz}}}{\SI{1}{\volt /\sqrt{Hz}}} \right)\\
+C_{N, dB\mu V/\sqrt{Hz}}(f) =& 20 \times \log_{10}\left(\frac{C_{N, V/\sqrt{Hz}}}{\SI{1}{\micro \volt /\sqrt{Hz}}} \right)
+\end{align}
+
+Note that for the logarithmic units the division happens inside the logarithm.
+The key insight for me is to understand that the unit $dBm  / Hz$, for example, is not to be read as `(one decibel relative to a mW) per Hz' but rather to be read as `one decibel relative to a (mW per Hz)'.
+That is, how many tenths of an order of magnitude above $\SI{1}{\mW / \Hz}$ is the signal?
+
+\end{document}

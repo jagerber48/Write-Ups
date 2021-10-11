@@ -1,0 +1,209 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{braket}
+\usepackage{siunitx}
+
+\newcommand{\ep}{\epsilon}
+\renewcommand{\vec}[1]{\boldsymbol{#1}}
+\newcommand{\unitvec}[1]{\hat{\boldsymbol{#1}}}
+
+\begin{document}
+\title{Coupling Constant Conventions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Main Text}
+
+In this document I will explore the relationship between the electric field $\vec{E}$ which drives an atomic dipole $\vec{d}$ and the $\Omega$ and $g$ coupling constants which characterize the interaction strength.
+
+The Hamiltonian in equation is
+
+\begin{align}
+H = -\vec{E}\cdot\vec{d}
+\end{align}
+
+The electric field is written as
+
+\begin{align}
+\vec{E} =& \vec{E}^{(+)} + \vec{E}^{(-)}\\
+\vec{E}^{(-)} =& \left(\vec{E}^{(+)}\right)^*
+\end{align}
+
+For a monochromatic field we have
+
+\begin{align}
+\vec{E}^{(+)}(\vec{r}, t) = \tilde{E}\vec{f}(\vec{r}) e^{-i\omega t}
+\end{align}
+
+$\tilde{E}$ is a complex field amplitude.
+Here $\vec{f}(\vec{r})$ is a dimensionless complex mode function which describe the spatial shape of the electromagnetic mode under consideration.
+Typically $\vec{f}(\vec{r})$ is normalized so that its maximum amplitude, or it's amplitude at key points of interest, is unity.
+Note that $\vec{f}(\vec{r})$ carries a vector nature which describes the local mode polarization.
+It might describe a mode of an optical cavity, a Gaussian mode in free space, or a plane wave.
+For confined modes we have
+
+\begin{align}
+\int \vec{f}^*(\vec{r})\cdot \vec{f}(\vec{r}) dV = V
+\end{align}
+
+Where $V$ is the mode volume.
+
+For a plane wave we would have
+
+\begin{align}
+\vec{f}(\vec{r}) = e^{i\vec{k}\cdot\vec{r}}
+\end{align}
+
+The dipole operator for an atom can be expressed as
+
+\begin{align}
+\vec{d} = \sum_{ij} \ket{i}\bra{i}\vec{d}\ket{j}\bra{j} = \sum_{ij} \vec{d}_{ij} \ket{i}\bra{j}
+\end{align}
+
+Where the sum is over the set of atomic states.
+If we consider a two level atom only the levels $\bra{g}$, $\bra{e}$ are relevant.
+Furthermore, because the dipole operator is parity odd and the atomic states are eigenstates of the parity operator the dipole operator cannot couple a state to itself. We then have
+
+\begin{align}
+\vec{d} =& \bra{g}\vec{d}\ket{e} \ket{g}\bra{e} + \bra{e}\vec{d}\ket{g} \ket{e}\bra{g}\\
+=& \vec{d}_{ge} \sigma + \vec{d}_{eg} \sigma^{\dag}\\
+=& \vec{d}^{(+)} + \vec{d}^{(-)}
+\end{align}
+
+The sense of rotation can be found by looking at the time evolution of the operators $\sigma$ and $\sigma^{\dag}$ under the free atomic Hamiltonian.
+
+We expand the Hamiltonian (dropping the fast rotating terms)
+
+\begin{align}
+H = - \vec{E}^{(+)}\cdot \vec{d}^{(-)} - \vec{E}^{(-)}\cdot\vec{d}^{(+)}
+\end{align}
+
+This becomes
+
+\begin{align}
+H =& - \tilde{E}\vec{f}\cdot\vec{d}_{eg} e^{-i\omega t} + h.c.\\
+\rightarrow &- \tilde{E}\vec{f}\cdot\vec{d}_{eg}\sigma^{\dag} + h.c.
+\end{align}
+
+Where I have gone into the rotating frame in the final expression.
+For a plane wave we have that $\vec{f} = \vec{\ep}$ where $\vec{\ep}$ is the electric field polarization vector
+
+\begin{align}
+H = -\tilde{E}\vec{\ep}\cdot\vec{d}_{eg} \sigma^{\dag} + h.c.
+\end{align}
+
+The quantity $\tilde{E} \vec{\ep}\cdot\vec{d}_{eg}$ has units of energy.
+We wish to express it as a coupling rate $\hbar\frac{\Omega}{2}$.
+
+\begin{align}
+\Omega = -\frac{2 \vec{\ep}\cdot \vec{d}_{eg} \tilde{E}}{\hbar}
+\end{align}
+
+The factor of $2$ is somewhat conventional when considering coupling to a classical electric field.
+I think this is related to the fact that, at least for linearly polarized light \footnote{The amplitude of circularly polarized is reduced by a factor of $\sqrt{2}$ as compared to that for linear polarized light. The difference is that the magnitude is constant at all points in space and time for circularly polarized light whereas it oscillates for linear polarized light.}, the peak to peak oscillation of the \textit{real} electric field is given by $2\tilde{E}$.
+
+This gives the Hamiltonian
+
+\begin{align}
+H = \hbar \frac{\Omega}{2} \sigma^{\dag} + h.c.
+\end{align}
+
+For the two level atom a unitary operation can be performed to ensure $\Omega$ is real but it is not necessarily possible for more complicated configurations.
+If $\vec{f}(\vec{r})$ has position dependence then so will $\Omega$.
+
+This discussion has been for classical electric fields.
+For a quantum electric field we have
+
+\begin{align}
+\vec{E}^{(+)} = E_{SP}\vec{f}(\vec{r})a
+\end{align}
+
+Where $a$ is the time dependent quantum field amplitude and $E_{SP}$ is the electric field of a single photon.
+We see that this could have been written as
+
+\begin{align}
+\tilde{E} = E_{SP}a
+\end{align}
+
+Let's calculate the energy of this field.
+The energy density for the electromagnetic field is given by
+
+\begin{align}
+u =& \frac{1}{2}\left(\ep_0 |\vec{E}|^2 + \frac{1}{\mu_0} |\vec{B}|^2\right)\\
+\rightarrow& \ep_0 |\vec{E}|^2\\
+\rightarrow& 2\ep_0 |\tilde{E}|^2
+\end{align}
+
+The second line follows because, for far-field light, the electric and magnetic fields carry equal energy density\footnote{This is true at all points in space and time for plane waves and I think always true averaged over space for all far-field modes}.
+The third line follows by noting there are two rapidly rotating terms when $|\vec{E}|^2$ is expanded.
+
+Integrating over space we get
+
+\begin{align}
+U = \int u dV = 2\ep_0 |\tilde{E}|^2 \int \vec{f}^*(\vec{r})\cdot \vec{f}(\vec{r}) dV = 2\ep_0 |\tilde{E}|^2 V
+\end{align}
+
+We write this as
+
+\begin{align}
+U = 2\ep_0 E_{SP}^2 V a^{\dag}a
+\end{align}
+
+$a^{\dag}a$ is the photon number.
+If we take this to be unity, and note that quantum mechanics requires the energy to come in quantized units of $\hbar \omega$ we get
+
+\begin{align}
+U = 2\ep_0 E_{SP}^2 V = \hbar \omega
+\end{align}
+
+We can solve for the field of a single photon:
+
+\begin{align}
+E_{SP} = \sqrt{\frac{\hbar \omega}{2\ep_0 V}}
+\end{align}
+
+This gives us
+
+\begin{align}
+\vec{E}^{(+)} = \sqrt{\frac{\hbar \omega}{2\ep_0 V}} \vec{f}(\vec{r})a
+\end{align}
+
+We can plug this in for the atom-light Hamiltonian:
+
+\begin{align}
+H =& -\tilde{E} \vec{\ep}\cdot\vec{d}_{eg}\sigma^{\dag} + h.c.\\
+=& - E_{SP} \vec{\ep}\cdot\vec{d}_{eg} \sigma^{\dag}a + h.c.
+\end{align}
+
+We now collect
+
+\begin{align}
+g = -\frac{E_{SP} \vec{\ep}\cdot\vec{d}_{eg}}{\hbar} = -\sqrt{\frac{\omega}{2\hbar \ep_0 V}} \vec{\ep}\cdot\vec{d}_{eg}
+\end{align}
+
+So that
+
+\begin{align}
+H = \hbar g\sigma^{\dag}a + h.c.
+\end{align}
+
+Again, somewhat conventionally, there is no factor of $2$ in the definition of $g$.
+I think that this highlights the fact that, particularly when fast-rotating terms are dropped, it is the complex amplitude of the electric field that is nicest to work with when considering atom-light interactions so there is no need to refer the quantities to the \textit{real} amplitude of the electric field.
+
+We see that which switch between the classical and quantum electric field representations by adjusting
+
+\begin{align}
+\frac{\Omega}{2} \rightarrow ga
+\end{align}
+
+The factor of $2$ is conventional.
+The rest is explained by noting
+
+\begin{align}
+\Omega \propto \tilde{E} \rightarrow E_{SP} a \propto g
+\end{align}
+
+\end{document}

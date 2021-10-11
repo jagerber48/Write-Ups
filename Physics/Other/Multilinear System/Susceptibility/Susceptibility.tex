@@ -1,0 +1,316 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\newcommand{\bv}[1]{\mathbf{#1}}
+
+\begin{document}
+\title{Susceptibility}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this write-up I will re-cast some of the math in the time-domain linear amplifier model into even more signal processing/amplifier type language.
+
+\section*{Linear System of Differential Equations}
+
+In the end we are considering a 6 dimensional system of linear differential equations represented by
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{M} \bv{v}(t) + \bv{f}(t)
+\end{align}
+
+Where $\bv{v}$ represents our system (quantum) variables and $\bv{f}(t)$ represents a driving force. In our system $\bv{f}(t) = \bv{g}(t)$ where $\bv{g}(t)$ represents various white noise drives. We will keep the force more general than that for now just to make clear the point that this is a simple system of differential equations. We solve, skipping a few steps at a time
+
+\begin{align}
+\frac{d}{dt}\left[e^{-\bv{M}t}\bv{v}(t)\right]_{t=t'} = e^{-\bv{M}t'}\bv{f}(t')\\
+\end{align}
+
+Integrating from $t_0$ to $t$:
+
+\begin{align}
+e^{-\bv{M}t}\bv{v}(t)-e^{-\bv{M}t_0}\bv{v}(t_0) = \int_{t'=t_0}^{t}e^{-\bv{M}t'}\bv{f}(t')dt'
+\end{align}
+
+
+\begin{align}
+\bv{v}(t) = e^{+\bv{M}(t-t_0)}\bv{v}(t_0) + \int_{t'=t_0}^{t} e^{+\bv{M}(t-t')}\bv{f}(t') dt'
+\end{align}
+
+If the system is stable then $\bv{M}$ can be thought of as a constant negative number so in the limit as $t_0\rightarrow -\infty$ the first term will decay to zero. Similarly, as we'll see later, the term which arises from the lower bound of the integral (also related to the initial conditions vanishes). That is for this sort of process after a certain amount of time the system loses all memory of its initial conditions and settles into an equilibrium determined entirely by the system response matrix $\bv{M}$.
+
+\begin{align}
+\bv{v}_{eq}(t) = \int_{t'=-\infty}^{t} e^{+\bv{M}(t-t')}\bv{f}(t') dt'
+\end{align}
+
+
+\section*{Linear Susceptibility}
+
+Note $\bv{M}$ represents some linear time invariant system constructed from our optomechanical system. That is, we have different components that interact in such a way that they process input forces in the way that some linear system would process an input. We are interested in the susceptibility of this system. To find the susceptibility we consider preparing the system in equilibrium (set $t_0\rightarrow -\infty$) and driving the it with a delta at $t=0$ so that $\bv{f}(t) = \bv{e}_j \delta(t)$ where $\bv{e}_j$ is the $j^{\text{th}}$ unit vector, indicating a drive on the $j^{\text{th}}$ input.
+
+\begin{align}
+\bv{v}_{\delta,j}(t) = \theta(t) e^{+\bv{M}t} \bv{e}_j
+\end{align}
+
+Or taking the $i^{\text{th}}$ component of the above equation
+
+\begin{align}
+v_{\delta,i,j}(t) &= \theta(t) \left(e^{+\bv{M}t}\right)_{ik}(e_j)_k = \theta(t) \left(e^{+\bv{M}t}\right)_{ik}\delta_{jk} = \theta(t) \left(e^{+\bv{M}t}\right)_{ij}\\ 
+v_{\delta,i,j}(t) &= \theta(t) \left(e^{+\bv{M}t}\right)_{ij}
+\end{align}
+
+This formula says that to calculate the impulse response of the $i^{th}$ system variable to a force on the $j^{th}$ force input we use the $i,j^{th}$ element of the matrix exponential. We define
+
+\begin{align}
+(\boldsymbol{\chi}(t))_{ij} = \theta(t) (e^{+\bv{M}t})_{ij}\\
+\boldsymbol{\chi}(t) = \theta(t) e^{+\bv{M}t}
+\end{align}
+
+The impulse response is related to the time-domain representation of the susceptibility.
+
+Let's return to the non-equilibrium general case.
+
+\begin{align}
+\bv{v}(t) = e^{+\bv{M}(t-t_0)}\bv{v}(t_0) + \int_{t'=t_0}^{t} e^{+\bv{M}(t-t')}\bv{f}(t') dt'
+\end{align}
+
+We can add in two Heaviside thetas and rewrite
+
+\begin{align}
+\bv{v}(t) = e^{+\bv{M}(t-t_0)}\bv{v}(t_0) + \int_{t'=-\infty}^{+\infty} \theta(t-t')e^{+\bv{M}(t-t')}\bv{f}(t')\theta(t'-t_0) dt'
+\end{align}
+
+We can define $\bv{f}_{t_0}(t') = \theta(t'-t_0)\bv{f}(t')$. This variable indicates the force that has driven the system since time $t_0$. We could alternatively just say the force doesn't turn on until $t=t_0$. We find
+
+\begin{align}
+\bv{v}(t) = e^{+\bv{M}(t-t_0)}\bv{v}(t_0) + \int_{t'=-\infty}^{+\infty} \boldsymbol{\chi}(t-t')\bv{f}_{t_0}(t') dt'
+\end{align}
+
+Consider setting $\bv{v}(t_0)=0$, or alternatively $t_0\rightarrow -\infty$ so that
+
+\begin{align}
+\bv{v}(t) = \int_{t'=-\infty}^{+\infty} \boldsymbol{\chi}(t-t')\bv{f}_{t_0}(t') dt' = (\boldsymbol{\chi}\ast \bv{f}_{t_0})(t)
+\end{align}
+
+In this case we see that the time evolution is given by the convolution of the  impulse response with the force. Fourier transforming and applying the convolution theorem:
+
+\begin{align}
+\tilde{\bv{v}}(f) = \tilde{\boldsymbol{\chi}}(f) \tilde{\bv{f}}_{t_0}(f)
+\end{align}
+
+In Fourier space the system spectrum is given by the product of the Fourier transform of the impulse response and the spectrum of the susceptibility. This is the role taken by the linear response function or linear susceptibility. We note that the susceptibility is related closely to the Fourier transform of the impulse response.
+
+\section*{Mean and Variance}
+\subsection*{Mean}
+Back to the general solution. We now let $\bv{f}(t) = \bv{g}(t)$ so that we are dealing with a stochastic white noise drive. The noise drive is defined by
+
+\begin{align}
+\braket{\bv{g}(t)} &= 0\\
+\braket{\bv{g}(t_1)\bv{g}^T(t_2)} &= \boldsymbol{\eta} \delta(t_1-t_2)
+\end{align}
+
+Where $\boldsymbol{\eta}$ is a matrix describing the strength of the drive. Classically $\boldsymbol{\eta}$ is a real matrix. Quantum mechanically it can be complex. In particular, if the white noise is coming from coupling to thermal reservoirs, $\boldsymbol{\eta}$ is Hermitian. We note that the white noise drive is not correlated with any of the system operators.
+
+
+\begin{align}
+\bv{v}(t) = e^{+\bv{M}(t-t_0)}\bv{v}(t_0) + (\boldsymbol{\chi} \ast \tilde{\bv{g}}_{t_0})(t)
+\end{align}
+
+The process described here is an Ornstein-Uhlenbeck process. It a system which is driven by white noise so it has Brownian like diffusion but it also has a damping term which causes it to damp towards zero.
+
+We find the mean
+
+\begin{align}
+\braket{\bv{v}(t)} = e^{+\bv{M}(t-t_0)}\braket{\bv{v}(t_0)}
+\end{align}
+
+If the system is in equilibrium then this term goes to zero. This means that the system has no coherent displacement.
+
+\subsection*{Correlation functions}
+
+\begin{align}
+\bv{v}(t_1)\bv{v}^T(t_2) &= e^{+\bv{M}(t_1-t_0)}\bv{v}(t_0)\bv{v}^T(t_0)\left(e^{+\bv{M}(t_2-t_0)}\right)^T\\
+&+ e^{+\bv{M}(t_1-t_0)}\bv{v}(t_0)(\tilde{\bv{g}}_{t_0}^T \ast \boldsymbol{\chi}^T)(t_2) + (\boldsymbol{\chi} \ast \tilde{\bv{g}}_{t_0})(t_1)\bv{v}^T(t_0)\left(e^{+\bv{M}(t_2-t_0)}\right)^T\\
+&+ (\boldsymbol{\chi} \ast \tilde{\bv{g}}_{t_0})(t_1)(\tilde{\bv{g}}_{t_0}^T \ast \boldsymbol{\chi}^T)(t_2)
+\end{align}
+
+Taking the expectation value
+
+\begin{align}
+\braket{\bv{v}(t_1)\bv{v}^T(t_2)} &= e^{+\bv{M}(t_1-t_0)}\braket{\bv{v}(t_0)\bv{v}^T(t_0)}\left(e^{+\bv{M}(t_2-t_0)}\right)^T\\
+&+\int_{t'=t_0}^{t_1}\int_{t''=t_0}^{t_2} e^{+\bv{M}(t_1-t')} \braket{\bv{g}(t')\bv{g}^T(t'')} \left(e^{+\bv{M}(t_2-t'')}\right)^T dt' dt''\\
+&= e^{+\bv{M}(t_1-t_0)}\braket{\bv{v}(t_0)\bv{v}^T(t_0)}e^{+\bv{M}^T (t_2-t_0)}\\
+&+\int_{t'=t_0}^{t_{\text{min}}} e^{+\bv{M}(t_1-t')} \boldsymbol{\eta} e^{+\bv{M}^T (t_2-t')} dt'
+\end{align}
+
+Where $t_{min} = \text{min}(t_1,t_2)$. Again in the equilibrium case the first term drops away. The matrix we have defined here is essentially a matrix containing all of the cross-correlations of the various system variables (operators.)
+
+\section{Stationary Processes}
+Let's see if these cross correlation functions are stationary. It will be very good if these signals are stationary because then we know we can apply the Wiener-Khintchine theorem. For the processes to be stationary it is necessary (physically and mathematically) for the system to be in equilibrium so we set $t_0 \rightarrow -\infty$. It is also necessary that the system is stable, a condition we can define mathematically shortly.
+
+\begin{align}
+\braket{\bv{v}(t_1)\bv{v}^T(t_2)} = \int_{t'=-\infty}^{t_{\text{min}}} e^{+\bv{M}(t_1-t')} \boldsymbol{\eta} e^{+\bv{M}^T (t_2-t')} dt'
+\end{align}
+
+The condition for these processes to be stationary is that $\braket{\bv{v}(t_1)\bv{v}^T(t_2)} = \braket{\bv{v}(t_1-t_2)\bv{v}^T(0)} = \braket{\bv{v}(\tau)\bv{v}^T(0)}$. In other words this function only depends on the time difference between $t_1$ and $t_2$, $\tau = t_1-t_2$. Let's see if this is the case. 
+
+This integral involves matrix expressions and matrix exponential. It's not clear to me how to evaluate this integral so instead I will expand it out in index notation.
+
+First a few quick notes. Suppose $\bv{M}$ is diagonalizable by $\bv{D} = \bv{P}^{-1}\bv{M} \bv{P}$ so that $\bv{M} = \bv{P}\bv{D}\bv{P}^{-1}$ with $\bv{D}$ diagonal. It it then easy to show using the definition of a matrix exponential that
+
+\begin{align}
+e^{\bv{M} t} = \bv{P}e^{\bv{D} t} \bv{P}^{-1}
+\end{align} 
+
+$e^{\bv{D}t}$ is a diagonal matrix. Consider $\bv{A}$, $\bv{B}$ and $\bv{C}$ with $D$ diagonal. We will be interested in products of these matrices and how to expand them.
+
+\begin{align}
+(\bv{A}\bv{C}\bv{D}){il} &= A_{ij} B_{jk} C_{kl}\\
+&= \sum_{j} A_{ij} b_j \delta_{jk} C_{kl} =  \sum_{j} b_j  A_{ij} C_{jl}
+\end{align}
+
+Note the explicit summation. This is necessary because $j$ appears three times in the expression and thus Einstein summation convention does not apply. There is a temptation to replace $A_{ij}C_{jl}$ with $(\bv{A} \bv{C})_{il}$ but that would only be valid if we were summing over $j$ with no other terms depending on $j$ in the sum. The $b_j$ ruins that in this case. We have basically broken Einstein summation convention because we wanted to write out $B_{jk} = b_j \delta_{jk}$ with summation NOT implied so that we could take advantage of the fact that $\bv{B}$ is diagonal.
+
+Finally note that, using the above we can write
+
+\begin{align}
+\left(e^{\bv{M}t}\right)_{il} = \left(\bv{P}e^{\bv{D}t}\bv{P}^{-1}\right)_{il} = \sum_{j} P_{ij}e^{d_j t} \delta_{jk}\left(\bv{P}^{-1}\right)_{kl} = \sum_j e^{d_j t} P_{ij} \left(\bv{P}^{-1}\right)_{jl}
+\end{align}
+
+Back to the task at hand
+
+\begin{align}
+\braket{\bv{v}(t_1)\bv{v}^T(t_2)} = \int_{t'=-\infty}^{t_{\text{min}}} e^{+\bv{M}(t_1-t')} \boldsymbol{\eta} e^{+\bv{M}^T (t_2-t')} dt'
+\end{align}
+
+\begin{align}
+\left(\braket{\bv{v}(t_1)\bv{v}^T(t_2)}\right)_{ip}&= \braket{v_i(t_1)v_p(t_2)}\\
+&\int_{t' = -\infty}^{t_{min}} \sum_{j,n} \left(\bv{P}\right)_{ij}\left(\bv{P}^{-1}\right)_{jl}\eta_{lm} \left(\left(\bv{P}^T\right)^{-1}\right)_{mn}\left(\bv{P}^{T}\right)_{np} e^{d_j (t_1-t')} e^{dn (t_2-t')} dt'
+\end{align}
+
+We can combine terms (not summing of $j$ or $n$)
+
+\begin{align}
+\zeta_{ijnp} = \sum_{l,m} \left(\bv{P}\right)_{ij}\left(\bv{P}^{-1}\right)_{jl}\eta_{lm} \left(\left(\bv{P}^T\right)^{-1}\right)_{mn}\left(\bv{P}^{T}\right)_{np}
+\end{align}
+
+So that
+
+\begin{align}
+\left(\braket{\bv{v}(t_1)\bv{v}^T(t_2)}\right)_{ip}&= \sum_{j,n} \zeta_{ijnp} e^{d_j t_1}e^{d_n t_2} \int_{t'=-\infty}^{t_{min}} e^{-(d_j+d_n)t'} dt'\\
+&= -\sum_{j,n} \frac{\zeta_{ijnp}}{d_j+d_n} e^{d_j t_1} e^{d_n t_2} \left[e^{-(d_j+d_n)t'}\right]_{t'=-\infty}^{t_{min}}\\
+&= -\sum_{j,n} \frac{\zeta_{ijnp}}{d_j+d_n} e^{d_j (t_1-t_{min})} e^{d_n (t_2-t_{min})}
+\end{align}
+
+This breaks into two cases. One with $t_1>t_2$ and one with $t_1<t_2$. Simply:
+
+\begin{align}
+\braket{v_i(t_1)v_p(t_2)}&=
+\begin{cases}
+-\sum_{j,n} \frac{\zeta_{ijnp}}{d_j+d_n} e^{d_j (t_1-t_2)}, & \text{for } t_1>t_2\\
+-\sum_{j,n} \frac{\zeta_{ijnp}}{d_j+d_n} e^{d_n (t_2-t_1)}, & \text{for } t_1<t_2
+\end{cases}
+\end{align}
+
+We see that in both cases the dependence is only on $t_1-t_2$. This means that all elements of the correlation matrix satisfy the conditions necessary for the Wiener-Khintchine theorem. We can then write
+
+\begin{align}
+\braket{v_i(t_1)v_p(t_2)} = \braket{v_i(t_1-t_2)v_p(0)}
+\end{align}
+
+And apply the Wiener-Khintchine theorem to see
+
+\begin{align}
+S_{v_i v_p}(f) &= \mathcal{FT}[\braket{v_i(\tau)v_p(0)}](f)\\
+& = \int_{\tau=-\infty}^{+\infty} e^{i2\pi f \tau} \braket{v_i(\tau)v_p(0)} d\tau\\ 
+&= \int_{f=-\infty}^{+\infty} \braket{\tilde{v_i}(f) \tilde{v_p}^*(f')} df' 
+\end{align}
+
+The last relation will be useful here. We write it out in matrix form defining
+
+\begin{align}
+(S_{\bv{v}\bv{v}}(f))_{ij} = S_{v_i v_j}(f)
+\end{align}
+
+so
+
+\begin{align}
+S_{\bv{v}\bv{v}}(f) = \int_{f=-\infty}^{+\infty} \braket{\tilde{\bv{v}}(f)\tilde{\bv{v}}^{\dag}(f')} df'
+\end{align}
+
+Noting the introduction of $^{\dag}$ for Hermitian conjugate which is the composition of transposition, $^T$, and complex conjugation, $^*$.
+We recall that for our noise force
+
+\begin{align}
+\tilde{\bv{v}}(f) = \tilde{\boldsymbol{\chi}}(f)\tilde{\bv{g}}(f)
+\end{align}
+
+Noting that it's a couple of lines to show $\braket{\tilde{\bv{g}}(f)\tilde{\bv{g}}^{\dag}(f')} = \bv{\eta}\delta(f-f')$. So that
+
+\begin{align}
+S_{\bv{v}\bv{v}}(f) &= \int_{f=-\infty}^{+\infty} \tilde{\boldsymbol{\chi}}(f)\braket{\tilde{\bv{g}}(f)\tilde{\bv{g}}^T(f')} \tilde{\boldsymbol{\chi}}^{\dag}(f')df'\\
+&= \tilde{\boldsymbol{\chi}}(f) \bv{\eta} \tilde{\boldsymbol{\chi}}^{\dag}(f)
+\end{align}
+
+\section{Equivalence of this approach and the linear amplifier model}
+Consider the formula
+
+\begin{align}
+\tilde{\bv{v}}(f) = \tilde{\boldsymbol{\chi}}(f) \tilde{\bv{g}}(f)
+\end{align}
+
+In this write up it was derived from solving for $\boldsymbol{\chi}(t)$ in the time domain by integrating the Langevin equation and then Fourier Transforming. That is
+
+\begin{align}
+\tilde{\boldsymbol{\chi}}(f) = \int_{t=-\infty}^{+\infty} e^{i 2\pi f t}\boldsymbol{\chi}(t) dt
+\end{align}
+
+with
+
+\begin{align}
+\boldsymbol{\chi}(t) = \theta(t) e^{+\bv{M}t}
+\end{align}
+
+However, in the linear amplifier we derive a similar expression but in a different way. In that model we look at
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{M}\bv{v}(t) + \bv{g}(t)
+\end{align}
+
+We then directly Fourier transform this expression using the derivative Fourier transform rule and then solve for $\tilde{\bv{v}}(f)$.
+
+\begin{align}
+-i 2\pi f \tilde{\bv{v}}(f) = \bv{M}\tilde{\bv{v}}(f) + \tilde{\bv{g}}(f)
+\end{align}
+
+\begin{align}
+\tilde{\bv{v}}(f) = -(i2\pi f \bv{I} + \bv{M})^{-1} \tilde{\bv{g}}(f)
+\end{align}
+
+The question is if these two expressions for $\tilde{\bv{v}}(f)$ agree. The answer is they do. We calculate 
+
+\begin{align}
+\tilde{\boldsymbol{\chi}}(f) &= \int_{t=-\infty}^{+\infty} e^{i 2\pi f t}\boldsymbol{\chi}(t) dt = \int_{t=0}^{+\infty} e^{i2\pi f t} e^{+\bv{M} t} dt = \int_{t=0}^{+\infty} e^{(i 2\pi f \bv{I} + \bv{M})t} dt \\
+\end{align}
+
+We can see where this is going. It is possible to integrate a single matrix exponential as if it was a normal number but using matrix inversion rather than division.
+
+\begin{align}
+\tilde{\boldsymbol{\chi}}(f) = \left[(i 2\pi f \bv{I} + \bv{M})^{-1} e^{(i 2\pi f \bv{I} + \bv{M})t}\right]_{t=0}^{+\infty} = -(i2\pi f \bv{I} + \bv{M})^{-1}
+\end{align}
+
+So we see that either approach gives the same result for the Fourier spectrum and thus, for example, the power spectral density.
+
+\end{document}

@@ -1,0 +1,694 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{biblatex}
+\usepackage{bbm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{braket}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+\bibliography{refs}
+
+\begin{document}
+\title{Gaussian Beam}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I write down the formulas for higher order Gaussian beams. I follow and trust Wikipedia.
+
+\section{Derivation of the Gaussian Beam}
+
+\subsection{Maxwell's Equations}
+Maxwell's equations in vacuum are written as
+
+\begin{align}
+\nabla \cdot \bv{E} =& 0\\
+\nabla \cdot \bv{B} =& 0\\
+\nabla \times \bv{E} =& - \ppt{\bv{B}}\\
+\nabla \times \bv{B} =& \frac{1}{c^2} \ppt{\bv{E}}
+\end{align}
+
+\subsection{Deriving the Helmholtz Equation}
+By taking the curl of the third equation (and interchanging the temporal and spatial derivatives) we get
+
+\begin{align}
+\nabla \times \left( \nabla \times \bv{E}\right) = -\ppt{} \left(\nabla \times \bv{B}\right) = -\frac{1}{c^2} \frac{\partial^2}{\partial t^2} \bv{E}
+\end{align}
+
+Using a vector calculus identity:
+
+\begin{align}
+\nabla\left(\nabla \cdot \bv{E}\right) - \nabla^2 \bv{E} = -\nabla^2\bv{E} = -\frac{1}{c^2} \frac{\partial^2}{\partial t^2} \bv{E}
+\end{align}
+
+We have applied the first of Maxwell's equations.
+Rearranging:
+
+\begin{align}
+\left(\nabla^2 - \frac{1}{c^2}\frac{\partial^2}{\partial t^2}\right)\bv{E} = 0
+\end{align}
+
+This is the vector wave equation.
+We implement the ansatz $\bv{E} = E_0\bv{u}e^{+i\omega t}$ with $\bv{u}$ time-independent so that
+
+\begin{align}
+\left(\nabla^2 - \frac{(+i\omega)^2}{c^2}\right) = \left(\nabla^2 + k^2\right)\bv{u} = 0
+\end{align}
+
+This is the vector Helmholtz equation.
+Note that $\bv{u}$ is now a dimensionless mode shape function.
+It is more difficult to solve the vector Helmholtz equation than the scalar Helmholtz equation, however, it is possible for one to bootstrap from a solution of the scalar Helmholtz equation to a solution to the vector Helmholtz equation.
+
+If $u$ satisfies the scalar Helmholtz equation:
+
+\begin{align}
+\left(\nabla^2 + k^2\right)u = 0
+\end{align}
+
+Then
+
+\begin{align}
+&\bv{r}\times \nabla u\\
+&\nabla \times (\bv{r}\times \nabla u)
+\end{align}
+
+Are two oppositely polarized solutions to the vector Helmholtz equation. See \cite{Reitz1960} for more on this.
+
+For this reason we will devote our attention to finding solutions to the scalar Helmholtz equation.
+
+\subsection{The Paraxial Helmholtz Equation}
+
+In fact, we will restrict even more to the paraxial Helmholtz equation.
+In the paraxial Helmholtz equation we are considering `beams' of light.
+These are patterns of the electromagnetic field which are extended in one dimension, $z$ and confined in the transverse direction.
+We will see that as long as the confinement in the transverse direction is not too large (the relevant length scale is $\lambda \sim \frac{1}{k}$) then the variation in the axial direction is moderate.
+This will allow us to approximate the Helmholtz equation with the paraxial Helmholtz equation as follows.
+
+\begin{align}
+\left(\nabla^2 + k^2\right)u = \left(\partial_x^2 +  \partial_y^2 + \partial_z^2 + k^2\right)u = 0
+\end{align}
+
+We now make the ansatz
+
+\begin{align}
+u = a e^{-ikz}
+\end{align}
+
+The idea is that $a$ is a slowly spatially varying function. 
+We then have
+
+\begin{align}
+\partial_z^2 \left(a e^{-ikz}\right) =& \partial_z\left((\partial_z a) e^{-ikz} - ik a e^{-ikz}\right)\\
+=& (\partial_z^2 a) e^{-ikz} - ik (\partial_z a) e^{-ikz} - ik(\partial_z a)e^{ikz} - k^2 a e^{-ikz}\\
+=& \left(\partial_z^2 a - 2ik \partial_z a - k^2 a\right)e^{-ikz}
+\end{align}
+
+The paraxial approximation is to suppose $\partial_z^2 A \ll k^2 A$ so that we end up with
+
+\begin{align}
+\partial_z^2\left(ae^{-ikz}\right) = \left(-2ik\partial_z a - k^2 a\right)e^{-ikz}
+\end{align}
+
+Plugging this into the full scalar wave equation we get
+
+\begin{align}
+\left(\nabla^2 + k^2\right)a e^{-ikz} \approx \left((\partial_x^2 + \partial_y^2)a - 2ik \partial_z a\right)e^{-ikz} = 0
+\end{align}
+
+We can write this as
+
+\begin{align}
+\label{eq:Parax}
+\left(\nabla_T^2 - 2ik \partial_z\right)a = 0
+\end{align}
+
+This is the paraxial Helmholtz equation where $\nabla^2_T = \partial_x^2 + \partial_y^2$.
+
+\subsection{Solving the Paraxial Helmholtz Equation in Fourier Space}
+
+We can find a solution to this equation by performing a 2D Fourier transform.
+We write $a(x,y,z) = a_z(x,y)$, so that $a_x$ represents the complex field in a plane with fixed $z$.
+We perform a 2D Fourier transform in this plane.
+Here we use the Fourier convention:
+
+\begin{align}
+\mathcal{FT}[f(x)](k_x) = \tilde{f}(k_x) = \int e^{-ik_x x} f(x) dx
+\end{align}
+
+Under this convention the 2D-Fourier transform of the paraxial Helmholtz equation yields
+
+\begin{align}
+\left((ik_x)^2 + (ik_y)^2 - 2ik \partial_z\right)\tilde{a}_z(k_x,k_y) =& 0\\
+= (-k_x^2 - k_y^2 - 2ik\partial_z)\tilde{a}_z(k_x,k_y) =& 0
+\end{align}
+
+Here
+
+\begin{align}
+\tilde{a}_z(x,y) = \int e^{-ik_x x}e^{-ik_y y} a_z(x,y) dx dy
+\end{align}
+
+This equation can be rewritten as
+
+\begin{align}
+\label{eq:ParaxHelmFourier}
+\partial_z \tilde{a}_z(k_x, k_y) = i \frac{1}{2k}(k_x^2 + k_y^2) \tilde{a}_z(k_x, k_y)
+\end{align}
+
+This differential equation is easily solved by
+
+\begin{align}
+\label{eq:ParabFourier}
+\tilde{a}_z(k_x, k_y) = e^{i\frac{z}{2k}(k_x^2 + k_y^2)} = e^{i\frac{\lambda z}{4\pi} (k_x^2 + k_y^2)}
+\end{align}
+
+The inverse Fourier transform of this is given by
+
+\begin{align}
+a_z(x, y) = \frac{i}{\lambda z} e^{-i\frac{\pi}{\lambda z}(x^2 + y^2)}
+\end{align}
+
+This function is the so called parabaloidal wave and it is a classic solution to the paraxial Helmholtz equation.
+It is tied closely with Huygens' principle but we will not go into that here.
+
+\subsection{From Parabaloidal to Gaussian Wave - The Complex Beam Parameter}
+
+We can anticipate a problem with the parabaloidal wave. In particular, if we look in Fourier space at Eq. (\ref{eq:ParabFourier}) we can see that the parabaloidal wave has support at all spatial frequencies.
+This means that it will have infinite power as it is an integral over an infinite number of plane waves with constant amplitude.
+
+We can solve this problem of infinite power by returning to the Fourier representation:
+
+consider
+
+\begin{align}
+\tilde{a}_z(k_x, k_y) = e^{i \frac{\lambda z}{4\pi}(k_x^2 + k_y^2)}
+\end{align}
+
+If we let $z\rightarrow q(z) = (z-z_0) + i z_R = \Delta z + i z_R$ we get
+
+\begin{align}
+\tilde{a}_z(k_x, k_y) = e^{i \frac{\lambda q(z)}{4\pi}(k_x^2 + k_y^2)} = e^{i \frac{\lambda (-z_0 + i z_R)}{4\pi}(k_x^2 + k_y^2)} e^{i\frac{\lambda z}{4\pi}(k_x^2 + k_y^2)}
+\end{align}
+
+We see that this new function is a multiplication of the previous Fourier space solution by a function which does not depend on $z$.
+This means that this new function will also be a solution of the Fourier space version of the paraxial Helmholtz equation, Eq. (\ref{eq:ParaxHelmFourier}).
+
+We will call $q(z)$ the complex beam parameter.
+
+The advantage of the introduction of $q(z)$ is two-fold.
+First, the introduction of $z_0$ will cause the resultant wave to be centered about $z=z_0$ rather than $z=0$. 
+Second, the main advantage, is that the $iz_R$ term acts to introduce a decaying Gaussian envelope in Fourier space to the Fourier representation of the wave.
+This  limits the total power or energy in the beam to a finite value.
+We will give a more physical intuition for $z_R$ shortly.
+
+We take the inverse Fourier transform again to find
+
+\begin{align}
+a_z(x,y) = \frac{i}{\lambda q(z)} e^{-i\frac{\pi}{\lambda q(z)}(x^2 + y^2)} = \frac{i}{\lambda q(z)} e^{-i\frac{\pi}{\lambda q(z)} \rho^2 }
+\end{align}
+
+This it turns out will be the basic Gaussian beam common in optics.
+I've defined $\rho^2 = x^2 + y^2$.
+
+\subsection{Deriving the Familiar Gaussian Beam}
+We are now going to perform a series of manipulations and defintions to bring this into the familiar form for a Gaussian beam.
+We will first go through with little motivation or intuition and then, once the final result is established, we will loop back and explore the definitions more carefully.
+
+First we find
+
+\begin{align}
+\frac{1}{q(z)} = \frac{1}{\Delta z + i z_R} =& \frac{\Delta z}{\Delta z^2 + z_R^2} - i \frac{z_R}{\Delta z^2 + z_R^2}\\
+=& \frac{1}{\Delta z\left(1 + \left(\frac{z_R}{\Delta z}\right)^2\right)} - i \frac{1}{z_R\left(1 + \left(\frac{\Delta z}{z_R}\right)^2\right)}
+\end{align}
+
+We plug this in to the exponent above (we will manipulate the coefficient in front shortly):
+
+\begin{align}
+a_{q(z)}(x,y) = \frac{i}{\lambda q(z)} e^{-i\frac{\pi}{\lambda} \frac{\rho^2}{\Delta z\left(1+\left(\frac{z_R}{\Delta z}\right)^2\right)}} e^{-\frac{\pi}{\lambda}\frac{\rho^2}{z_R\left(1+\left(\frac{\Delta z}{z_R}\right)^2\right)}}
+\end{align}
+
+In this form we then define the beam waist as a function of $z$
+
+\begin{align}
+w(z)^2 =& \frac{\lambda z_R}{\pi}\left(1+\left(\frac{\Delta z}{z_R}\right)^2\right)\\
+=& w_0^2 \left(1+\left(\frac{\Delta z}{z_R}\right)^2\right)^2
+\end{align}
+
+and the wavefront radius of curvature:
+
+\begin{align}
+R(z) = \Delta z\left(1+\left(\frac{z_R}{\Delta z}\right)^2\right)
+\end{align}
+
+We then rewrite
+
+\begin{align}
+a_{q(z)}(x,y) = \frac{i}{\lambda q(z)} e^{-i k \frac{\rho^2}{2R(z)}} e^{- \frac{\rho^2}{w(z)^2}}
+\end{align}
+
+We now re-express
+
+\begin{align}
+\frac{i}{q(z)} = \frac{i}{\Delta z + iz_R}
+\end{align}
+
+We consider the reciprocal:
+
+\begin{align}
+\frac{q(z)}{i} =& z_R - i\Delta z= \sqrt{z_R^2 + \Delta z^2} e^{i\arctan\left( - \frac{\Delta z}{z_R}\right)}\\
+=& z_R \sqrt{1 + \left(\frac{\Delta z}{z_R}\right)^2} e^{-i\arctan\left(\frac{\Delta z}{z_R}\right)}
+\end{align}
+
+We define the Gouy phase
+
+\begin{align}
+\psi(z) = \arctan\left(\frac{\Delta z}{z_R}\right)
+\end{align}
+
+We can then write
+
+\begin{align}
+\frac{i}{\lambda q(z)} =& \frac{1}{\lambda z_R \sqrt{1+\left(\frac{\Delta z}{z_R}\right)^2}} e^{i\psi(z)}\\
+=& \frac{1}{\pi} \frac{1}{w(z)} e^{i\psi(z)}
+\end{align}
+
+We plug this in to find a more familiar Gaussian beam expression:
+
+\begin{align}
+a_{q(z)} = \frac{1}{\pi} \frac{1}{w(z)}e^{-\frac{\rho^2}{w(z)^2}}e^{-ik\frac{\rho^2}{2R(z)}}e^{i\psi(z)}
+\end{align}
+
+We recall that $a_{q(z)}$ was given by
+
+\begin{align}
+E = E_0 u e^{+i\omega t} = E_0 a e^{-ikz}e^{+i\omega t}
+\end{align}
+
+So that the full (scalar) electric field for a Gaussian beam is given by
+
+\begin{align}
+E(z, \rho, t) = E_0 \frac{1}{\pi} \frac{1}{w(z)} e^{-\frac{\rho^2}{w(z)^2}}e^{-ik\frac{\rho^2}{2R(z)}}e^{i\psi(z)} e^{-ikz} e^{+i\omega t}
+\end{align}
+
+Note that an arbitrary rescaling doesn't matter so we can multiply by $\pi \omega_0$ to get
+
+\begin{align}
+E(z, \rho, t) = E_0 \frac{w_0}{w(z)} e^{-\frac{\rho^2}{w(z)^2}}e^{-ik\frac{\rho^2}{2R(z)}}e^{i\psi(z)} e^{-ikz} e^{+i\omega t}
+\end{align}
+
+This scaling has the advantage that $E(0, 0, 0) = E_0$.
+
+We also have that
+
+\begin{align}
+|E(z, \rho, t)|^2 = |E_0|^2 \left(\frac{w_0}{w(z)}\right)^2 e^{-2 \frac{\rho^2}{w(z)^2}}
+\end{align}
+
+\subsection{Exploring the Terms in the Gaussian Beam}
+
+\subsubsection{Radial Dependence}\todo{add plot}
+We first explore the waist of the Gaussian beam.
+
+\begin{align}
+w(z) = w_0 \sqrt{1+\left(\frac{\Delta z}{z}\right)^2}
+\end{align}
+
+First we see that is called the waist because in a plane of constant $z$ the field intensity goes like
+
+\begin{align}
+e^{-2 \frac{\rho^2}{w(z)^2}}
+\end{align}
+
+Thus we see that points in space with the same $\rho$ have the same intensity, the pattern is radially symmetric.
+Next we see that when $\rho = w(z)$ that the intensity falls to $e^{-2} = \frac{1}{e^2}$ of its original value.
+$w(z)$ is called the beam waist at position $z$.
+$w_0$ is called \textit{the} beam waist and is a clear radial length scale for the beam.
+
+A word of caution. 
+In mathematical and statistics literature on encounters the Gaussian function:
+
+\begin{align}
+G(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{1}{2} \left(\frac{x}{\sigma}\right)^2}
+\end{align}
+
+Here $\sigma$ represents the standard deviation of the Gaussian and $\sigma^2$ represents the variance. 
+We can see that the Gaussian beam above is in fact a Gaussian function, but we must be wary and note that $w(z)$ is NOT the variance of the Gaussian. In particular one would have
+
+\begin{align}
+\frac{2}{w^2} =& \frac{1}{2\sigma^2}\\
+w =& 2\sigma\\
+\sigma =& \frac{w}{2}
+\end{align}
+
+We now explore the profile for $\Delta z \gg z_R$ and the relationship between $w_0$ and $z_R$.
+
+\begin{align}
+w(z) \approx \frac{w_0}{z_R} \Delta z
+\end{align}
+
+That is the waist grows linearly as a function of propagation distance.
+If we imagine a 2D profile in space of $\rho = w(z)$ this profile would be conical with a half-angle $\theta$ with
+
+\begin{align}
+\tan(\theta) = \frac{\omega_0}{z_R}
+\end{align}
+
+If $\theta \ll 1$ then
+
+\begin{align}
+\theta \approx \frac{\omega_0}{z_R}
+\end{align}
+
+We write a few relationships between $w_0$, $z_R$, and $\theta$ involving $\lambda$ and $k$.
+
+\begin{align}
+\omega_0 =& \sqrt{\frac{\lambda z_R}{\pi}} = \sqrt{2 \frac{z_R}{k}}\\
+z_R =& \frac{\pi w_0^2}{\lambda} = \frac{1}{2} k w_0^2\\
+\tan(\theta) =& \frac{\omega_0}{z_R} = \sqrt{\frac{\lambda}{\pi z_R}} = \sqrt{\frac{2}{k z_R}} = \frac{\lambda}{\pi w_0} = \frac{2}{k\omega_0}
+\end{align}
+
+We see that $\theta \ll 1$ if $\omega_0 \gg \lambda$ or $z_R \gg \lambda$, one of which holds if the other does.
+
+\subsubsection{Axial Dependence}\todo{add plot}
+
+We next explore the axial dependence of the beam.
+Along the line of $\rho=0$ the beam intensity goes like
+
+\begin{align}
+\left(\frac{w_0}{w(z)}\right)^2 = \frac{1}{1 + \left(\frac{\Delta z}{z_R}\right)^2}
+\end{align}
+
+We see that the intensity is highest when $\Delta z$ and that when $\Delta z=z_R$ the intensity falls off to $\frac{1}{2}$ it's value at the waist.
+$z_R$ is thus an axial length scale for the beam.
+
+\subsubsection{Wavefront Radii of Curvature}
+
+Now we will explore why $R(z)$ is called the wavefront radius of curvature.
+First a reminder about radius of curvature.
+
+Recall from calculus a ciruclar curve
+
+\begin{align}
+y^2 + x^2 =& R^2\\
+y =& \sqrt{R^2 - x^2}
+\end{align}
+
+We calculate the 2nd derivative
+
+\begin{align}
+\frac{dy}{dx} =& -\frac{x}{\sqrt{R^2 - x^2}}\\
+\frac{d^2y}{dx^2} =& \frac{1}{\sqrt{R^2 - x^2}} + \frac{x^2}{(R^2 - x^2)^{\frac{3}{2}}}
+\end{align}
+
+If we evaluate this at $x=0$ we get
+
+\begin{align}
+y'' = \frac{1}{R}
+\end{align}
+
+In particular, what I would like to draw from this is that for a curve which has a vanishing derivative but non-vanishing second derivative can be approximated by a circle with a radius of curvature $R = \frac{1}{y''}$.
+
+We are now going to apply this to the 2D surfaces representing the surfaces of constant phase (the wavefronts) in the Gaussian beam.
+The relevant terms are
+
+\begin{align}
+e^{-ik \frac{\rho^2}{2R(z)}} e^{-ikz} e^{i\psi(z)}
+\end{align}
+
+\begin{align}
+R(z) = \Delta z\left(1+\left(\frac{z_R}{\Delta z}\right)^2\right)
+\end{align}
+
+\begin{align}
+\psi(z) = \arctan\left(\frac{\Delta z}{z_R}\right)
+\end{align}
+
+We note that $R(z)$ and $\psi(z)$ vary slowly as a functions of $z$ so for a wavefront centered at some value of $z$ we will approximate $R(z) = R$ and $\psi(z) = \psi$. We then see that we have
+
+\begin{align}
+e^{-ik\frac{\rho^2}{2R} - ikz + i\psi}
+\end{align}
+
+Surfaces of constant phase are then defined by
+
+\begin{align}
+\frac{\rho^2}{2R} + z = \phi
+\end{align}
+
+with $\phi$ constant
+
+\begin{align}
+z =& \phi - \frac{\rho^2}{2R}\\
+z' =& \frac{\rho}{R}\\
+z'' = & \frac{1}{R}
+\end{align}
+
+So we see that the curvature of this surface is given exactly by $R$.
+This justifies us calling $R(z)$ the radius of curvature.
+
+Note that for $z = 0$ the radius of curvature is infinite, that is the phase fronts are flat and for $z\rightarrow \infty$ that $R(z)\rightarrow z$.
+The maximum radius of curvature occurs when $z=z_R$ and $R(z) = 2 z_R$.
+
+\subsubsection{Guoy Phase}
+
+Much or little could be said about the Guoy phase.
+Here we simply state the Guoy phase and indicate that it is an additional phase which is collected by a Gaussian beam compared to a plane wave of the same wavelength.
+It will have important implication for the resonant frequencies of higher order spatial modes in optical cavities.
+
+\begin{align}
+\psi(z) = \arctan\left(\frac{\Delta z}{z_R}\right)
+\end{align}
+
+\subsection{Summary of the Gaussian Beam}
+
+The field of Gaussian beam is given by
+
+\begin{align}
+E(z, \rho, t) =& E_0 \frac{w_0}{w(z)} e^{-\frac{\rho^2}{w(z)^2}} e^{-ik\frac{\rho^2}{2R(z)}} e^{i\psi(z)} e^{-ikz} e^{+i\omega t}\\
+w(z) =& w_0\sqrt{1+\left(\frac{\Delta z}{z_R}\right)^2}\\
+R(z) =& z\left(1+\left(\frac{z_R}{z}\right)^2\right)\\
+\psi(z) =& \arctan\left(\frac{\Delta z}{z}\right)
+\end{align}
+
+The intensity is given by
+
+\begin{align}
+|E(z, \rho, t)|^2 = |E_0|^2 \left(\frac{w_0}{w(z)}\right)^2 e^{-2\frac{\rho^2}{w(z)^2}}
+\end{align}
+
+Some relationships between $w_0$ and $z_R$ and $\theta$:
+
+\begin{align}
+\omega_0 =& \sqrt{\frac{\lambda z_R}{\pi}} = \sqrt{2 \frac{z_R}{k}}\\
+z_R =& \frac{\pi w_0^2}{\lambda} = \frac{1}{2} k w_0^2\\
+\tan(\theta) =& \frac{\omega_0}{z_R} = \sqrt{\frac{\lambda}{\pi z_R}} = \sqrt{\frac{2}{k z_R}} = \frac{\lambda}{\pi w_0} = \frac{2}{k\omega_0}
+\end{align}
+
+The Gaussian beam can alternatively be expressed as 
+
+\begin{align}
+E(z, \rho, t) = E_0 \frac{q_0}{q(z)} e^{-i k \frac{\rho^2}{2q(z)}} e^{-ikz} e^{+i\omega t}
+\end{align}
+
+With
+
+\begin{align}
+q(z) = (z-z_0) + i z_R = \Delta + i z_R
+\end{align}
+
+with the relations that
+
+\begin{align}
+\frac{1}{q(z)} =& \frac{1}{R(z)} - i \frac{\lambda}{\pi w(z)^2}\\
+\frac{i}{\lambda q(z)} =& \frac{1}{\pi} \frac{1}{w(z)} e^{i\psi(z)}
+\end{align}
+
+\section{Higher Order Gaussian Beams}
+
+Above we have calculated one solution to the paraxial wave equation.
+However, it is general possible, through separation of variables, to solve for entire families of solutions such that any solution can be decomposed into modes within these families.
+
+\cite{} and \cite{}\todo{add references} give some detail on how to solve the paraxial Helmholtz equation in Cartesian coordinates to derive the Hermite-Gaussian family of modes.
+The separation of variables is, however, a bit complicated.
+Unfortunately I have not found a thoroughly simple and pedagogical walkthrough of the derivation and have not been able to create my own derivation.
+For that reason I will simply state the final results here.
+The forms I give are close to those given in all references including Wikipedia, though may differ slightly from all of them.
+
+When the separation of variables is performed in a cylindrical rather than Cartesian coordinate system the resultant family of modes are the Laguerre-Gaussian modes.
+There is even less material in the literature on the derivation of these modes.
+
+\cite{}\todo{add references} provides a unique approach to deriving both the standard Hermite-Gaussian and Laguerre-Gaussian modes as well as the so-called `elegant' Hermite-Gaussian and Laguerre-Gaussian modes.
+
+
+\subsection{Hermite-Gaussian Modes}
+
+The Hermite Gaussian modes are given by
+
+\begin{align}
+u_{nm}(x,y,z) = &\frac{w_0}{w(z)} e^{-\frac{x^2+y^2}{w(z)^2}} e^{-i\frac{x^2+y^2}{2R(z)}} e^{-ikz} e^{i\psi(z)}\\
+\times& C_{nm}H_n\left(\frac{\sqrt{2}x}{w(z)}\right)H_m\left(\frac{\sqrt{2}y}{w(z)}\right)e^{i(n+m)\psi(z)}
+\end{align}
+
+The first line above is the exact same as the standard Gaussian beam.
+The second line is a modulation by the Hermite polynomials $H_n$ and $H_m$.
+$C_{nm}$ is a normalization constant which we will calculate imminently.
+We see also that these higher order modes come with extra Guoy  phase factors which scale with the mode numbers.
+
+We calculate the normalization factor by demanding that the modes or orthogonal in the $z=0$ plane.
+
+\begin{align}
+\int\int u_{nm}(x,y,0)u_{n'm'}^*(x,y,0) dx dy = \delta_{nn'}\delta_{mm'}
+\end{align}
+
+We work this out by first writing down
+
+\begin{align}
+u_{nm}(x, y, 0) = C_{nm}e^{-\frac{x^2}{w_0^2}} H_n\left(\frac{\sqrt{2}x}{w_0}\right) e^{-\frac{y^2}{w_0^2}}H_m\left(\frac{\sqrt{2}y}{w_0}\right)
+\end{align}
+
+The double integration then separates nicely:
+
+\begin{align}
+&\int\int u_{nm}(x,y,0)u_{n'm'}^*(x,y,0) dx dy =\\
+= C_{nm}C_{n'm'} &\left[\int e^{-2\frac{x^2}{w_0^2}}H_n\left(\frac{\sqrt{2}x}{w_0}\right) H_{n'}\left(\frac{\sqrt{2}x}{w_0}\right) dx \right]\\
+\times &\left[\int e^{-2\frac{y^2}{w_0^2}}H_m\left(\frac{\sqrt{2}y}{w_0}\right) H_{m'}\left(\frac{\sqrt{2}y}{w_0}\right) dy \right]
+\end{align}
+
+We implement a change of variables $\frac{\sqrt{2}x}{w_0} = \nu$ and similarly for $y$ to get
+
+\begin{align}
+=& C_{nm}C_{n'm'}  \frac{w_0^2}{2} \int e^{-\nu^2}H_n(\nu)H_{n'}(\nu)d\nu \int e^{-\mu^2}H_m(\mu)H_{m'}(\mu)d\mu=1
+\end{align}
+
+The normalization for Hermite polynomials is given by
+
+\begin{align}
+\int e^{-\nu^2}H_n(\nu)H_{n'}(\nu)d\nu = \sqrt{\pi}2^n n! \delta_{nn'}
+\end{align}
+
+so we see
+
+\begin{align}
+C_{nm}C_{n'm'} \frac{w_0^2}{2} (\sqrt{\pi}2^n n!)(\sqrt{\pi}2^m m!) \delta_{nn'}\delta_{mm'} = 1
+\end{align}
+
+So we see that we get the orthogonality as desired and for $n=n'$, $m=m'$ we have
+
+\begin{align}
+C_{nm} = \left(\frac{\sqrt{\frac{2}{\pi}}}{2^n n! w_0}\right)^{\frac{1}{2}}
+\left(\frac{\sqrt{\frac{2}{\pi}}}{2^m m! w_0}\right)^{\frac{1}{2}}
+\end{align}
+
+The total orthonormal solution is then given by
+
+\begin{align}
+u_{nm}(x,y,z) = &\frac{w_0}{w(z)} e^{-\frac{x^2+y^2}{w(z)^2}} e^{-i\frac{x^2+y^2}{2R(z)}}e^{-ikz}e^{i\psi(z)}\\
+\times & \left(\frac{\sqrt{\frac{2}{\pi}}}{2^n n! w_0}\right)^{\frac{1}{2}} H_n\left(\frac{\sqrt{2}x}{w(z)}\right) e^{in\psi(z)}\\
+\times & \left(\frac{\sqrt{\frac{2}{\pi}}}{2^m m! w_0}\right)^{\frac{1}{2}} H_m\left(\frac{\sqrt{2}y}{w(z)}\right) e^{im\psi(z)}\\
+\end{align}
+
+\section{Laguerre-Gaussian Modes}
+
+The Laguerre-Gaussian mode function are given by
+
+\begin{align}
+u_{lm}(\rho, \phi, z) =& \frac{w_0}{w(z)} e^{-\frac{\rho^2}{w(z)^2}} e^{-ik\frac{\rho^2}{R(z)}} e^{-ikz} e^{i\psi(z)}\\
+& \times C_{lm} \left(\frac{\sqrt{2}\rho}{w(z)}\right)^{|m|} L_l^{|m|}\left(\frac{2\rho^2}{w(z)^2}\right) e^{-im\phi} e^{i(|m|+2l)\psi(z)}
+\end{align}
+
+Again the first line is the standard Gaussian solution and the second is the modulation representing the higher order modes.
+$C_{lm}$ is again an orthonormalization constant which we will solve by by ensuring the mode function ar orthonormal at $z=0$.
+$L_l^{|m|}$ are the generalized Laguerre polynomials.
+
+Solving at $z=0$:
+
+\begin{align}
+u_{lm}(\rho, \phi, 0) = C_{lm} e^{-\frac{\rho^2}{w_0^2}}\left(\frac{\sqrt{2}\rho}{w_0}\right)^{|m|}L_l^{|m|}\left(\frac{2\rho^2}{w_0^2}\right)e^{-im\phi}
+\end{align}
+
+We now must calculate
+
+\begin{align}
+\int_{\phi=0}^{2\pi} \int_{\rho=0}^{\infty} u_{lm}(\rho, \phi, 0) u_{l'm'}^*(\rho,\phi,0) \rho d\rho d\phi
+\end{align}
+
+Working this out we get
+
+\begin{align}
+C_{lm}C_{l'm'}\int_{\phi=0}^{2\pi} e^{-i(m-m')\phi} d\phi \int_{\rho=0}^{\infty} e^{-2\frac{\rho^2}{w_0^2}} \left(\frac{\sqrt{2}\rho}{w_0}\right)^{|m|+|m'|} L_l^{|m|}\left(\frac{2\rho^2}{w_0^2}\right)L_{l'}^{|m'|}\left(\frac{2\rho^2}{w_0^2}\right) \rho d\rho
+\end{align}
+
+The $\phi$ integral is equal to $2\pi$ if $m=m'$ and zero otherwise so this reduces to
+
+\begin{align}
+C_{lm}C_{l'm}2\pi \int_{\rho=0}^{\infty} e^{-2\frac{\rho^2}{w_0^2}}\left(\frac{\sqrt{2}\rho}{w_0}\right)^{2|m|} L_l^{|m|}\left(\frac{2\rho^2}{w_0^2}\right)L_{l'}^{|m|}\left(\frac{2\rho^2}{w_0^2}\right) \rho d\rho
+\end{align}
+
+We perform a change of variables $t = \frac{2\rho^2}{w_0^2}$ with $dt = \frac{4}{w_0^2} \rho d\rho$.
+This leads to
+
+\begin{align}
+= C_{lm}C_{l'm} 2\pi \frac{w_0^2}{4} \int_{t=0}^{\infty} e^{-t} t^{|m|} L_l^{|m|}(t) L_{l'}^{|m|}(t) dt
+\end{align}
+
+This integral works out to
+
+\begin{align}
+\int_{t=0}^{\infty} e^{-t} t^{|m|} L_l^{|m|}(t) L_{l'}^{|m|}(t) dt = \frac{(l+|m|)!}{l!} \delta_{ll'}
+\end{align}
+
+So we get
+
+\begin{align}
+C_{lm}^2 \frac{w_0^2}{2} \frac{(l+|m|)!}{l!} =& 1\\
+C_{lm} = \sqrt{\frac{2l!}{(l+|m|)! w_0^2}}
+\end{align}
+
+Putting this all together we get
+
+\begin{align}
+u_{lm}(\rho, \phi, z) =& \frac{w_0}{w(z)} e^{-\frac{\rho^2}{w(z)^2}} e^{-ik\frac{\rho^2}{R(z)}} e^{-ikz} e^{i\psi(z)}\\
+& \times \sqrt{\frac{2l!}{\pi(l+|m|)!}}\frac{1}{w_0} \left(\frac{\sqrt{2}\rho}{w(z)}\right)^{|m|} L_l^{|m|}\left(\frac{2\rho^2}{w(z)^2}\right) e^{-im\phi} e^{i(|m|+2l)\psi(z)}
+\end{align}
+
+\section{Appendix: Curl of Curl identity}
+
+consider the curl of the curl of vector field $\bv{A}$.
+
+\begin{align}
+\nabla \times \nabla \times \bv{A} = \nabla \times \left(\nabla \times \bv{A}\right)
+\end{align}
+
+We write the $i^{\text{th}}$ component of this vector field in index notation:
+
+\begin{align}
+\left(\nabla \times \nabla \times \bv{A}\right)_i =& \ep_{ijk} \partial_j \ep_{klm} \partial_l A_m\\
+=& \ep_{ijk}\ep_{klm} \partial_j \partial_l A_m\\
+=& \ep_{kij} \ep_{klm} \partial_j \partial_l A_m\\
+=& \left( \delta_{il}\delta_{jm} - \delta_{im}\delta_{jl}\right)\partial_j \partial_l A_m\\
+=& \partial_m \partial_i A_m - \partial_l \partial_l A_i\\
+=& \partial_i \partial_l A_l - \partial_l \partial_l A_i\\
+=& \left(\nabla \left(\nabla \cdot \bv{A}\right) - (\nabla\cdot \nabla) \bv{A}\right)_i\\
+=&  \left(\nabla \left(\nabla \cdot \bv{A}\right) - \nabla^2 \bv{A}\right)_i\\
+\end{align}
+
+So we say that
+
+\begin{align}
+\nabla \times \nabla \times \bv{A} = \nabla\left(\nabla \cdot \bv{A}\right) - \nabla^2\bv{A}
+\end{align}
+
+\end{document}

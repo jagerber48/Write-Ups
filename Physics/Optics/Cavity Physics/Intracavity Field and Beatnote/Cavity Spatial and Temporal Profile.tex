@@ -1,0 +1,116 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{braket}
+\usepackage{siunitx}
+
+\newcommand{\ep}{\epsilon}
+
+\begin{document}
+\title{Cavity Spatial and Temporal Profile derivation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In my thesis I have calculate the position and time dependent right and left propagating fields in an optical cavity.
+
+\begin{align}
+E_{cav,R}^{(+)}(z,t) =& E_{in,0}^{(+)}t_1\frac{\mathcal{F}}{\pi} \chi(\Delta) e^{-i(\psi(z)-\psi(z_1))}e^{ik_q(z-z_1)}e^{-i\omega_q t}\\
+E_{cav,L}^{(+)}(z,t) =& -E_{in,0}^{(+)}r_2t_1\frac{\mathcal{F}}{\pi}\chi(\Delta) e^{+i(\psi(z)-\psi(z_2))}e^{-ik_q(z-z_2)} e^{+i\frac{\phi_{r_1} - \phi_{r_2}}{2}} e^{i\pi q} e^{-i\omega_q t}
+\end{align}
+
+A few notes
+
+\begin{align}
+\omega_{FSR} =& 2\pi \frac{c}{2L}\\
+k_{FSR} =& \frac{\omega_{FSR}}{c} = \frac{\pi}{L}\\
+\omega_q =& \omega_{FSR}\left(q + \frac{\phi_C}{2\pi}\right)\\
+k_q =& k_{FSR}\left(q+\frac{\phi_C}{2\pi}\right) = \frac{\pi}{L}\left(q+\frac{\phi_C}{2\pi}\right)\\
+\phi_C =& 2\phi_G + \phi_{r_1}+\phi_{r_2}\\
+\phi_G =& \psi(z_2)-\psi(z_1)\\
+L =& z_2 - z_1
+\end{align}
+
+We can write this as
+
+\begin{align}
+E_{cav,R}^{(+)}(z,t) =& E_{in,0}^{(+)}t_1\frac{\mathcal{F}}{\pi}\chi(\Delta) e^{i\Phi_{cav,R}}\\
+E_{cav,L}^{(+)}(z,t) =& E_{in,0}^{(+)}t_1\frac{\mathcal{F}}{\pi}\chi(\Delta) e^{i\Phi_{cav,L}}
+\end{align}
+
+Where I have approximated $r_2\approx 1$ and defined
+
+\begin{align}
+\Phi_{cav,R} =& k_q(z-z_1) - (\psi(z)-\psi(z_1)) - \omega_q t\\
+\Phi_{cav,L} =& -k_q(z-z_2) + (\psi(z)-\psi(z_2)) +\frac{\phi_{r_1}-\phi_{r_2}}{2} + \pi(q + 1) - \omega_q t
+\end{align}
+
+The extra term of $\pi$ in $\Phi_{cav,L}$ comes from $-1 = e^{+i\pi}$. 
+The standing wave inside of the cavity is the sum of the left and right propagating fields:
+
+\begin{align}
+E_{cav}(z,t) =& E_{cav,R}^{(+)}(z,t) + E_{cav,L}^{(+)}(z,t) + c.c.\\
+=& E_{in,0}^{(+)}t_1\frac{\mathcal{F}}{\pi}\chi(\Delta)\\
+=& E_{in,0}^{(+)}t_1\frac{\mathcal{F}}{\pi}\chi(\Delta)\left(e^{i\Phi_{cav,R}} + e^{i\Phi_{cav,L}} + c.c.\right)
+\end{align}
+
+We have the identity
+
+\begin{align}
+e^A + e^B + e^{-A} + e^{-B} =& \left(e^{\frac{A+B}{2}} + e^{-\frac{A+B}{2}}\right)\left(e^{\frac{A-B}{2}} + e^{-\frac{A-B}{2}}\right)\\
+\end{align}
+
+From which we can derive the trig identity
+
+\begin{align}
+2(\cos(A) + \cos(B)) = 4\cos\left(\frac{A+B}{2}\right)\cos\left(\frac{A-B}{2}\right)
+\end{align}
+
+So we are interested in
+
+\begin{align}
+\Phi_+ =& \frac{1}{2}\left(\Phi_{cav,_R} + \Phi_{cav,L}\right)\\
+\Phi_- =& \frac{1}{2}\left(\Phi_{cav,_R} - \Phi_{cav,L}\right)
+\end{align}
+
+\begin{align}
+\Phi_+(t) =& -\omega_q t + \frac{1}{2}k_q(z_2-z_1) - \frac{1}{2}(\psi(z_2)-\psi(z_1)) + \frac{\phi_{r_1} - \phi_{r_2}}{4} + \frac{\pi}{2}(q+1)\\
+=& -\omega_q t + \frac{\pi}{2}\left(q + \frac{\phi_C}{2\pi}\right) -\frac{\phi_G}{2} + \frac{\phi_{r_1} - \phi_{r_2}}{4} + \frac{\pi}{2}(q+1)\\
+=& -\omega_q t + \pi\left(q+\frac{1}{2}\right) + \frac{\phi_G}{2} + \frac{\phi_{r_1}+\phi_{r_2}}{4} - \frac{\phi_G}{2} + \frac{\phi_{r_1}-\phi_{r_2}}{4}\\
+=& -\omega_q t + \pi\left(q+\frac{1}{2}\right) + \frac{\phi_{r_2}}{2}
+\end{align}
+
+\begin{align}
+\Phi_-(z) =& k_q z -\psi(z) - \frac{1}{2}k_q(z_1 + z_2) + \frac{1}{2}(\psi(z_2) + \psi(z_1)) - \frac{\phi_{r_1} - \phi_{r_2}}{4} - \frac{\pi}{2}(q+1)
+\end{align}
+
+By plugging in the equation above for $k_q$ (and noting that $L=z_2-z_1$) it can be shown that
+
+\begin{align}
+\Phi_-(z_1) =& -\frac{\phi_1}{2} - \pi\left(q+\frac{1}{2}\right) \rightarrow -\frac{\phi_1}{2} \mp \frac{\pi}{2}\\
+\Phi_-(z_2) =& \frac{\phi_2}{2} - \frac{\pi}{2}
+\end{align}
+
+In the first expression I have replace $\pi q$ by $\pm \pi$ noting that $\mod(\pi q, 2\pi) = \pm \pi$ where the plus sign is taken for even $q$ and the minus sign for odd $q$.
+
+If the cavity is geometrically symmetric then $z_1 = -z_2$ which implies $\psi(z_2) = -\psi(z_1)$ so this simplifies to
+
+\begin{align}
+\Phi_- = k_q z - \psi(z) - \frac{\phi_{r_1}-\phi_{r_2}}{4} - \frac{\pi}{2}(q+1)
+\end{align}
+
+The total field can then be written as
+
+\begin{align}
+E_{cav}(z,t) = 4E_{in,0}^{(+)} t_1\frac{\mathcal{F}}{\pi}\chi(\Delta)&\cos\left(\omega_q t - \pi \left(q+\frac{1}{2}\right) - \frac{\phi_{r_2}}{2}\right)\\
+\times&\cos\left(k_qz - \psi(z) - \frac{\phi_{r_1}-\phi_{r_2}}{4} - \frac{\pi}{2}(q+1)\right)
+\end{align}
+
+
+
+
+
+\end{document}

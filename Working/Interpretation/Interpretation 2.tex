@@ -1,0 +1,130 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{An Interpretation of Quantum Mechanics}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+Here I will present my current interpretation of Quantum Mechanics which makes me the least uneasy of all of the interpretations.
+
+\section{Specification of a Quantum System}
+
+Any physical system consists of a number of degrees of freedom such as position ($X$), momentum ($P$), angular momentum ($L$), magnitude and direction of electromagnetic $\bv{E}(\bv{r})$ and other fields at each point in space etc. The description of a quantum systems begins with an identification of the degrees of freedom involved.
+
+Once a set of physical degrees of freedoms has been identified the theory of quantum mechanics tells us that we can associate a Hilbert space $\mathcal{H}$ with the physical system under study. Note that the total Hilbert space may be a tensor product of Hilbert spaces for sub-systems of the total system involved. For example the Hilbert space describing a single spinful particle would be a tensor product of the position/momentum Hilbert space and the spin Hilbert space for that particle. In general we have
+
+\begin{align}
+\mathcal{H} = \bigotimes_i \mathcal{H}_i
+\end{align}
+
+Elements of this Hilbert space are denoted by kets such as $\ket{\psi}$. We will see that kets correspond to the physical state of a quantum system. For example, we can have two quantum systems which share the same set of physical degrees of freedom, but if the quantum systems correspond to different kets or quantum states then the two quantum systems will exhibit different physical behavior.
+
+In addition to the Hilbert space of kets, quantum mechanics grants us operators which act on the elements of this Hilbert space which are in correspondence with the physical degrees of freedom mentioned above. For example, corresponding to the physical degree of freedom $X$ there is an operator $\hat{X}$ which acts on elements of the Hilbert space $\mathcal{H}$. In what way the physical degrees of freedom are in correspondence with operators $\hat{X}$ will be made clear shortly. 
+
+Note now my notational distinction between elements of physical reality, $X$, and the elements $\hat{X}$ of the mathematical quantum theory which correspond to those physical elements. This is not a critical distinction but I hope that it will allow future mathematical expressions to more clearly  exhibit the ideas I am attempting to express.
+
+Note according to some time on the Wikipedia page for $C^*$ algebra that I'm not sure about: I believe the Hilbert space and operator formulation could be postulated in a bit cleaner and more empirically motivated way as follows. Beginning with the physical degrees of freedom, we could perform measurements to determine the possible values the degrees of freedom can be found to take on. For example, looking at a particle with a microscope can reveal that the degree of freedom $X$ can take on a continuum of possible values while performing a Stern-Gerlach experiment reveals the spin projection $S_z$ of a spin-$\frac{1}{2}$ particle can only take on 2 discrete values. At this point we can define abstract mathematical objects such as $\hat{X}$ and $\hat{S}_z$ which are elements of something called a $C^*$-algebra which are in correspondence with the physical observables. There are then theorems (Gelfand-Naimark) saying that given a $C^*$ algebra there is some Hilbert space $\mathcal{H}$ with the property that the set of operators acting on $\mathcal{H}$ is isomorphic to the given $C^*$ algebra. 
+
+I think the general idea with the $C^*$ algebra is that it is exactly what we mean by promoting a classical variable to quantum variable by ``putting a hat on it''. Elements of the $C^*$ algebra can be added and multiplied but multiplication is not necessarily commutative. Presumably $C^*$ algebras can be ``generated'' by a few elements such as $\hat{S}_{x,y,z}$ and the $C^*$ algebra is determined by the commutation relations between these generators.
+
+Thus we see that we can go from experimental data to defining quantum operators or quantum variables to defining a corresponding Hilbert space.
+
+In fact the above is correct. See ``Why we do quantum mechanics on Hilbert spaces'' by Armin Scrinzi.
+
+\section{Time Evolution in Quantum Mechanics}
+
+Problems in physics are often cast in a form in which the state of a system is specified at some time $t_0$. This initial specification in addition to the physical laws of time evolution can then allow us to predict the state of the system of a future time. 
+
+This is pragmatically useful because, knowing the laws of physics, we can now implement experimental protocols to allow us to, for example, prepare a system in an interesting physical state \textit{now} and then rely on the dynamics of the system to take it into a new physical state which we may be more interested in. Alternatively, if we have information about what the state of the system is \textit{now} then we can use our knowledge of the dynamical evolution to predict what the state will be in the future and use this information to our advantage, this is in some sense the essence of technology - the use of our ability to predict the dynamics of a physical system to our advantage.
+
+Quantum mechanics is no different in this regard. At the outset of the problem we specify a time $t_0$ as well as what I will call the initial quantum state $\ket{\psi_0}$. $\ket{\psi_0}$ can be thought of the state of the system at time $t_0$.
+
+I will now state the fundamental predictive formula for quantum mechanics.
+
+Consider the physical degree of freedom $O$ with the corresponding quantum operator $\hat{O}$. $\hat{O}$ has a spectrum of eigenvalues which satisfy
+
+\begin{align}
+\hat{O} \ket{o_i} = o_i \ket{o_i}
+\end{align}
+
+Suppose the system begins in initial state $\ket{\psi_0}$.
+Quantum mechanics predicts the existence of a unitary operator $T(t,t_0)$ called the time evolution operator. In addition, quantum mechanics specifies that the probability the degree of freedom $O$ takes on value $o_i$ at time $t$ is given by
+
+\begin{align}
+P(O=o_i,t) &= |\bra{o_i}T^{\dag}(t,t_0)\ket{\psi_0}|^2 = \bra{\psi_0}\hat{T}^{\dag}(t,t_0)\ket{o_i}\bra{o_i}\hat{T}(t,t_0)\ket{\psi_0}\\
+&=\bra{\psi_0}\hat{T}^{\dag}(t,t_0)\hat{\Pi}_{o_i} \hat{T}(t,t_0)\ket{\psi_0}\\
+\end{align}
+
+With
+
+\begin{align}
+\hat{O}\ket{o_i} = o_i\ket{o_i}
+\end{align}
+
+and
+
+\begin{align}
+\hat{\Pi}_{o_i} = \ket{o_i}\bra{o_i}
+\end{align}
+
+The time evolution operator also satisfies
+
+\begin{align}
+\hat{T}^{\dag}(t_2,t_1) \hat{T}(t_2,t_1) &= \hat{T}(t_2,t_1)\hat{T}^{\dag}(t_2,t_1) = 1\\
+\hat{T}(t_2,t_1)\hat{T}(t_1,t_0) &= \hat{T}(t_2,t_1)\\
+\hat{T}(t,t) &= 1
+\end{align}
+
+Note that I have slyly given away the major content of my interpretation in my statement of the above probability formula. Namely I have claimed that at each point in time they physical degree of freedom, $O$, actually takes on a particular value. Note that there is no reference to a mysterious ``measurement''. It is simply claimed that at each point in time $O$ takes on some value. Classically such an idea would be pedestrian. However, quantum mechanically this idea is strange, to surprising, to heretic depending on to whom you speak. I will address concerns levied from the point of view of various interpretations subsequently but for now I will press on.
+
+The above is fine and well and is in fact not much different from the orthodox Copenhagen interpretation which is taught in first year quantum mechanics courses so the mathematical statement, at least, should not be hard to swallow for any physicist.
+
+However, I must generalize the above formula slightly in a way which is NOT usually done in a first year quantum mechanics class and is honestly rarely ever done.
+The formula I have given above tells us about the probability of a single physical degree of freedom taking on a particular value, but I have allowed above for the possibility of many degrees of freedom. Consider multiple physical degrees of freedom $\{O^j\}$. The joint probability that the event happens that each of the observables $O^j$ takes on the value $o^j_{i_j}$ (That is the $j^{th}$ operator takes on a value corresponding to its $i_j^th$ eigenvalue) at time $t$ is given by
+
+\begin{align}
+P\left(O^1=o^1_{i_1},\ldots ,O^N=o^N_{i_N},t\right) &= \Bigg|\left(\bigotimes_{i=1}^N \bra{o^i_{i_j}}\right) \hat{T}(t,t_0)\ket{\psi_0} \Bigg|^2\\
+&= \Bra{\psi_0}\hat{T}^{\dag}(t,t_0)\left(\bigotimes_{i=1}^N \hat{\Pi}_{o^i_{i_j}} \right) \hat{T}(t,t_0)\ket{\psi_0}
+\end{align}
+
+Note that $\ket{\psi_0}$ is of course a tensor product over the relevent $N$ Hilbert spaces. This notation is a bit obtuse so I'll illustrate an example with two observables.
+
+\begin{align}
+P(X=x, Y=y,t) &= \Bigg|(\bra{x}\otimes\bra{y}) \hat{T}(t,t_0)\ket{\psi_0} \Bigg|^2\\
+&= \Bra{\psi_0}\hat{T}^{\dag}(t,t_0)\left(\Pi_x \otimes \Pi_y \right) \hat{T}(t,t_0)\ket{\psi_0}
+\end{align}
+
+We see that in addition to telling us the probability that a single degree of freedom
+
+
+\end{document}

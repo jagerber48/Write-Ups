@@ -1,0 +1,677 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\newcommand{\bv}[1]{\textbf{#1}}
+
+\begin{document}
+\title{Photodetection}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Photodetection}
+
+\section{Introduction}
+
+In the great tradition of E3, I will, like many other people who have come through on the experiment, make a write-up to help understand the signal levels from our heterodyne detection scheme. In fact, in hindsight after writing this write up I realized it's been a process of me learning a full quantum theory of photodetection and how to apply it to a balanced heterodyne detector. In particular I was concerned about questions like what shot noise arises from and how signal peaks and noise levels depend on detector bandwidths and time windows etc.
+
+In the end I followed a paper by Carmichael. It seems like the ideas date back to Mandel and were refined by Kelley and Kleiner who are now usually referenced in regard to the photon counting formula used in this write-up.
+
+
+\subsection{Photodetection Introduction}
+
+We are concerned with the deriving the statics of the photocurrent, $i(t)$, resulting from an electric field, $\hat{a}(t)$ impinging upon the active area of a photoelectric detector such as a photodiode. Glauber used perturbation theory and Fermi's golden rule to show that the probability of the electric field exciting an electron (and thus creating a photocurrent) is proportional to $\hat{a}^{\dag}(t)\hat{a}(t)$, i.e. the excitation probability is related to the intensity of the field or equivalently the photon number flux of the field.
+
+Note also here that we take $\hat{a}$ to represent a ``flying'' photon. That is it has units of $\frac{1}{\sqrt{\text{s}}}$ and $\hat{a}^{\dag}\hat{a}$ represents a photon number flux rather than just a photon number.
+
+There seem to be two regimes of photodetection. In one regime the detector distinguishes the discrete absorptions of single photons and creates a pulse indicating as much. These are maybe photon counting experiments. In the other regime so many photons arrive in a short time that it is impossible for the detector to resolve individual `clicks' and instead what results is a continuous photo-current. We are concerned with this second regime.
+
+It should be noted that the relevant timescale distinguishing the two regimes is the timescale related to the detector bandwidth, $f_{BW} = \frac{1}{\Delta t}$. If many photons arrive within time $\Delta t$ the detector cannot resolve them as individual pulses. However, since the detector is made of many $10^{23}$ atoms it is still possible for it to detect multiple photons at once. The current will just be greater.
+
+The detector bandwidth is associated with another important feature. Because the detector has finite bandwidth it is impossible for it to accurately report the time evolution of a continuous process, but rather, it will perform some averaging. For example, an oscilloscope will monitor a voltage $V(t)$ for a time $\Delta t$, integrating during the whole time window, and then knowing the bandwidth, will divide the result of the integration by the time length of the integration window returning back $\bar{V}_{\Delta t} = \frac{1}{\Delta t}\int_t^{t+\Delta t} V(t') dt'$. Thought of another way, whatever sets the bandwidth of the detector acts as a low pass filter on the signal which can equivalently be thought of as an integrator.
+
+However you want to think about it, the photodetector is not different than the oscilloscope and it turns out thinking about the bandwidth will become important in determining the statistics of the photocurrent.
+
+There is some question as to how $i(t)$, the photocurrent which is related to $\hat{a}^{\dag}(t)\hat{a}$ arising in the calculations that follow, is related to the signals we record in E3. In E3 we perform some experiment and record the photocurrent for some period of time synchronized with the experiment. We then save these individual time traces, records of $i(t)$ for each iteration, onto a hard drive. We then use Matlab to analyze and sometimes average these time traces in particular ways. The question is how these classical records of the quantum signal are related to $i(t)$ that is calculated here.
+
+My answer is as follows. The photocurrent $i(t)$ which will be derived here is a classical stochastic process. In practice $i(t)$ is averaged and digitized by the ADC in gaugescope and recorded. My claim is that the value of the photocurrent measured in each time bin is a classical random variable. The full time trace of these random variable then constitutes a stochastic process. Thinking of the photocurrent as a stochastic process leads us to a few conclusions. It should not be possible to write any analytic formula to calculate the measured photocurrent on a single shot of the experiment but rather only a stochastic formula. However, It should be possible to write analytic formulae for expectation values involving the photocurrent stochastic process. That is in fact the goal of this write up.
+
+For example, $i(t)$ is a stochastic process which describes what we measure on any single iteration of the experiment, however, $\braket{i(t)}$, the result of averaging the time traces of many experiments, is a real function of time which will be better and better approximated by the experimental data in the limit of large sample size. Similarly, $S_{ii}(f)$, the power spectral density, is also calculated by averaging something related to the photocurrent ($\braket{i(t)i(0)}$ for example) over many samples so we can also make an exact theoretical prediction for this as well.
+
+The goal of this write is to determine how the statistics of the classical stochastic process $i(t)$ such as $\braket{i(t)}$ or $\braket{i(t_1)i(t_2)}$ can be derived from the statistics of the quantum electric field, $\hat{a}(t)$ impinging on the detector. The output of this write up is then a prescription for how to use the measured photocurrent to determine properties of the incident electric field.
+
+\subsection{Photon counting statistics}
+
+We follow the approach in Carmichael closely.
+
+First we note that the mean photon current will be given by
+
+\begin{equation}
+\braket{i(t)} = \frac{e}{\Delta t} \sum_{n=0}^{\infty} n p(n, t, t+\Delta t)
+\end{equation}
+
+$p(n, t, t+\Delta t)$ is the probability of $n$ photon absorptions occurring in the time window from $t$ to $t+\Delta t$. The prefactor of $e$ indicates that one photon creates a single electron. This formula says to add up all of the photodetections which happen within the bandwidth time window and then divide by the time window length to determine the magnitude of the photocurrent.
+
+We see that to determine the mean photocurrent we need to know the statistics of photon absorption. That is we need to know $p(n,t,t+\Delta t)$. Following Carmichael, We define the operator $\hat{\Omega}(t_1,t_2)$ which is basically the integrated photon flux in the time window $t_1$ to $t_2$.
+
+\begin{equation}
+\hat{\Omega}(t_1,t_2) = \int_{t_1}^{t_2} \hat{a}^{\dag}(t') \hat{a}(t') dt'
+\end{equation}
+
+The operator has units of quanta and can be thought as the photocount operator. It is related to the number of photons which pass the detector in the bandwidth time.
+
+Carmichael references the Kelly/Kleiner or Mandel photon counting formula to tell us
+
+
+\begin{equation}
+p(n,t+\Delta t,t) = \left< :\frac{\hat{\Omega}(t,t+\Delta t)^n}{n!}e^{-\hat{\Omega}(t,t+\Delta t)}:\right>
+\end{equation}
+
+The $::$ notation indicates normal ordering and time ordering of the operators inside. All creation operators are to the left of all annihilation operators and, within the creation operators, the time arguments are increasing, and within the annihilation operators the time arguments are decreasing. I will not say more about how this formula is derived other than that it is a many pages long derivation which requires thinking carefully joint and disjoint probabilities of excitation etc.
+
+We plug the probability formula into the mean photocurrent formula.
+
+\begin{align}
+\braket{i(t)} &= \frac{e}{\Delta t} \left<: \hat{\Omega}(t,t+\Delta t) e^{-\hat{\Omega}(t,t+\Delta t)}\sum_{n=0}^{\infty} n \frac{\hat{\Omega}(t,t+\Delta t)^{n-1}}{n!} \right>\\
+&= \frac{e}{\Delta t} \left<:\hat{\Omega}(t,t+\Delta t) e^{-\hat{\Omega}(t,t+\Delta t)} e^{+\hat{\Omega}(t,t+\Delta t)}:\right>\\
+&= \frac{e}{\Delta t}\left<:\hat{\Omega}(t,t+\Delta t):\right>
+\end{align}
+
+The normal ordering is advantageous because it allows us to manipulate the quantum variables as if they were just c-numbers. We see that the mean photocurrent is directly proportional to the mean photon number flux as expected. 
+
+Furthermore, if the photon field is changing on timescales slower than the detector bandwidth we can make a simplify approximation.
+
+\begin{equation}
+\braket{i(t)} = \frac{e}{\Delta t} \int_t^{t+\Delta t} \left<:\hat{a}^{\dag}(t')\hat{a}(t'):\right>dt' \approx \frac{e}{\Delta t} \Delta t \left<:\hat{a}^{\dag}(t)\hat{a}(t):\right> = e \braket{\hat{a}^{\dag}(t)\hat{a}(t)}
+\end{equation}
+
+We see that every photon per second is converted into one electron per second as expected.
+
+For example, for a coherent state we have $\braket{\hat{a}^{\dag}(t)\hat{a}(t)}\rightarrow \alpha^* \alpha = \bar{n}$  where $\alpha$ is the coherent state excitation amplitude and $\bar{n}$ is the mean photon number flux. We plug this into the formula for $\hat{\Omega}(t,t+\Delta t)$ to find
+
+\begin{equation}
+\braket{i(t)} =  e \bar{n}
+\end{equation}
+
+We can relate the mean photon flux to the power in the beam by $\bar{n} = \frac{P}{\hbar \omega}$ to yield
+
+\begin{equation}
+\braket{i(t)} = \frac{e}{\hbar \omega} P
+\end{equation}
+
+$\omega$ is the frequency of the light beam involved. The combination of coefficients $\frac{e}{\hbar \omega}$ converts an incident optical power, $P$ into a current. It represents the responsivity of the detector.
+
+We are also interested in second order moments of the photocurrent. These are important because they tell will tell us properties of the noise of the photocurrent which is important to understand for measurements of quantum mechanical systems. For example, $\braket{i(t_1)i(t_2)}$ is necessary to calculate the standard deviation of $i(t)$, $\braket{i(t)^2}$, and the autocorrelation function of $i(t)$, $\braket{i(t)i(0)}$, which is used to calculate the power spectral density $S_{ii}(f)$. We will calculate $\braket{i(t_1)i(t_2)}$. Again the formula will hinge on the probabilities of certain photon absorption events.
+
+We note that there are two possible cases. The times $t_1$ and $t_2$ correspond with two time windows, one from $t_1$ to $t_1+\Delta t$ and one from $t_2$ to $t_2+\Delta t$. It should be expected that the statistics of $\braket{i(t_1)i(t_2)}$ will differ depending on if these two regions overlap or not. The reason this difference should be expected is because if the two regions do NOT overlap then all photon absorption events are uncorrelated. However, if the two regions DO overlap then any photons absorbed in the overlap region will be counted once for each window and we will need to take care not to double count these photons.
+
+We first consider the case in which the two regions do NOT overlap. Let $\delta t = t_2-t_1>0$. Then we are first considering the case when $\delta t>\Delta t$. Also note that we consider the case for $t_2>t_1>0$ but at the end we will argue the function we get should be an even function of $\delta t$ to complete the definition for all $t_1$ and $t_2$.
+
+\begin{equation}
+\braket{i(t_1)i(t_2)} = \left(\frac{e}{\Delta t}\right)^2 \sum_{n,m = 0}^{\infty} n m p^{(2)}(n,t_1,t_1+\Delta t;m,t_2,t_2+\Delta t)
+\end{equation}
+
+Here $p^{(2)}(n,t_1,t_1+\Delta t;m,t_2,t_2+\Delta t)$ is the \textit{joint} probability of detecting both $n$ photons in the time window from $t_1$ to $t_1+\Delta t$ and $m$ photons in the time window from $t_2$ to $t_2+\Delta t$. It is related to the single time window formula but different. The formula is derived in an appendix of the Carmichael paper.
+
+\begin{equation}
+p^{(2)}(n,t_1,t_1+\Delta t;m,t_2,t_2+\Delta t) = \left<:\frac{\hat{\Omega}(t_1,t_1+\Delta t)^n}{n!} e^{-\hat{\Omega}(t_1,t_1+\Delta t)} \frac{\hat{\Omega}(t_2,t_2+\Delta t)^m}{m!} e^{-\hat{\Omega}(t_2,t_2+\Delta t)} :\right>
+\end{equation}
+
+Plugging this in and making a similar algebraic steps as before
+
+\begin{equation}
+\braket{i(t_1)i(t_2)} = \left(\frac{e}{\Delta t}\right)^2 \left<: \hat{\Omega}(t_1,t_1+\Delta t) \hat{\Omega}(t_2,t_2+\Delta t):\right>
+\end{equation}
+
+Now we work out the case in which the regions DO overlap, $t_2-t_1 = \delta t<\Delta t$. In this case we divide time into three regions. region I is from $t_1$ to $t_2$, region II is from $t_2$ to $t_1+\Delta t$ and region III is from $t_1+\Delta t$ to $t_2+\Delta t$.
+
+\begin{equation}
+\braket{i(t_1)i(t_2)} = \left(\frac{e}{\Delta t}\right)^2 \sum_{n,m,k=0}^{\infty} (n+k)(m+k) p^{(3)}(n,t_1, t_2;k,t_2, t_1+\Delta t;m,t_1+\Delta t, t_2+\Delta t)
+\end{equation}
+
+The interpretation here is that the first time window sees $n+k$ photons and the second sees $m+k$ and we must weight by the probability of $n$ detections in region I, $k$ detections in region II and $m$ detections in region III. The joint probability distrubtion generalizes in the expected way. We note that we end up with four terms, $nm+nk+mk+k^2$. Each of these terms lacks at least one of $n$, $m$, or $k$. When summing the probability distribution over the missing variable we will end up with $1$ times the probability distrubtion for the remaining two variables. We end up with
+
+\begin{align}
+\braket{i(t_1)i(t_2)} &= \left(\frac{e}{\Delta t}\right)^2\bigg[ \\
+&+ \sum_{n,m=0}^{\infty} nm p^{(2)}(n,t_1, t_2;m,t_1+\Delta t, t_2+\Delta t)\\
+&+ \sum_{n,k=0}^{\infty} nk p^{(2)}(n,t_1, t_2;k, t_2,t_1+\Delta t)\\
+&+ \sum_{m,k=0}^{\infty} mk p^{(2)}(k,t_2,t_1+\Delta t;m,t_1+\Delta t, t_2+\Delta t)\\
+&+\sum_{k=0}^{\infty} k^2 p^{(1)}(k,t_2,t_1+\Delta t) \bigg]
+\end{align}
+
+The first four terms evaluate as before. We work out the last term by noting $k^2 = k(k-1)+k$ so that
+
+\begin{align}
+\sum_{k=0}^{\infty} k^2 p^{(1)}(k,t_2,t_1+\Delta t) &=\left<: \hat{\Omega}(t_2,t_1+\Delta t)^2 \sum_{k=0}^{\infty} \frac{\hat{\Omega}(t_2,t_1+\Delta t)^{k-2}}{(k-2)!} e^{-\hat{\Omega}(t_2,t_1+\Delta t)} :\right> \\
+&+ \left<:\hat{\Omega}(t_2,t_1+\Delta t) \sum_{k=0}^{\infty} \frac{\hat{\Omega}(t_2,t_1+\Delta t)^{k-1}}{(k-1)!} e^{-\hat{\Omega}(t_2,t_1+\Delta t)}:\right>\\
+& = \left<:\hat{\Omega}(t_2,t_1+\Delta t)^2:\right> + \left<:\hat{\Omega}(t_2,t_1+\Delta t):\right>
+\end{align}
+
+We put it all together for
+
+\begin{align}
+\braket{i(t_1)i(t_2)} &= \left(\frac{e}{\Delta t}\right)^2 \times \\
+\bigg<: &\hat{\Omega}(t_1, t_2)\hat{\Omega}(t_1+\Delta t, t_2+\Delta t)\\
+&+ \hat{\Omega}(t_1, t_2)\hat{\Omega}( t_2,t_1+\Delta t) \\
+&+ \hat{\Omega}(t_2,t_2+\Delta t) \hat{\Omega}(t_1+\Delta t, t_2+\Delta t) \\
+&+ \hat{\Omega}(t_2,t_1+\Delta t) \hat{\Omega}(t_2,t_1+\Delta t)\\
+&+ \hat{\Omega}(t_2,t_1+\Delta t) :\bigg>
+\end{align}
+
+Since the arguments of $\hat{\Omega}$ are the bounds on detection interval integrals we can combine the terms according to the rules of integral addition/combination.
+
+\begin{align}
+\braket{i(t_1)i(t_2)} &= \left(\frac{e}{\Delta t}\right)^2 \times \\
+\bigg<: &\hat{\Omega}(t_1, t_2)\left(\hat{\Omega}(t_1+\Delta t, t_2+\Delta t) + \hat{\Omega}( t_2,t_1+\Delta t)\right) \\
+&+ \hat{\Omega}(t_2,t_1+\Delta t)\left( \hat{\Omega}(t_1+\Delta t, t_2+\Delta t)+ \hat{\Omega}(t_2,t_1+\Delta t) \right)\\
+&+ \hat{\Omega}(t_2,t_1+\Delta t) :\bigg>\\
+&= \left(\frac{e}{\Delta t}\right)^2 \times \\
+\bigg<: & \left( \hat{\Omega}(t_1, t_2)+ \hat{\Omega}(t_2,t_1+\Delta t)\right) \hat{\Omega}( t_2, t_2+\Delta t) \\
+&+\hat{\Omega}(t_2,t_1+\Delta t) :\bigg>\\
+&=\left(\frac{e}{\Delta t}\right)^2 \left[\left<:\hat{\Omega}(t_1,t_1+\Delta t)\hat{\Omega}(t_2,t_2+\Delta t):\right> + \left<:\hat{\Omega}(t_2,t_1+\Delta t):\right>\right]
+\end{align}
+
+We see that we have have the same equation as before except for the additional term having to do with the correlated photon absorption events which happen in the overlapping window from $t$ to $\Delta t$. We can thus summarize the results for $\delta t<\Delta t$ and $\delta t>\Delta t$ by
+
+\begin{equation}
+\braket{i(t_1)i(t_2)} = \left(\frac{e}{\Delta t}\right)^2 \left[\left<:\hat{\Omega}(t_1,t_1+\Delta t)\hat{\Omega}(t_2,t_2+\Delta t):\right> + \theta(\Delta t-\delta t) \left<:\hat{\Omega}(t_2,t_1+\Delta t):\right>\right]
+\end{equation}
+
+The first term is just going to be related to the total power incident on the detector whereas the second term is responsible for shot noise. Also note at this point how critical it has been for the operators to be normal ordered. This has greatly simplified many computations since we don't have to worry about symbols not commuting.
+
+We can put in the formulas for $\hat{\Omega}$ at this point. We find
+
+\begin{align}
+\braket{i(t_1)i(t_2)} &= \left(\frac{e}{\Delta t}\right)^2 \bigg[ \int_{t_1}^{t_1+\Delta t} \int_{t_2}^{t_2+\Delta t} \left<: \hat{a}^{\dag}(t_1')\hat{a}^{\dag}(t_2')\hat{a}(t_2')\hat{a}(t_1'):\right> dt_1' dt_2'\\
+&+ \theta(\Delta t-\delta t)\int_{t_2}^{t_1+\Delta t} \left<:\hat{a}^{\dag}(t_1')\hat{a}(t_1'):\right> dt_1' \bigg]
+\end{align}
+
+As before, if the photon number correlation functions are changing more slowly than the timescales of the detector bandwidth we can pull those out of the integrals to find
+
+\begin{equation}
+\braket{i(t_1)i(t_2)} = e^2\left<:\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)\hat{a}(t_2)\hat{a}(t_1):\right> + e^2\theta(\Delta t -\delta t)\frac{\Delta t - \delta t}{\Delta t^2} \left<:\hat{a}^{\dag}(t_1)\hat{a}(t_1):\right>
+\end{equation}
+
+In the second term I've put in $\hat{a}(t_1)$ since that term is only non-zero if $\delta t<\Delta t$ so since the dynamics are much slower than $\Delta t$ we can just replace the function by its value at $t=t_1$.
+
+Recall that the above is defined only for $t_2>t1$, i.e. $\delta t>0$. However, one could consider redoing the whole calculation with $t_1>t_2$. The calculation would proceed exactly as before but with the labels for $t_1$ and $t_2$ reversed.  Note that all of the quantum expectation operators are normal ordered anyways so their values would not change. All that would change is the sign of $\delta t$ would reverse in the prefactor to the noise term. If we wanted to complete this definition for all $t_1$ and $t_2$ we could replace that prefactor by:
+
+\begin{align}
+\Lambda(t_1,t_2) = \Lambda(\delta t) = \theta(\delta t) \theta(\Delta t-\delta t)\frac{\Delta t - \delta t}{\Delta t^2} + \theta(-\delta t) \theta(\Delta t + \delta t) \frac{\Delta t + \delta t}{\Delta t^2}
+\end{align}
+
+We shouldn't be surprised this function is even in $\delta t$, after all, this is what we would expect for a classical random variable in which we should be able to say $i(t_1)i(t_2) = i(t_2)i(t_1)$. There is an important point here. The formulas on the left hand sides of the formulas above are supposed to be classical stochastic processes, however, the formulas on the right are composed of quantum operators. Quantum operators do not satisfy the same properties that classical variables do. In particular quantum operators don't necessarily commute. However, when we take the normal and time ordered product of quantum operators we get an expression which does obey the same rules as classical variables. This is to be expected. The Kelley Kleiner formula is in the end derived from a probability which is calculated by ultimately applying the born rule for calculating the quantum probability of some electron absorbing a photon. When this probability is calculated we end up with a classical number rather than a quantum operator. Furthermore, Glauber theory ensures that to calculate the correct probability we must take the normal and time ordered expectation value of the photon bosonic operators.
+
+Consider the plot of $\theta(\delta t) \theta(\Delta t-\delta t)\frac{\Delta t-\delta t}{\Delta t^2}$. It is linear in $\delta t$, it is 0 for $\delta t \geq \Delta t$ and it's value is $\frac{1}{\Delta t}$ at $\delta t=0$. The area under this plot would be $\Delta t \frac{1}{\Delta t}\frac{1}{2} = \frac{1}{2}$. When we flip this function over $\delta t=0$ to define $\Lambda(\delta t)$ we get a triangle with a base from $-\Delta t$ to $+\Delta t$ and height $\frac{1}{\Delta t}$ whose area is 1. It is easy to see that as $\Delta t$ goes to zero this function begins to approximate a delta function. It is in fact a nascent delta function. That is $\lim_{\Delta t\rightarrow 0} \Lambda(\delta t) \approx \delta(\delta t)$.
+
+\begin{align}
+\braket{i(t_1)i(t_2)} &= e^2\left<:\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)\hat{a}(t_2)\hat{a}(t_1):\right> + e^2 \Lambda(\delta t) \left<:\hat{a}^{\dag}(t_1)\hat{a}(t_1):\right>\\
+&\approx e^2\left<:\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)\hat{a}(t_2)\hat{a}(t_1):\right> + e^2 \delta(\delta t) \left<:\hat{a}^{\dag}(t_1)\hat{a}(t_1):\right>
+\end{align}
+
+Note that technically by the definition of the power equivalent time width of a signal given in my Fourier Bandwidth write up the width of the $\Lambda(t)$ is $\frac{2}{3}\Delta t$ and accordingly the bandwidth is $\frac{3}{4\Delta t}$. Hopefully in practice signals will all be well in the stop or pass band of these filters so that these sorts of prefactors make no difference to final results.
+
+Now let's start to work things out working with the autocorrelation function. For this we set $t_1=t$ and $t_2=0$.
+Let's evaluate this for a coherent state with amplitude $\alpha$ and average photon number flux $\bar{n}$. It is easy to evaluate normal ordered expectation values for coherent states. We find
+
+\begin{align}
+\braket{i(t)i(0)} = e^2 \bar{n}^2 + e^2 \Lambda(t) \bar{n}
+\end{align}
+
+We know from the Wiener-Khintchine theorem that the power spectral density is the Fourier transform of the autocorrelation function. I will use the $(a,b) = (0,+2\pi)$ convention for Fourier Transforms. This convention is convenient for signal processing.
+
+\begin{equation}
+S_{ii}(f) = \int_{-\infty}^{+\infty} e^{+i2 \pi f t} \braket{i(t)i(0)} dt 
+\end{equation}
+
+The Fourier transform of the first constant term is a delta. The Fourier transform of the triangle function, $\Lambda(t)$ can be found by noticing that the triangle function is the convolution of two step functions and then applying the convolution theorem and knowing the fourier transform of the step function is the sinc function. The details are worked out in my notebook. The net result is that
+
+\begin{align}
+S_{ii}(f) = e^2 \bar{n}^2 \delta(f) + e^2 \bar{n} \text{sinc}^2(\pi f \Delta t)
+\end{align}
+
+The second term contains $f$ dependence which is essentially a low pass filter with a rolloff at $f \approx \frac{1}{\Delta t} = f_{BW}$. The function is approximately constant for frequencies in the pass band. In the limit that $f \Delta t = \frac{f}{f_{BW}} \ll 1$ the second term is approximately unity so that we find
+
+\begin{align}
+S_{ii}(f) =  e^2 \bar{n}^2 \delta(f) + e^2 \bar{n} = \frac{e^2}{(\hbar \omega)^2} P^2 \delta(f) + \frac{e^2}{\hbar  \omega} P
+\end{align}
+
+The first term is a delta function at 0 representing the coherent amplitude of the driving field. This term goes as $P^2$. The second term is the shot noise term which only goes as $P$ which is reminiscent of the usual Poissonian statistics for coherent states.
+
+\section{Some comments on shot noise}
+
+The goal of this write up is to get a complete description of the detection scheme from cavity to analysis scripts on the computer. So I want to root out things like how that $\delta(\omega)$ will show up in the analysis. In practice we don't actually calculate the power spectral density by taking the Fourier transform of the autocorrelation function. Instead we record the signal for a while and simply take the Fourier transform, square and divide by the time window. That is we calculate it directly from a signal of finite length in time $T$. Of course we should get the same result for the power spectral density in the limit that $T\rightarrow \infty$. However, since the signal we actually take is finite in time the delta function ends up being spread out in frequency. It will have a height of $T$ and a width of $\frac{1}{T}$.
+
+The important point here is that the shape of the coherent peak in the power spectral density depends on the length of time of the detection. However, note that the height of the noise in the passband of the power spectral density does NOT depend on the length of the detection time. The total power in the coherent carrier does not depend on the detection time, however. Also note that the total power in the noise in the pass band also does not depend on the total detection time but it DOES depend on the bandwidth of the detector.
+
+To Illustrate this point a little bit further I'll calculate the standard deviation of the photocurrent and the signal to noise ratio.
+
+\begin{equation}
+(\sigma_i(t))^2 = \braket{\Delta i(t)^2} = \braket{i(t)^2}-\braket{i(t)}^2
+\end{equation}
+
+Note that since the process is stationary we have $\braket{i(t)^2} = \braket{i(0)^2} = e^2 \bar{n}^2 + e^2 \bar{n}\frac{1}{\Delta t}$ from an equation above. So
+
+\begin{equation}
+(\sigma_i(t))^2 = e^2 \bar{n}^2 + e^2 \bar{n} \frac{1}{\Delta t}-e^2 \bar{n}^2 = e^2 \bar{n}\frac{1}{\Delta t}
+\end{equation}
+
+We see that the variance of the signal is linear in the bandwidth. We calculate the signal-to-noise ratio.
+
+\begin{equation}
+\text{SNR} = \frac{\braket{i(t)}}{\sigma_i(t)} = \frac{e\bar{n}}{e \sqrt{\bar{n}}} \sqrt{\Delta t} = \sqrt{\bar{n} \Delta t} = \sqrt{\frac{\Delta{t}}{\hbar \omega} P}
+\end{equation}
+
+We see that the signal-to-noise goes like the square root of the incident power and it also goes like the square root of the detector time window. Thus decreasing the detection bandwidth increases the signal-to-noise.
+
+So we see that a few things depend on either the detection bandwidth, $\frac{1}{\Delta t}$ or on the total detection time $T$. It is important to keep these time scales in mind when analyzing the relevant signals.
+
+\section{Imperfect detection efficiency}
+
+The purpose of this write up is to understand E3's detection process from the point the light is in the cavity learning about the atoms to leaving the cavity, making its way to the detector, being detected and converted to an electrical signal and digitally analyzed. My confusion has mostly come from thinking about the loss mechanism from the cavity to photodetection. I will work backwards from the ideal photodetector towards the cavity to clarify this all for myself.
+
+So far I have assumed perfect detection efficiency. That is, any photon which is incident upon the detector is converted into an electron. In reality this is not the case. The photon can instead be absorbed in the material in a way which does not produce a conducting electron, in can be reflected off the surface, it can pass through the active region etc. All of this contributes to finite detection efficiency.
+
+Often we model detection efficiency as a fictitious quantum optics beam splitter placed in front of the detector which couples vacuum noise into the signal beam. However, in this treatment those vacuum fluctuations would be go to zero as a result of the normal ordering operation, noting that the normal ordered expectation value of any expression involving vacuum fields will vanish. However, the signal field would still be attenuated by a factor of the detection efficiency. In that treatment, looking at the power spectral density for example, the coherent peak would be reduced by a factor of the detection efficiency squared (since it depends on the intensity squared) and the shot noise would be reduced by a factor of the detection efficiency. We thus see that as the detection efficiency is decreased both the signal and noise go down but the signal goes down faster resulting in a reduced signal to noise.
+
+We can continue with that treatment or in the normal ordered treatment just realize the detection efficiency results in a reduced probability of photon detection and modify the probability functions accordingly. This could be implemented by putting a factor of $\epsilon_Q$ in the definition of $\hat{\Omega}$ which is related to the detected photon flux which is input into the $p^{(1,2,3)}$ formulas. So to get the correct formulas including finite detection efficiency we put a factor of $\epsilon_Q$ everywhere we saw $\hat{\Omega}$ to find
+
+\begin{align}
+\braket{i(t)} = e \epsilon_Q \left<:\hat{a}^{\dag}(t) \hat{a}(t):\right> 
+\end{align}
+
+and
+
+\begin{align}
+\braket{i(t_1)i(t_2)} &= e^2 \bigg[ \epsilon_Q^2  \left<: \hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)\hat{a}(t_2)\hat{a}(t_1):\right> \\
+&+ \epsilon_Q \Lambda(\delta t)\left<:\hat{a}^{\dag}(t_1)\hat{a}(t_1):\right> \bigg]
+\end{align}
+
+Basically all that happens compared to the formulas before is every factor of $\hat{a}$ gets a factor of $\epsilon_Q$. Note that the shot noise term and the carrier term have a different dependence on the quantum efficiency.
+
+For coherent states
+
+\begin{equation}
+\braket{i(t)} = e \epsilon_Q \bar{n}
+\end{equation}
+
+and
+
+\begin{align}
+\braket{i(t)i(0)} = e^2 \epsilon_Q^2 \bar{n}^2 + e^2 \epsilon_Q \Lambda(t) \bar{n}
+\end{align}
+
+With the result on the signal-to-noise ratio being
+
+\begin{equation}
+\text{SNR} = \sqrt{\epsilon_Q}\sqrt{\bar{n} \Delta t}
+\end{equation}
+
+We see that as expected the decreased detection efficiency suppresses the signal to noise. of a coherent signal.
+
+
+\section{Heterodyne and Homodyne Detection}
+
+Next we consider the fact that in E3 we don't directly detect the laser field, rather, we heterodyne the signal with a local oscillator. This has numerous advantages. It brings our signal up to a higher frequency which suppresses $\frac{1}{f}$ noise. It also moves the signal away from DC which means that it is possible to observe sideband assymetries resulting from near ground state quantum systems, something which can not be observed between actual positive and negative frequencies for our classical photocurrent. The other advantages is that even though only a handful (less than 10) photons leak out of our cavity with any information we are able to massively multiply the signal by the strength of the local oscillator to get a much stronger signal. 
+
+Let's work out how this works. I'll start off with perfect mode matching efficiency and then relax that to include imperfect mode matching efficiency. I'll also first work out the case of normal heterodyne detection and then subsequently balanced heterodyne detection. The LO, $\hat{a}_{LO}$ and signal beam $\hat{a}_{S}$  both impinge on a 50/50 beamsplitter resulting in two new beams. $\hat{a}_{\pm}$.
+
+\begin{equation}
+\hat{a}_{\pm} = \frac{1}{\sqrt{2}}\left(\hat{a}_{LO} \pm \hat{a}_{S}\right)
+\end{equation}
+
+Note that I am using a particular convention for the beamsplitter where the LO is always transmitted with constant phase and the probe is either transmitted with the same phase or out of phase. Sometimes we use a convention where one beam or the other picks up a factor of $i$. What I use here is the convention chosen in the Bowen and Milburn optomechanics book and I think it is simpler and easier to work with.
+
+Next each of these beams is detected on a different photodiode resulting in two different photocurrents with photocount operators (ignoring detection efficiency)
+
+\begin{align}
+\hat{\Omega}_{\pm}(t,t+\Delta t) &= \int_t^{t+\Delta t} \hat{a}^{\dag}_{\pm}(t') \hat{a}_{\pm}(t') dt'\\
+&= \frac{1}{2} \int_t^{t+\Delta t} \left( \hat{a}^{\dag}_{LO}(t') \hat{a}_{LO}(t') + \hat{a}^{\dag}_{S}(t')\hat{a}_{S}(t') \pm \hat{a}^{\dag}_{LO}(t')\hat{a}_S(t') \pm \hat{a}_{LO}(t')\hat{a}^{\dag}_S(t')\right) dt'
+\end{align}
+
+The first two terms represent the separate intensities of the two beams while the second two terms represent the interference between the two beams. If the LO is in a strong coherent state with amplitude $\alpha$ we can replace $\hat{a}_{LO}(t)\rightarrow \alpha(t) = |\alpha| e^{-i(\phi_{LO} + \omega_{LO} t)}$ and the final term becomes related to a quadrature operator for the signal beam multiplied by the local oscillator amplitude and phase. If the local oscillator is detuned from the signal beam then this interference term will oscillate at the difference frequency between the two beams and thus the first two DC terms can be separated from the signal with frequency selective detection. This type of detection is called homodyne if the local oscillator and probe have the same frequencies and heterodyne if the two are detuned.
+
+Here is the signal if we make that approximation.
+
+\begin{align}
+&\hat{\Omega}_{\pm}(t,t+\Delta t) = \\
+&\frac{1}{2}\int_t^{t+\Delta t} \left( |\alpha|^2 + \hat{a}^{\dag}_S(t')\hat{a}_{S}(t') \pm |\alpha|\left( \hat{a}_S(t') e^{i(\phi_{LO}+\omega_{LO} t')} + \hat{a}^{\dag}_{S}(t')e^{-i(\phi_{LO}+\omega_{LO} t')}\right)\right) dt' \\
+&= \frac{1}{2}\int_t^{t+\Delta t} \left( |\alpha|^2 + \hat{a}^{\dag}_S(t')\hat{a}_{S}(t') \pm |\alpha|\hat{X}_S^{\phi_{LO}+\omega_{LO} t'}(t') \right) dt'
+\end{align}
+
+We see that the interference term is sensitive to the amplitude of a rotating quadrature of the signal beam.
+
+From here using the formulas above we can calculate $\braket{i(t)}$ and $\braket{i(t)i(0)}$.
+
+\begin{align}
+\braket{i_{\pm}(t)} = \frac{e}{\Delta t} \left<:\hat{\Omega}_{\pm}(t,t+\Delta t):\right>
+\approx \frac{e}{2}\left(|\alpha|^2 + \left<:\hat{a}^{\dag}_S(t) \hat{a}_S(t):\right> \pm |\alpha| \left<:\hat{X}_S^{\phi_{LO}+\omega_{LO}t}(t):\right>\right)
+\end{align}
+
+Again approximating dynamics slower than the detection bandwidth.
+
+\begin{align}
+\braket{i_{\pm}(t_1)i_{\pm}(t_2)} &= \left(\frac{e}{\Delta t}\right)^2\frac{1}{4} \left[ \left<:\hat{\Omega}_{\pm}(t_1,t_1+\Delta t)\hat{\Omega}_{\pm}(t_2,t_2+\Delta t):\right> + \left<:\hat{\Omega}_{\pm}(t_2,t_1+\Delta t):\right>\right]\\
+&\approx \frac{e^2}{4}\bigg[|\alpha|^4 + \left<:\hat{a}^{\dag}_{S}(t_1)\hat{a}^{\dag}_{S}(t_2)\hat{a}_{S}(t_2)\hat{a}_S(t_1):\right> \\
+&+ |\alpha|^2\left( \left<:\hat{a}^{\dag}_{S}(t_2)\hat{a}_{S}(t_2):\right> + \left<:\hat{a}^{\dag}_{S}(t_1)\hat{a}_{S}(t_1):\right>  \right)\\
+&\pm\left(|\alpha|^2+\left<:\hat{a}^{\dag}_{S}(t_2)\hat{a}_{S}(t_2):\right>\right)|\alpha|\left<:\hat{X}_{S}^{\phi_{LO}+\omega_{LO}t_1}(t_1):\right>\\
+&\pm\left(|\alpha|^2+\left<:\hat{a}^{\dag}_{S}(t_1)\hat{a}_{S}(t_1):\right>\right)|\alpha|\left<:\hat{X}_{S}^{\phi_{LO}+\omega_{LO}t_2}(t_2):\right>\\
+&+|\alpha|^2\left<:\hat{X}_S^{\phi_{LO}+\omega_{LO}t_1}(t_1)\hat{X}_S^{\phi_{LO}+\omega_{LO}t_2}(t_2):\right>\bigg]\\
+&+ \frac{e^2}{2}\Lambda(\delta t)\left[|\alpha|^2 + \left<:\hat{a}^{\dag}_S(t_1) \hat{a}_S(t_1):\right> \pm |\alpha| \left<:\hat{X}_S^{\phi_{LO}+\omega_{LO}t_1}(t_1):\right>\right]
+\end{align}
+
+We can simplify this a little bit by taking the approximation that the LO is much stronger than the probe to find:
+
+\begin{align}
+\braket{i_{\pm}(t_1)i_{\pm}(t_2)} &= \frac{e^2}{4}\left[|\alpha^4| + |\alpha|^3 \left<:\hat{X}_{S}^{\phi_{LO}+\omega_{LO}t_1}(t_1)+\hat{X}_{S}^{\phi_{LO}+\omega_{LO}t_2}(t_2):\right>\right]\\
+&+\frac{e^2}{2}\Lambda(\delta t)|\alpha|^2
+\end{align}
+
+
+I've dropped terms based on their order in $|\alpha|$ and also on if they have time dependence to distinguish themselves in the frequency spectrum. Fourier transforming this expression would give us a delta function at 0 representing the LO DC offset, a peak at the difference frequency between the probe and the LO and a flat shot noise contribution. However, note the relative powers of the DC term and shot noise. It is as if we are detecting with a detection efficiency of $\epsilon_Q=\frac{1}{2}$. This is because half of the light has been split away into the other port of the beamsplitter so our signal to noise on a single port has gone down. The $|\alpha|^3$ dependence will go away when we look at balanced heterodyne.
+
+\section{Imperfect Mode-Matching}
+
+We have assumed perfect mode-matching, however, in practice this is not the case in our experiment. We must work to overlap the local oscillator and probe on the two detectors. The clearest way I have found to think about the concept is in terms of a mode expansion of the two beams.
+
+The point is that at the surface of the detector the slice of the electric field can be expanded into a set of orthogonal 2D mode functions $f_n(\bv{r})$. The modes can be Hermite or Laguerre polynomials, whatever you like to describe the beam mode shape. The power detected is going to then be proportional to the integral of the product of this mode function with the shape of the detector. This is how, for example, beam clipping can be described. 
+
+We can choose mode functions
+
+\begin{equation}
+\int_{\mathbb{R}^2} f_n^*(\bv{r})f_m(\bv{r}) d\bv{A} = \delta_{nm}
+\end{equation}
+
+We can also choose these mode functions to be real
+
+There is a lot of potential confusion here regarding quantization volumes and constant prefactors. I will try to avoid all of that here. The point is that the positive part of the electric field can be expanded as
+
+\begin{equation}
+\hat{E}^{(+)}(\bv{r},t) = C g(\bv{r}) \hat{a}(t) = C \sum_{n} \mu_n f_n(\bv{r}) \hat{a}(t)
+\end{equation}
+
+$g(\bv{r})$ is a function which describes the mode shape of the electric field. $C$ is a constant which captures those confusing prefactors. The $\mu_n$ capture the relative occupation of a particular mode $f_n(\bv{r})$ for the beam shape $g(\bv{r})$ under consideration.
+
+We have that
+
+\begin{equation}
+g(\bv{r}) = \sum_n \mu_n f_n(\bv{r})
+\end{equation}
+
+\begin{equation}
+\int_{\mathbb{R}^2} \sum_{n,m} \mu_n^*\mu_m f_n^*(\bv{r})f_m(\bv{r}) d\bv{A} = \sum_n |\mu_n|^2 = \int_{\mathbb{R}^2}|g(\bv{r})|^2d\bv{A} = 1
+\end{equation}
+
+The mode shape function $g(\bv{r})$ can always be chosen so that the last equality holds.
+
+
+Next we have that the detection probability is related to 
+
+\begin{equation}
+\hat{E}^{(-)}(\bv{r},t)\hat{E}^{(+)}(\bv{r},t) = C^2 \sum_{n,m} \mu_n^* \mu_m f^*_n(\bv{r})f_m(\bv{r}) \hat{a}^{\dag}(t)\hat{a}(t)
+\end{equation}
+
+And then to get something related to the detected flux we must integrate over the active area of the detector. Perhaps we can write
+
+\begin{equation}
+\hat{\Omega}(t_1,t_2) = \frac{1}{C^2} \int_{t_1}^{t_2}\int_{A_{\text{Det}}} \hat{E}^{(-)}(\bv{r},t')\hat{E}^{(+)}(\bv{r},t') d\bv{A} dt'
+\end{equation}
+
+In the case that the detector is much larger than the relevant mode functions (i.e. no clipping) the integral over the detector area turns into a delta function between the orthogonal mode functions and we recover
+
+\begin{equation}
+\hat{\Omega}(t_1,t_2) = \int_{t_1}^{t_2} \sum_n |\mu_n|^2 \hat{a}^{\dag}(t') \hat{a}(t') dt' = \int_{t_1}^{t_2} \hat{a}^{\dag}(t') \hat{a}(t') dt'
+\end{equation}
+
+What we have shown here is that the different spatial modes are basically independent and their effects on detection can be considered separately.
+
+We work out the formula for Heterodyne detection. The LO has beam shape $g_{LO}(\bv{r})$ and the signal has beam shape $g_{S}(\bv{r})$ 
+
+\begin{equation}
+\hat{E}_{\pm}^{(-)}(\bv{r},t) = \frac{C}{\sqrt{2}}\left(\sum_{k}\nu_k f_k(\bv{r})\hat{a}_{LO}(t) \pm \sum_n \mu_n f_n(\bv{r}) \hat{a}_S(t)\right)
+\end{equation}
+
+\begin{align}
+\hat{E}_{\pm}^{(-)}(\bv{r},t) \hat{E}_{\pm}^{(+)}(\bv{r},t) =& \frac{C^2}{2}  \bigg[\sum_{k,l}\nu_k^* \nu_l f_k^*(\bv{r})f_l(\bv{r}) \hat{a}^{\dag}_{LO} \hat{a}_{LO}(t) + \sum_{n,m} \mu_n^* \mu_m f_n^*(\bv{r}) f_m(\bv{r}) \hat{a}^{\dag}_S(t) \hat{a}_S(t)\\
+&\pm \sum_{n,k} \left(\nu_k \mu_n f_k^*(\bv{r}) f_n(\bv{r}) \hat{a}^{\dag}_{LO}(t) \hat{a}_S(t) + \nu_k \mu_n^* f_k(\bv{r}) f_n^*(\bv{r}) \hat{a}_{LO}(t) \hat{a}^{\dag}_S(t) \right) \bigg]
+\end{align}
+
+And we can greatly simplify this by integrating over the detector area
+
+\begin{align}
+\int_{A_{\text{Det}}} \hat{E}_{\pm}^{(-)}(\bv{r},t) \hat{E}_{\pm}^{(+)}(\bv{r},t) d\bv{A} =& \frac{C^2}{2}  \bigg[ \sum_k |\nu_k|^2 \hat{a}^{\dag}_{LO} \hat{a}_{LO}(t) + \sum_{n} |\mu_n|^2 \hat{a}^{\dag}_S(t) \hat{a}_S(t)\\
+&\pm \sum_{n,k} \left(\nu_k^* \mu_n \hat{a}^{\dag}_{LO}(t) \hat{a}_S(t) + \nu_k \mu_n^* \hat{a}_{LO}(t) \hat{a}^{\dag}_S(t) \right) \bigg]
+\end{align}
+
+Note
+
+\begin{align}
+\int g_{LO}^*(\bv{r})g_S(\bv{r}) d\bv{A} = \int \sum_{k,n} \nu_k^* \mu_n f_k^*(\bv{r}) f_n(\bv{r}) d\bv{A} = \sum_{k,n} \nu_k^* \mu_n
+\end{align}
+
+If the mode functions are real we take
+
+\begin{align}
+\sqrt{\epsilon_{MM}} = \int g_{LO}(\bv{r}) g_S(\bv{r})d\bv{A} = \sum_{k,n}\nu_k \mu_n
+\end{align}
+
+so that we work out the formula for the heterodyne photocount operator:
+
+\begin{align}
+\hat{\Omega}_{\pm}(t_1,t_2) = \frac{1}{2} \int_{t_1}^{t_2} \hat{a}^{\dag}_{LO}(t') \hat{a}_{LO}(t') + \hat{a}^{\dag}_S(t') \hat{a}_S(t') \pm  \sqrt{\epsilon_{MM}}\left(\hat{a}^{\dag}_{LO}(t') \hat{a}_S(t') + \hat{a}_{LO}(t')\hat{a}^{\dag}_S(t')\right) dt'
+\end{align}
+
+We get the exact same heterodyne beat signal as before but the signal interference term is suppressed by a factor of $\sqrt{\epsilon_{MM}}$. The mode-matching efficiency is then directly related to the mode overlap between the signal and local oscillator beam. The square root is added to be consistent with other detection efficiencies which come in as a square root when they attenuate the signal amplitude, so that the when the signal is squared it is attenuated by $\epsilon_{MM}$ with the intuition that $\epsilon_{MM}$ percent of photons are detected and others are lost.
+
+
+\section{Balanced Homodyne and Heterodyne Detection}
+There are a few disadvantages to directly detecting the homo or heterodyne beatnote on a single photodetector. The first is that half of the signal beam is rejected out the other port of the beamsplitter. This signal rejection results in a decreased signal-to-noise ratio at the detector. Next, the strong local oscillator beam can nearly saturate the detector pushing it out of its region of high sensitivity. In others words, it requires detecting a very tiny signal (probe times LO) riding on a very large signal (LO squared.) Another limitation is that any technical noise on the LO is transduced onto the signal limiting the sensitivity of the detection. All of these considerations become important when trying to measure, for example, the spectrum of squeezed light.
+
+These problems can be circumvented by subtracting off the DC parts of the signal. The best way to do this is to conveniently measure the signal again at the other port and subtract the two signal. Because of the phase shift between the two output ports the beatnote from the two signals will add while the DC parts will cancel. There will be a shot noise contribution from each detector. We work this out now.
+
+We will again be interested in photon counting statistics. Before jumping into it all I will state the final result since the answer (but not necessarily the proof) is somewhat intuitive. We are measuring two signals on two photodiodes and subtracting the final answer. Naively we would expect to just subtract the photocunts for each detector from eachother and get the final answer. That is,
+
+\begin{align}
+\braket{i_{\text{Bal}}(t)} = \frac{e}{\Delta t} \left<:\hat{\Omega}_+(t,t+\Delta t) - \hat{\Omega}_-(t,t+\Delta t) :\right>
+\end{align}
+
+It turns out the formula for the mean balanced photocurrent is correct. It is the noise term where things get tricky. The answer is
+
+\begin{align}
+&\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} = \left(\frac{e}{\Delta t}\right)^2 \times\\
+&\bigg[ \left<: \left(\hat{\Omega}_+(t_1,t_1+\Delta t) - \hat{\Omega}_-(t_1,t_1+\Delta t)\right)\left(\hat{\Omega}_-(t_2,t_2+\Delta t) - \hat{\Omega}_-(t_2,t_2+\Delta t)\right) : \right>\\
+&+ \theta(\Delta t - \delta t)\left<:\hat{\Omega}_+( t_2,t_1+\Delta t)+\hat{\Omega}_-( t_2,t_1+\Delta t):\right>\bigg]
+\end{align}
+
+This is exactly what we would expect if we replaced $\hat{\Omega}$ with $\hat{\Omega}_+ - \hat{\Omega}_-$ with one difference. In the final term the photocount operators are added rather than subtracted. These are the terms contributing to the detector shot noise. The point is that these terms cannot subtract and cancel eachother out because they result from noise which is uncorrelated between the two detectors. Rather, they result from coincidence counts falling on each detector individually and cannot be correlated between detectors.
+
+We can derive these balanced photodetection formulas using the same Mandel photon counting formula from before. I'll reproduce that calculation here even though it is tedious.
+
+It is not too difficult to calculate the mean difference photocurrent.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t)} = \frac{e}{\Delta t} \sum_{n,x=0}^{\infty} (n-x)p^{(1)}(n,t,t+\Delta t) p^{(1)}(x,t,t+\Delta t) 
+\end{align}
+
+which can be readily seen by similar manipulations as before to give
+
+\begin{align}
+\braket{i_{\text{Bal}}(t)} &= \frac{e}{\Delta t} \left<:\hat{\Omega}_+(t,t+\Delta t) - \hat{\Omega}_-(t,t+\Delta t) :\right>\\
+&= \braket{i_+(t)}-\braket{i_-(t)}\\
+&\approx e|\alpha|\left<:\hat{X}_{S}^{-(\phi_{LO}+\omega_{LO}t)}(t):\right>
+\end{align}
+
+Working out the photocurrent autocorrelation function will be a little more tricky. We proceed as before for a single photodiode. We first work it out for the case $\delta t>\Delta t$ so that we don't have to worry about any double counted photons (the photons which contribute to the shot noise spectrum). Again we work with $t_2>t_1$ but will extend to all cases at the end.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} &= \left(\frac{e}{\Delta t}\right)^2 \bigg[ \sum_{n,m,k=0}^{\infty} (n-x)(m-y)\\
+&\times p^{(2)}(n,t_1,t_1+\Delta t;m,t_2,t_2+\Delta t) p^{(2)}(x,t_1,t_1+\Delta t;y,t_2,t_2+\Delta t)\bigg]
+\end{align}
+
+This is the probability that in the first time window the difference current is $n-x$ photocounts due to $n$ photons on the first detector (+) and $x$ on the second (-) AND $m-y$ difference counts in the second window due to $m$ on the first detector and $y$ on the second. This isn't too bad to work out.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} &= \\
+&\left(\frac{e}{\Delta t}\right)^2 \bigg[ \sum_{n,m,x,y=0}^{\infty} (nm + xy - ny - mx)\\
+&\times p^{(2)}(n,t_1,t_1+\Delta t;m,t_2,t_2+\Delta t) p^{(2)}(x,t_1,t_1+\Delta t;y,t_2,t_2+\Delta t)\bigg]
+\end{align}
+
+And we can break this out
+
+\begin{align}
+&\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} = \\
+&\left(\frac{e}{\Delta t}\right)^2 \sum_{n,m,x,y=0}^{\infty} \bigg[ nm  p^{(2)}(n,t_1,t_1+\Delta t;m,t_2,t_2+\Delta t) + xy p^{(2)}(x,t_1,t_1+\Delta t;y,t_2,t_2+\Delta t)\\
+&- ny p^{(1)}(n,t_1,t_1+\Delta t) p^{(1)}(y,t_2,t_2+\Delta t)
+- mx p^{(1)}(m,t_2,t_2+\Delta t) p^{(1)}(x,t_1,t_1+\Delta t)\bigg]
+\end{align}
+
+And by similar calculations as before we recognize this as
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} &= \left(\frac{e}{\Delta t}\right)^2 \bigg<: \hat{\Omega}_{+}(t_1,t_1+\Delta t) \hat{\Omega}_{+}(t_2,t_2+\Delta t) + \hat{\Omega}_{-}(t_1,t_1+\Delta t) \hat{\Omega}_{-}(t_1,t_1+\Delta t)\\
+&-\hat{\Omega}_+(t_1,t_1+\Delta t)\hat{\Omega}_-(t_2,t_2+\Delta t) - \hat{\Omega}_+(t_2,t_2+\Delta t) \hat{\Omega}_-(t_1,t_1+\Delta t):\bigg>\\
+&= \left(\frac{e}{\Delta t}\right)^2 \left<:\left(\hat{\Omega}_+(t_1,t_1+\Delta t) - \hat{\Omega}_-(t_1,t_1+\Delta t)\right)\left(\hat{\Omega}_+(t_2,t_2+ \Delta t) - \hat{\Omega}_-(t_2,t_2+\Delta t)\right):\right>
+\end{align}
+
+As expected this is the first part of the expression from above. We need to work out the term for shot noise. For this we consider the photocounts for $\delta t<\Delta t$ as before.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} &= \\
+&\left(\frac{e}{\Delta t}\right)^2 \bigg[ \sum_{n,m,x,y=0}^{\infty} (n+k-x-z)(m+k-y-z)\\
+&\times p^{(3)}(n,t_1,t_2;k,t_2,t_1+\Delta t;m,t_2,t_2+\Delta t)\\
+&\times p^{(3)}(x,t_1,t_2;z,t_2,t_1+\Delta t;y,t_2,t_2+\Delta t)\bigg]\\
+\end{align}
+
+We break out the binomial of photocounts.
+
+\begin{align}
+(n+k-x-z)(m+k-y-z) &= (nm + nk + mk + k^2) + (xy + xz + yz + z^2)\\
+& - ny - mx - nz - mz\\
+& -xk - yk - 2kz
+\end{align}
+
+We now know the pattern of how these probability formulas shake out. The first two terms look just like what we get for the autocorrelation of a single photon detector. So we know that they will result in
+
+\begin{align}
+&\left<: \hat{\Omega}_+(t_1,t_1+\Delta t)\hat{\Omega}_+(t_2,t_2+\Delta t) + \hat{\Omega}_+(t_2,t_1+\Delta t):\right>\\
+&+\left<: \hat{\Omega}_-(t_1,t_1+\Delta t)\hat{\Omega}_-(t_2,t_2+\Delta t) + \hat{\Omega}_-(t_2,t_1+\Delta t):\right>
+\end{align}
+
+As for the rest of the terms we begin to manipulate them in such a way that the photocount operators can be easily combined using the integration addition property.
+
+\begin{align}
+&ny + mx + nz + mz + xk + yk + 2kz=\\
+&= (n+k)(y+z) + (m+k)(x+z)
+\end{align}
+
+And we realize that these will all be multiplied by $p^{(1)}$ type terms of their respective time windows and photodiodes so we can find the result (combining the time windows which can be combined:
+
+\begin{align}
+\big<:&\hat{\Omega}_+(t_1,t_1+\Delta t) \hat{\Omega}_-(t_2,t_2+\Delta t)\\
++&\hat{\Omega}_+(t_2,t_2+\Delta t) \hat{\Omega}_-(t_1,t_1+\Delta t):\big>
+\end{align}
+
+And we can add the two contributions together
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} = &\big<: \hat{\Omega}_+(t_1,t_1+\Delta t)\hat{\Omega}_+(t_2,t_2+\Delta t) + \hat{\Omega}_+(t_2,t_1+\Delta t)\\
+&+ \hat{\Omega}_-(t_1,t_1+\Delta t)\hat{\Omega}_-(t_2,t_2+\Delta t) + \hat{\Omega}_-(t_2,t_1+\Delta t)\\
+-&\hat{\Omega}_+(t_1,t_1+\Delta t) \hat{\Omega}_-(t_2,t_2+\Delta t)\\
+-&\hat{\Omega}_+(t_2,t_2+\Delta t) \hat{\Omega}_-(t_1,t_1+\Delta t)
+:\big>
+\end{align}
+
+And we re-arrange to see the final result
+
+\begin{align}
+&\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} = \left(\frac{e}{\Delta t}\right)^2 \times\\
+&\bigg[ \left<: \left(\hat{\Omega}_+(t_1,t_1+\Delta t) - \hat{\Omega}_-(t_1,t_1+\Delta t)\right)\left(\hat{\Omega}_+(t_2,t_2+\Delta t) - \hat{\Omega}_-(t_2,t_2+\Delta t)\right) : \right>\\
+&+ \theta(\Delta t - \delta t)\left<:\hat{\Omega}_+( t_2,t_1+\Delta t)+\hat{\Omega}_-( t_2,t_1+ \Delta t):\right>\bigg]
+\end{align}
+
+From above we can find the formulas for 
+
+\begin{align}
+\hat{\Omega}_+(t_1,t_1+\Delta t) - \hat{\Omega}_-(t_1,t_1+\Delta t) &= \int_{t_1}^{t_1+\Delta t} |\alpha| \hat{X}_S^{\phi_{LO}+\omega_{LO}t'}(t') dt'\\
+\hat{\Omega}_+(t_2,t_1+\Delta t) + \hat{\Omega}_-(t_2,t_1+\Delta t) &= \int_{t_2}^{t_1+\Delta t} \left(|\alpha|^2 + \hat{a}^{\dag}_{S}(t')\hat{a}_{S}(t') \right) dt'
+\end{align}
+
+We can go ahead and plug this in and also make the by now familiar slow dynamics approximation to find the balanced heterodyne correlation function. We also symmetrize in time as usual.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} = e^2 |\alpha|^2 \left<:\hat{X}_{S}^{\phi_{LO}+\omega_{LO}t_1}(t_1) \hat{X}_{S}^{\phi_{LO}+\omega_{LO} t_2}(t_2) :\right>\\
++e^2 \Lambda(\delta t) \left(|\alpha|^2 + \left<:\hat{a}^{\dag}_S(t_1)\hat{a}_S(t_1):\right>\right)
+\end{align}
+
+ We'll also approximate the LO stronger than the probe again.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} = e^2 |\alpha|^2 \left<:\hat{X}_{S}^{\phi_{LO}+\omega_{LO}t_1}(t_1) \hat{X}_{S}^{\phi_{LO}+\omega_{LO} t_2}(t_2) :\right>\\
++e^2\Lambda(\delta t) |\alpha|^2
+\end{align}
+
+
+\section{All detection inefficiencies}
+The goal of this write up is to relate the detected photocurrent (and eventually detected voltage on gagescope) to the field in the cavity. We see that the balanced heterodyne detector is related to a rotated quadrate of the incident field. I have already explained quantum detection efficiency as well as mode matching efficiency. There are two detection efficiencies left. The path efficiency and the cavity outcoupling efficiency. 
+
+The path efficiency is easy. The path efficiency results from the fact that as the probe travels from the output port of the cavity it travels through a variety of optics losing some of it's power along the way. It can be modeled as a beam splitter with transmission coefficient $\sqrt{\epsilon_P}$. The reason this makes sense is that any where that light can be scattered out of the mode of interest also represents a bidirectional port where light from that scattered mode (maybe in its vacuum state) can be scattered INTO our mode of interest. This effective beam-slitter will attenuate the cavity field by $\sqrt{\epsilon_P}$ and mix in vacuum $\sqrt{1-\epsilon_P}\hat{a}_P$. However, it turns out we can ignore this vacuum which has been mixed in because when we normal order the optical field to determine the detected photocurrent these vacuum terms will evaluate to zero when ANY expectation value is taken. This is a stark difference between this normal ordered approach to optical detection and other approaches I have come across.
+
+The cavity field is similar. The gist is that we have the cavity field which is driven by multiple input fields. These fields are coherent + vacuum inputs on both mirrors coming from the outside world as well as inputs corresponding to losses at each mirror. The sum of all of these damping rates is $2 \kappa$, the full linewidth of the cavity. However, we only monitor one of these ports, namely the output port. The input output relation is
+
+\begin{align}
+\hat{a}_{\text{out}} =  \hat{a}_{\text{in}} + \sqrt{2 \kappa_{out}} \hat{a}_{\text{Cav}} = \hat{a}_{\text{in}} + \sqrt{\epsilon_C} \sqrt{2\kappa} \hat{a}_{\text{Cav}}
+\end{align}
+
+$\kappa$ is the cavity half linewidth.
+Note that these input and output fields correspond to the light field impinging from the outside and reflecting off of the output mirror since that is the cavity loss port that we monitor. There are similar relations for the input port and the two mirror loss ports but we don't monitor those.
+
+Note also that, just like for the path efficiencies, this extra $\hat{a}_{\text{in}}$ vacuum fluctuation term will dissapear when we take the normal ordered expectation value. For our system it can be shown that
+
+\begin{align}
+\kappa_{out} = \frac{T_2}{T_1+T_2+L_1+L_2} \kappa = \frac{\mathcal{F}}{2\pi} T_2 \kappa = \epsilon_C \kappa
+\end{align}
+
+Where $T_1$ and $T_2$ are the input and output mirror transmission coefficients and $L_1$ and $L_2$ are the loss coefficients. That is 
+
+\begin{align}
+\epsilon_C = \frac{T_2}{T_1+T_2+L_1+L2}
+\end{align}
+
+So we see that in this treatment we don't need to keep track of vacuum fluctuations added to our mode of interest because they fall away when we take the normal ordering. What we see is that our mode is simply attenuated. However, this STILL results in a loss of signal to noise. This is due to the fact that generally the signal scales less favorably than the shot noise for all of these different loss mechanisms. In particular, only the signal scales with $\epsilon_C$, $\epsilon_{P}$ and $\epsilon_{MM}$ and while both the signal and the shot noise scale with $\epsilon_Q$, the signal goes like $\epsilon_Q^2$ and the shot noise goes like $\epsilon_Q$.
+
+We can put these detection efficiencies in by putting a factor of $\sqrt{2\kappa}\sqrt{\epsilon_C \epsilon_{P} \epsilon_{MM}}$ in front of every factor of $\hat{a}$ and a factor of $\epsilon_Q$ on every factor of $\hat{\Omega}$.
+
+The final answer for the heterodyne signal correlation will turn out to be 
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} &= \epsilon_{\text{C}} 2\kappa  \epsilon_{P} \epsilon_{MM} \epsilon_Q^2 e^2 |\alpha|^2 \left<:\hat{X}_{Cav}^{\phi_{LO}+\omega_{LO}t_1}(t_1) \hat{X}_{Cav}^{\phi_{LO}+\omega_{LO} t_2}(t_2) :\right>\\
+&+\epsilon_Q e^2\Lambda(\delta t) |\alpha|^2
+\end{align}
+
+We can describe the probe in frame rotating at frequency $\omega_P$ so that the heterodyne signal shows up at frequency $\Delta_{LO} = \omega_{LO}-\omega_0$ in which case the correlation function becomes
+
+\begin{align}
+\braket{i_{\text{Bal}}(t_1)i_{\text{Bal}}(t_2)} &= \epsilon_{\text{C}} 2\kappa  \epsilon_{P} \epsilon_{MM} \epsilon_Q^2 e^2 |\alpha|^2 \left<:\hat{X}_{Cav}^{\phi_{LO}+\Delta_{LO}t_1}(t_1) \hat{X}_{Cav}^{\phi_{LO}+\Delta_{LO}t_2}(t_2) :\right>\\
+&+\epsilon_Q e^2\Lambda(t) |\alpha|^2
+\end{align}
+
+Also
+
+\begin{align}
+\braket{i_{\text{Bal}}(t)} = \sqrt{2\kappa} \sqrt{\epsilon_C \epsilon_P \epsilon_{MM}} \epsilon_Q e |\alpha| \left<:\hat{X}_{Cav}^{\phi_{LO}+\Delta_{LO}t}(t):\right>
+\end{align}
+
+
+\end{document}

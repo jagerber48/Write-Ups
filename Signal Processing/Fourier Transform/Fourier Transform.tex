@@ -1,0 +1,1236 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{Fourier Transform theory and conventions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this document I will prove the Fourier inversion theorem and derive various Fourier identities and transforms in a notation which leaves the Fourier convention variable.
+
+To prove the Fourier inversion theorem we will follow Wikipedia's convention for the Fourier transform. I think this is the convention generally followed in mathematics literature. Consider
+
+\begin{align}
+f: \mathbb{R}^n \rightarrow \mathbb{C}\\
+\bv{x} \mapsto f(\bv{x})
+\end{align}
+
+Then the Fourier transform and inverse Fourier transform (both also from $\mathbb{R}^n \rightarrow \mathbb{C}$) are defined as
+
+\begin{equation}
+\mathcal{FT}[f(\bv{x})](\bv{\xi})=\tilde{f}(\bv{\xi}) = \int_{\mathbb{R}^n} e^{-2\pi i \bv{\xi}\cdot \bv{x}} f(\bv{x}) d\bv{x}
+\end{equation}
+
+\begin{equation}
+\mathcal{FT}^{-1}[\tilde{f}(\bv{\xi})](\bv{x}) = \check{f}(\bv{x}) = \int_{\mathbb{R}^n} e^{+2\pi i \bv{\xi}\cdot \bv{x}} \tilde{f}(\bv{\xi}) d\bv{\xi}
+\end{equation}
+
+The content of the Fourier inversion theorem is that $\mathcal{FT}^{-1}[\mathcal{FT}[f(\bv{x})]] = \check{f}(\bv{x}) = f(\bv{x})$.
+
+Here I'm considering the Fourier transform on $\mathbb{R}^n$. The specification to $\mathbb{R}$ is obvious. On many integrals I will drop the bounds of the integral. In all cases if the bounds are dropped the bound should either be $\mathbb{R}^n$ or $\mathbb{R}$ where it should be clear which is needed by looking at the differential in the integral and from other context.
+
+There are a few preliminaries before proving the Fourier Inversion theorem.
+
+\section{Gaussian Integral}
+
+\subsection{Simple Gaussian Integral}
+
+First a short proof about the integral of a Gaussian function. Let $a$ be real number with $a>0$.
+
+\[
+I_1 = \int_{\mathbb{R}} e^{-a x^2} dx
+\]
+
+\[
+I_1^2 = \int \int e^{-a (x^2+y^2)} dx dy = \int_{-\infty}^{\infty} \int_0^{2\pi} e^{-a r^2} r dr d\theta = \left[2 \pi \frac{e^{-a r^2}}{-2a} \right]_{r=0}^{+\infty} = \frac{\pi}{a}
+\]
+
+so
+
+\[ I_1 = \int e^{-a x^2}dx = \sqrt{\frac{\pi}{a}} \]
+
+\subsection{Multi-Dimensional Gaussian Integral}
+
+We can define a multidimensional Gaussian by $e^{a |\bv{x}|^2}$ Where $\bv{x} \in \mathbb{R}^n$ and $|\bv{x}|^2 = \bv{x} \cdot \bv{x}$.
+
+\begin{align}
+I_n &= \int_{\mathbb{R}^n} e^{-a|\bv{x}|^2} d\bv{x} = \int_{\mathbb{R}} \ldots \int_{\mathbb{R}} e^{-a|\bv{x}|^2} dx_1 \ldots dx_n\\
+&= \int \ldots \int e^{-ax_1^2}\ldots e^{-ax_n^2} dx_1 \ldots dx_n = \int e^{a x_1^2} dx_1 \ldots \int e^{a x_n^2} dx_n = I_1^n\\
+&= \left(\sqrt{\frac{\pi}{a}}\right)^n = \left(\frac{\pi}{a}\right)^{\frac{n}{2}}
+\end{align}
+
+\subsection{Completing the Square}
+A reminder about completing the square to help take the integral of an exponential raised to a quadratic polynomial. I will work this out for a vector polynomial.
+
+\begin{align}
+a|\bv{x}|^2 + \bv{b}\cdot\bv{x} + c = A|\bv{x}+\bv{B}|^2+C = A|\bv{x}|^2+2A\bv{B}\cdot\bv{x} + A|\bv{B}|^2 + C
+\end{align}
+
+\begin{align}
+A &= a\\
+\bv{B} &= \frac{\bv{b}}{2A} = \frac{\bv{b}}{2a}\\
+C &= c - A|\bv{B}|^2 = c - \frac{|\bv{b}|^2}{4a}
+\end{align}
+ 
+so
+
+\begin{align}
+a |\bv{x}|^2 + \bv{b}\cdot\bv{x} + c = a\left|\bv{x}+\frac{\bv{b}}{2a}\right|^2 + c -\frac{|\bv{b}|^2}{4a}
+\end{align}
+
+\subsection{General Gaussian Integral}
+
+Now the more general Gaussian integral
+
+\begin{align}
+\int_{\mathbb{R}^n} e^{a|\bv{x}|^2+\bv{b}\cdot\bv{x}+c} d\bv{x} = \int e^{a\left|\bv{x}+\frac{\bv{b}}{2a}\right|^2 + c - \frac{|\bv{b}|^2}{4a}} d\bv{x} = e^{c-\frac{|\bv{b}|^2}{4a}} \int e^{a |\tilde{\bv{x}}|^2} d\tilde{\bv{x}} = e^{c-\frac{|\bv{b}|^2}{4a}} \left(\frac{\pi}{-a}\right)^{\frac{n}{2}}
+\end{align}
+
+Where I have made the change of variables $x_i+\frac{b_i}{2a} = \tilde{x_i}$ and it is understood that $a<0$ for the integral to converge.
+
+
+\section{Nascent Delta Function and Approximation to the Identity}
+
+We are now going to define the delta function as a limit of gaussians which get taller and skinnier as a function of a parameter $\epsilon$. This will help us prove the Fourier Inversion Theorem. First we want a Gaussian whose integral is 1 so we choose $a=\pi$ and define
+
+\[
+\delta_1(\bv{x}) = e^{-\pi |\bv{x}|^2}
+\]
+
+\[
+\int \delta_1(\bv{x}) d\bv{x} = 1
+\]
+
+Next we define
+
+\[\delta{_\ep}(\bv{x}) = \frac{\delta_1(\frac{\bv{x}}{\ep})}{\ep^n} = \frac{1}{\ep^n} e^{-\pi \frac{|\bv{x}|^2}{\ep^2}}\]
+
+\[\int \delta_{\ep}(\bv{x})d\bv{x} = \frac{1}{\ep^n} \int \delta_1\left(\frac{\bv{x}}{\ep}\right) d\bv{x} = \frac{\ep^n}{\ep^n} \int \delta_1(\tilde{\bv{x}}) d \tilde{\bv{x}} = 1
+\]
+
+by a change of variable $\tilde{x_i} = \frac{x_i}{\ep}$
+Now I'll show that this thing behaves like a dirac delta. Consider
+
+\[
+\lim_{\ep \rightarrow 0} \int \delta_{\ep}(\bv{x}) f(\bv{x}) d\bv{x} =
+\lim_{\ep \rightarrow 0} \frac{1}{\ep^n} \int \delta_1\left(\frac{\bv{x}}{\ep}\right) f(\bv{x}) d\bv{x} =
+\lim_{\ep \rightarrow 0} \int \delta_1(\tilde{\bv{x}})f(\ep \tilde{\bv{x}}) d\tilde{\bv{x}}
+\]
+
+We can interchange the limit and the integral by the dominated convergence theorem.
+
+\[
+= \int \delta_1(\tilde{\bv{x}}) \lim_{\ep \rightarrow 0} f(\ep \tilde{\bv{x}}) d\tilde{\bv{x}} = \int \delta_1(\tilde{\bv{x}}) f(\bv{0}) d \tilde{\bv{x}} = f(\bv{0})
+\]
+
+So we can see that in some sense $\lim_{\ep \rightarrow 0} \delta_{\ep}(\bv{x})$ behaves like the delta function (more properly distribution) $\delta(x)$.
+We will need to use the fact that the convolution with this function  acts like the identity. We define convolution.
+
+\[ (f \ast g)(\bv{x}) = \int f(\bv{x}-\bv{y})g(\bv{y}) d\bv{y} \]
+
+We work out
+
+\begin{align*} (\delta_{\ep} \ast f)(\bv{x}) &= \int \delta_{\ep}(\bv{x}-\bv{y}) f(\bv{y}) d\bv{y} = 
+\int \delta_{\ep}(-\bv{x}')f(\bv{x}'+\bv{x}) d\bv{x}'
+= \frac{1}{\ep^n} \int \delta_1\left(\frac{\bv{x}'}{\ep}\right) f(\bv{x}'+\bv{x}) d\bv{x}'\\
+& = \int \delta_1(\tilde{\bv{x}}) f(\tilde{\bv{x}} \ep + \bv{x}) d\tilde{\bv{x}}
+\end{align*}
+
+Recalling $\delta_{\ep}$ is an even function. Now similarly to before we can see
+
+\[
+\lim_{\ep \rightarrow 0}(\delta_{\ep} \ast f)(\bv{x}) = \int \delta_1(\tilde{\bv{x}}) \lim_{\ep \rightarrow 0} f(\tilde{\bv{x}}\ep +\bv{x}) d\tilde{\bv{x}} = f(\bv{x}) \int \delta_1(\tilde{\bv{x}}) d\tilde{\bv{x}} = f(\bv{x})
+\]
+
+We call a function that behaves like this an approximation to the identity.
+
+\section{Fourier Transform Properties}
+\subsection{Shifting Property}
+Let $g(\bv{x}) = e^{+2\pi i \bv{\eta}\cdot \bv{x}} f(\bv{x})$. Then
+
+\[
+\tilde{g}(\bv{\xi}) = \int e^{-2\pi i \bv{\xi} \cdot \bv{x}} e^{+2\pi i \bv{\eta} \cdot \bv{x}} f(\bv{x}) d\bv{x}
+= \int e^{- 2 \pi i (\bv{\xi} -\bv{\eta}) \cdot \bv{x}} f(\bv{x}) d\bv{x} = \tilde{f}(\bv{\xi} - \bv{\eta})
+\]
+
+\subsection{Scaling Property}
+Let $g(\bv{x}) = f(a\bv{x})$. Then
+
+\[
+\tilde{g}(\bv{\xi}) = \int e^{-2\pi i \bv{\xi} \cdot \bv{x}} f(a\bv{x}) d\bv{x} = \frac{1}{a^n} \int e^{-2 \pi i \frac{\bv{\xi}}{a} \cdot \tilde{\bv{x}}} f(\tilde{\bv{x}}) d\tilde{\bv{x}} = \frac{1}{a^n} \tilde{f}\left(\frac{\bv{\xi}}{a}\right)
+\]
+
+\subsection{``Swapping'' Property}
+\[
+\int f(\bv{\xi}) \tilde{g}(\bv{\xi}) d\bv{\xi} = \int \int e^{-2\pi i \bv{\xi} \cdot \bv{y}} f(\bv{\xi}) g(\bv{y}) d\bv{y} d\bv{\xi} = \int \tilde{f}(\bv{y}) g(\bv{y}) d\bv{y}
+\]
+
+\subsection{Fourier Transform of a Gaussian}
+We work out $\tilde{\delta}_{1}(\bv{\xi})$
+
+\[
+\tilde{\delta}_{1}(\bv{\xi}) = \int e^{-2 \pi i \bv{\xi} \cdot \bv{x}} e^{-\pi |\bv{x}|^2} d\bv{x}
+\]
+
+We need to complete the square to perform this integral. We see $a=-\pi$, $\bv{b}=-i2\pi \bv{\xi}$ and $c=0$. 
+We know then from the formula for the general Gaussian integral that
+
+\begin{align}
+\tilde{\delta}_1(\bv{\xi}) = e^{-\pi |\bv{\xi}|^2} = \delta_1(\bv{\xi})
+\end{align}
+
+So we see that the fourier transform leaves this gaussian invariant.
+
+\section{Fourier Inversion Theorem}
+
+We are now ready to start proving the Fourier Inversion Theorem.
+Consider
+
+\[
+\check{f}(\bv{x}) = \int e^{+ 2 \pi i \bv{\xi} \cdot \bv{x}} \tilde{f}(\bv{\xi}) d\bv{\xi}
+\]
+
+By the dominated convergence theorem one can show
+
+\[
+\int e^{+ 2 \pi i \bv{\xi} \cdot \bv{x}} \tilde{f}(\bv{\xi}) d\bv{\xi} = 
+\lim_{\ep\rightarrow 0} \int e^{-\pi \ep^2 |\bv{\xi^2}|} e^{+ 2 \pi i \bv{\xi} \cdot \bv{x}} \tilde{f}(\bv{\xi}) d\bv{\xi}
+\]
+
+Namely the dominated convergence theorem allows us to move the limit from inside to outside the integral. The dominated convergence theorem can be applied because $\tilde{f}(\bv{\xi})$ is a `nice' function by assumption for the Fourier inversion theorem to apply (it is $L^1$ integrable).
+
+Let $g_{\ep}(\bv{\xi}) = e^{-\pi \ep^2 |\bv{\xi}|^2} e^{+ 2 \pi i \bv{\xi} \cdot \bv{x}} = 
+\frac{\delta_{\sfrac{1}{\ep}}(\bv{\xi})}{\ep^n}e^{+2 \pi i \bv{\xi} \cdot \bv{x}} = \delta_1(\ep \bv{\xi})e^{+2 \pi i \bv{\xi} \cdot \bv{x}} $
+
+So that
+
+\[
+\check{f}(\bv{x}) = \lim_{\ep\rightarrow 0} \int g_{\ep}(\bv{\xi}) \tilde{f}(\bv{\xi}) d\bv{\xi}
+\]
+
+We use the swapping property.
+\[
+\check{f}(\bv{x}) = \lim_{\ep\rightarrow 0} \int \tilde{g}_{\ep}(\bv{y})f(\bv{y}) d\bv{y}
+\]
+
+Now we need to work out $\tilde{g}_{\ep}(\bv{y})$ recalling $g_{\ep}(\bv{\xi}) = 
+\delta_1 (\ep \bv{\xi}) e^{+2 \pi i \bv{\xi} \cdot \bv{x}}$
+
+\[
+\mathcal{FT}[g_{\ep}(\bv{\xi})](\bv{y}) = \mathcal{FT}[\delta_1(\ep \bv{\xi})](\bv{y}-\bv{x}) = \mathcal{FT}[\delta_1(\bv{\xi})]\left(\frac{\bv{y}-\bv{x}}{\ep}\right) \frac{1}{\ep^n} = \delta_1\left(\frac{\bv{y}-\bv{x}}{\ep}\right) \frac{1}{\ep^n} = \]
+\[
+\delta_{\ep}(\bv{y}-\bv{x}) = \delta_{\ep}(\bv{x}-\bv{y}) = \tilde{g}_{\ep}(\bv{y})
+\]
+
+Using the shifting property, the scaling property, the Fourier transform of a gaussian, the definition of $\delta_{\ep}$ and the evenness of $\delta_{\ep}$.
+
+Plugging this in we find
+
+\[ \check{f}(\bv{x}) = \lim_{\ep\rightarrow 0} \int \delta_{\ep}(\bv{x}-\bv{y}) f(\bv{y}) d\bv{y} = \lim_{\ep\rightarrow 0} (\delta_{\ep} \ast f)(\bv{x}) = f(\bv{x})\]
+
+Where we use the fact that $\delta_{\ep}$ is an approximation to the identity.
+
+We have proven that $\check{f}(\bv{x}) = f(\bv{x})$ thus concluding our proof of the Fourier Inversion Theorem.
+
+\section{Other Conventions}
+
+In the literature (mathematics, physics, engineering, etc.) one encounters many different `conventions' for the presentation of the Fourier transform and inverse Fourier transform. In short the different conventions have differing factors appearing as multipliers to the total formulas for the Fourier transform and the inverse Fourier transform as well as different factors and signs appearing in the exponential.
+
+Above I have proven the Fourier inversion theorem for one particular choice of convention. In this section I will use that proof to generate a proof of the Fourier inversion formula \textbf{for all} possible convention choices. I will also tabulate some of the usual convention choices which are made and give a discussion of the relative pros and cons for different choices. I will follow Wolfram Mathematica's notation for the labeling of different convention choices.
+
+Below I will use the multi-dimensional Fourier transform variables $\bv{t}$ and $\bv{\omega}$. This is a bit strange since time is not usually multi-dimensional but in the end I will be interested mostly in one-dimensional Fourier transforms anyways so this will keep the formulas looking familiar.
+
+Here are Mathematica's expressions for the Fourier transform and inverse Fourier transform.
+
+\begin{align}
+\tilde{f}_{ab}(\bv{\omega}) &= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n\int e^{+bi\bv{\omega} \cdot \bv{t}}f(\bv{t}) d\bv{t}\\
+\check{f}_{ab}(\bv{t}) &= \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n\int e^{-bi \bv{\omega} \cdot \bv{t}}\tilde{f}_{ab}(\bv{\omega}) d\bv{\omega}
+\end{align}
+
+Note that the Fourier transform has a scaling related to $1-a$ and the complex exponential goes like $+b$ while the inverse Fourier transform scales with $1+a$ and has a complex exponential that goes like $-b$.
+
+As above the goal is to show that $\check{f}_{ab}(\bv{t}) = f(\bv{t})$ now including these new factors. Above I have already given a proof for the case that $(a,b) = (0, -2\pi)$. We can use the proof for this case to bootstrap up a proof for all cases.
+
+\begin{align*}
+\check{f}_{ab}(\bv{t}) &= \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n\int e^{-b i\bv{\omega} \cdot \bv{t}}\tilde{f}_{ab}(\bv{\omega}) d\bv{\omega}\\
+&= \left(\frac{|b|}{2\pi}\right)^n \int \int e^{-b i \bv{\omega} \cdot \bv{t}} e^{+ b i \bv{\omega} \cdot \bv{s}} f(\bv{s}) d\bv{s} d\bv{\omega}\\
+&= \left(\frac{|b|}{2\pi}\right)^n \int \int e^{+b i \bv{\omega}\cdot(\bv{s}-\bv{t})} f(\bv{s}) d\bv{s} d\bv{\omega}\\
+&= \left(-\text{sgn}(b)\right)^n \left( \frac{-2\pi}{b}\right)^n \left(\frac{|b|}{2\pi}\right)^n\int \int e^{i 2\pi \bv{\omega} \cdot (\bv{t}-\bv{s})}f(\bv{s}) d\bv{s} d\bv{\omega}
+\end{align*}
+
+Where I have made the change of variables $b \omega_i \to -2\pi \omega_i$. The $-\text{sgn}(b)$ arises because if $b>0$ then the bounds on the integral flip so we add $-\text{sgn}(b)$ to compensate for this. If $b<0$ then the bounds don't flip which is also captured by the equation. Note that $-\text{sgn}(b)\frac{-|b|}{b} =1$.
+
+\begin{align}
+\check{f}_{ab}(\bv{t}) &= \int \int e^{i 2\pi \bv{\omega} \cdot (\bv{t}-\bv{s})} f(\bv{s}) d\bv{s} d\bv{\omega}\\
+&= \int e^{+i 2\pi \bv{\omega} \cdot \bv{t}} \tilde{f}_{0,-2\pi}(\bv{\omega}) d\bv{\omega}\\
+&= \check{f}_{0,-2\pi}(\bv{t}) = f(\bv{t})
+\end{align}
+
+By the Fourier inversion theorem applied to the case of $(a,b) = (0,-2\pi)$ which was proven above. Thus we have bootstrapped from a Fourier inversion theorem for one convention to a Fourier inversion theorem for all conventions.
+
+\[\check{f}_{ab}(\bv{t}) = f(\bv{t})\]
+
+Note that we could have, more generally written down the Fourier transform and inversion pair as something like
+
+\begin{align}
+\tilde{f}_G(\bv{\omega}) &= A \int e^{+iB\bv{\omega}\cdot\bv{t}} f(\bv{t}) d\bv{t}\\
+\check{f}_G(\bv{t}) &= C \int e^{-iD\bv{\omega}\cdot\bv{t}} \tilde{f}_G(\bv{\omega}) d\bv{\omega}
+\end{align}
+
+Following similar steps as the previous example we find:
+
+\begin{align}
+\check{f}_G(\bv{t}) &= AC \int \int e^{i\bv{\omega}\cdot(B \bv{s} - D \bv{t})} f(\bv{s}) d\bv{s} d\bv{\omega}
+\end{align}
+
+We change coordinates from $B \omega_i \rightarrow -2\pi \omega_i$
+
+\begin{align}
+\check{f}_G(\bv{t}) &= AC \left(-\text{sgn}(B)\frac{-2\pi}{B} \right)^n \int \int e^{i 2\pi \frac{D}{B} \bv{\omega}\cdot \bv{t}} e^{-i2\pi \bv{\omega}\cdot\bv{s}} f(\bv{s})d\bv{s}d\bv{\omega}\\
+&= AC \left(\frac{2\pi}{|B|} \right)^n\int e^{i2\pi \frac{D}{B} \bv{\omega}\cdot\bv{t}} \tilde{f}(\bv{\omega})d\bv{\omega}\\
+&= AC\left(\frac{2\pi}{|B|} \right)^n f\left(\frac{D}{B} \bv{t}\right)
+\end{align}
+
+So we see that two conditions must be satisfied for $\check{f}_G(\bv{t}) = f(\bv{t})$. The conditions are
+
+\begin{align}
+D&=B\\
+AC &= \left(\frac{|B|}{2\pi}\right)^n
+\end{align}
+
+The Mathematica parametrization satisfies this by choosing
+
+\begin{align}
+B &= D = b\\
+A &= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n\\
+C &= \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n
+\end{align}
+
+Which can be seen to satisfy the necessary relations. Thus we have proven the Fourier inversion theorem for all possible convention choices.
+
+\subsection{Example Convention Usage}
+
+To understand the implications of the different possible convention choices it will be helpful to consider an example. Consider the positive time decaying complex exponential function
+
+\begin{align}
+f(t) = e^{\left(i\omega_0 - \Gamma\right) t} \theta(t)
+\end{align}
+
+Supppose that $\omega_0$ and $\Gamma$ are both positive.
+Starting at $t=0$ the function oscillates counter-clockwise in the complex plane and completes a revolution every time $\omega_0 t = 2\pi n$ or $t = n \frac{2\pi}{\omega_0} = n \frac{1}{f_0}=nT$ for integer $n$. Here $\omega_0$ is the angular frequency, $f_0$ is the cyclic frequency, and $T$ is the period. The amplitude of the function decays at rate $\Gamma$, that is, the function amplitude decays from $1$ to $\frac{1}{e}$ after time $t = \frac{1}{\Gamma}$. 
+
+It is helpful to consider a one-sided decaying rather than a non-decaying complex exponential because in the decaying case the Fourier integrals converge with no questions of convergence, whereas this is not the case for a non-decaying complex exponential. In short the one-sided decaying exponential satisfies the integrability conditions for the Fourier transform while a simple complex exponential does not.
+
+We can calculate the convention agnostic Fourier transform of this function:
+
+\begin{align}
+\tilde{f}_{ab}(\omega) &= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{+bi\omega t} f(t) dt = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{+bi\omega t} e^{\left(i\omega_0 - \Gamma\right)t} \theta(t) dt\\
+&= \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \frac{e^{(i(b\omega + \omega_0) - \Gamma)t}}{i(b\omega + \omega_0) - \Gamma}\Bigg|_{t=0}^{\infty}\\
+&= \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \left(0-\frac{1}{i(b\omega +\omega_0) - \Gamma} \right)\\
+\tilde{f}_{ab}(\omega) &= \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \frac{1}{\Gamma - i (b\omega + \omega_0)}
+\end{align}
+
+Consider the magnitude squared of this function:
+
+\begin{align}
+|\tilde{f}_{ab}(\omega)|^2 = \frac{|b|}{(2\pi)^{1-a}} \frac{1}{\Gamma^2 + (b\omega +\omega_0)^2}
+\end{align}
+
+First we note that changing $a$ has no effect other than changing the scaling pre-factor. Next, we see that this function has a maximum when 
+
+\begin{align}
+b\omega &= -\omega_0\\
+\omega &= -\frac{\omega_0}{b}
+\end{align}
+
+\subsection{The sign of $b$}
+First consider the effect of the sign of $b$. Recall that $\omega_0 > 0 $. If $b>0$ then we see that that the Fourier transform has a peak at a negative value of $\omega$ whereas if $b<0$ then the Fourier transform has a peak at a negative value of $\omega$. 
+
+In the literature you will find examples of authors choosing different signs for $b$ so it is worth exploring the difference. In the literature you also will hear about positive and negative frequency components of signals. I claim that whether an author considers $e^{+i\omega t}$ to be a positive or negative frequency signal depends on the choice they take for the sign of $b$\footnote{If the author doesn't maintain this consistency then I claim the author is being especially confusing regarding an issue which is already confusing!}.  This makes sense because we can then say that if the Fourier transform of a function has a peak (or peaks) for positive (negative) $\omega$ then we simply say that the function contains positive (negative) frequency components.
+
+Here is a table summarizing this:
+
+\begin{align}
+\tilde{f}_{ab}(\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{+ib \omega t} f(t) dt
+\end{align}
+
+\begin{center}
+\begin{tabular}{|m{1cm}|m{4cm}|m{4cm}|}
+\hline
+$f(t)$ & $b>0$ & $b<0$\\ \hline
+$e^{+i\omega t}$ & Negative Frequency & Positive Frequency\\ \hline
+$e^{-i\omega t}$ & Positive Frequency & Negative Frequency\\ \hline
+\end{tabular}
+\end{center}
+
+I want to now briefly comment on the trade offs made between these different choices.
+
+At first the more natural choice looks like $b<0$ because it makes sense that $e^{+i\omega t}$ should be a positive frequency function because of the positive sign in the exponential. The main disadvantage of this choice is that the formula for the Fourier transform now includes an extra minus sign in the exponential which one must remember. It is unfortunate to have to remember this extra minus sign in the transform equation (as opposed to having to remember it in the inverse transform formula) because the transform is performed more often than the inverse transform in my opinion.
+
+However, in physics, there are a few reasons why one might prefer the $b>0$ convention. There is of course the memory convenience I mentioned above but there other reasons. One good reason is that in the physics of waves we encounter expressions like
+
+\begin{align}
+e^{+i(kx - \omega t)}
+\end{align}
+
+for $k$ and $\omega$ greater than 0 this expression could represent a wave traveling in the $+x$ direction. in time. I argue this is the best convention here because, for positive frequency ($\omega >0$) positive $k$ should correspond to a wave traveling in the $+x$ direction while a negative $k$ should correspond to a wave traveling in the $-x$ direction. This means the temporal component of a positive frequency wave is $e^{-i\omega t}$ thus pointing to the $b>0$ convention.
+
+In quantum mechanics this convention becomes useful because if we consider the Heisenberg time evolution of a photon field we see $\hat{a}(t) \sim \hat{a}(0)e^{-i\omega t}$ That is, the field $\hat{a}(t)$ (as opposed to its hermitian conjugate $\hat{a}^{\dag}(t)$) evolves with $e^{-i\omega t}$. It is nice to work with $\hat{a}$ rather than $\hat{a}^{\dag}$ because 1) we get to write down fewer dagger symbols and 2) intuitively, we can think that we are working with the field directly rather than the conjugate of the field.
+If we choose the $b>0$ convention it means that $\hat{a}(t)$ is the positive frequency component of the photon field which is nice because that means by working with $\hat{a}(t)$, in addition to the advantages above, we also gain the advantage that we are working with the positive frequency component of the field.
+
+\subsection{The magnitude of $b$}
+Now let us consider the magnitude of $b$. We see that if $|b| = 1$ then the peak in the Fourier transform $\tilde{f}_{ab}(\omega)$ occurs at 
+
+$\omega = \pm \omega_0$
+
+This makes good sense. However, part of why this makes sense is because we have explicitly expressed the function $f(t)$ in terms of an angular frequency $\omega_0$. We could equally well have expressed
+
+\begin{align}
+f(t) = e^{(i2\pi f_0 - \Gamma)t}
+\end{align}
+
+
+and gotten
+
+\begin{align}
+|\tilde{f}_{ab}(\omega)|^2 = \frac{|b|}{(2\pi)^{1-a}} \frac{1}{\Gamma^2 + (b\omega + 2\pi f_0)^2}
+\end{align}
+
+If we again chose $|b|=1$ then the Fourier transform peak would occur at
+
+\begin{align}
+\omega = \pm 2\pi f_0
+\end{align}
+
+Which doesn't make as much sense, we would rather have the peak occurring at $f_0$. The solution is to choose $|b| = 2\pi$ and rename the Fourier `frequency' variable from $\omega$ to $f$. That is we rewrite (letting $|b|=2\pi$)
+
+\begin{align}
+\tilde{f}_{a, \pm 2\pi}(f) = \sqrt{\frac{2\pi}{(2\pi)^{1-a}}}\int e^{\pm i 2\pi f t}f(t)dt
+\end{align}
+
+and following through would would find the Fourier transform to be peaked at
+
+\begin{align}
+f = \pm f_0
+\end{align}
+
+Thus the choice $|b| = 1$ leads to the interpretation of the frequency axis of the Fourier transform as being angular frequency while the choice $|b|=2\pi$ leads to the interpretation of the frequency axis being the cyclic frequency.
+
+\subsection{The value of $a$}
+
+Above I noted that $a$ does nothing but change the magnitude of the prefactor on both the Fourier transform and inverse Fourier transform.
+
+The pre-factor for the transform is
+
+\begin{align}
+\sqrt{\frac{|b|}{(2\pi)^{1-a}}}
+\end{align}
+
+The pre-factor for the inverse transform
+
+\begin{align}
+\sqrt{\frac{|b|}{(2\pi)^{1+a}}}
+\end{align}
+
+I will consider three choices. The first choice is $a=0$. In this case the pre-factor is the exact same for both the transform and the inverse transform. This is nice because then you only have one thing to remember! In addition, there is a nice feature that if $|b|=2\pi$ then the entire pre-factor becomes $1$! In addition we will see below that for this choice of $a$ the Fourier transform and inverse Fourier transform will be Unitary in a sense defined below.
+
+The next choice is to choose $a=1$. With this choice the denominator is $1$ for the Fourier transform and becomes $2\pi$ for the inverse Fourier transform. For this choice if $|b|=1$ then the Fourier transform has a unity pre-factor while the inverse transform has a pre-factor of $\frac{1}{2\pi}$.
+
+One can also choose $a=-1$ to eliminate the pre-factor on the inverse Fourier transform while having a factor of $\frac{1}{2\pi}$ for the Fourier transform. I find this convention to be strange and haven't seen it used often.
+
+\subsection{Convention Summary}
+
+here is a summary of what I consider to be reasonable possible conventions, usages are according the Wolfram  mathworld page on the Fourier Transform and my own experience.
+\setlength{\extrarowheight}{3pt}
+\begin{center}
+\begin{tabularx}{\textwidth}{|m{1.5cm}|m{5cm}|m{5 cm}|X|}
+\hline
+$(a,b)$ & Fourier Transform & Inverse Transform & Application\\ \hline
+$(0,+2\pi)$ & $\tilde{g}(f) = \int e^{+i2\pi f t} g(t) dt$ & $g(t) = \int e^{-i2\pi f t} \tilde{g}(f) df$ & \\ \hline
+$(0,-2\pi)$ & $\tilde{g}(f) = \int e^{-i2\pi f t} g(t) dt$ & $g(t) = \int e^{+i2\pi f t} \tilde{g}(f) df$ & Signal Processing\\ \hline
+$(0,+1)$ & $\tilde{f}(\omega) = \frac{1}{\sqrt{2\pi}} \int e^{+i\omega t} f(t)dt$ & $f(t) = \frac{1}{\sqrt{2\pi}} \int e^{-i\omega t}\tilde{f}(\omega) d\omega$ & Modern Physics\\ \hline
+$(0,-1)$ & $\tilde{f}(\omega) = \frac{1}{\sqrt{2\pi}} \int e^{-i\omega t} f(t)dt$ & $f(t) = \frac{1}{\sqrt{2\pi}} \int e^{+i\omega t}\tilde{f}(\omega) d\omega$ & \\ \hline
+$(+1,+1)$ & $\tilde{f}(\omega) = \int e^{+i\omega t} f(t)dt$ & $f(t) = \frac{1}{2\pi} \int e^{-i\omega t}\tilde{f}(\omega) d\omega$ & Probability Theory of Characteristic Function \\ \hline
+$(+1,-1)$ & $\tilde{f}(\omega) = \int e^{-i\omega t} f(t)dt$ & $f(t) = \frac{1}{2\pi} \int e^{+i\omega t} \tilde{f}(\omega) d\omega$ & Pure Math and  Systems Engineering\\ \hline
+$(-1,+1)$ & $\tilde{f}(\omega) = \frac{1}{2\pi} \int e^{+i\omega t}f(t) dt$ & $f(t) = \int e^{-i\omega t} \tilde{f}(\omega)d\omega$ & Classical Physics\\ \hline
+$(-1,-1)$ & $\tilde{f}(\omega) = \frac{1}{2\pi} \int e^{-i\omega t}f(t) dt$ & $f(t) = \int e^{+i\omega t} \tilde{f}(\omega)d\omega$ & \\ \hline
+$\left(0, +\frac{1}{\hbar}\right)$ & $\phi(p) = \frac{1}{\sqrt{2\pi \hbar}} \int e^{+i \frac{xp}{\hbar}} \psi(x) dx$ & $\psi(x) = \frac{1}{\sqrt{2\pi \hbar}} \int e^{-i \frac{xp}{\hbar}} \phi(p) dp$ & Quantum Wavefunction\\ \hline
+$\left(0, -\frac{1}{\hbar}\right)$ & $\phi(p) = \frac{1}{\sqrt{2\pi \hbar}} \int e^{-i \frac{xp}{\hbar}} \psi(x) dx$ & $\psi(x) = \frac{1}{\sqrt{2\pi \hbar}} \int e^{+i \frac{xp}{\hbar}} \phi(p) dp$ & Quantum Wavefunction\\ \hline
+\end{tabularx}
+\end{center}
+
+My preferred convention is the $(0,-2\pi)$ convention. It has the advantages that there are no pre-factors to be remembered, you simply must remember you are working with cyclic frequencies so you need the $2\pi$'s in the exponential. This is natural when working with signal processing because there you are often considering real signal expressed in Hz. In this convention $e^{+i2\pi f_0 t}$ would be a positive frequency signal. Since it has $a=0$ this convention is symmetric between the two transforms and is unitary as we will see below.
+
+However, in some circumstances it is useful to work with angular rather than cyclic frequencies. For example in some theoretical calculations. In these cases I prefer either the $(+1, +1)$ or $(+1, -1)$ convention. In fact, both are useful in some circumstances. For example, for reasons described above regarding wave equations, it is nice to take the $(+1, -1)$ convention for spatial transforms:
+
+\begin{align}
+\tilde{f}(\bv{k}) = \int e^{-i \bv{k} \cdot \bv{x}} f(\bv{x})d\bv{x}
+\end{align}
+
+While it is nice to take the $(+1, +1)$ convention for temporal transforms:
+
+\begin{align}
+\tilde{f}(\omega) = \int e^{+i \omega t} f(t) dt
+\end{align}
+
+It is worth mentioning that the Laplace transform is defined as
+
+\begin{align}
+\mathcal{L}[f(t)](s) = \int_{t=0^-}^{\infty} e^{-st} dt
+\end{align}
+
+Where $s$ is a complex parameter. If we restrict $s$ to the imaginary axis, i.e. $s=i\omega$ for real $\omega$, we see that the Laplace transform is exactly the Fourier transform under the $(+1,-1)$ convention. In principle the Laplace transform could be defined with a $+s$ in the exponent instead but I have never seen this convention taken. I believe this is because in the engineering literature there are many results pertaining to stability etc. of systems which rely on everyone using the same convention for the Laplace transform. 
+
+\section{Unitary - Parseval's Theorem}
+
+Let's show the unitarity property. Define
+\begin{align}
+\Braket{f,g} = \int f(\bv{t}) g^*(\bv{t}) d\bv{t}
+\end{align}
+
+\begin{align}
+\Braket{\tilde{f}_{ab},\tilde{g}_{ab}}= \int \tilde{f}_{ab}(\bv{\omega}) \tilde{g}_{ab}^*(\bv{\omega}) d\bv{\omega} = \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \int \int e^{-b i \bv{\omega} \cdot \bv{t}} \tilde{f}_{ab}(\bv{\omega}) g^*(\bv{t}) d\bv{t} d\bv{\omega}
+\end{align}
+
+Carefully note the minus sign in the exponential. This arises because $\tilde{g}^*_{ab}(\bv{\omega})$ is the complex conjugate of the fourier transform of $g(\bv{s})$. $g^*(\bv{\omega})$ arises for the same reason.
+
+\begin{align}
+\left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \left(\sqrt{\frac{(2\pi)^{1+a}}{|b|}}\right)^n \int f(\bv{t}) g^*(\bv{t}) d\bv{t} = (2\pi)^{an} \Braket{f,g}
+\end{align}
+
+So we see that the Fourier Transformation preserves norms up to a factor for $(2\pi)^{an}$. if $a=0$ then the preservation is exact and we say the transformation is unitary.
+
+\section{Convolution Theorem}
+
+Consider the Fourier transform of the convolution of $f$ and $g$.
+
+\begin{align*}
+\mathcal{FT}_{ab}[(f \ast g)(\bv{t})](\bv{\omega}) &= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n\int \int e^{+ib\bv{\omega} \cdot \bv{t}} f(\bv{t}-\bv{s})g(\bv{s}) d\bv{s} d\bv{t}\\
+&=  \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \int \int e^{+ib \bv{\omega} \cdot (\bv{\tau}+\bv{s})} f(\bv{\tau}) g(\bv{s}) d\bv{s} d\bv{\tau}\\
+&= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n\left(\int e^{+ib\bv{\omega} \cdot \bv{\tau}} f(\bv{\tau}) d\bv{\tau}\right)\left(\int e^{+ib\bv{\omega} \cdot \bv{s}} g(\bv{s}) d\bv{s}\right)\\
+&=\left(\sqrt{\frac{(2\pi)^{1-a}}{|b|}}\right)^n \tilde{f}_{ab}(\bv{\omega}) \tilde{g}_{ab}(\bv{\omega})
+\end{align*}
+
+So the Fourier Transform of a convolution is the product of the Fourier transforms. What about the Fourier Transform of a product?
+
+\begin{align*}
+\mathcal{FT}_{ab}[(f\cdot g)(t)](\omega) &= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \int e^{+ib\bv{\omega} \cdot \bv{t}} f(\bv{t}) g(\bv{t}) d\bv{t}\\
+&= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n \int \int e^{+bi \bv{\omega} \cdot \bv{t}} e^{-bi \bv{\omega}'\cdot \bv{t}}  \tilde{f}_{ab}(\bv{\omega}') g(t) d\bv{\omega}' d\bv{t}\\
+&= \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n \int \int e^{+bi (\bv{\omega}-\bv{\omega}') \cdot \bv{t}} \tilde{f}_{ab}(\bv{\omega}') g(t) d\bv{\omega}' d\bv{t}\\
+&= \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n \int \tilde{g}_{ab}(\bv{\omega}-\bv{\omega}')\tilde{f}_{ab}(\bv{\omega}') d\bv{\omega}'\\
+&= \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n \left(\tilde{g}_{ab} \ast \tilde{f}_{ab}\right)(\bv{\omega})
+= \left(\sqrt{\frac{|b|}{(2\pi)^{1+a}}}\right)^n \left(\tilde{f}_{ab} \ast \tilde{g}_{ab}\right)(\bv{\omega}) \\
+\end{align*}
+
+So the Fourier transform of a product is a convolution of the Fourier transforms.
+
+Note we can get the reverse relationships by just taking the inverse Fourier transform of the two statements proven here.
+
+\section{Derivative}
+
+Moving now for some time to the one dimensional Fourier transform.
+
+\[\tilde{\dot{f}}_{ab}(\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \int e^{+bi\omega t}\dot{f}(t)dt\]
+Integrating by parts and dropping boundary terms
+\[
+\tilde{\dot{f}}_{ab}(\omega) = (-ib\omega) \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \int e^{+bi\omega t}f(t)dt = -ib\omega \tilde{f}_{ab}(\omega)
+\]
+\section{Integral}
+let $F(t) = \int_0^{t} f(t') dt'$. Then $\dot{F}(t) = f(t)$. Taking Fourier Transforms and applying the derivative rule:
+
+\[
+\tilde{\dot{F}}_{ab}(\omega) = -ib\omega\tilde{F}_{ab}(\omega)
+\]
+So
+\[
+\tilde{f}_{ab}(\omega) = -ib\omega \mathcal{FT}_{ab}\left[ \int_0^t f(t')dt'\right](\omega)
+\]
+So
+\[
+\mathcal{FT}_{ab}\left[ \int_0^t f(t')dt'\right](\omega) = \frac{i}{b\omega} \tilde{f}_{ab}(\omega)
+\]
+
+\section{Uncertainty Relation}
+
+Let $g(t) = tf(t)$. We consider $\text{Re}\left\{\Braket{\dot{f},g} \right\}$. Utilizing integration by parts we find
+
+\begin{align}
+\text{Re}\left\{\Braket{\dot{f},g} \right\} &= \text{Re}\left\{\int t f^*(t)\dot{f}(t)dt\right\} = \frac{1}{2}\int t(f^*(t)\dot{f}(t) + f(t)\dot{f}^*(t)) dt\\
+&= \frac{1}{2}\int t \frac{d}{dt}\left(f(t)f^*(t) \right) dt = -\frac{1}{2}\int f(t)f^*(t) dt = -\frac{1}{2}\int |f(t)|^2 dt\\
+&= -\frac{1}{2}\Braket{f,f}
+\end{align}
+
+On the other hand we have by the Cauchy inequality that
+
+\begin{align}
+-\text{Re}\left\{\Braket{\dot{f},g} \right\} \le \left\lvert \Braket{\dot{f},g} \right\rvert \le \sqrt{\Braket{\dot{f},\dot{f}}\Braket{g,g}}
+\end{align}
+
+Let $h(\omega) = \tilde{\dot{f}}_{ab}(\omega) =  -ib\omega \tilde{f}_{ab}(\omega)$. We have by Parseval's theorem that
+
+\begin{align}
+\Braket{\dot{f},\dot{f}} &= (2\pi)^{-a}\Braket{h,h}\\
+\Braket{f,f} &= (2\pi)^{-a}\Braket{\tilde{f}_{ab},\tilde{f}_{ab}}
+\end{align}
+
+Putting this together we find
+
+\begin{align}
+\frac{1}{2}\Braket{f,f} = \frac{1}{2}\sqrt{(2\pi)^{-a}\Braket{f,f}\Braket{\tilde{f}_{ab},\tilde{f}_{ab}}} &\le \sqrt{(2\pi)^{-a} \Braket{h,h}\Braket{g,g}}\\
+\frac{1}{2}\sqrt{\Braket{f,f}\Braket{\tilde{f}_{ab},\tilde{f}_{ab}}} &\le \sqrt{\Braket{h,h}\Braket{g,g}}
+\end{align}
+
+Re-arranging we get
+
+\begin{align}
+\frac{1}{2} \le \sqrt{\frac{\Braket{g,g}}{\Braket{f,f}} \frac{\Braket{h,h}}{\Braket{\tilde{f}_{ab},\tilde{f}_{ab}}}}
+\end{align}
+
+We define the spread or dispersion or standard deviation of a function $s(x)$ to be
+
+\begin{align}
+\sigma_s = \sqrt{\frac{\int t^2|s(t)|^2 dt}{\int|s(t)|^2 dt}}
+\end{align}
+
+We can write
+
+\begin{align}
+\frac{\Braket{g,g}}{\Braket{f,f}} &= \frac{\int t^2 |f(t)|^2 dt}{\int |f(t)|^2 dt} = \sigma_f^2\\
+\frac{\Braket{h,h}}{\Braket{\tilde{f}_{ab},\tilde{f}_{ab}}} &= b^2 \frac{\int \omega^2 |\tilde{f}_{ab}(\omega)|^2 d\omega}{\int |\tilde{f}_{ab}(\omega)|^2 d\omega} = b^2 \sigma_{\tilde{f}_{ab}}^2
+\end{align}
+
+So we can see that
+
+\begin{align}
+\frac{1}{2} \le |b| \sigma_f \sigma_{\tilde{f}_{ab}}
+\end{align}
+
+Or
+
+\begin{align}
+\sigma_f^2 \sigma_{\tilde{f}_{ab}}^2 \ge \frac{1}{4 |b|^2}
+\end{align}
+
+\section{Some Fourier Transforms}
+I'll add to this section as new cases come up.
+
+Consider
+\[\cos(b\omega_0 t) = \frac{e^{+i b\omega_0 t}+e^{-i b\omega_0 t}}{2} \]
+\[ \mathcal{FT}_{ab}[\cos(b\omega_0 t)](\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\frac{1}{2}\int e^{+ib(\omega+\omega_0) t} + e^{+ib(\omega-\omega_0)t} dt  \]
+\[  \mathcal{FT}_{ab}[\cos(b\omega_0 t)](\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \pi \big(\delta(b(\omega+\omega_0)) + \delta(b(\omega-\omega_0))\big)\]
+\[  \mathcal{FT}_{ab}[\cos(b\omega_0 t)](\omega) = \sqrt{\frac{|b| \pi^{1+a}}{2^{1-a}}}\big(\delta(b(\omega+\omega_0)) + \delta(b(\omega-\omega_0))\big)
+\]
+\[  \mathcal{FT}_{ab}[\cos(b\omega_0 t)](\omega) = \sqrt{\frac{\pi^{1+a}}{|b|2^{1-a}}}\big(\delta(\omega+\omega_0) + \delta(\omega-\omega_0)\big)
+\]
+
+
+\[\mathcal{FT}_{11}[\cos(\omega_0 t)](\omega) = \pi \big(\delta(\omega+\omega_0) + \delta(\omega-\omega_0)\big)
+\]
+
+
+Similarly for $\sin$.
+\[
+\sin(b\omega_0 t) = \frac{-i}{2} (e^{+ib\omega_0 t} - e^{-ib\omega_0 t})\]
+
+Leading to
+
+\[
+\mathcal{FT}_{ab}[\sin(b\omega_0 t](\omega) = -i \sqrt{\frac{|b| \pi^{1+a}}{2^{1-a}}}\big(\delta(b(\omega+\omega_0))-\delta(b(\omega-\omega_0))\big)\]
+\[
+\mathcal{FT}_{ab}[\sin(b\omega_0 t](\omega) = -i \sqrt{\frac{\pi^{1+a}}{|b|2^{1-a}}}\big(\delta(\omega+\omega_0)-\delta(\omega-\omega_0)\big)\]
+
+
+\[\mathcal{FT}_{11}[\sin(\omega_0 t](\omega) = -i \pi\big(\delta(\omega+\omega_0)-\delta(\omega-\omega_0)\big)\]
+Note that since $\sin$ is odd we have
+\[\mathcal{FT}_{1,-1}[\sin(\omega_0 t](\omega) = +i \pi\big(\delta(\omega+\omega_0)-\delta(\omega-\omega_0)\big)\]
+As mentioned before, changing the sign of $b$ is the same as taking the complex conjugate.
+
+\section{Some weird principal value stuff}
+
+This section arises from trying to calculate Fourier transforms involving Heaviside Theta functions and trying to understand why principal values appear in those integrals and what it means. I've tried to make it so that all mathematical statements appearing are rigorous. For example, $\int \frac{f(x)}{x} dx$ is not valid to write down because the integral does not converge. However, $\int \frac{f(x)}{x+\epsilon}$ is ok because it converges. Furthermore $\lim_{\epsilon \to 0} \int \frac{f(x)}{x+\epsilon}$ should ALSO be legitimate, however, we should bear in mind that this final expression is different from the first expression. Namely the first expression does not converge whereas the last expression does. The trick to this whole section then is to figure out how to write down and interpret whatever it is we're trying to work with in terms of statements all of which converge.
+
+\subsection{Sokhotski–Plemelj theorem}
+
+We consider the integral
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{-\infty}^{+\infty} \frac{f(x)}{x - x_0 \mp i \epsilon} dx
+\end{align}
+
+If $f(x)$ is analytic then the integrand has a simple pole at $x = x_0 \pm i \epsilon$. It is well known that this integral equals the following
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{-\infty}^{+\infty} \frac{f(x)}{x - x_0 \mp i \epsilon} dx &= \lim_{\delta \rightarrow 0} \left(\int_{-\infty}^{x_0-\delta} \frac{f(x)}{x-x_0}dx + \int_{x_0+\delta}^{+\infty} \frac{f(x)}{x-x_0}dx \right)\\
+&\pm i \pi \int_{-\infty}^{+\infty} f(x) \delta(x-x_0) dx \\
+ &= P\left(\int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0}dx\right) \pm i \pi f(x_0)
+\end{align}
+
+This formula is often abbreviated as
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+}\frac{1}{x - x_0 \mp i \epsilon} = P\left(\frac{1}{x-x_0}\right) + \delta(x-x_0)
+\end{align}
+
+Where the left and right hand sides are considered as distributions. I'll prove this two ways.
+
+\subsubsection{Proof 1}
+
+\begin{align}
+\frac{1}{x-x_0 \mp i \epsilon} = \frac{x-x_0\pm i \epsilon}{(x-x_0)^2+\epsilon^2}
+\end{align}
+
+\begin{align}
+\int_{-\infty}^{+\infty} \frac{f(x)}{x - x_0 \mp i \epsilon} dx &= \int_{-\infty}^{+\infty} f(x) \frac{x-x_0}{(x-x_0)^2+\epsilon^2} dx \pm \int_{-\infty}^{+\infty} f(x) \frac{i \epsilon}{(x-x_0)^2+\epsilon^2} dx\\
+&= \int_{-\infty}^{+\infty} f(x+x_0) \frac{x}{x^2+\epsilon^2} dx \pm \int_{-\infty}^{+\infty} f(x+x_0) \frac{i \epsilon}{x^2+\epsilon^2} dx\\
+\end{align}
+
+with a slight change of variables. We work on the first term.
+
+\begin{align}
+\int_{-\infty}^{+\infty} f(x+x_0) \frac{x}{x^2+\epsilon^2} dx  &= \int_{-\infty}^{-\delta} f(x+x_0) \frac{x}{x^2+\epsilon^2} dx + \int_{+\delta}^{+\infty} f(x+x_0) \frac{x}{x^2+\epsilon^2} dx\\ 
+&+ \int_{-\delta}^{+\delta} f(x+x_0) \frac{x}{x^2+\epsilon^2} dx 
+\end{align}
+
+The right hand side is a continuous function of $\delta$ meaning that the right hand side is equal to the limit of the right hand side as $\delta \rightarrow 0$. Also note that in the first two terms since the integration region never includes $x=0$ we can go ahead and pass $\lim_{\epsilon \rightarrow 0}$ into the integral. We can also undo the change of variables from before. For the third term, only looking at the $\delta$ limit we see that we are taking the integral of a well behaved function (for $\epsilon>0$) over an ever vanishing interval. This limit will equal $0$. We summarize:
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{-\infty}^{+\infty} f(x+x_0) \frac{x}{x^2+\epsilon^2} dx = P\left(\int_{-\infty}^{+\infty}\frac{f(x)}{x-x_0} dx\right)
+\end{align}
+
+Turning to the second term
+
+\begin{align}
+\int_{-\infty}^{+\infty} f(x+x_0) \frac{i \epsilon}{x^2+\epsilon^2} dx
+\end{align}
+
+Consider
+
+\begin{align}
+\int_{-\infty}^{+\infty} \frac{\epsilon}{x^2+\epsilon^2} dx = \frac{1}{\epsilon} \int_{-\infty}^{+\infty} \frac{1}{1+\left(\frac{x}{\epsilon}\right)^2} dx = \int_{-\infty}^{+\infty} \frac{1}{1+x^2} dx = \left[\arctan(x)\right]_{-\infty}^{+\infty} = +\frac{\pi}{2} - \left(-\frac{\pi}{2}\right) = +\pi
+\end{align}
+
+so we see that $\frac{\epsilon}{\pi} \frac{1}{x^2+\epsilon^2}$ is a nascent delta function so for this term we find, when we take the $\epsilon \rightarrow 0^+$ limit, is equal to:
+
+\begin{align}
+i\pi f(x_0)
+\end{align}
+
+Note that if $\epsilon$ was less than zero we would actually get a minus sign in the above equation since the change in variables would cause the bounds on the integral to flip. Therefore, this is the step where it is important that we are taking the limit as $\epsilon$ approaches $0$ from \textit{above}.
+Putting it altogether we get 
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0 \mp i \epsilon} dx = P\left(\int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0} dx \right) \pm i \pi f(x_0)
+\end{align}
+
+as desired.
+
+\subsubsection{Proof 2}
+
+For this proof we will consider two different contour integrals. We'll also only work with one case for $\pm$ sign at a time. We start with the $(-)$ case so that the pole is in the upper half plane.
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{C_1} \frac{f(x)}{x - x_0 - i \epsilon} dx
+\end{align}
+
+In the first case we integrate over contour $C_1$ which has two components. $C_1 = C_R + C_\rho$ where $C_R$ is the horizontal real line from $-\rho$ to $+\rho$ and $C_\rho$ is half circle completing the contour in upper half plane so that we include the singularity. We will take the limit that $\rho\rightarrow \infty$ of course.
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{C_1} \frac{f(x)}{x - x_0 - i \epsilon} dx &= \lim_{\epsilon \rightarrow 0^+} \int_{C_R} \frac{f(x)}{x - x_0 - i \epsilon} dx + \lim_{\epsilon \rightarrow 0^+} \int_{C_\rho} \frac{f(x)}{x - x_0 - i \epsilon} dx\\
+&= \lim_{\epsilon \rightarrow 0^+}(J_{R,\epsilon} + J_{\rho,\epsilon})
+\end{align}
+
+where $\lim_{\epsilon \rightarrow 0^+}J_{R,\epsilon}$ is the integral we have been interested in so far.
+
+The second contour integral we consider is
+
+\begin{align}
+\int_{C_2} \frac{f(x)}{x - x_0} dx
+\end{align}
+
+Where $C_2 = C_{R_-} + C_{R_+} + C_{\delta} + C_\rho$ Where $C_{R_-}$ is the horizontal real line from $-\rho$ to $x_0-\delta$, $C_{R_+}$ is the real line from $+\delta$ to $+\rho$, $C_\delta$ is a semicircular indentation into the lower half plane around the pole and $C_\rho$ completes the contour in the upper half plane so that the pole is included.
+
+Note that the second contour doesn't have any limit as $\epsilon \rightarrow 0^+$. The trick is going to be that by the Cauchy residue these two contour integrals are equal so the goal will be to use the contour without $\epsilon$ to calculate the relevant part of the contour which includes the $\epsilon$ limit.
+
+We then have
+\begin{align}
+\int_{C_2} \frac{f(x)}{x - x_0} dx &=\int_{C_{R_-}} \frac{f(x)}{x - x_0} dx + \int_{C_{R_+}} \frac{f(x)}{x - x_0} dx\\
+&+\int_{C_{\delta}} \frac{f(x)}{x - x_0} dx\\
+&+\int_{C_{\rho}} \frac{f(x)}{x - x_0} dx
+\end{align}
+
+As before, the first three terms are a continuous function of $\delta$ so we can take the limit as $\delta\rightarrow 0$ without changing the function value. It is obvious that the first two terms give the principle value integral. The third term is the contour integral of a half circle about a pole so a theorem from complex analysis tells us the result will be equal to the half the residue $+i\pi f(x_0)$ where the $+$ sign arises since, in this case, we are integrating in a counterclockwise sense. The third term we recognize as $J_{\rho,0}$. We can put this together a bit using Cauchy Residue theorem to equate the two contour integrals since, in the limit, they have their integrand becomes more and more similar and they both contain the same pole. This gives
+
+\begin{align}
+\lim_{\epsilon\rightarrow 0^+}(J_{R,\epsilon}+J_{\rho,\epsilon}) = P\left(\int_{-\infty}^{+\infty}\frac{f(x)}{x-x_0} dx\right) + i \pi f(x_0) + J_{\rho,0}
+\end{align}
+
+We simply notice that in the limit as $\epsilon \rightarrow 0^+$ we should have $J_{\rho,\epsilon} \rightarrow J_{\rho,0}$ so that
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0 - i \epsilon} dx = P\left(\int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0} dx \right) + i \pi f(x_0)
+\end{align}
+
+As desired. In the case where the pole is in the lower half plane we have to complete the contour in the lower half plane and the indent has to ride up into the upper half plane. When we calculate the semicircular contour integral around the pole we then get $-i\pi f(x_0)$ instead since we are now integrating in a clockwise sense. The total result is
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0 \mp i \epsilon} dx = P\left(\int_{-\infty}^{+\infty} \frac{f(x)}{x-x_0} dx \right) \pm i \pi f(x_0)
+\end{align}
+
+Which we can abbreviate as
+
+\begin{align}
+\lim_{\epsilon \rightarrow 0^+} \frac{1}{x-x_0 \mp i \epsilon} = P\left(\frac{1}{x-x_0}\right) \pm i \pi \delta(x-x_0)
+\end{align}
+
+\section{Dirac Delta Distribution}
+We now work out details of the delta function $\delta(x)$. Distributions take in functions and spit out numbers. Formally the delta function is a distribution defined by
+
+\[ \delta[f] = f(\bv{0}) \]
+
+In physics we write this as
+
+\[ \int_{\mathbb{R}^n} \delta(\bv{x}) f(\bv{x}) d\bv{x} = f(\bv{0}) \]
+
+At this point we'll employ the usual abuse of notation and treat $\delta(\bv{x})$ as a function in it's own right. Let's work out it's Fourier transform. I will now switch from $\bv{x}$ and $\bv{\xi}$ to $\bv{t}$ and $\bv{\omega}$.
+
+\[
+\tilde{\delta}(\bv{\omega}) = \int e^{-2\pi i \bv{\omega} \cdot \bv{t}} \delta(\bv{t}) dt = 1
+\]
+
+The Fourier transform of the delta function is a constant. Now applying the Fourier inversion theorem:
+
+\[\check{\delta}(\bv{t}) = \delta(\bv{t}) = \int e^{+ 2\pi i \bv{\omega} \cdot \bv{t}} \tilde{\delta}(\bv{\omega}) d\bv{\omega} = \int e^{+ 2 \pi i \bv{\omega} \cdot \bv{t}} d\bv{\omega}\]
+
+We also note that
+
+\[ \delta(\bv{t}) = \delta(-\bv{t}) = \int e^{-2\pi i \bv{\omega} \cdot \bv{t}} d\bv{\omega} \]
+
+Above is the well known exponential representation of the delta function. We'll also employ a change of variables to look at this representation in terms of angular frequencies rather than cyclic, $\tilde{\bv{\omega}} = 2\pi \bv{\omega}$, to get
+
+\[
+\delta(\bv{t}) = \frac{1}{\left(2\pi\right)^n} \int e^{+i \tilde{\bv{\omega}} \cdot \bv{t}} d\tilde{\bv{\omega}} = \frac{1}{\left(2\pi\right)^n}\int e^{-i \tilde{\bv{\omega}} \cdot \bv{t}} d\tilde{\bv{\omega}}
+\]
+
+Note:
+
+\begin{align}
+\int f(\bv{t}) \delta(a \bv{t}) d\bv{t} = \frac{1}{|a|^n}\int f\left(\frac{\bv{t}}{|a|}\right) \delta(\text{sgn}(a)\bv{t}) d\bv{t} = \frac{f(\bv{0})}{|a|}
+\end{align}
+
+Since the $\delta$ function is even. So we can consider $\delta(a \bv{t}) = \frac{\delta(\bv{t})}{|a|}$.
+
+
+Note that we can also work this out in the language of distributions. For a distribution $T$ it is possible to define a distributional Fourier transform, $\tilde{T}$ which can also be thought of as a distribution by
+
+\begin{align}
+\tilde{T}[f] = T[\tilde{f}]
+\end{align}
+
+Let me motivate this definition of the Fourier transform of a distribution. Suppose
+
+\begin{align}
+T_g[f] = \int g(t) f(\bv{t}) d\bv{t}
+\end{align}
+
+Where $T_g$ is the distrubtion generated by $g(t)$. We can consider 
+
+\begin{align}
+T_{\tilde{g}}[f] = \int \tilde{g}(\bv{t}) f(\bv{t}) d\bv{t} = \int g(\bv{t})\tilde{f}(\bv{t}) d\bv{t} = T_g[\tilde{f}]
+\end{align}
+
+By the swapping property of the Fourier transform. If we define $T_{\tilde{g}} = \tilde{T}_g$ we see that $\tilde{T}_{g}[f] = T_g[\tilde{f}]$ as desired. We then generalize this notion of a distributional Fourier transform to distributions which aren't necessarily generated by functions such as the $\delta$ distribution. Let's work out the delta distribution in this language. Consider the distribution generated by the unit function, $\mathbf{1}(\bv{t}) = 1$.
+
+\begin{align}
+\mathbf{1}[f] = \int \mathbf{1}(\bv{t}) f(\bv{t}) d\bv{t} = \int f(\bv{t}) d\bv{t}
+\end{align}
+
+We work out the Fourier transform of this distribution
+
+\begin{align}
+\tilde{\mathbf{1}}_{ab}[f] = \mathbf{1}[\tilde{f}_{ab}] = \int \tilde{f}_{ab}(\bv{\omega}) d\bv{\omega} = \left(\sqrt{\frac{(2\pi)^{1+a}}{|b|}}\right)^n f(0)
+\end{align}
+
+Noting that the integral is the inverse Fourier transform evaluated at $\bv{t}=\bv{0}$.
+
+We then define the Dirac delta distribution by
+
+\begin{align}
+\delta[f] = f(\bv{0})
+\end{align}
+
+so that we can write
+
+\begin{align}
+\tilde{\mathbf{1}}_{ab}[f] = \left(\sqrt{\frac{(2\pi)^{1+a}}{|b|}}\right)^n \delta[f]
+\end{align}
+
+In a distribution sense we see
+
+\begin{align}
+\tilde{\mathbf{1}}_{ab} =  \left(\sqrt{\frac{(2\pi)^{1+a}}{|b|}}\right)^n \delta
+\end{align}
+
+And the Fourier transform of the delta distribution
+
+\begin{align}
+\tilde{\delta}_{ab}[f] = \delta[\tilde{f}_{ab}] = \tilde{f}_{ab}(\bv{0}) = \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \int f(\bv{t}) d\bv{t} = \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \mathbf{1}[f]
+\end{align}
+
+So
+
+\begin{align}
+\tilde{\delta}_{ab} = \left(\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\right)^n \mathbf{1}
+\end{align}
+
+We see that $\mathbf{1}$ and $\delta$ are Fourier transform pairs.
+
+\subsection{Heaviside Theta Function}
+
+We want to consider the Fourier Transform of the Heaviside Theta function.  
+
+\[ \theta(t) = \begin{cases} 
+      0 & t < 0 \\
+      \frac{1}{2} & t=0\\
+      1 & t > 0 
+   \end{cases}
+\]
+
+Note that it is usually the case that the choice of $\theta(0)$ is arbitrary. However, I have chosen $\theta(0) = \frac{1}{2}$ because, in the theory of Fourier transforms it is possible to take the Fourier transform of piecewise continuous functions. For these cases you find that the inverse Fourier transform of the Fourier transform at the point of the discontinuity will be equal to the average of the left sided and the right sided limits of the original function. So defining the Theta function in this way ensures that it will be equal, at all points, to the inverse fourier transform of its fourier transform. This property can be shown by looking at the convolution of a piecewise continuous function with an approximation to the identity or a nascent delta function at the point of discontinuity. This paragraph basically says that when dealing with Fourier transforms it is a good idea to define piecewise continuous function in this way so that things work out more nicely.
+
+Note that this function is not integrable which means it doesn't have a Fourier Transform in the usual sense. This should be a big hint that things are going to be slightly weird. Instead, we are going to consider all of this from the perspective of distributions. We consider the distribution generated by the $\theta$ function.
+
+\begin{align}
+\theta[f] = \int_{t=-\infty}^{+\infty} \theta(t)f(t) dt = \int_{t=0}^{+\infty} f(t) dt
+\end{align}
+
+We note that while $\theta(t)$ wasn't integrable, this distribution is well-defined because $f(t)$ is integrable. In other words, $\theta(t)$ is workable as long as it is multiplying some function and being integrated. This is precisely the case when distributions are nice. We want to calculate the distributional Fourier transform.
+
+\begin{align}
+\tilde{\theta}_{ab}[f] = \theta[\tilde{f_{ab}}] = \int_{\omega=0}^{+\infty} \tilde{f_{ab}}(\omega) d\omega = \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \int_{\omega = 0}^{+\infty} \int_{t=-\infty}^{+\infty} e^{i b \omega t} f(t) dt d\omega
+\end{align}
+
+One thing we might want to do is swap the integrals so that we can perform the $\omega$ integral first. However, in its current state, that application of Fubini's theorem is not allowed because the $\omega$ integral does not converge properly. This again gets a bit at the heart of the issue with all of this distribution stuff. However, because we are multiplying by the `nice' function $f(t)$ this integral as a whole \textit{should} converge and we \textit{should} be able to calculate the value of the integral. We can proceed by noticing a trick.
+
+\begin{align}
+ \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \int_{\omega = 0}^{+\infty} \int_{t=-\infty}^{+\infty} e^{i b \omega t} f(t) dt d\omega\\
+ =  \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \int_{\omega = 0}^{+\infty} \int_{t=-\infty}^{+\infty} \lim_{\epsilon \to 0^+} e^{i b \omega t - \epsilon \omega} f(t) dt d\omega 
+ \\=  \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \lim_{\epsilon \to 0^+} \int_{\omega = 0}^{+\infty} \int_{t=-\infty}^{+\infty}  e^{i b\omega t - \epsilon \omega} f(t) dt d\omega
+\end{align}
+
+We are allowed to pass the limit outside of the integrals by the dominated convergence theorem since things converge nicely now (and the limit is also integrable by the argument regarding the niceness of $f(t)$. We can also apply Fubini's theorem now to swap the integrals and we find
+
+\begin{align}
+&= \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \lim_{\epsilon \to 0^+} \int_{t=-\infty}^{+\infty} \left[\frac{e^{i b\omega t - \epsilon \omega}}{ibt-a}\right]_{\omega=0}^{+\infty} f(t) dt\\
+&=\sqrt{\frac{|b|}{(2\pi)^{1-a}}}  \lim_{\epsilon \to 0^+} \int_{t=-\infty}^{+\infty} \frac{f(t)}{\epsilon - i b t} dt\\
+&=\sqrt{\frac{|b|}{(2\pi)^{1-a}}} i \lim_{\epsilon \to 0^+} \int_{t=-\infty}^{+\infty} \frac{f(t)}{bt+i\epsilon} dt\\
+&=\sqrt{\frac{|b|}{(2\pi)^{1-a}}} \frac{i}{b} \lim_{\epsilon \to 0^+} \int_{t=-\infty}^{+\infty} \frac{f(t)}{t+i\frac{\epsilon}{b}} dt\\
+&=\sqrt{\frac{|b|}{(2\pi)^{1-a}}} \frac{i}{\pm|b|} \lim_{\epsilon \to 0^+} \int_{t=-\infty}^{+\infty} \frac{f(t)}{t\pm i\frac{\epsilon}{|b|}} dt\\
+\end{align}
+
+Where the $+$ sign is for $b>0$ and $-$ is for $b<0$. We can apply the Sokhotski-Plemelj theorem noting that the $\frac{\epsilon}{|b|}$ instead of $\epsilon$ won't make a difference since they both go to $0$ as $\epsilon \to 0^+$.
+
+\begin{align}
+&=\pm \sqrt{\frac{1}{|b|(2\pi)^{1-a}}} i\left(P\left(\int_{t=-\infty}^{+\infty} \frac{f(t)}{t} dt\right) \mp i \pi f(0)\right)\\
+&= \sqrt{\frac{1}{|b|(2\pi)^{1-a}}} \left(\pi f(0) \pm iP\left(\int_{t=-\infty}^{+\infty} \frac{f(t)}{t} dt\right)\right)\\
+&= \sqrt{\frac{1}{|b|(2\pi)^{1-a}}} \left(\pi \delta[f] + \text{sgn}(b) i P\left(\frac{1}{t}\right)[f]\right)
+\end{align}
+
+
+So we see that, in a distributional sense,
+
+\begin{align}
+\tilde{\theta}_{ab} = \sqrt{\frac{1}{|b|(2\pi)^{1-a}}}\left(\pi \delta + \text{sgn}(b) iP\left(\frac{1}{\omega}\right)\right)
+\end{align}
+
+Note that I have used $P\left(\frac{1}{t}\right) = P\left(\frac{1}{\omega}\right)$ in a distributional sense. This shows that the $t$ or $\omega$ is purely a dummy variable. The reason I have changed the variables is because if we want to abuse notation than $\tilde{\theta}$ should be a function of $\omega$.
+
+To summarize this section I will say that I have shown that $\theta(t)$ can be thought of as a function but the Fourier transform of this can only be thought of as a distribution. If we take the Fourier transform of the Heaviside theta function it only makes sense if it is integrated against another function.
+
+
+\subsection{sgn function}
+
+\[ \text{sgn}(t) = \begin{cases} 
+      -1 & t < 0 \\
+      0 & t=0 \\
+      +1 & t > 0 
+   \end{cases}
+\]
+
+Again the sgn function isn't technically integrable. You might think it is because it is an odd function so if you integrate it over the real line (even interval) you should get zero. However, you only get zero in the case that you take the limit to infinity symmetrically on either side. For the general definition of improper Lebesgue integration the integral should converge regardless of how the limit is taken. To this end we need to work in terms of distributions again. In other words, while $\text{sgn}(t)$ can be thought of as a function the Fourier transform can only be thought of as a distribution.
+
+\[
+\text{sgn}(t) = 2\theta(t) - 1
+\]
+
+Recall that the (distributional) fourier transform of 1 is
+
+\begin{align}
+\tilde{\mathbf{1}}_{ab} = \sqrt{\frac{(2\pi)^{1+a}}{|b|}} \delta = \sqrt{\frac{1}{|b|(2\pi)^{1-a}}} 2\pi \delta
+\end{align}
+
+so
+
+\[
+\widetilde{\text{sgn}}_{ab} = \sqrt{\frac{1}{|b|(2\pi)^{1-a}}}\left(2\pi\delta-2\pi\delta+ \text{sgn(b)}2iP\left(\frac{1}{\omega}\right)\right)
+\]
+\[
+\widetilde{\text{sgn}}_{ab} = \text{sgn}(b)\sqrt{\frac{1}{|b|(2\pi)^{1-a}}} 2i P\left(\frac{1}{\omega}\right)
+\]
+
+In a distributional sense.
+
+\section{Half a Dirac Delta?}
+
+Often in physics we encounter integrals of the form
+
+\[
+\int_{t=-\infty}^{+\infty}\int_{-\infty}^{+\infty} f(t) e^{i \omega t} d\omega dt
+\]
+
+Using what we have from above we recognize $\int_{\omega=-\infty}^{+\infty} e^{i\omega t} d\omega = 2\pi \delta(t)$.
+
+So we see 
+
+\[
+\int_{t=-\infty}^{+\infty}\int_{-\infty}^{+\infty} f(t) e^{i \omega t} d\omega dt = \int_{t=-\infty}^{+\infty} 2\pi f(t) \delta(t) dt = 2\pi f(0)
+\]
+
+However, occasionally (often I find when considering coupling between a system and a large reservoir or bath) the $t$ integral only runs over half of the real line and the delta is "split in half". 
+
+\[
+\int_{t=0}^{+\infty}\int_{-\infty}^{+\infty} f(t) e^{i \omega t} d\omega dt
+\]
+
+How should we handle this? In this section I'll present an idea that makes sense to me.
+
+First we introduce the sinc function as a nascent delta function.
+
+\[ 
+\sinc(x) = \frac{\sin(x)}{x}
+\]
+
+We calculate its integral by noticing a trick.
+
+\[
+\frac{1}{x} = \int_0^{\infty} e^{-xt} dt
+\]
+so
+\[
+\int_{x=-\infty}^{x=+\infty} \sinc(x) dx = 2\int_{x=0}^{x=+\infty} \sinc(x) dx =
+\]
+
+\[ 2\int_{t=0}^{+\infty} \int_{x=0}^{+\infty} e^{-xt} \sin(x) dx dt = \frac{2}{2i}\int_{t=0}^{+\infty} \int_{x=0}^{+\infty} e^{-xt}(e^{+ix}-e^{-ix})dxdt
+\]
+\[
+= \frac{1}{i} \int_{t=0}^{+\infty} \int_{x=0}^{+\infty} e^{(i-t)x} - e^{(-i-t)x} dx dt
+\]
+\[
+= \frac{1}{i} \int_{t=0}^{+\infty} \left[\frac{e^{(i-t)x}}{i-t} - \frac{e^{(-i-t)x}}{-i-t} \right]_{x=0}^{x=+\infty} dt 
+\]
+
+\[
+= -\frac{1}{i} \int_{t=0}^{+\infty} \left[\frac{1}{i-t} - \frac{1}{-i-t}\right] dt = -\frac{1}{i} \int_{t=0}^{+\infty} \frac{-2i}{1+t^2} dt = 2 \int_{t=0}^{+\infty} \frac{1}{1+t^2} dt
+\]
+\[
+= 2 \left[\arctan(t)\right]_{t=0}^{\infty} = \pi
+\]
+
+So we let our Nascent delta function be
+
+\[
+\delta_1(x) = \frac{\sinc(x)}{\pi}
+\]
+
+And define 
+\[
+\delta_{\ep}(x) = \frac{\delta_1(\frac{x}{\ep})}{\ep} = \frac{\sin\left(\frac{x}{\ep}\right)}{\pi x} = \frac{\text{sinc}\left(\frac{x}{\epsilon}\right)}{\pi \epsilon}
+\] 
+as before. Because our treatment before was general all of the properties of the nascent delta function hold for this different version as well. 
+
+We now return to the problem at hand.
+
+\[
+\int_{t=0}^{+\infty}\int_{-\infty}^{+\infty} f(t) e^{i \omega t} d\omega dt
+\]
+
+In problems where integrals like this arise we typically are integrating over a large reservoir with many frequencies. However, physically, we technically don't integrate over an infinite range of frequencies. There is some cutoff. This motivates putting in a cutoff frequency, $1/a$, and looking at the limit as $a$ goes to zero.
+
+\[
+\int_{t=0}^{+\infty}\int_{-\sfrac{1}{a}}^{+\sfrac{1}{a}} f(t) e^{i \omega t} d\omega dt
+\]
+We perform the $\omega$ integral to find
+\[
+\int_{t=0}^{+\infty}f(t) \frac{e^{+i \frac{t}{a}} - e^{-i \frac{t}{a}}}{i t} dt 
+=\int_{t=0}^{+\infty}f(t) 2\frac{\sin\left(\frac{t}{a}\right)}{t} dt
+= 2\pi \int_{t=0}^{+\infty}f(t) \delta_a(t) dt
+\]
+
+We now take the limit as $a\rightarrow 0$.
+
+\[
+\lim_{a\rightarrow 0} 2\pi \int_{t=0}^{+\infty} f(t) \delta_a(t) 
+=\lim_{a\rightarrow 0} 2\pi \int_{t=0}^{+\infty} f(t) \frac{\delta_1\left(\frac{t}{a}\right)}{a} dt
+\]
+\[
+= 2\pi \int_{\tilde{t}=0}^{+\infty} \lim_{a\rightarrow 0}f(a \tilde{t}) \delta_1(\tilde{t}) dt = 2\pi f(0)\int_{\tilde{t}=0}^{+\infty} \delta_1(\tilde{t}) dt = \pi f(0)
+\]
+
+Here we have proceeded exactly as in the nascent delta function section but at the last step we only got $\frac{1}{2}$ from the integral because this choice of nascent delta is even and we are only integrating over half the real line.
+
+The net result is that we get "half a delta function". However, note that the reason I'm going through all of the trouble of introducing this is because, mathematically speaking, there is some ambiguity about what it means to only integrate over half a gaussian. In fact, it's not properly defined for a few reasons. For example, you could say the integral is a product of a delta with a heaviside theta function in which case you would get that the integral of "half a delta" is $\theta(0)$, but since the heaviside theta is piecewise defined you have an arbitrary choice over the value at 0 which won't affect other properties. What I have shown in this section is that there is a physical motivation for taking the integral of half a delta to be simply $\frac{1}{2}$ of what you would have gotten otherwise. You can also numerically calculate these integrals and show that they converge to the appropriate values depending on the bounds of the integral as expected.
+
+A much easier way to calculate this leverages the fact that we have extended the machinery of Fourier transforms to distributions including the Heaviside theta function.
+
+\begin{align}
+\int_{t=0}^{+\infty} \int_{\omega=-\infty}^{+\infty} e^{i \omega t} f(t) d\omega dt = \int_{t=-\infty}^{+\infty} \int_{\omega=-\infty}^{+\infty} e^{i \omega t} \theta(t) f(t) d\omega dt\\
+= \int_{\omega=-\infty}^{+\infty} \mathcal{FT}_{1,1}[(\theta \cdot f)(t)](\omega) d\omega = 2\pi (\theta\cdot f)(0 = 2\pi \theta(0)f(0) = \pi f(0)
+\end{align}
+
+Using the inverse Fourier transform evaluated at $t=0$ in the $(1,1)$ convention.
+
+\section{Symmetry Properties}
+Suppose $f(t)$ is real so $f(t)=f^*(t)$.
+
+\begin{align}
+\tilde{f}_{ab}^*(\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{-ib\omega t} f(t) dt = \tilde{f}_{ab}(-\omega)
+\end{align}
+
+Suppose $f(t)$ is imaginary so $f(t) = -f^*(t)$
+
+\begin{align}
+\tilde{f}_{ab}^*(\omega) = -\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{-ib\omega t} f(t) dt = -\tilde{f}_{ab}(-\omega)
+\end{align}
+
+Suppose $f(t)$ is even so $f(t) = f(-t)$
+
+\begin{align}
+\tilde{f}_{ab}(-\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{-ib\omega t} f(t) dt 
+= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f(-t) dt \\
+= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f(t) dt   = \tilde{f}_{ab}(\omega)
+\end{align}
+
+Suppose $f(t)$ is odd so $f(t) = -f(-t)$
+
+\begin{align}
+\tilde{f}_{ab}(-\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{-ib\omega t} f(t) dt 
+= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f(-t) dt \\
+= -\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f(t) dt   = -\tilde{f}_{ab}(\omega)
+\end{align}
+
+suppose $f(t) = f^*(-t)$
+
+\begin{align}
+\tilde{f}^*_{ab}(\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{-ib\omega t} f^*(t) dt 
+= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f^*(-t) dt \\
+= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f(t) dt   = \tilde{f}_{ab}(\omega)
+\end{align}
+
+suppose $f(t) = -f^*(-t)$
+
+\begin{align}
+\tilde{f}^*_{ab}(\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{-ib\omega t} f^*(t) dt 
+= \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f^*(-t) dt \\
+= -\sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int_{t=-\infty}^{+\infty} e^{+ib\omega t} f(t) dt   = -\tilde{f}_{ab}(\omega)
+\end{align}
+
+We summarize these findings in the following chart
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+$f(t)$ & $\tilde{f}(\omega)$ \\
+\hline
+Real & Hermitian Symmetric \\
+\hline
+Imaginary & Anti-Hermitian Symmetric\\
+\hline
+Hermitian Symmetric & Real\\
+\hline
+Anti-Hermitian Symmetric & Imaginary\\
+\hline
+Even & Even\\
+\hline
+Odd & Odd\\
+\hline
+\end{tabular}
+\end{center}
+
+From these we can see
+
+\begin{center}
+	\begin{tabular}{|c|c|}
+		\hline
+		$f(t)$ & $\tilde{f}(\omega)$ \\
+		\hline
+		Real + Even & Real + Even \\
+		\hline
+		Real + Odd & Imaginary + Odd\\
+		\hline
+		Imaginary + Even & Imaginary + Even\\
+		\hline
+		Imaginary + Odd & Real + Odd\\		
+		\hline
+	\end{tabular}
+\end{center}
+
+\section{Fourier Transform of $f(|t|)$}
+
+We consider the Fourier transform of $f(|t|)$.
+
+\begin{align}
+f(|t|) = f(t)\theta(t) + f(-t)\theta(-t)
+\end{align}
+
+We also note the convolution theorem:
+
+\begin{align}
+\mathcal{FT}_{ab}[(f\cdot g)(t)](\omega) = \sqrt{\frac{|b|}{(2\pi)^{1+a}}} (\tilde{f}_{ab} \ast \tilde{g}_{ab})(\omega)
+\end{align}
+
+And
+
+\begin{align}
+\mathcal{FT}_{ab}[f(-t)](\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{i b \omega t}f(-t) dt = \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\int e^{-i b \omega t}f(t) dt = \mathcal{FT}_{ab}[f^*(t)](\omega)
+\end{align}
+
+and
+
+\begin{align}
+\tilde{\theta}_{ab}(\omega) = \sqrt{\frac{|b|}{(2\pi)^{1-a}}} \left(\pi \delta(b\omega) + iP\left(\frac{1}{b\omega}\right)\right)
+\end{align}
+
+We put this altogether to find
+
+\begin{align}
+&\mathcal{FT}_{ab}[f(|t|)](\omega) = \sqrt{\frac{|b|}{(2\pi)^{1+a}}} \left((\tilde{f}_{ab} \ast \tilde{\theta}_{ab})(\omega)+(\tilde{f}^*_{ab} \ast \tilde{\theta}^*_{ab})(\omega)\right)\\
+&=\sqrt{\frac{|b|}{(2\pi)^{1+a}}} \sqrt{\frac{|b|}{(2\pi)^{1-a}}}\left(\int \tilde{f}_{ab}(\omega-\omega')\left(\pi \delta(b\omega')+\frac{i}{b\omega'}\right)d\omega' + \int \tilde{f}^*_{ab}(\omega-\omega')\left(\pi \delta(b\omega')-\frac{i}{b\omega'}\right)d\omega'\right)
+\end{align}
+
+Recalling $\delta(b\omega') = \frac{\delta(\omega')}{b}$
+
+\begin{align}
+&\mathcal{FT}_{ab}[f(|t|)](\omega) = \frac{|b|}{2\pi}\left(\frac{\pi}{b}(\tilde{f}_{ab}(\omega)+\tilde{f}_{ab}^*(\omega)) + \int \frac{i \left(\tilde{f}_{ab}(\omega-\omega')-\tilde{f}_{ab}^*(\omega-\omega')\right)}{b\omega'} d\omega'\right)
+\end{align}
+
+\end{document}

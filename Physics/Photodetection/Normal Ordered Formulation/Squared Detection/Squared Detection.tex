@@ -1,0 +1,392 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+
+\begin{document}
+\title{Squared Detection}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In previous write ups I have documented the E3 signal within the cavity, (Time Domain Linear Amplifier Model) and in other write ups I have documented how that signal is converted from light into a photocurrent (Photodetection). In this write up I will come up with a toy model for how that photocurrent is manipulated in our Matlab signal processing chain. 
+
+
+The main point of the approach I will take here is to take seriously the notion that $i(t)$ is a classical random variable whose statistics are derived from the quantum statistics of the photon field impinging on the detector. Namely that 
+
+1) A single shot of the experiment results in an experimental trace corresponding to $i(t)$. This trace should be thought of a single realization of the random process $i(t)$. This means that it is impossible to predict the values $i(t)$ will take on a given run of the experiment. That is, we cannot write an analytic equation for $i(t)$ which will be measured on a single shot of the experiment but only a stochastic equation.
+
+2) However, it is possible to write down analytic formulas for statistical moments of $i(t)$ such as $\braket{i(t)}$ and $\braket{i(t_1)i(t_2)}$. These statistical moments can be measured experimentally by repeating the experiment many times, manipulating the single shot information in a variety of ways, and then averaging the result. Note that the order of the manipulations of the data will affect the order of manipulations which should be performed in writing down the analytical predictions of the outputs.
+
+
+The photodetection write up gives analytic formulas for the two statistical moments written above. Here my goal is to write down analytic predictions for the output of our Matlab signal processing chain in terms of these statistical moments of the photocurrents.
+
+
+\section{Photodetection}
+
+The probe field enters the cavity, interacts with that atoms, exits the cavity, passes through some optics, is combined on a beamsplitter with the LO and then is split and detected on a balanced heterodyne photodetector. Our signal is the difference balanced photocurrent $i(t)$. This photocurrent is then converted into a voltage in a transimpedance amplifier, high pass filtered (removing any residual DC component), passed through an amplifier and an RF splitter and then detected on Gagescope where an ADC time averages, digitizes and records the voltage. I will skip over the stages which convert the photocurrent into a detected voltage but it ultimately amounts to a single constant. I will report the photocurrent statistics in terms of the intracavity photon field.
+
+\begin{align}
+\braket{i_{\text{Bal}}(t)} = e\sqrt{\epsilon_{C}2\kappa} \sqrt{\epsilon_{P}} \epsilon_{MM} \epsilon_{Q} |\alpha| \left<: \hat{X}^{\phi_{LO}+\Delta_{LO}t}(t):\right>
+\end{align}
+
+\begin{align}
+\braket{i(t_1)i(t_2)} & = \epsilon_{C}2\kappa\epsilon_{P}\epsilon_{MM}^2\epsilon_{Q}^2 e^2 |\alpha|^2 \left<:\hat{X}^{\phi_{LO}+\Delta_{LO}t_1}(t_1)\hat{X}^{\phi_{LO}+\Delta_{LO}t_2}(t_2):\right>\\
+&+\epsilon_Qe^2\Lambda(\delta t)|\alpha|^2
+\end{align}
+
+$e$ is the electron charge created by a photon. $\epsilon_C$ is the cavity detection efficiency and $2\kappa$ is the cavity energy decay rate. This combination of variables converts an intracavity photon into a free-field photon in the detection path. $\epsilon_P$ is the path efficiency, $\epsilon_{MM}$ is the mode matching efficiency and $\epsilon_Q$ is the detector quantum efficiency. $\alpha$ is the local oscillator amplitude. $\hat{X}$ is the ``position'' quadrature operator for the intracavity photon field. $\phi_{LO}$ is the phase of the $LO$ beam relative to the probe beam. We will set this to 0 due to the slow phase rotation we perform towards the beginning of the signal processing chain. Essentially the slow rotation makes it so that, for low frequency signals (\textless 10 kHz according to how skaffold is currently configured) the I quadratures contains all of the signal. This would be the case if $\phi_{LO}=0$ and we did no phase rotation. $\Delta_{LO}=\omega_{LO}-\omega_{P}$ is the frequency difference between the probe and LO. $\delta t = t_2-t_1$ and $\Lambda(t)$ is a triangle function having to do with the photodetector bandwidth. The photodetector bandwidth is by far the highest bandwidth in the detection chain (80 MHz for photodetector and gagescope vs 10 MHz for heterodyne frequency) so $\Lambda(t)$ will be well approximated by $\delta(t)$.
+Let
+\begin{align}
+e \sqrt{\epsilon_C 2 \kappa} \sqrt{\epsilon_P} \epsilon_{MM} \epsilon_Q |\alpha| &= A\\
+\sqrt{\epsilon_Q} e |\alpha| &=B
+\end{align}
+
+We can resummarize
+
+\begin{align}
+\braket{i(t)} = A \left<: \hat{X}^{\Delta_{LO}t}(t):\right>
+\end{align}
+
+\begin{align}
+\braket{i(t_1)i(t_2)} & = A^2 \left<:\hat{X}^{\Delta_{LO}t_1}(t_1)\hat{X}^{\Delta_{LO}t_2}(t_2):\right> +B^2\delta(\delta t)
+\end{align}
+
+We also note at this point that
+
+\begin{align}
+\hat{X}^{\theta} = \hat{a}e^{i\theta} + \hat{a}^{\dag}e^{-i\theta} = \cos(\theta) \hat{X} - \sin(\theta)\hat{P}
+\end{align}
+so
+\begin{align}
+\hat{X}^{-\omega_{LO} t}(t) = \cos(\Delta_{LO} t)\hat{X}(t) - \sin(\Delta_{LO} t)\hat{P}(t)
+\end{align}
+
+\begin{align}
+\braket{i(t)} = A \left<: \cos(\Delta_{LO} t)\hat{X}(t) - \sin(\Delta_{LO} t)\hat{P}(t):\right>
+\end{align}
+
+\begin{align}
+\braket{i(t_1)i(t_2)} = A^2 \big<:&\left(\cos(\Delta_{LO} t_1)\hat{X}(t_1) - \sin(\Delta_{LO} t_1)\hat{P}(t_1)\right)\\
+\times &\left(\cos(\Delta_{LO} t_2)\hat{X}(t_2) - \sin(\Delta_{LO} t_2)\hat{P}(t_2)\right):\big>\\ 
+&+B^2\delta(\delta t)
+\end{align}
+
+\section{Demodulation}
+
+To demodulate a signal we multiply it by a sin or cos at the appropriate frequency and then low pass filter. The multiplication by sin or cos mixes frequencies down to the difference frequency and up to the sum frequency. The low pass filter cuts out the sum frequencies. We also pick up a factor of one half from the trig identity. Consider low pass filter $\tilde{F}(f)$ (I'll use the $(a,b) = (0,+2\pi)$ Fourier transform convention which is useful for signal processing.) We'll denote the process of applying the low pass filter as
+
+\begin{align}
+\mathcal{L}[S(t)] = \mathcal{FT}^{-1}\left[\tilde{F}(f)\tilde{S}(f)\right](t) = \int_{-\infty}^{+\infty} F(t-t')S(t') dt'
+\end{align}
+
+Typically we can deduce the action of the filter just by assuming signals are well in the pass or stop band. If it is well in the stop band the filter will send the signal to 0. If it is well in the pass band the filter will act as $\delta(t-t')$.
+In experimental E3 terms, this particular low pass filter $\mathcal{L}$ is implemented by the decimate function during the demodulation routine. We downsample the raw signal from 80 MHz to 10 MHz.
+
+So we can then define the I and Q quadratures
+
+\begin{align}
+Q_I(t) &= \mathcal{L}[i(t)\cos(\Delta_{LO}t)]\\
+Q_Q(t) &= \mathcal{L}[i(t)\sin(\Delta_{LO}t)]
+\end{align}
+
+Note that at this point $Q_I(t)$ and $Q_Q(t)$ are both STILL random variables. That is, we can calculate their values for any individual shot of the experiment but we cannot make a prediction for what value they will take for a single shot of the experiment. To be able to make a prediction about the I and Q quadratures we need to average over many shots of the experiment.
+
+\section{Q and I Quadratures}
+
+Let's look at the expected value of these signals. That is, we imagine running the experiment many times, recording $i(t)$ each time, calculating $Q_I$ or $Q_Q$ each time and then taking the average result.
+
+\begin{align}
+\braket{Q_I(t)} = \int_{-\infty}^{+\infty} F(t-t')\braket{i(t')} \cos(\Delta_{LO}t') dt'
+\end{align}
+
+$\braket{i(t)}$ has a cos and sin component. Only the cos component will survive this demodulation. The combination of mixing and demodulation will result in
+
+\begin{align}
+\braket{Q_I(t)} = \frac{A}{2} \left<\hat{X}(t)\right>
+\end{align}
+
+Similarly
+
+\begin{align}
+\braket{Q_Q(t)} = -\frac{A}{2} \left<\hat{P}(t)\right>
+\end{align}
+
+Let's look at something a little more tricky. Let's consider squaring the Q quadrature signal. This is what we do for example when we look at the spin+mech negative mass instability rates. The interesting/tricky part about this calculation is that, because of the shot noise, we will find it depends on the details of the filter we use for the low pass filtering. In the actual analysis we also apply a bandpass filter to the signal before squaring but I will ignore that filter for now.
+
+\begin{align}
+\braket{Q_Q(t)^2} = \int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}F(t-t')F(t-t'')\braket{i(t')i(t'')}\sin(\Delta_{LO}t')\sin(\Delta_{LO}t'')dt'dt''
+\end{align}
+
+The $\braket{i(t')i(t'')}$ term splits into 2 terms. One which involves sines and cosines and normal products of 2 position/momentum operators  for the light field and a second term which involves the dirac delta having to do with shot noise. A bit of thought reveals that for the first term the $t'$ and $t''$ can be separated from eachother (putting the normal ordered expectation value around everything) resulting to a similar value as for the mean.
+
+\begin{align}
+\rightarrow \frac{A^2}{4}\left<:\hat{P}(t)^2:\right>
+\end{align}
+
+The delta term is a little trickier. I'll summarize the manipulations here. First the delta sets $t'=t''$ and eliminates one integral. Not too bad. We then have a sin squared term which we expand into a DC and high frequency term. It is now being multiplied by the filter impulse response squared. The impulse response is still much broader than the period of the high frequency term so we can eliminate that term. We are left with a term like:
+
+\begin{align}
+\rightarrow \frac{B^2}{2}\int_{-\infty}^{+\infty}F(t')^2 dt' = \frac{B^2}{2}\int_{-\infty}^{+\infty} |\tilde{F}(f)|^2 df
+\end{align}
+
+We performed a minor change of variables to simplify the equation. Thus we see that there is a DC noise floor which depends on the shape of the filter. This makes sense. We expect the intensity to be noisy and have some noise floor and it makes sense that as we tune our filter to allow in more or less noise the level of that noise floor should change. In the simple model of a step function filter with cutoff $f_{BW}$ with a sinc function impulse response this simplifies to
+
+\begin{align}
+\rightarrow B^2 f_{BW}
+\end{align}
+
+We can put this together to find
+
+\begin{align}
+\braket{Q_Q(t)^2} = \frac{A^2}{4}\left<:\hat{P}(t)^2:\right> + \frac{B^2}{2}\int_{-\infty}^{+\infty}|\tilde{F}(f)|^2 df
+\end{align}
+
+\section{Matched Filters}
+Let's consider the application of matched filters to this signal. Say we have filters $m_i(t)$ which run from $t=0$ to $T$. We apply the matched filter to $Q_Q(t)$ by
+
+\begin{align}
+q_i = \int_0^T m_i(t) Q_Q(t) dt
+\end{align}
+
+We find the expectation value
+
+\begin{align}
+\braket{q_i} = \int_0^T m_i(t) \braket{Q_Q(t)} dt = -\frac{A}{2}\int_0^T m_i(t)\left<\hat{P}(t)\right> dt
+\end{align}
+
+This much will suffice for now. Later we will assume a functional form for $\braket{\hat{P}(t)}$ in terms of its initial values which will allow us to write down an expression relating the matched filters to the initial values of the system but we'll forego that for now.
+
+What about trying to calculate second order moments of matched filters?
+
+\begin{align}
+q_i q_j = \int_0^T \int_0^T m_i(t_1)m_j(t_2) Q_Q(t_1)Q_Q(t_2) dt_1 dt_2
+\end{align}
+
+When we take the expectation value of this expression we cannot separately take the expectation value of $Q_Q(t_1)$ and $Q_Q(t_2)$. We need to consider them together to get the full statistics. We need to expand these two factors out until we have an expression in terms of $i(t_1)i(t_2)$ of which we know how to take the expectation, even if it is very messy.
+
+We begin expanding
+
+\begin{align}
+\braket{q_iq_j} = &\int_0^T \int_0^T m_i(t_1)m_j(t_2)\\
+\times& \int_{-\infty}^{+\infty}\int_{-\infty}^{+\infty}F(t_1-t')F(t_2-t'')\braket{i(t')i(t'')}\sin(\Delta_{LO}t')\sin(\Delta_{LO}t'')dt'dt''dt_1dt_2
+\end{align}
+
+As before we will get one term where the $t'$ and $t''$ integrals can be separated into a product of two integrals evaluated separately with the low pass filter behaving well. This term will evaluate out to
+
+\begin{align}
+\rightarrow \frac{A^2}{4}\int_0^T\int_0^T m_i(t_1) m_j(t_2)\left<:\hat{P}(t_1)\hat{P}(t_2):\right> dt_1 dt_2
+\end{align}
+
+The work on this term is clearly not done but we will leave this as a start.
+
+The term with the delta is again a bit trickier and makes us think a little harder about the action of the low pass filter. Applying the delta:
+
+\begin{align}
+\rightarrow &B^2 \int_0^T \int_0^T m_i(t_1)m_j(t_2)\\
+&\times \int_{-\infty}^{+\infty}F(t_1-t')F(t_2-t')\sin^2(\Delta_{LO}t')dt'dt_1dt_2
+\end{align}
+
+As usual the sin expands into two terms. It is now multiplied by a product of time shifted impulse response functions. However that doesn't matter. If the time shift is large then the product goes to zero. If the time shift is small then the impulse response is broad compared to the period of the high frequency component so that term goes away. The DC term will persist. For that term we can approximate each filter impulse response as a delta function. Performing say the $t_1$ integral gives $t_1=t'$ then performing the $t'$ integral says $t'=t_2$ and we end up with
+
+\begin{align}
+\frac{B^2}{2}\int_0^T m_i(t)m_j(t) dt  = \frac{B^2}{2} M_{ij}
+\end{align}
+
+Where $M_{ij} = \int_0^T m_i(t) m_j(t) dt$. This is the now familiar systematic bias due to shot noise. That is, to the degree that the filters are non-orthogonal they see the same shot noise which is captured as some additional correlation. Let's put these two terms together.
+
+\begin{align}
+\braket{q_iq_j} = \frac{A^2}{4}\int_0^T\int_0^T m_i(t_1) m_j(t_2)\left<:\hat{P}(t_1)\hat{P}(t_2):\right>dt_1dt_2 + \frac{B^2}{2} M_{ij}
+\end{align}
+
+\section{Functional form of time evolution}
+From the time domain linear amplifier write up we know that
+
+\begin{align}
+\bv{v}(t) = \bv{A}(t)\bv{v}(0) + \int_0^t \bv{A}(t-t')\bv{g}(t')dt'
+\end{align}
+
+Where $\bv{v}$ is a vector containing the mechanical, spin, and optical quadratures, $\bv{A}$ is a matrix capturing the time evolution of the linear equations of motion constructed from the time evolution matrix $\bv{M}$ and its eigenvalues and eigenvectors and $\bv{g}$ is a vector capturing the various white noise drives in the system.
+
+We will rewrite this in index notation.
+
+\begin{align}
+v_{i}(t) = A_{ij}(t)v_j(0)+\int_0^t A_{ij}(t-t')g_j(t') dt'
+\end{align}
+
+Next since we are concerned with the detected Q quadrature we will pick out the component of $\bv{v}$ corresponding to the light field momentum or PM quadrature. To do that we just set $i=6$. We'll also define $A_{6j}(t) = f_j(t)$ so that
+
+\begin{align}
+\hat{P}(t) = \hat{P}_c(t) = v_6(t) = f_j(t)v_j(0) + \int_0^t f_j(t-t')g_j(t') dt'
+\end{align} 
+
+Consider the $f_j$. From looking at the time-domain linear amplifier model we know $\bv{A}(t) = \text{Re}\left(\bv{P}e^{\bv{D} t}\bv{P}^{-1}\right)$ where $\bv{D}$ is the diagonalized version of $\bv{M}$, the time evolution matrix and $\bv{P}$ is the matrix of eigenvectors of $\bv{M}$. The eigenvalues of $\bv{D}$ are complex so the matrix exponential has terms like $e^{\Gamma_i t}e^{i\omega_i t}$ on the diagonal corresponding to eigenvalue $\Gamma_i + i \omega_i$. This time evolution corresponds to a damped or anti-damped oscillation. The next step is conjugate the matrix exponential by $\bv{P}$ and $\bv{P}^{-1}$. This will result in a matrix $\tilde{\bv{A}}$ where each component is made up of some linear combination of those six decaying oscillations where the weightings of the linear combinations depends on the shape of the eigenvectors. Finally, to ensure the vector $\bv{v}$ is real we take the real part of $\tilde{\bv{A}}$ to give us $\bv{A}$. Each element of this final $\bv{A}$ matrix will then be a sum of decaying sines and cosines with damping rates and frequencies corresponding again to the eigenvalues of $\bv{M}$ weighted by a combination of the eigenvectors $\bv{P}$. 
+
+Thinking about all of this we will consider two matched filters for each oscillator. A damped or antidamped sine and cosine with damping/antidamping rate corresponding to the real part of the corresponding eigenvalue and frequency corresponding to the imaginary part. We then suppose
+
+\begin{align}
+f_i(t) = c_{ij}e^{\Gamma_j t} \cos(\omega_j t) + s_{ij} e^{\Gamma j t} \sin(\omega_j t)
+\end{align}
+
+Where $j$ runs over 3 different pairs of eigenvalues. We then let
+
+\begin{align}
+m_i(t) = f_i(t)
+\end{align}
+
+Where $\bv{c}$ is some matrix that captures the weightings of the different oscillators into the motion of the PM quadrature of light.
+
+\begin{align}
+\hat{P}(t) =  m_i(t)v_i(0) + \int_0^t m_i(t-t')g_i(t') dt'
+\end{align}
+
+\section{Matched filter mean value}
+
+We can plug this into the calculation for $\braket{q_i}$. When we take the expectation value of the second term we get nothing since the white noise has mean zero.
+
+\begin{align}
+\braket{q_i} = \int_0^T m_i(t) \braket{Q_Q(t)} dt = \frac{A}{2}\int_0^T m_i(t) m_j(t)\braket{v_j(0)} dt = \frac{A}{2} \braket{v_j(0)} M_{ij}
+\end{align}
+
+We then perform the decorrelation by letting $D_{ki} = \left(\bv{M}^{-1}\right)_{ki}$ and multiplying so that 
+
+\begin{align}
+D_{ki} \braket{q_i} = \frac{A}{2} \braket{v_j(0)} D_{ki} M_{ij} = \frac{A}{2} \braket{v_j(0)} \delta_{kj} = \frac{A}{2} \braket{v_k(0)}
+\end{align}
+
+Let
+
+\begin{align}
+Q_{k} = D_{ki}\braket{q_i}
+\end{align}
+
+So that
+
+\begin{align}
+\braket{Q_i} = \frac{A}{2} \braket{v_i(0)}
+\end{align}
+
+Thus we expect that applying the $i^{\text{th}}$ matched filter to the individual signal traces and then averaging will give us a result proportional to the expected initial value of $v_i(0)$, recalling the $v_i(0)$ is a \textit{quantum} Heisenberg operator corresponding to the initial value of the quantum system inside the cavity.
+
+\section{2nd order moment matched filters}
+
+\begin{align}
+\braket{q_iq_j} = \frac{A^2}{4}\int_0^T\int_0^T m_i(t_1) m_j(t_2)\left<:\hat{P}(t_1)\hat{P}(t_2):\right>dt_1dt_2 + \frac{B^2}{2} M_{ij}
+\end{align}
+
+\begin{align}
+\hat{P}(t) =  m_i(t)v_i(0) + \int_0^t m_i(t-t')g_i(t') dt'
+\end{align}
+
+We calculate the two time mean correlation function of $\left<:\hat{P}(t_1)\hat{P}(t_2):\right>$.
+
+\subsection{Aside on normal ordering}
+A quick aside on normal ordering. First off, I am pretty sure that strictly speaking the normal ordering applies to creation and annihilation operators of the photon field only. The reason I need to state this is because there is a potential ambiguity. We know for example that
+
+\begin{align}
+:\hat{a}\hat{a}^{\dag}: = :\hat{a}^{\dag}\hat{a}: = \hat{a}^{\dag}\hat{a}
+\end{align}
+
+but what if $\hat{a} = \hat{c}+\hat{d}^{\dag}$? Such combinations arise as a result of two mode squeezing for example.
+
+Then we might suppose
+
+\begin{align}
+:\hat{a}\hat{a}^{\dag}: = :\hat{c}\hat{c}^{\dag}+\hat{d}^{\dag}\hat{d} + \hat{c}\hat{d}+\hat{d}^{\dag}\hat{c}^{\dag}: = \hat{c}^{\dag}\hat{c}+\hat{d}^{\dag}\hat{d} + \hat{c}\hat{d}+\hat{d}^{\dag}\hat{c}^{\dag}
+\end{align}
+
+but
+
+\begin{align}
+\hat{a}^{\dag}\hat{a} = \hat{c}^{\dag}\hat{c}+\hat{d}\hat{d}^{\dag}+\hat{c}^{\dag}\hat{d}^{\dag}+\hat{d}\hat{c}
+\end{align}
+
+Thus the two expressions derived for $:\hat{a}\hat{a}^{\dag}:$ do not agree. T
+
+
+
+\begin{align}
+\left<:\hat{P}(t_1)\hat{P}(t_2):\right> = &m_i(t_1)m_j(t_2)\left<:v_i(0)v_j(0):\right> \\
+& + \int_0^{t_1} \int_0^{t_2} m_i(t_1-t') m_j(t_2-t'') \left<:g_i(t')g_j(t''):\right> dt' dt''
+\end{align}
+
+Looking at the time-domain linear amplifier model we see that $\left<:v_i(0)v_j(0):\right> = \text{Re}(\beta_{ij})$ and $\left<:g_i(t')g_j(t''):\right> = \text{Re}(\eta_{ij})\delta(t'-t'')$. From now on we'll just set $\beta_{ij} = \text{Re}(\beta_{ij})$ and likewise for $\eta_{ij}$ just to save time. We then see
+
+\begin{align}
+\left<:\hat{P}(t_1)\hat{P}(t_2):\right> = m_i(t_1)m_j(t_2) \beta_{ij} + \int_0^{\text{min}(t_1,t_2)} m_i(t_1-t')m_j(t_2-t') \eta_{ij} dt'
+\end{align}
+
+Now we need to plug this expression into the expression for $\braket{q_iq_j}$. We will do this one term at a time. First we plug in the first term of the two time correlation function to get
+
+\begin{align}
+\rightarrow \frac{A^2}{4}\int_0^T\int_0^T m_i(t_1) m_j(t_2) m_k(t_1)m_l(t_2) \beta_{kl} dt_1 dt_2
+\end{align}
+
+But this can easily be separated into a $t_1$ and $t_2$ integral so that
+
+\begin{align}
+\rightarrow \frac{A^2}{4} M_{ik}M_{jl} \beta_{kl}
+\end{align}
+
+The second term is the complicated term which captures the fact that the oscillators convert the white noise drives into noise which is not white on the probe beam. In other words, the mechanical and spin oscillators have memory meaning that the effect of white noise at some time $t$ lingers on for some amount of time so when the matched filters are applied over some non-infinitesimal time this lingering noise introduces systematic biases.
+
+\begin{align}
+\rightarrow \frac{A^2}{4} \int_0^T \int_0^T \int_0^{\text{min}(t_1,t_2)} m_i(t_1)m_j(t_2) m_k(t_1-t')m_l(t_2-t')\eta_{kl} dt' dt_1 dt_2
+\end{align}
+
+We subsume this term into a single expression $N_{ij}$ so that
+
+\begin{align}
+\rightarrow \frac{A^2}{4} N_{ij}
+\end{align}
+
+Summing it all up we find
+
+\begin{align}
+\braket{q_iq_j} = \frac{A^2}{4}M_{ik}M_{jl}\beta_{kl} + \frac{A^2}{4}N_{ij} + \frac{B^2}{2} M_{ij}
+\end{align}
+
+We multiply by $D_{mi}D_{nj}$ to find $\braket{Q_{m}Q_{n}}$. Working one term at a time. First term:
+
+\begin{align}
+\rightarrow \frac{A^2}{4} D_{mi}D_{nj}M_{ik}M_{jl}\beta_{kl} = \frac{A^2}{4}\delta_{mk}\delta_{nl}\beta_{kl} = \frac{A^2}{4}\beta_{mn}
+\end{align}
+
+Second term:
+
+\begin{align}
+\rightarrow \frac{A^2}{4}D_{mi}D_{nj} N_{ij} = \frac{A^2}{4}T_{mn}
+\end{align}
+
+Third term:
+
+\begin{align}
+\rightarrow \frac{B^2}{2} D_{mi}D_{nj}M_{ij} = \frac{B^2}{2} \delta{mj}D_{nj} = \frac{B^2}{2} D_{nm}
+\end{align}
+
+So we end up with
+
+\begin{align}
+\braket{Q_{m}Q_{n}} = \frac{A^2}{4}\beta_{mn} + \frac{A^2}{4} T_{mn} + \frac{B^2}{2} D_{nm}
+\end{align}
+
+The first term represents the symmetrized quantum covariance matrix at time $t=0$ which is what we were looking for. The second term is the thermal/correlated noise systematic and the final term is the shot noise systematic.
+
+\end{document}

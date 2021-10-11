@@ -1,0 +1,147 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{ND}
+\usepackage{tcolorbox}
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+\newtheorem{definition}{Definition}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+
+\begin{document}
+\title{Logic Wff Replacement}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will prove some results on replacement of Wff and terms etc. in LFOL.
+
+Suppose we have a closed Wff $\mc{Q}$ which contains another (closed) Wff $\mc{A}$ as a substring one or more times. Suppose also that there is another (closed) Wff $\mc{B}$. Suppose that at some point we have taken $\mc{A} \leftrightarrow \mc{B}$ as an axiom (premise) or otherwise proved it from other premises. Consider then the Wff $\mc{Q}'$ which is the same as $\mc{Q}$ but with all instances of $\mc{A}$ replace by $\mc{B}$. The theorem to proven is that in this case one can always derive $\mc{Q} \leftrightarrow \mc{Q}'$.
+
+First a more rigorous definition of $\mc{Q}'$. $\mc{C}$ is any atomic Wff with $\mc{C} \not\equiv \mc{A}$. $\mc{D}$ and $\mc{E}$ are Wffs.
+
+\begin{equation}
+\mc{Q}' = 
+\begin{cases}
+\mc{B} & \text{if } \mc{Q} \equiv \mc{A}\\
+\mc{C} & \text{if } \mc{Q} \equiv \mc{C}\\
+(\mc{D}' \ast \mc{E}') & \text{if } \mc{Q} \equiv (\mc{D} \ast \mc{E})\\
+(\lnot \mc{D}') & \text{if } \mc{Q} \equiv (\lnot \mc{D})\\
+((Qx)\mc{D}') & \text{if } \mc{Q} \equiv ((Qx)\mc{D})
+\end{cases}
+\end{equation}
+
+To complete this proof we will induct on the `length' of Wff. I'll define what I mean by the length of a Wff. Any Wff can be broken down in a tree based on which syntax rules of construction were used to form the Wff. In practice the tree could break the Wff all the way down into individual terms and symbols etc. However, we will only be interested into breaking it down into atomic formulas. Suppose $A$ and $B$ are atomic formulas. Then they are each also Wffs. However, $(A \land B)$ is also a Wff. We would say $A$ and $B$ are Wffs of length 1 since they involve one syntax rule in their construction each (Atomic formulae are Wffs being that rule) while $(A \land B)$ is a Wff of length 3 since it involves 3. One for each atomic formula and one to combine them with the $\land$ connective.
+
+We now perform the induction. Suppose that we have Wffs $\mc{A}, \mc{B}, \mc{Q},$ and $\mc{Q}'$ as above. We assume that we have derived $\mc{A} \leftrightarrow \mc{B}$. 
+
+\subsubsection*{Base Case}
+We now will prove that theorem holds in the case that $\mc{Q}$ is a Wff of length 1. If $\mc{Q}$ is a Wff of length 1 then it must be an atomic formula. Since it contains $A$ as a substring $A$ must also be an atomic formula and we must have that $\mc{Q} \equiv \mc{A}$. This means that $\mc{Q}' \equiv \mc{B}$ so to prove $\mc{Q} \leftrightarrow \mc{Q}'$ we must prove $\mc{A} \leftrightarrow \mc{B}$, but of course we have assumed this has already been proven so we are done.
+
+\subsubsection*{Induction Step}
+We now suppose that $\mc{Q}$ is a formula of length $n$. We assume that for any Wff $\mc{S}$ of length $n-1$ or less that, if $\mc{S}$ contains $\mc{A}$ as a substring, that it is possible to prove $\mc{P} \leftrightarrow \mc{P}'$. We must show that it is possible to derive $\mc{Q} \leftrightarrow \mc{Q}'$.
+
+$\mc{Q}$ is a Wff with length greater than 1. It is possible that $\mc{Q}$ is of the form $(\mc{S} \land \mc{T}), (\mc{S} \lor \mc{T}), (\mc{S} \rightarrow \mc{T}), (\mc{S} \leftrightarrow \mc{T}), (\lnot \mc{S}), ((\exists x)\mc{S}), ((\forall x)\mc{S})$. Here $\mc{S}$ and $\mc{T}$ must be Wffs with length less than $n$. For all of the cases not involving quantifiers $\mc{S}$ and $\mc{T}$ must be close meaning that we can apply the induction hypothesis to them to derive $(\mc{S} \leftrightarrow \mc{S}')$ and $(\mc{T} \leftrightarrow \mc{T}')$. For the cases with the quantifiers $\mc{S}$ and $\mc{T}$ contain $x$ as a free variable, but no other free variables. This means $\mc{S}[x\leftarrow t]$ and $\mc{T}[x\leftarrow t]$ is closed if $t$ is a closed term.
+
+Below I will provide the proof for each of the possible cases.
+
+\hrulefill
+
+Suppose that $\mc{Q} \equiv (\mc{S} \land \mc{T})$. By the induction hypothesis we have $(\mc{S} \leftrightarrow \mc{S}')$ and $(\mc{S} \leftrightarrow \mc{S}')$.
+
+\begin{ND}[][][][][.6\linewidth]
+\ndljg{X}{(n_1)}{$(\mc{A} \leftrightarrow \mc{B})$}{}
+\ndljg{X}{(n_2)}{$(\mc{S} \leftrightarrow \mc{S}')$}{}
+\ndljg{X}{(n_3)}{$(\mc{T} \leftrightarrow \mc{T}')$}{}
+\ndljg{n_4}{(n_4)}{$(\mc{S} \land \mc{T}) \equiv \mc{Q}$}{$A$}
+\ndljg{n_4}{(n_5)}{$\mc{S}$}{$n_4,\land E$}
+\ndljg{X,n_4}{(n_6)}{$\mc{S}'$}{$n_2,n_5,\leftrightarrow E$}
+\ndljg{n_4}{(n_7)}{$\mc{T}$}{$n_4,\land E$}
+\ndljg{X,n_4}{(n_8)}{$\mc{T}'$}{$n_3,n_7,\leftrightarrow E$}
+\ndljg{X,n_4}{(n_9)}{$(\mc{S}' \land \mc{T}') \equiv \mc{Q}'$}{$n_6,n_8,\land I$}
+\ndljg{X}{(n_{10})}{$((\mc{S}\land \mc{T}) \rightarrow (\mc{S}' \land \mc{T}'))$}{$n_4,n_9,\rightarrow I$}
+\end{ND}
+
+
+\hrulefill
+
+
+\section{Proof}
+
+Here I will prove that 
+
+\begin{align}
+\mc{A}[y\leftarrow t]^{\sharp} \equiv \mc{A}[y\leftarrow v]^{\sharp}[v\leftarrow t]
+\end{align}
+
+when $y$ appears free and not bound in $\mc{A}$ and $v$ does not appear in $\mc{A}$ or $\mc{Q}$.
+
+\subsection{Direct Translation}
+
+The first case is that $\mc{A} \equiv P\vec{x}[\vec{x}\leftarrow \vec{s}]$.
+
+Then we have
+
+\begin{align}
+\mc{A}[y\leftarrow t]^{\sharp} &\equiv P\vec{x}[\vec{x}\leftarrow \vec{s}][y\leftarrow t]^{\sharp} \equiv P\vec{x}[\vec{x}\leftarrow \vec{s}[y\leftarrow t]]^{\sharp}\\
+&\equiv \mc{Q}(\vec{x})[\vec{x}\leftarrow \vec{s}[y\leftarrow t]]
+\end{align}
+
+On the other hand 
+
+\begin{align}
+\mc{A}[y\leftarrow v]^{\sharp}[v\leftarrow t] &\equiv P\vec{x}[\vec{x}\leftarrow \vec{s}][y\leftarrow v]^{\sharp}[v\leftarrow t]\\
+&\equiv P\vec{x}[\vec{x}\leftarrow \vec{s}[y\leftarrow v]]^{\sharp}[v\leftarrow t]\\
+&\equiv \mc{Q}(\vec{x})[\vec{x}\leftarrow \vec{s}[y\leftarrow v]][v\leftarrow t]\\
+&\equiv \mc{Q}(\vec{x})[\vec{x}\leftarrow \vec{x}[y\leftarrow v]
+\end{align}
+
+
+\section{Subproof}
+
+Need to prove that $((P\vec{x})[\vec{x}\leftarrow \vec{s}])[y\leftarrow t] \equiv (P\vec{s})[\vec{s}\leftarrow \vec{s}[y\leftarrow t]]$. Note that I'll first mention that $\vec{s}[y\leftarrow t]$ is defined as $s_1[y\leftarrow t],\ldots,s_n[y\leftarrow t]$ as expected. Now the proof.
+
+\begin{align}
+&P\vec{x}[\vec{x}\leftarrow \vec{s}][y\leftarrow t]\\
+&\equiv Px_1\ldots x_n[x_1\leftarrow z_1]\ldots[x_n\leftarrow z_n][z_1\leftarrow s_1],\ldots,[z_n\leftarrow s_n][y\leftarrow t]\\
+&\equiv Pz_1\ldots z_n[z_1\leftarrow s_1]\ldots[z_n\leftarrow s_n][y\leftarrow t]\\
+&\equiv Ps_1\ldots s_n[y\leftarrow t]\\
+&\equiv Ps_1[y\leftarrow t]\ldots s_n[y\leftarrow t]\\
+&\equiv Pz_1\ldots z_n[z_1\leftarrow s_1[y\leftarrow t]]\ldots[z_n\leftarrow s_n[y\leftarrow t]]\\
+&\equiv P\vec{x}[x_1\leftarrow z_1]\ldots[x_n\leftarrow z_n][z_1\leftarrow s_1[y\leftarrow t]]\ldots[z_n\leftarrow s_n[y\leftarrow t]]\\
+&\equiv P\vec{x}[x_1,\ldots,x_n\leftarrow s_1[y\leftarrow t],\ldots, s_n[y\leftarrow t]]\\
+&\equiv P\vec{x}[\vec{x}\leftarrow \vec{s}[y\leftarrow t]]
+\end{align}
+
+Note that $\vec{z}$ should be chosen such none of $\vec{z}$ appear in any of $\vec{x}$, $y$, $\vec{s}$, or $t$.
+
+
+\end{document}

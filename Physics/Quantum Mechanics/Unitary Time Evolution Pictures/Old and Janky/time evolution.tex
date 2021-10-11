@@ -1,0 +1,472 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Time Evolution and Pictures In Quantum Mechanics}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I will give an explanation of time-evolution and the various ``pictures'' of quantum mechanics.
+
+\section{Time Evolution Postulate}
+
+Suppose we are working in a system described by Hilbert space $\mathcal{H}$ which has a corresponding physical observable $A$ with associated Hermitian operator $A_0$. $A_0$ has eigenvectors $\ket{a}$ with corresponding eigenvalues $a$. 
+
+\begin{align}
+A_0\ket{a_0} = a \ket{a_0}
+\end{align}
+
+Suppose the system's initial state is given by $\ket{\psi_0}$ at time $t_0$. The fundamental postulate of quantum mechanics is that there is a unitary operator, $T(t,t_0)$ such that the probability that observable $A$ takes on value $a$ at time $t$ is given by the mathematical formula:
+
+\begin{align}
+P(A=a) &= |\bra{a_0}T(t,t_0)\ket{\psi_0}|^2\\
+&= \bra{\psi_0} T^{\dag}(t,t_0) \ket{a_0}\bra{a_0}T(t,t_0)\ket{\psi_0}\\
+&= \bra{\psi_0} T^{\dag}(t,t_0) \Pi_{a,0} T(t,t_0) \ket{\psi_0}
+\end{align}
+
+Where I've defined the indicator or projection function $\Pi_{a,0} = \ket{a_0}\bra{a_0}$. Note that $\Pi_{a,0}$ is an operator.
+
+$T(t,t_0)$ has the following properties.
+
+\begin{align}
+T(t,t) &= 1\\
+T^{-1}(t_1,t_2) &= T^{\dag}(t_1,t_2)\\
+T(t_2,t_1)T(t_1,t_0) &= T(t_2,t_0)
+\end{align}
+
+In particular we see that $T(t,t_0)$ is unitary. For the rest of this document we will only work with $T(t,t_0)$ so i'll just let $T = T(t,t_0)$.
+
+\subsection{Picture Agnostic Representation}
+
+My statement of the fundamental postulate of Quantum mechanics does not rely on the state evolving in time or operators evolving in time. It only depends on the choice of operator, $A$, its value, $a$, and the initial state, $\ket{\psi_0}$. From that information, and knowledge of $T$, probabilities can be calculated at all times. In this sense it is a ``picture agnostic'' equation. It is not stated in the Schrodinger, Heisenberg, or any other picture.
+
+Actually, I might argue that as stated, it slightly favors the Schrodinger picture. This is because, to those familiar with quantum mechanics, it might be tempting to ``automatically'' interpret $T \ket{\psi_0} = \ket{\psi_S(t)}$ yet others might ``automatically'' interpret $T^{\dag} \Pi_a T = \Pi_{a,H}(t)$. To remove this temptation, and to make some definitions a little prettier, I will remove all preference (to make the equation truly agnostic). To do so I will introduce operators $W_0$ and $V_0$ which satisfy
+
+\begin{align}
+W_0=V_0^{\dag} &= T^{-\frac{1}{2}} = \sqrt{T}\\
+V_0^{\dag} W_0 &= T
+\end{align}
+
+We can then write the fundamental postulate as parsimoniously as possible.
+
+\begin{align}
+P(A=a) = \bra{\psi_0}W_0^{\dag}V_0 \Pi_{a,0} V_0^{\dag} W_0 \ket{\psi_0}
+\end{align}
+
+In this form we see that it ``looks like'' we are transforming $\ket{\psi_0}$ under unitary transformation $W_0$ and we are transforming $\Pi_{a,0}$ under unitary transformation $V_0$.
+
+\section{Definition of a Picture}
+
+Here I define the general notion of a picture of quantum mechanical time evolution and show how the general definition reduces to those used in the literature in the familiar cases..
+
+A picture of quantum mechanics is defined by a unitary transformation $P$.  For any ket $\ket{\psi_0}$ or operator $A_0$ we define
+
+\begin{align}
+\ket{\psi_P} &= P W_0\ket{\psi_0}\\
+A_P &= P V_0 A_0 V_0^{\dag} P^{\dag}
+\end{align}
+
+Note that the product of unitary operators is unitary. We can then plug this into the fundamental postulate formula
+
+\begin{align}
+P(A=a) &= \bra{\psi_0}W_0^{\dag}V_0\Pi_{a,0} V_0^{\dag}W_0 \ket{\psi_0}\\
+&= \bra{\psi_0} W_0^{\dag} P^{\dag} P V_0 \Pi_{a,0} V_0^{\dag} P^{\dag} P W_0 \ket{\psi_0}\\
+&= \bra{\psi_P} \Pi_{a,P} \ket{\psi_P}
+\end{align}
+
+The second line was realized by inserting two factors of $P^{\dag} P = 1$. We can see that in this form the fundamental postulate only depends on operators and kets in the $P$-picture and the time evolution operators make no more explicit appearance. That is, we have absorbed the time dependence completely into the kets and operators. It should be clear that how the time dependence is shared between kets and operators depends on the specific form of $P$. For example, noting that $W_0^2 = T$ and $W_0V_0 = V_0^{\dag}V_0 =1$ we can see that if $P=W_0$ then all of the time dependence will appear on the kets while no time dependence will appear on the operators. This, as we'll see below, corresponds exactly to the Schrodinger picture. Other pictures will be realized similarly.
+
+\section{Time Evolution in a Picture}
+
+Note that in the picture agnostic description in the first section neither kets nor operators evolve in time. However, when we move into a given ``picture'', if $PW_0$ or $PV_0$ are time dependent then in general kets and operators can have time dependence.
+
+\subsection{Derivative of Unitary Operator}
+
+Before calculating this time dependence a quick aside on the derivative of Unitary operators. Let $U$ be an arbitrary unitary operator.
+
+\begin{align}
+U^{\dag} U &= 1\\
+\ddt{U^{\dag}} U + U^{\dag} \ddt{U} &= 0\\
+\ddt{U} &= - U \ddt{U^{\dag}} U
+\end{align}
+
+We also work out
+
+\begin{align}
+U U^{\dag} &= 1\\
+\ddt{U} U^{\dag} + U \ddt{U^{\dag}} &= 0\\
+\left(U \ddt{U^{\dag}} \right)^{\dag} + U \ddt{U^{\dag}} &= 0
+\end{align}
+
+This implies that the operator $U\ddt{U^{\dag}}$ is an anti-Hermitian operator. We define the Hermitian operator
+
+\begin{align}
+\boxed{
+H_U = -i\hbar U\ddt{U^{\dag}}
+}
+\end{align}
+
+\begin{align}
+U\ddt{U^{\dag}} &= \frac{i}{\hbar}H_U
+\end{align}
+
+The minus sign is conventional and the factor of $\hbar$ gives $H_U$ dimensions of energy (noting that $U$ is dimensionless). 
+Plugging this in we see that
+
+\begin{align}
+\boxed{\ddt{U} = - \frac{i}{\hbar} H_U U}
+\end{align}
+
+We will set $\hbar = 1$ from now on. 
+
+\subsection{Time Evolution of Operators}
+
+Returning to the main calculation for the time evolution of kets and operators in the $P$-picture:
+
+\begin{align}
+\ket{\psi_P} &= P W_0\ket{\psi_0}\\
+\ddt{\ket{\psi_P}} &= \ddt{P W_0}\ket{\psi_0}\\
+\end{align}
+
+It is important here that $\ket{\psi_0}$ has no time dependence. $PW_0$ is a unitary operator so we have a Hermitian operator which satisfies
+
+\begin{align}
+\ddt{PW_0} = -i H_{PW_0} P W_0
+\end{align}
+
+Plugging this in we see
+
+\begin{align}
+\ddt{\ket{\psi_P}} &= -i H_{PW_0} P W_0 \ket{\psi_0}\\
+&= -i H_{PW_0} \ket{\psi_P}
+\end{align}
+
+\begin{align}
+\boxed{
+\ddt{\ket{\psi_P}} = -iH_{PW_0} \ket{\psi_P}	
+}
+\end{align}
+
+This is the Schrodinger equation for the time evolution of a ket under Hamiltonian $H_{P,W}$.
+
+\subsection{Time Evolution of Operators}
+
+Now we work out the time evolution of the operators.
+
+\begin{align}
+A_P &= PV_0 A_0 V_0^{\dag}P^{\dag}\\
+\ddt{A_P} &= \ddt{PV_0} A_0 V_0^{\dag}P^{\dag} + PV_0 A_0 \ddt{V_0^{\dag} P^{\dag}} + PV_0 \ppt{A_0} V_0^{\dag}P^{\dag}\\
+\end{align}
+
+Similarly we define
+
+\begin{align}
+\ddt{PV_0} = -i H_{PV_0} PV_0
+\end{align}
+
+Plugging this in gives
+
+\begin{align}
+&= -i H_{PV_0} P V_0 A_0 V_0^{\dag}P^{\dag} + i PV_0 A_0 V_0^{\dag}P^{\dag} H_{PV_0} + PV_0\ppt{A_0}V_0^{\dag}P^{\dag}\\
+&= -i H_{PV_0} A_P + i A_P H_{PV_0} + PV_0 \ppt{A_0} V_0^{\dag}P\\
+&= -i [A_P,-H_{PV_0}] + PV_0\ppt{A_0}V_0^{\dag}P^{\dag}
+\end{align}
+
+A note on the last term involving $\ppt{A_0}$. I've indicated above that in the $0$-picture, or picture agnostic representation, that operators have no time dependence. This is true of the \textit{implicit} time dependence of operators. However, it is still possible for an operator to have \textit{explicit} time dependence. For example,
+
+\begin{align}
+A_0 = t^2 X
+\end{align}
+
+Has explicit time dependence even though $X$ is time independent. However, if we assume that any operator is expressible as a polynomial of ``regular'' operators then we can see that we will get the same answer if we apply the $PV_0$ transformation after the derivative (as it appears above) or if we apply the $PV_0$ transformation \textit{before} taking the derivative. This is because the operators carry no time dependence so the derivative only acts on the explicit time dependent part which is just c-number manipulation. To be clear
+
+\begin{align}
+PV_0 \ppt{A_0} V_0^{\dag}P^{\dag} = \ppt{}\left(PV_0A_0V_0^{\dag}P^{\dag} \right) = \ppt{A_P}
+\end{align}
+
+Plugging this in and putting it altogether we see
+
+\begin{align}
+\boxed{
+\ddt{A_P} = -i[A_P,-H_{PV_0}] + \ppt{A_P}	
+}
+\end{align}
+
+We see that this is the Heisenberg equation of motion for operator $A_P$ under Hamiltonian $-H_{PV_0}$. I have left the minus signs in the form they appear here to coincide with the form I have memorized for the Heisenberg equations of motion.
+
+We see that moving into the $P$ picture causes kets to evolve under the Hamiltonian $+H_{PW_0}$ and causes operators to evolve under $-H_{PV_0}$. Thus we see that we can tailor the time dependence by a judicious choice of $P$. Before specializing to the well-known picture of quantum mechanics I want to explore how the time dependence changes when moving from one picture to another.
+
+\section{Moving Between Pictures}
+
+Given the machinery above it is not too difficult to move between pictures. Suppose we are in a picture given by $P$. We can move into a new picture by operating unitary $Q$.
+
+\begin{align}
+\ket{\psi_Q} &= Q \ket{\psi_P}\\
+A_Q &= Q A_P Q^{\dag}
+\end{align}
+
+However it is clear that this transformation brings us from the $0$ picture directly into the $QP$ picture instead of the $P$ picture. To find the time dynamics in this new picture we simply need to find $H_{QPW_0}$ and $H_{QPV_0}$. Note that it is slightly confusing for me to call this the $Q$ picture, as in the formalism I'm showing above it is clear that it is exactly the $QP$ picture. Nonetheless, I will stick with this notation. I will also subscript operators in this new picture only with the subscript $Q$, with the understanding that the $Q$ pictures arises from transforming from the $P$ picture, not from transforming the ``0-picture'' as above.
+
+Noting that the $Q$ picture is really the $QP$ picture we have
+
+\begin{align}
+\ddt{\ket{\psi_Q}} &= -iH_{QPW_0}\ket{\psi_Q}\\
+\ddt{A_Q} &= -i[A_Q,-H_{QPV_0}] + \ppt{A_P}
+\end{align}
+
+All that is left to do is to find $H_{QPW_0}$ and $H_{QPV_0}$.
+
+\begin{align}
+H_{QPW_0} &= -i QPW_0 \ddt{}\left(QPW_0\right)^{\dag} = -i QPW_0 \ddt{}\left(\left(PW_0\right)^{\dag}Q^{\dag} \right)\\
+&= -i QPW_0 \left[\ddt{(PW_0)^{\dag}}Q^{\dag} + (PW_0)^{\dag} \ddt{Q^{\dag}} \right]\\
+&= -i Q PW_0 \ddt{(PW_0)^{\dag}}Q^{\dag} -i Q \ddt{Q^{\dag}}\\
+&= QH_{PW_0}Q^{\dag} + H_Q = \left(H_{PW_0} \right)_Q + H_Q
+\end{align}
+
+With $H_Q = -i Q \ddt{Q^{\dag}}$.
+The exact same logic follows to show $H_{QPV_0} = (H_{PV_0})_Q + H_Q$. Rewriting we find
+
+\begin{align}
+\ddt{\ket{\psi_Q}} &= -i\left((H_{PW_0})_Q + H_Q \right)\ket{\psi_Q}\\
+&= -i\left((H_{PW_0})_Q -i Q\ddt{Q^{\dag}} \right)\ket{\psi_Q}\\
+\ddt{A_Q} &= -i[A_Q,-((H_{PV_0})_Q+H_Q)] + \ppt{A_P}\\
+&= -i[A_Q,-(H_{PV_0})_Q + i Q\ddt{Q^{\dag}}] + \ppt{A_P}
+\end{align}
+
+So we see that transforming into a new picture by unitary operator $Q$ results in kets operating under a new Hamiltonian which is given by the transformed version of the old ket Hamiltonian, $(H_{PW_0})_Q$ plus the Hamiltonian associated with $Q$. Similarly, the transformation results in operator evolution under a new Hamiltonian given by the transformed version of the old operator Hamiltonian, $-(H_{PV_0})_Q$ minus $H_Q$. We see that in this way we can, at the Hamiltonian level, shift around time dependence between the operators and the kets.
+ 
+\section{Particular Pictures}
+
+Here I will outline a few specific pictures of quantum mechanics which we often come across.
+
+\subsection{The 0-Picture}
+
+Above I claimed that I was attempting to express the fundamental postulate of quantum mechanics in a picture agnostic way. However, I also referred that expression as being expressed in the $0-picture$. This second notion was actually a little bit imprecise. As I stated the fundamental postulate it is clear that I am not working in any picture as I have defined pictures. This is because, if we are working in a picture, the fundamental postulate is stated as
+
+\begin{align}
+P(A=a) = \bra{\psi_P}\Pi_{a,P} \ket{\Psi_P}
+\end{align}
+
+However, since $T \neq 1$ we se that it is not possible to express the fundamental postulate in terms of the 0-kets and 0-operators in this way. To make the point as sharp as possible: When working in a picture we absorb the entire time dependence of $T$ into a combination of the kets the operators. As I have shown it the time dependence is left explicit in the $T$ operator so it is correct to say that that expression is not expressed in any ``picture''. Note that when we go into a picture all time dependence is absorbed into the kets and observables because of how I have defined the transformation in terms of $W_0$ and $V_0$. One could define a different transformation in which not all of the time dependence is absorbed and some of it remains explicit. I'm not sure why one would want to do this and I haven't come across it.
+
+\subsection{The Equal Split Picture}
+
+We consider the picture with
+
+\begin{align}
+P = 1
+\end{align}
+
+In this picture the time evolution operator is split equally between the kets and the operators. I see no good use for this picture but I figured it was worth mentioning.  
+
+\subsection{The Schrodinger Picture}
+
+The Schrodinger picture is the picture which is always introduced first. In fact, the postulates of quantum mechanics are often stated in the Schrodinger picture which was at least to me a point of confusion. There was a sense that the Schrodinger picture kets and observables were somehow the ``true'' versions and everything else was just some weird transformation. We can see now that no such identification is necessary.
+
+In the Schrodinger picture all of the time evolution is put into the kets. To accomplish this we take
+
+\begin{align}
+P &= W_0 = V_0^{\dag}\\
+PW_0 &= T\\
+PV_0 &= 1
+\end{align}
+
+This gives
+
+\begin{align}
+\ket{\psi_S} &= T \ket{\psi_0}\\
+A_S &= A_0
+\end{align}
+
+\begin{align}
+H_S = -i T \ddt{T^{\dag}}
+\end{align}
+
+\begin{align}
+\ddt{\ket{\psi_S}} &= -iH_S \ket{\psi_S}\\
+\ddt{A_S} &= \ppt{A_S}
+\end{align}
+
+These are the usual Schrodinger picture equations of motion we learn in intro quantum mechanics.
+
+\subsection{The Heisenberg Picture}
+
+In the Heisenberg Picture all of the time dependence is put into the operators and the kets are time-independent. To achieve this picture we take
+
+\begin{align}
+P &= V_0 = W_0^{\dag}\\
+PW_0 &= 1\\
+PV_0 &= T^{\dag}
+\end{align}
+
+This gives
+
+\begin{align}
+\ket{\psi_H} &= \ket{\psi_0}\\
+A_H &= T^{\dag}A_0T\\
+\end{align}
+
+\begin{align}
+H_H = -iT^{\dag} \ddt{T}
+\end{align}
+
+\begin{align}
+\ddt{\ket{\psi_H}} &= 0\\
+\ddt{A_H} = -i[A_H,-H_H] + \ppt{A_H}
+\end{align}
+
+However, note that
+
+\begin{align}
+\ddt{T} = -iH_S T
+\end{align}
+
+so
+
+\begin{align}
+H_H &= -iT^{\dag} \ddt{T} = -i T^{\dag}(-iH_S T)\\
+H_H &= -(H_S)_H
+\end{align}
+
+That is, the Heisenberg Hamiltonian is the negative of the transformed version of the Schrodinger Hamiltonian so we get
+
+\begin{align}
+\ddt{A_H} = -i[A_H,(H_S)_H] + \ppt{A_H}
+\end{align}
+
+So we see that we can easily transform from the Schrodinger to Heisenberg Hamiltonian by simply transforming each of the operators from the Schrodinger into the Heisenberg picture and then ascribing the Hamiltonian to evolve the operators rather than the kets. In the case that $H_S$ is time independent one can show that $[H_S,T] = 0$ so that $H_S = (H_S)_H$ in which case we see that the Heisenberg Hamiltonian is the same as the Schrodinger Hamiltonian.
+
+\subsection{Interaction Picture}
+
+Suppose we have
+
+\begin{align}
+\ddt{T} = -i(H_0 + H_I) T
+\end{align}
+
+This means the overall Hamiltonian of the system is given by $H_0 + H_I$ and this can be split between the kets and operators. Suppose that $H_0$ is ``boring'' well-understood dynamics while $H_I$ is interesting ``interaction'' dynamics which is trying to be studied. In this case we can choose to shunt the dynamics of $H_0$ into the operators and leave the dynamics of $H_I$ in the kets and then focus on the kets. I will call this the ket interaction picture. We can also do the opposite and shunt the $H_0$ dynamics into the kets and leave the $H_I$ dyanmics in the operators and focus on the operators. I will call this the operator interaction picture.
+
+Let
+
+\begin{align}
+\ddt{U_0} &= -iH_0 U_0\\
+\ddt{U_I} &= -iH_I U_I\\
+\end{align}
+
+Unitary operators $U_0$ and $U_I$ can be found by formally integrating these differential equation to get a time-ordered exponential solution. We will see below that if $H_0$ and $H_I$ are time-independent then the solution to these differential equations are simple.
+
+We move into the ket interaction picture by taking
+
+\begin{align}
+P = U_0^{\dag}W_0
+\end{align}
+
+We can see that this amount to first moving into the Schrodinger picture to put all of the time dependence into the kets and then it applies $U_0^{\dag}$ to remove the time-dependence due to $H_0$ from the kets and putting it into the operators. We can the time evolution will be given by
+
+\begin{align}
+\ddt{\ket{\psi_{I,\text{ket}}}} &= -i U_0^{\dag}W_0H_IW_0^{\dag}U_0 \ket{\psi_{I,\text{ket}}}\\
+&= -i (H_I)_{I,\text{ket}} \ket{\psi_{I,\text{ket}}}
+\end{align}
+
+\begin{align}
+\ddt{A_{I,\text{ket}}} = -i[A_{I,\text{ket}}, (H_0)_{I,\text{ket}} ] + \ppt{A_{I,\text{ket}}}
+\end{align}
+
+We can also perform the opposite transformation where we first go into the Heisenberg picture and then remove the $H_0$ dependence from the kets. In that case we get
+
+\begin{align}
+P = U_0 V_0
+\end{align}
+
+\begin{align}
+\ddt{\ket{\psi_{I,\text{obs}}}} &= -i (H_0)_{I,\text{obs}} \ket{\psi_{I,\text{obs}}}
+\end{align}
+
+\begin{align}
+\ddt{A_{I,\text{obs}}} = -i[A_{I,\text{obs}}, (H_I)_{I,\text{obs}} ] + \ppt{A_{I,\text{obs}}}
+\end{align}
+
+\section{Special Cases}
+
+Note that all of the above was essentially fully general with respect to commutation and time dependence of various observables. By specifying nice properties of $P$ and $H_P$ we can see some nice properties.
+
+First, suppose 
+
+\begin{align}
+\ddt{P} = -iH_P P
+\end{align}
+
+If $H_P$ is time independent then we can formally integrate this equation to find
+
+\begin{align}
+P = e^{-iH_P t}
+\end{align}
+
+In this case we also have
+
+\begin{align}
+[H_P,P] = 0
+\end{align}
+
+\section{Density Matrix}
+
+The density matrix in any picture is defined as
+
+\begin{align}
+\rho_P = \ket{\psi_P}\bra{\psi_P}	
+\end{align}
+
+We then have
+
+\begin{align}
+\ddt{\ket{\psi_P}} = -iH_{PW_0} \ket{\psi_P}
+\end{align}
+
+We can then calculate the time evolution of the density matrix.
+
+\begin{align}
+\ddt{\rho_P} &= \ddt{\ket{\psi_P}}\bra{\psi_P} + \ket{\psi_P} \ddt{\bra{\psi_P}}\\
+&= -iH_{PW_0} \ket{\psi_P}\bra{\psi_P} + i \ket{\psi_P}\bra{\psi_P}H_{PW_0}\\
+&= -i [H_{PW_0},\rho_P]
+\end{align}
+
+\begin{align}
+\boxed{
+\ddt{\rho_P} = -i[H_{PW_0},\rho_P]	
+}
+\end{align}
+
+so $\rho_P$ evolves under the same Hamiltonian as $\ket{\psi_P}$. However, note that it doesn't transform like an operator does. It has a relative minus sign and also evolves under $H_{PW_0}$ rather than $H_{PV_0}$.
+
+\end{document}

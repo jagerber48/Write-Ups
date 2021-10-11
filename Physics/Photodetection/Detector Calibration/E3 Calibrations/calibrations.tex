@@ -1,0 +1,511 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+
+\begin{document}
+\title{Experimental Probe Calibrations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+This document follows the Normal Ordered heterodyne write up. In E3 we perform a variety of calibrations to allow us to convert features of the measured heterodyne signal into meaningful physical quantities pertaining to, for example, the intracavity photon field or motion of the oscillators within the cavity. The important calibrations I'll list here are the various detection efficiency calibrations, how we extract the intracavity photon number, and how we analyze the EO sidebands to estimate the probe-cavity detuning.
+
+Recall the Heterodyne expressions
+
+\begin{align}
+\Braket{i(t)} &= A\left<:\hat{X}^{\Delta_{LO} t}(t):\right>\\
+\Braket{i(t_1)i(t_2)} &= A^2 \left<:\hat{X}^{\Delta_{LO}t_1}(t_1)\hat{X}^{\Delta_{LO}t_2}(t_2):\right> + B^2 \delta(t_1-t_2)
+\end{align}
+
+with 
+
+\begin{align}
+\hat{X}^{\Delta_{LO} t}(t) = \cos(\Delta_{LO}t) \hat{X}(t) - \sin(\Delta_{LO}t)\hat{P}(t)
+\end{align}
+
+representing a time-rotating quadrature of the intra-cavity field and
+
+\begin{align}
+A &= e \sqrt{2\kappa}\sqrt{\epsilon_C \epsilon_P \epsilon_{MM}} \epsilon_Q |\alpha|\\
+B &= e \sqrt{\epsilon_Q} |\alpha|
+\end{align}
+
+For purposes of calibration we have a few tools and access to a few physical parameters. The goal is to calibrate the detection chain so that we can use the signal detected on Gagescope to determine what was going on with the light, and thus the quantum system, inside of the optical cavity. The detection chain is as follows:
+
+Probe light in cavity $\rightarrow$ probe light outside cavity after exiting through output mirror $\rightarrow$ probe light before detector after passing through detection optics and being combined with local oscillator $\rightarrow$ difference photocurrent from balanced photo detection $\rightarrow$ voltage proportional to difference photocurrent after transimpedance stage inside photodetector $\rightarrow$ through Bias-T (pick off DC part to calibrate balancing of beams) $\rightarrow$ RF low-pass filter to cut out noise $\rightarrow$ RF amplifier $\rightarrow$ Power splitter (split power to sidelock box) $\rightarrow$ Gagescope $\rightarrow$ harddrive.
+
+Each of these steps modifies the signal in some way that we should understand to calibrate the system. The tools at our disposal are a power meter to measure the optical power at different locations, a spectrum analyzer to measure RF signals coming from the detector, the saved Gagescope signal which can be analyzed in Skaffold and perhaps a multi-meter if that comes in handy.
+
+For this write-up and the calibration we will assume there are no atoms or optomechanics going on with the cavity. At most there will be an input beam producing a static cavity field and a resultant output beam. In this case we have
+
+\begin{align}
+\Braket{:\hat{X}^{\Delta_{LO}t}(t):} &= \bar{X} \cos\left(\Delta_{LO}t\right) = 2 \sqrt{\bar{n}}\cos\left(\Delta_{LO}t\right)\\
+\Braket{:\hat{X}^{\Delta_{LO}t_1}(t_1)\hat{X}^{\Delta_{LO}t_2}(t_2):} &= 4\bar{n} \cos\left(\Delta_{LO}t_1\right)\cos\left(\Delta_{LO}t_2\right)
+\end{align}
+
+It will also be useful to express quantities in terms of powers rather than quanta so we have
+
+\begin{align}
+P_{LO} = \hbar \omega_{LO} \lvert \alpha \rvert ^2 = \hbar \omega \lvert \alpha \rvert^2
+\end{align}
+
+Where we will take $\omega_{LO} \approx \omega_{P} = \omega$.
+
+\section{Detection Efficiency}
+
+There are a few sources of photon loss between the cavity and our detected signal. Here I'll go through and determine how the various sources of loss can be quantified and calibrated. It is important to keep track of these because this loss affects the level of the signal we detect, and, since the loss mechanisms are different for the probe and the LO, these loss mechanisms decrease the signal-to-noise ratio of our measurements which is important to quantify. In this treatment the effect of the detection inefficiencies is to simply attenuate the signal beam. Then, since the LO is not attenuated (and this is the source of shot noise) the signal-to-noise ratio is decreased.
+
+\subsection{Cavity Efficiency}
+
+Only a fraction of the intra cavity photons exit through the output port of the cavity. The rest either exit through the input port (which we do not monitor) or are lost to mirror losses such as absorption or scattering. Another way to think about this is that there is a total energy decay rate out of the cavity given by $2 \kappa$ which can be measured by, for example, measuring the cavity line width or performing a cavity ringdown measurement. Then, we can calculate how much of that rate is due to output coupling by
+
+\begin{align}
+\kappa_{out} = \frac{T_2}{T_1+T_2 + L_1 + L_2} \kappa = \epsilon_C \kappa
+\end{align}
+
+In the cavity we use for E3 we have $T_1 = 1.2 \times 10^{-6}$, $T_2 = 12 \times 10^{-6}$, $L_1 = L_2 = 12.5 \times 10^{-6}$. This gives 
+
+\begin{align}
+\epsilon_C = 0.31
+\end{align}
+
+Often we call $\epsilon_C$ the cavity detection efficiency.
+
+The total optical energy in the cavity is
+
+\begin{align}
+E_{\text{intra}} = \hbar \omega_P \bar{n} = \hbar \omega \bar{n}
+\end{align}
+
+We can then calculate the probe power exiting the cavity as
+
+\begin{align}
+P_{\text{cav}} = 2\kappa_{out} E_{\text{intra}} = 2\kappa \epsilon_C \hbar\omega \bar{n}
+\end{align}
+
+\subsection{Path Efficiency}
+
+As the photons which exit the cavity travel from the cavity to the heterodyne detector they encounter a number of optics each of which adds some loss. To determine how many photons are lost we use a power meter to measure the power just after the cavity, and just before the heterodyne detector to determine the path efficiency.
+
+\begin{align}
+\epsilon_P = \frac{P_{\text{det}}}{P_{\text{cav}}}
+\end{align}
+
+Typical values are $P_{\text{det}} = 190 \text{ nW}$ and $P_{\text{cav}} = 300 \text{ nW}$ giving
+
+\begin{align}
+\epsilon_P = 0.63
+\end{align}
+
+I'll note here that in the Skaffold script for calculating detection efficiency there is an additional detection inefficiency having to do with dichroic losses. These need to be added in because when measuring $P_{\text{cav}}$ we place the power meter after a dichroic which separates the probe light from the trap light, therefore, we need to take the losses of this element into account as well. This additional $\epsilon_{\text{dichroic}} = 0.97$ can be thought of for these purposes as being part of $\epsilon_P$. We have to measurese $P_{\text{cav}}$ after this dichroic because if we put the detector before then we will block the trap beam which is used to lock the cavity causing the cavity to fall out of lock and the probe beam to disappear.
+
+\subsection{Quantum Efficiency}
+
+The quantum efficiency has to do with the fact that only a fraction of the photons which fall on the detector are actually converted into the photoelectrons. The rest of the photons are lost. 
+
+To understand this we need to start to think about the detector a little bit. The detector consists of two photo diodes which are wired in series. A transimpedance amplifier picks off the current flowing between the two photodiodes which means that the current going through the transimpedance amplifier gives the difference of the two photocurrents. This is how a balanced photo receiver is realized. The output of the detector is then the voltage across the transimpedance amplifier. So we see there are two stages happening in the detector. The first stage, at the photodiodes, converts an incident photon field into a difference current. The transimpedance amplifier then converts the difference current into a voltage.
+
+There are two relevant numbers found on the datasheet which help to parametrize the detector. The first is the typical max responsivity.
+
+\begin{align}
+R = 0.5 \frac{\text{A}}{\text{W}}
+\end{align}
+
+Specified at $\lambda = 780 \text{ nm}$. Intuitively this is related to the number of photoelectrons produced per photon. We can perform the conversion by noting that we can divide the power in the incident beam by $\hbar \omega = \frac{2\pi \hbar c}{\lambda}$ to get a photon flux and then we can divide the photocurrent by $e$ to get an electron flux to find
+
+\begin{align}
+\epsilon_Q = R \frac{\hbar \omega}{e} &= R \frac{2\pi \hbar c}{e \lambda} = 0.8 \frac{\text{electron}}{\text{photon}} = 0.8\\
+R = \frac{e \epsilon_Q}{\hbar \omega}
+\end{align}
+
+The other important factor is the transimpedance gain. In the detector the photocurrent is immediately turned into a voltage using a transimpedance amplifier. 
+
+\begin{align}
+G_{TI}^{\infty} = 4.0 \times 10^4 \frac{\text{V}}{\text{A}}
+\end{align}
+
+Note that this is the transimpedance gain assuming the detector is plugged into a high impedance load. This is the transimpedance gain quoted on the datasheet. If instead the detector is plugged into a $50 \Omega$ load then the measured voltage would be half the value for the high impedance load. We can assimilate this factor of two into a new transimpedance gain specialized for the impedance matched (rather than high impedance) scope, $G_{TI}^{50} = \frac{1}{2} G_{TI}^{\infty}$
+
+I'll note that there is an additional quantity on the datasheet called the conversion gain, $G_{\text{conv}}$ expressed in units of $\frac{\text{V}}{\text{W}}$. We have $G_{\text{conv}} = G_{TI}^{\infty} R = 2.0 \times 10^4 \frac{\text{V}}{\text{W}}$. In Skaffold this conversion gain is referred to as the transimpedance gain and is given the value (presumably measured as follows) of $2.88 \times 10^4 \frac{\text{V}}{\text{W}}$ 
+
+\begin{align}
+G_{\text{conv}} = R G_{TI}^{\infty} &= \frac{V_{\text{meas}}}{P_{\text{det}}}
+\end{align}
+
+Where $V_{\text{meas}}$ is the voltage measured on the high impedance scope when $P_{\text{det}}$ is incident on the detector. Note that this simple measurement provides a calibration of $G_{\text{conv}}$ but does not give an independent measurement or calibration of $R$ or $G_{TI}^{\infty}$. In the section below I will give one possible way to measure $R$ and later I will give another possible way to measure $R$.
+
+\subsubsection{First Measurement of $R$}
+Jonathan realized that, since the shot noise and carrier signal scale differently with $\epsilon_Q$, or $R$, we could look at the ratio of these two features to perform an independent calibration of our detector quantum efficiency. For a single beam of constant intensity on a photodiode measured on a high impedance scope we have
+
+\begin{align}
+V(t) = G_{TI}^{\infty} e \epsilon_Q \bar{n}_{\text{det}} = G_{TI}^{\infty} \frac{e \epsilon_Q}{\hbar \omega} \hbar \omega \bar{n}_{\text{det}} = G_{TI}^{\infty} R P_{\text{det}}
+\end{align}
+
+Where $\bar{n}$ is the photon flux. The power spectrum of this signal would be (from the photodetection write up for direct detection)
+
+\begin{align}
+S_{VV}(f) = {G_{TI}^{\infty}}^2 e^2 \epsilon_Q^2 \bar{n}^2\delta(f) + {G_{TI}^{\infty}}^2 e^2 \epsilon_Q \bar{n}
+\end{align}
+
+We can rewrite this in terms of power as above using $P_{\text{det}} = \hbar \omega \bar{n}$
+
+\begin{align}
+S_{VV}(f) &= {G_{TI}^{\infty}}^2 \frac{e^2}{\hbar^2 \omega^2} \epsilon_Q^2 P_{\text{det}}^2\delta(f) + {G_{TI}^{\infty}}^2 e \frac{e}{\hbar \omega} \epsilon_Q P_{\text{det}}\\
+&= {G_{TI}^{\infty}}^2 R^2 P_{\text{det}}^2 \delta(f) + {G_{TI}^{\infty}}^2 R e P_{\text{det}}\\
+&= G_{\text{conv}}^2 P_{\text{det}}^2 \delta(f) + G_{\text{conv}}^2 \frac{e}{R} P_{\text{det}}
+\end{align}
+
+We see then that the shot noise level is given by
+
+\begin{align}
+S^{\text{SN}}_{VV} = G_{\text{conv}}^2 \frac{e}{R}P_{\text{det}}
+\end{align}
+
+So by measuring the shot noise level (perhaps by integrating in a frequency band away from the signal with bandwidth $\lambda$ and averaging) we can calculate
+
+\begin{align}
+R = G_{\text{conv}}^2 e P_{\text{det}} \frac{1}{S^{\text{SN}}_{VV}}
+\end{align}
+
+In E3 I don't know if we can perform this measurement with direct detection on the photodiode since they have a very small dynamic range when not operated in difference mode. However, if we assume $R$ is the same for both photodiodes then later in this write up I will show how we can do a very similar calibration using the Skaffold traces.
+
+\subsection{Mode Matching Efficiency}
+
+The mode-matching efficiency has to do with the fact that the LO and the probe are not perfectly overlapped. This means that only a fraction of the power of the signal interferes with the LO and thus gets mixed down to the IF band where we can detect it. The rest of the signal is lost. The details of the math are outlined in the photodetection write up. Here I'll derive how we can calibrate this by using a spectrum analyzer to measure the RMS voltage in the beatnote coming out of the heterodyne detector on a spectrum analyzer. For a constant signal beam transmitting through the cavity measured on an impedance matched detector (note I'm dropping a possible LO phase but that won't matter when we take the RMS) we have
+
+\begin{align}
+V(t) = G_{TI}^{50} A \cos(\Delta_{LO} t) \bar{X} = G_{TI}^{50} e \sqrt{2\kappa} \sqrt{\epsilon_C \epsilon_P \epsilon_{MM}} \epsilon_Q 2\sqrt{\bar{n}} |\alpha| \cos\left(\Delta_{LO}t\right)
+\end{align}
+
+Note the detector used here, the spectrum analyzer, has impedance of $50 \Omega$ so we use $G_{TI}^{50}$.
+
+But we have that 
+\begin{align}
+\sqrt{P_{\text{det}}} &= \sqrt{\hbar \omega} \sqrt{2\kappa} \sqrt{\epsilon_C \epsilon_P} \bar{n}\\
+\sqrt{P_{\text{LO}}} &= \sqrt{\hbar \omega} |\alpha|
+\end{align}
+
+So we can write
+
+\begin{align}
+V(t) &= G_{TI}^{50} \frac{e}{\hbar \omega}\epsilon_Q 2 \sqrt{P_{\text{det}} P_{\text{LO}}} \sqrt{\epsilon_{MM}}\cos(\Delta_{LO} t)\\
+&= 2 G_{TI}^{50} R \sqrt{P_{\text{det}}P_{LO}} \sqrt{\epsilon_{MM}} \cos(\Delta_{LO} t)
+\end{align}
+
+We then take the RMS noting that the RMS value of a $\cos$ is $\frac{1}{\sqrt{2}}$ and get
+
+\begin{align}
+V_{\text{RMS}} = G_{TI}^{50}R \sqrt{2} \sqrt{P_{\text{det}} P_{\text{LO}}} \sqrt{\epsilon_{MM}}
+\end{align}
+
+We can then solve for $\epsilon_{MM}$.
+
+\begin{align}
+\epsilon_{MM} = \frac{V_{\text{RMS}}^2}{{G_{TI}^{50}}^2 R^2 2 P_{\text{det}}P_{\text{LO}}} = \frac{2  V_{\text{RMS}}^2}{{G_{TI}^{\infty}}^2 R^2 P_{\text{det}}P_{\text{LO}}} = \frac{2 V_{\text{beat}}^2}{G_{\text{conv}}^2 P_{\text{det}} P_{\text{LO}}}
+\end{align}
+
+In agreement with the skaffold script.
+
+Typical values are $V_{\text{beat}} = V_{\text{RMS}} = 250 \text{ mV}$, $P_{\text{LO}} = 1 \text{ mW}$ and $P_{\text{det}} = 190 \text{ nW}$. Plugging this all in gives
+
+\begin{align}
+\epsilon_{MM} = 0.79
+\end{align}
+
+\subsection{All Detection Efficiencies}
+
+We can now put together all of these detection efficiencies. Our example was
+
+\begin{align}
+P_{\text{cav}} &=300 \text{ nW}\\
+P_{\text{det}} &= 190 \text{ nW}\\
+P_{\text{LO}} &= 1 \text{ mW}\\
+V_{\text{beat}}&= 250 \text{ mV}
+\end{align}
+
+Which led to
+
+\begin{align}
+\epsilon_P &= 0.63\\
+\epsilon_{MM} &= 0.79\\
+\end{align}
+
+We also have the inefficiencies
+
+\begin{align}
+\epsilon_C &= 0.31\\
+\epsilon_Q &= 0.8\\
+\epsilon_{DC} &= 0.97
+\end{align}
+
+Where $\epsilon_{DC}$ is losses due to the dichroic that splits off the ODT from the probe. I don't know exactly how these dichroic losses may have been calibrated but for our purposes the dichroic losses can be rolled into the path efficiency so that $\epsilon_P \rightarrow \epsilon_P \epsilon_{DC}$. We can then work out the total detection efficiency
+
+\begin{align}
+\epsilon_{\text{det}} = \epsilon_C \epsilon_P \epsilon_{MM} \epsilon_Q
+\end{align}
+
+Which comes out to
+
+\begin{align}
+\epsilon = \epsilon_{\text{det,homo}} = 0.12
+\end{align}
+
+This is what we refer to as the homodyne detection efficiency in E3. The heterodyne detection efficiency which is calculated and reported and used in Skaffold is the same but with a factor of $\frac{1}{2}$.
+
+\begin{align}
+\epsilon_{\text{det}} = \epsilon_{\text{det,het}} = \frac{1}{2} \epsilon_{\text{det,homo}}
+\end{align}
+
+With this we can rewrite
+
+\begin{align}
+A = e \sqrt{2\kappa} \sqrt{\epsilon} \sqrt{\epsilon_Q} \lvert \alpha \rvert
+\end{align}
+
+\section{GageScope signal}
+
+In this section I'll take a moment to discuss the effect the detection chain has on the signal which is measured and recorded in Skaffold. Up until now I have assumed the detector is either plugged directly into a high impedance detector or an impedance matched detector such as the spectrum analyzer. However, in reality the detector chain is: Optical field $\rightarrow$ Balanced heterodyne detector $\rightarrow$ bias T $\rightarrow$ low pass filter $\rightarrow$ RF amplifier $\rightarrow$ power splitter $\rightarrow$ GageScope. The RF amplifier has a $50 \Omega$ input impedance so we will use $G_{TI}^{50}$, however, GageScope is configured is configured in high impedance mode so we will need to take this into consideration when determining the output of the amplifier.
+
+\begin{align}
+V(t) = G_{TI}^{50} i(t)
+\end{align}
+
+Where $i(t)$ is the random variable showing up in the introduction of this document. It is the photocurrent induced by the optical field. Note that $i(t)$ already takes into account the quantum efficiency so we don't see a factor of $R$ is this formula.
+
+The question then is how the detection chain modifies this formula. The amplifier is a mini-circuits amplifier and their documentation indicates that the quoted gain is the insertion gain and represents the increase in power if the amplifier is placed between a $50 \Omega$ source and $50 \Omega$ load. Our amplifier, ZHL-1-2W-S, is quoted as having $G_{\text{log}}$ =  29 dB to 33 dB gain. In Skaffold it is indicated that our gain is $G_{\text{log}} = 30.1 \text{ dB}$. In non-logarithmic units the gain of our amplifier is 
+
+\begin{align}
+G^{50}_{\text{amp}} = G_{\text{amp}} = 10^{\frac{G_{\text{log}}}{20}}
+\end{align}
+
+To determine the GageScope signal we multiply $V(t)$ by this amplifier gain, but we must multiply by an additional factor of 2 to account for the fact that GageScope is configured in high impedance mode.
+
+\begin{align}
+V_{GS}(t) = 2 G^{50}_{\text{amp}} G_{TI}^{50} i(t) =  G^{50}_{\text{amp}}G_{TI}^{\infty} i(t) = G^{\infty}_{\text{amp}}G_{TI}^{50} i(t)
+\end{align}
+
+So we see that we can absorb the factor of two into either the gain of the amplifier or the transimpedance gain. It doesn't make a difference.
+
+Note of confusion: There's also a power splitter in the path before GageScope where some power is picked off and sent to the sidelock box which should also be high impedance. This means from the amplifier's point of view it still sees a high impedance load. The power splitter then should feed the same voltage to both gagescope and the sidelock box.
+
+From above we can work out a few more expression that we may measure assuming a constant static probe field.
+
+\begin{align}
+\Braket{V_{GS}(t)} &= G_{\text{amp}} G_{TI}^{\infty} \Braket{i(t)} =  G_{\text{amp}}G_{TI}^{\infty} e \sqrt{2\kappa}\sqrt{\epsilon_C\epsilon_P\epsilon_{MM}} \epsilon_Q \lvert \alpha \rvert 2 \sqrt{\bar{n}} \cos\left(\Delta_{LO}t\right)\\
+&= 2G_{\text{amp}}G_{TI}^{\infty}R \sqrt{\epsilon_{MM}} \sqrt{P_{\text{LO}}}\sqrt{P_{\text{det}}} \cos\left(\Delta_{LO}t\right)\\
+&= 2G_{\text{amp}} G_{\text{conv}} \sqrt{\epsilon_{MM}} \sqrt{P_{\text{LO}}P_{\text{det}}} \cos\left(\Delta_{LO} t\right)
+\end{align}
+
+Note that I have given procedures to calibrate all of the terms above except $G_{\text{amp}}$. This means that a measurement of this quantity can be considered a calibration of $G_{\text{amp}}$.
+
+Next I'll write down the autocorrelation function for the Gagescope signal. However, there's a little bit of a confusing subtlety which is addressed in the Normal Ordered Heterodyne write-up. The subtlety is that the heterodyne autocorrelation function is not strictly stationary. There are counter-rotating terms. However, for practical purposes, these counter-rotating terms can be neglected when calculating quantities like the power spectral density. If these counter-rotating terms are dropped then the heterodyne autocorrelation function can be considered to be stationary and the Wiener-Khintchine theorem can apply. Here is the auto-correlation function after making this approximation for the case of a monotonic probe.
+
+\begin{align}
+\Braket{i(\tau)i(0)} &= \frac{A^2}{2} \bar{X}^2 \cos\left(\Delta_{LO}\tau\right) + B^2 \delta(\tau) =2A^2\bar{n}\cos\left(\Delta_{LO}\tau\right) + B^2 \delta(\tau)\\
+&= 2 e^2 2\kappa \epsilon_C \epsilon_P \epsilon_{MM} \epsilon_Q^2 \lvert \alpha \rvert^2 \bar{n}\cos\left(\Delta_{LO}\tau\right) + e^2 \epsilon_Q \lvert \alpha \rvert^2 \delta(\tau)
+\end{align}
+
+Multiplying by $\left(G_{\text{amp}}G_{TI}^{\infty}\right)^2$ to get $\Braket{V_{GS}(\tau)V_{GS}(0)}$
+
+\begin{align}
+&\Braket{V_{GS}(\tau)V_{GS}(0)} =\\
+& G_{\text{amp}}^2 {G_{TI}^{\infty}}^2 R^2 2 \epsilon_{MM} P_{\text{LO}}P_{\text{det}}\cos\left(\Delta_{LO}\tau\right) + G_{\text{amp}}^2 {G_{TI}^{\infty}}^2 R e P_{\text{LO}}\delta(\tau)\\
+=&2G_{\text{amp}}^2G_{\text{conv}}^2 \epsilon_{MM} P_{\text{LO}}P_{\text{det}} \cos\left(\Delta_{LO}\tau\right) + G_{\text{amp}}^2G_{\text{conv}}^2\frac{e}{R}P_{\text{LO}}\delta(\tau)
+\end{align}
+
+From this we can calculate the power spectral density by taking the Fourier Transform and we find
+
+\begin{align}
+&S_{V_{GS}V_{GS}}(f) =\\
+&G_{\text{amp}}^2G_{\text{conv}}^2 \epsilon_{MM} P_{\text{LO}}P_{\text{det}} \left(\delta\left(f-\frac{\Delta_{LO}}{2\pi}\right) + \delta\left(f+\frac{\Delta_{LO}}{2\pi}\right)\right) + G_{\text{amp}}^2G_{\text{conv}}^2\frac{e}{R}P_{\text{LO}}
+\end{align}
+
+We can calculate the shot noise level by averaging the power spectral density in a band where the is no signal and calculate
+
+\begin{align}
+S_{V_{GS}V_{GS}}^{\text{SN}} = G_{\text{amp}}^2 G_{\text{conv}}^2 \frac{e}{R} P_{\text{LO}}
+\end{align}
+
+\begin{align}
+R = G_{\text{amp}}^2 G_{\text{conv}}^2 e \frac{P_{LO}}{S_{V_{GS}V_{GS}}^{\text{SN}}}
+\end{align}
+
+This is the second method to calibrate $R$.
+
+\subsection{Rescaled Gagescope Signal}
+
+In Skaffold we rescale the signal so that we can think of it in units of optical power. To accomplish this we take the raw GageScope signal and divide it by $G_{\text{amp}}G_{\text{conv}}$ to extract
+
+\begin{align}
+S_{\text{ska}}(t) = \frac{1}{G_{\text{amp}}G_{\text{conv}}} V_{GS}(t)
+\end{align}
+
+This gives us
+
+\begin{align}
+\Braket{S_{\text{ska}}(t)} &= 2 \sqrt{\epsilon_{MM}} \sqrt{P_{\text{LO}}P_{\text{det}}} \cos\left(\Delta_{LO} t\right)\\
+S_{S_{\text{ska}}S_{\text{ska}}}(f) &= \epsilon_{MM}P_{\text{LO}}P_{\text{det}}\left(\delta\left(f-\frac{\Delta_{LO}}{2\pi}\right) + \delta\left(f+\frac{\Delta_{LO}}{2\pi}\right)\right) + \frac{e}{R}P_{\text{LO}}\\
+R &= e \frac{P_{\text{LO}}}{S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}}
+\end{align}
+
+Here we have calculated
+
+\begin{align}
+S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}} = \frac{e}{R}P_{\text{LO}} = \frac{1}{\epsilon_Q} \hbar \omega P_{\text{LO}}
+\end{align}
+
+This is the expected shot noise level as reported in Skaffold. If we plug in $P_{\text{LO}} = 1 \text{mW}$ we get
+
+\begin{align}
+S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}} = 3.2 \times 10^{-22} \frac{\text{W}^2}{\text{Hz}}
+\end{align}
+
+I have compared this with spectra calculated in skaffold. The measured spectra have shot noise levels of $4-4.5 \times 10^{-22} \frac{\text{W}^2}{\text{Hz}}$. The theoretical prediction is off by $25-30\%$. There are a lot of links in the chain where this discrepancy could have occurred. I don't know how many of the quantities in Skaffold were calibrated (such as $G_{\text{conv}}$, called the transimpedance gain in Skaffold or the quantum efficiency, $\epsilon_Q$).
+
+However, I don't think $S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}$ is the quantity which is often called $S_{\text{SN}}$ in other E3 literature. The quantity which often appears as $S_{\text{SN}}$ is
+
+\begin{align}
+S_{\text{SN}} = \hbar \omega P_{\text{LO}}
+\end{align}
+
+This differs from the Skaffold shot noise level by a factor of $\epsilon_Q$. 
+We could define
+
+\begin{align}
+S_{\text{t}} = \sqrt{\epsilon_Q} S_{\text{ska}}
+\end{align}
+
+so that
+
+\begin{align}
+\Braket{S_t(t)} &= 2 \sqrt{\epsilon_Q}\sqrt{\epsilon_{MM}} \sqrt{P_{\text{LO}}P_{\text{det}}} \cos\left(\Delta_{LO} t\right)\\
+S_{S_tS_t}(f) &= \epsilon_Q \epsilon_{MM}P_{\text{LO}}P_{\text{det}}\left(\delta\left(f-\frac{\Delta_{LO}}{2\pi}\right) + \delta\left(f+\frac{\Delta_{LO}}{2\pi}\right)\right) + \hbar \omega P_{\text{LO}}\\
+\end{align}
+
+Where the last term is $S_{\text{SN}}$. These two different definitions of our ``signal'', $S_{\text{ska}}(t)$ and $S_t(t)$ both make sense for different reasons.
+
+$S_{\text{ska}}(t)$ makes sense because it takes the measured photovoltage and divides it by the detector conversion gain, $G_{\text{conv}} = G_{TI}^{\infty} R$ measured in $\frac{\text{V}}{\text{W}}$. It converts a measured voltage to a (mode-matched) probe power incident on the detector. In this case the first term, the signal term, has no dependence on quantum efficiency, however, we see that as quantum efficiency drops the second term (the noise term), $S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}$ increases. Thus as quantum efficiency falls the signal-to-noise ratio decreases.
+
+$S_t(t)$ makes sense because it reports a fixed noise level, $S_{\text{SN}} = \hbar \omega P_{\text{LO}}$ which is directly proportional to the incident LO power which does not depend on quantum efficiency. In this signal, it is the first term, the signal term, which depends on quantum efficiency. Instead of being interpreted as the probe power incident on the detector, the first term here can be though of as arising form the \textit{detected} probe power. Hence the factor of $\epsilon_Q$.  As the quantum efficiency falls the amplitude of the signal term drops. Again, we see that higher quantum efficiency leads to high signal-to-noise.
+
+Since many of the results I've calculated elsewhere are expressed in terms of the photocurrent I will report
+
+\begin{align}
+S_{\text{ska}}(t) = \frac{1}{G_{\text{amp}}G_{\text{conv}}} V_{GS}(t) = \frac{G_{\text{amp}}G_{TI}^{\infty}}{G_{\text{amp}}G_{\text{conv}}} i(t) = \frac{i(t)}{R} = \frac{\hbar \omega}{e \epsilon_Q} i(t)
+\end{align}
+
+Similarly
+
+\begin{align}
+S_t(t) = \sqrt{\epsilon_Q} S_{\text{ska}}(t) = \frac{\sqrt{\epsilon_Q}}{R}i(t) = \frac{\hbar \omega}{e \sqrt{\epsilon_Q}} i(t)
+\end{align}
+
+
+
+
+
+\section{Intracavity photon number}
+
+Above I used the power spectral density with a known $P_{\text{det}}$ to calibrate $R$. Instead, if all quantities are already calibrated but we don't know $P_{\text{det}}$ (because an experiment is running and we can't stick a power meter in the beam path, for example) we can use the power spectral density to calibrate intracavity photon number.
+
+An old technique to calculate the intracavity photon number looked at the peak power of the carrier. I tried to work out how this function would work but it seems to depend on the total integration time as well as the shape of the carrier peak. Furthermore, practically speaking, there was a lot of uncertainty over the peak power due to the digitization of the signal. That is, the power could appear in any number of a few pixels near the maximum so we started summing over a few pixels to make sure we captured all of the power. In the end it makes more sense to just integrate over many pixels and measure the total power in the peak making sure to account for the shot noise power you are also adding up.
+
+To perform the calibration we want to compare the power in the peak to the shot noise level (note that the power in the peak is units of $\text{W}^2$ whereas the shot noise level is units of $\frac{\text{W}^2}{\text{Hz}}$ so there must also be a frequency scale involved in the comparison). To accomplish this we will integrate the power in the peak over some bandwidth $\lambda$ and measure the shot noise power in an equivalent bandwidth away from the signal. Working with $S_{S_{\text{ska}}S_{\text{ska}}}(f)$
+
+\begin{align}
+P_C &= \epsilon_{MM} P_{\text{LO}}P_{\text{det}} + \frac{e}{R} P_{\text{LO}} \lambda\\
+P_{\text{SN}} &= S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}} \lambda = \frac{e}{R}P_{\text{LO}} \lambda
+\end{align}
+
+We can then calculate
+
+\begin{align}
+\frac{P_C - P_{\text{SN}}}{P_{\text{SN}}} &= \epsilon_{MM} \frac{R}{\lambda e}P_{\text{det}} = 2\kappa \epsilon_C \epsilon_P \epsilon_{MM} \hbar \omega \frac{R}{e} \frac{1}{\lambda} \bar{n}\\ 
+&= \frac{2 \kappa}{\lambda} \epsilon_C \epsilon_P \epsilon_{MM} \epsilon_Q \bar{n} = \frac{2 \kappa}{\lambda} \epsilon \bar{n}
+\end{align}
+
+So we get that
+
+\begin{align}
+\bar{n} = \frac{P_C - P_{\text{SN}}}{P_{\text{SN}}} \frac{\lambda}{2\kappa \epsilon} = \left(\frac{P_C}{S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}} - \lambda \right) \frac{1}{2\kappa \epsilon}
+\end{align}
+
+A good advantage of this approach is that it doesn't rely on any details about the carrier peak such as its shape or discretization details and it doesn't depend on the total integration time over which the power spectral density is calculated (assuming that time is sufficiently long). It only depends on the bandwidths used to estimate the power in the peak and the shot noise level.
+
+This is the approach implemented in Skaffold now. The difference is that in Skaffold the integration is implemented as summation so the horizontal axis scale has to be put in by hand as $\Delta_f$ where $\Delta_f$ is the spacing between data points in the spectrum. We then have $P_C = \tilde{P}_C \Delta_f$ and $\lambda = N_{\lambda}\Delta_f$ where $\tilde{P}_C$ is the summed carrier power and $N_{\lambda}$ is the number of data points over which the sum is carried. $\kappa$ is also entered into Skaffold in cyclic rather than angular units so we introduce $f_{\kappa} = \frac{\kappa}{2\pi}$. We get
+
+\begin{align}
+\bar{n} = \left(\frac{\tilde{P}_C}{S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}} - N_{\lambda}\right)\frac{\Delta_f}{4\pi f_{\kappa} \epsilon} = \left(\frac{\tilde{P}_C}{S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}} - N_{\lambda}\right)\frac{\Delta_f}{8\pi f_{\kappa} \epsilon_{\text{det}}}
+\end{align}
+
+Where we recall that the heterodyne detection efficiency, $\epsilon_{\text{det}}$ is twice the homodyne detection efficiency, $\epsilon$. This agrees with the Skaffold expression.
+
+Here $S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}}$ is calculated as
+
+\begin{align}
+S_{S_{\text{ska}}S_{\text{ska}}}^{\text{SN}} = \frac{P_{\text{SN}}}{\lambda} = \frac{\tilde{P}_{\text{SN}} \Delta f}{N_{\lambda} \Delta f} = \frac{\tilde{P}_{\text{SN}}}{N_{\lambda}}
+\end{align}
+
+That is, the shot noise level is estimated by averaging the power spectral density in a number $N_{\lambda}$ of frequency bins.
+
+\subsection{Probe Detuning}
+
+In addition to the central carrier tone the we also use an EO to modulate sidebands onto the probe. The sidebands transmit through the cavity and are attenuated differently depending on the detuning of the central peak, $\Delta_{PC}$. By looking at the ratio of the powers in the transmitted sidebands we can determine the cavity detuning.
+
+The transmitted power goes like
+
+\begin{align}
+T(\Delta_{PC}) = \frac{1}{\kappa^2 + \Delta_{PC}^2}
+\end{align}
+
+If the sidebands are modulated on at frequency $\omega_{mod} = 2\pi f_{mod}$ then
+
+\begin{align}
+P_{\text{blue}} &\sim \frac{1}{\kappa^2 + (\Delta_{PC}+\omega_{mod})^2}\\
+P_{\text{red}} &\sim \frac{1}{\kappa^2 + (\Delta_{PC}-\omega_{mod})^2}\\
+\end{align}
+
+We calculate
+
+\begin{align}
+r &= \frac{P_{\text{blue}} - P_{\text{red}}}{P_{\text{blue}} + P_{\text{red}}} = \frac{\kappa^2+(\Delta_{PC}-\omega_{mod})^2 - \kappa^2-(\Delta_{PC}+\omega_{mod})^2}{2(\kappa^2+(\Delta_{PC}-\omega_{mod})^2 + \kappa^2+(\Delta_{PC}+\omega_{mod})^2)}\\
+& = \frac{-4\Delta_{PC}\omega_{mod}}{\kappa^2+\Delta_{PC}^2+\omega_{mod}^2}
+\end{align}
+
+\begin{align}
+2r\Delta_{PC}^2 + 4\omega_{mod}\Delta_{PC} + 2r(\kappa^2+\omega_{mod}^2) = 0 
+\end{align}
+
+\begin{align}
+\Delta_{PC} &= \frac{-4\omega_{mod} \pm \sqrt{16\omega_{mod}^2 - 16r^2(\kappa^2+\omega_{mod}^2)}}{4r}\\
+&= \frac{1}{r}\left(-\omega_{mod} \pm \sqrt{\omega_{mod}^2 - r^2(\omega_{mod}^2+\kappa^2)}\right)
+\end{align}
+
+Which is the formula that appears in the Skaffold script. The power in the EO sidebands can be found either by 1) windowing the signal in time, taking the power spectral density, and integrating the peaks or 2) demodulating the signal at the frequency of the EO sidebands and squaring.
+
+An additional phase sensitive technique could be implemented by looking at the transmitted amplitudes and phases rather than just the power, however, this would necessitate knowledge of the relative phase of the EO sidebands which we could in principle access but don't currently have the hardware configured to extract this information.
+
+
+\end{document}

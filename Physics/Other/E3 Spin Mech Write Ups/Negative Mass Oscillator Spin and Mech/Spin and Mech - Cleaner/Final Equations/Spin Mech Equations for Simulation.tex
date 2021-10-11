@@ -1,0 +1,46 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\begin{document}
+\title{Spin Mech Equations for Simulations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+$a$ is the spin oscillator, $b$ is the mechanical oscillator, $c$ is the cavity field. $\gamma$ is $+1$ if the spin is spin down (positive mass), and $-1$ if the spin is spin up (negative mass).
+The Linearized equations of motion are
+
+\begin{align*}
+\dot{\hat{X}}_a &= +\gamma \omega_a \hat{P}_a -\frac{\Gamma_a}{2} \hat{X}_a + \sqrt{\Gamma_a}\hat{X}_a^{\text{in}}\\
+\dot{\hat{P}}_a &= -\gamma \omega_a \hat{X}_a -\frac{\Gamma_a}{2} \hat{P}_a + 2 G_a \hat{X}_c + 2G_{\text{stat}}\hat{X}_b + \sqrt{\Gamma_a}\hat{P}_a^{\text{in}}\\
+\dot{\hat{X}}_b &= +\omega_b \hat{P}_b -\frac{\Gamma_b}{2} \hat{X}_b + \sqrt{\Gamma_b}\hat{X}_b^{\text{in}}\\
+\dot{\hat{P}}_b &= -\omega_b \hat{X}_b -\frac{\Gamma_b}{2} \hat{P}_b + 2 G_b \hat{X}_c + 2G_{\text{stat}}\hat{X}_a + \sqrt{\Gamma_b}\hat{P}_b^{\text{in}}\\
+\dot{\hat{X}}_c &= -\tilde{\Delta}_{PC} \hat{P}_c - \kappa \hat{X}_c + \sqrt{2\kappa}\hat{X}_c^{\text{in}}\\
+\dot{\hat{P}}_c &= +\tilde{\Delta}_{PC} \hat{X}_c - \kappa \hat{P}_c + 2 G_a \hat{X}_a + 2 G_b \hat{X}_b + \sqrt{2\kappa}\hat{P}_c^{\text{in}}\\
+\end{align*}
+
+Here I take $\hat{X}_{\alpha} = \hat{\alpha}^{\dag}+\hat{\alpha} = 2 \text{Re}(\hat{\alpha})$ and $\hat{P}_{\alpha} = i(\hat{a}^{\dagger}-\hat{a})= 2\text{Im}(\alpha)$ for all oscillators including the cavity field.
+
+\begin{align}
+G_a &= -\gamma \sqrt{\bar{n}} g_a\\
+g_a &= g_c \frac{\nu}{2} \sqrt{\frac{S}{2}}\\
+G_b &= -\beta \sqrt{\bar{n}} g_b\\
+g_b &= \xi g_c N_a k_p Z_{CM,HO}\\
+G_{\text{stat}} &= -\gamma \beta \bar{n} g_{stat}\\
+g_{\text{stat}} &= \nu g_c k_p Z_{CM,HO} \sqrt{\frac{S}{2}}
+\end{align}
+
+\end{document}

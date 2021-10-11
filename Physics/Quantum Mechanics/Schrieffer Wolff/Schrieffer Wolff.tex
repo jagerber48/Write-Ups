@@ -1,0 +1,615 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Schrieffer-Wolff Transformation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this article I will follow ``Schrieffer-Wolff transformation for quantum many-body systems'' by Bravyi et. al. in deriving the form for the effective Hamiltonian arising from the Schrieffer-Wolff transform.
+
+Suppose we are given a Hamiltonian 
+
+\begin{align}
+H = H_0 + \epsilon V
+\end{align}
+
+Where $H_0$ is a solved Hamiltonian whose eigenvalues and eigenvectors are known. Suppose also that there is a `gap' in the spectrum for $H_0$. That is, we can partition the spectrum into two groups such that the spacing between any two eigenvalues within one group is bounded above by $|\delta|$ and the spacing between any two eigenvalues between the two groups is bounded below by $|\Delta|$ and we have that $|\Delta| \gg |\delta|$.
+
+The presence of $V$ will modify the dynamics of the system, but if $||V|| \ll |\Delta|$ we should expect that 1) the eigenvalues will not move appreciably and 2) there will not be strong mixing between the two subspaces. However, the presence of $V$ can introduce new couplings between states within a subspace via virtual (off-resonant) transitions to the excited state. These dynamics should be captured by an effective Hamiltonian.
+
+The Schrieffer-Wolff transformation captures this effective Hamiltonian in the following way.
+Let the total Hilbert space be $\mathcal{H}$. Call $\mathcal{P}_0 \subset
+\mathcal{H}$ the lower energy subspace and $\mathcal{Q}_0 \subset \mathcal{H}$ the high energy subspace. $\mathcal{P}_0$ is spanned by the low energy eigenvectors of $H_0$ and $\mathcal{Q}_0$ is spanned by the high energy eigenvectors of $H_0$.
+
+Similarly, consider $\mathcal{P}$ and $\mathcal{Q}$ which are spanned respectively by the low and high energy eigenvectors of the full Hamiltonian $H=H_0+V$.
+
+Suppose $P_0$ and $Q_0$ are the projectors onto $\mathcal{P}_0$ and $\mathcal{Q}_0$ and $P$ and $Q$ are the projectors onto $\mathcal{P}$ and $\mathcal{Q}$. The Bravyi paper indicates the existence of a unitary transformation $U$ which efficiently rotates the $\mathcal{P}$ and $\mathcal{Q}$ subspaces onto the $\mathcal{P}_0$ and $\mathcal{Q}_0$ subspaces. In addition this Unitary transformation can be written as $e^S$ where $S$ is a unique anti-hermitian operator which is block-off-diagonal in the unperturbed eigenbasis.
+
+In symbols we have
+
+\begin{equation}
+\begin{split}
+UPU^{\dag} &= P_0\\
+UQU^{\dag} &= Q_0
+\end{split}
+\end{equation}
+
+$H$ is block diagonal in $P$ and $Q$.
+
+\begin{equation}
+\begin{split}
+H &= PHP + QHQ\\
+\end{split}
+\end{equation}
+
+Define $H' = UHU^{\dag}$, thinking of $U$ as a change of basis.
+
+\begin{equation}
+\begin{aligned}
+UHU^{\dag} &= UPU^{\dag}UHU^{\dag}UPU^{\dag} + UQU^{\dag}UHU^{\dag}UQU^{\dag}\\
+H' &= P_0 H' P_0 + Q_0 H' Q_0
+\end{aligned}
+\end{equation}
+
+So we see $H' = UHU^{\dag}$ is block diagonal in $P_0$ and $Q_0$.
+
+We define the low energy effective Hamiltonian by projecting $H'$ into the low energy subspace:
+
+\begin{equation}
+H_{eff} = P_0H'P_0 = P_0 U H U^{\dag} P_0 = P_0 U(H_0+\epsilon V) U^{\dag} P_0
+\end{equation}
+
+The beauty of this transformation is that 1) since it is unitary it preserves the eigenvalues of the full Hamiltonian $H$ but 2) since it is block-diagonal in the different subspaces it has a nice interpretation as an effective Hamiltonian in those subspaces. Note that $U$ does not fully diagonalize the Hamiltonian.
+
+The goal moving forward is to find a perturbative expansion for the operator $U$ which can be used for calculations.
+
+\section{Perturbative Expansion}
+
+I'll follow Bravyi almost exactly. Define $\mathcal{O}:\mathbb{L}(\mathcal{H}) \rightarrow \mathbb{L}(\mathcal{H})$ by 
+
+\begin{align}
+\mathcal{O}(X) &= P_0 X Q_0 + Q_0 X P_0\\
+\mathcal{D}(X) &= P_0 X P_0 + Q_0 X Q_0
+\end{align}
+
+$\mathcal{O}(X)$ makes $X$ block off-diagonal and $\mathcal{D}(X)$ makes $X$ block-diagonal.
+
+Decompose 
+
+\begin{align}
+V = V_d + V_{od} = \mathcal{D}(V) + \mathcal{O}(V)
+\end{align}
+
+Define notation for any $Y \in \mathbb{L}(\mathcal{H})$
+
+\begin{align}
+\hat{Y}(X) = \hat{Y}X = \text{ad}_Y(X) = [Y,X]
+\end{align}
+
+Note that $\hat{Y}:\mathbb{L}(\mathcal{H})\rightarrow\mathbb{L}(\mathcal{H})$.
+
+The unitary transformation $U$ can be written as
+
+\begin{align}
+U = \exp(S)
+\end{align}
+
+with $S$ anti-Hermitian and block off-diagonal. We write
+
+\begin{align}
+H' &= e^S H e^{-S} = \text{Ad}_{\exp(S)}(H) = \exp(\text{ad}_S) H = \exp(\hat{S})H\\
+&= \exp(\hat{S}) (H_0 + \epsilon V)
+\end{align}
+
+We note that we can expand
+
+\begin{align}
+\exp(\hat{S}) = \cosh(\hat{S}) + \sinh(\hat{S})
+\end{align}
+
+so that
+
+\begin{align}
+H' = \cosh(\hat{S})(H_0 + \epsilon V_d) + \sinh(\hat{S})(\epsilon V_{od}) + \sinh(\hat{S})(H_0+ \epsilon V_d) + \cosh(\hat{S})(\epsilon V_{od})
+\end{align}
+
+Note that the product of two block diagonal or two block off-diagonal operators is block diagonal while the product of a block diagonal and block off diagonal operator is block off diagonal. Since $S$ is block off-diagonal we have that $\cosh(\hat{S})$ (sums of even powers of $\hat{S}$) is acts like a block-diagonal operator when applied to another operator and $\sinh(\hat{S})$ (sums of odd powers of $\hat{S}$) acts like a block off-diagonal operator when acted on another operator. Because of this we conclude that the first two terms above are block diagonal while the second two are block off-diagonal.
+
+Above we claimed that $H'=UHU^{\dag}$ is block diagonal so this means the second two terms in the above equation must sum to zero.
+
+\begin{align}
+\sinh(\hat{S})(H_0+\epsilon V_d) + \cosh(\hat{S})(\epsilon V_{od}) = 0
+\end{align}
+
+We now play some crazy games with operators. This is justified because $S$ is in some sense a small operator. To that end we have
+
+\begin{align}
+\tanh(\hat{S})(H_0 + \epsilon V_d) + \epsilon V_{od} = 0
+\end{align}
+
+\begin{equation}
+\begin{split}
+H' &= \cosh(\hat{S})(H_0 + \epsilon V_d) + \sinh(\hat{S})(\epsilon V_{od})\\
+&= H_0 + \epsilon V_d + \frac{(\cosh(\hat{S})-1)}{\tanh(\hat{S})} \tanh(\hat{S}) (H_0 + \epsilon V_d) + \sinh(\hat{S})(\epsilon V_{od})\\
+&= H_0 + \epsilon V_d + \left(\sinh(\hat{S}) - \frac{\cosh(\hat{S})-1}{\tanh(\hat{S})} \right)(\epsilon V_{od})
+\end{split}
+\end{equation}
+
+Consider
+
+\begin{equation}
+\begin{split}
+&\sinh(x) - \frac{\cosh(x) - 1}{\tanh(x)}\\
+=& \frac{\sinh^2(x) - \cosh^2(x) + \cosh(x)}{\sinh(x)}\\
+=& \frac{\frac{1}{2}\left(e^{2x} + e^{-2x} - 2 - e^{2x} - e^{-2x} -2\right) + e^x + e^{-x}}{e^x-e^{-x}}\\
+=& \frac{-2 + e^x + e^{-x}}{e^x -e^{-x}}\\
+=& \frac{(e^{\frac{x}{2}} - e^{-\frac{x}{2}})(e^{\frac{x}{2}} - e^{-\frac{x}{2}})}{(e^{\frac{x}{2}} + e^{-\frac{x}{2}})(e^{\frac{x}{2}} - e^{-\frac{x}{2}})}\\
+=& \frac{e^{\frac{x}{2}} - e^{-\frac{x}{2}}}{e^{\frac{x}{2}} + e^{-\frac{x}{2}}}\\
+=& \frac{\sinh(\frac{x}{2})}{\cosh(\frac{x}{2})}\\
+=& \tanh\left(\frac{x}{2}\right)
+\end{split}
+\end{equation}
+
+So we have
+
+\begin{align}
+H' = H_0 + \epsilon V_d + \tanh\left(\frac{\hat{S}}{2}\right)(\epsilon V_{od})
+\end{align}
+
+We now have an expression for $H'$ in terms of $S$. However, we do not yet know $S$. We now work on coming up with an expression for $S$.
+
+\section{Perturbation Expansion for $S$}
+
+First we define a new superoperator $\mathcal{L}:\mathbb{L}(\mathcal{H})\rightarrow\mathbb{L}(\mathcal{H})$.
+
+\begin{align}
+\mathcal{L}(X) = \sideset{}{'}\sum_{i,j} \frac{\bra{i}\mathcal{O}(X)\ket{j}}{E_i - E_j} \ketbra{i}{j}
+\end{align}
+
+Here $E_n = \bra{n}H_0\ket{n}$ It is important for the perturbation expansion that the denominator of this expression is always small. For that reason $i$ and $j$ must chosen such that exactly one of $i$ or $j$ is in the low energy subspace and the other one is in the high energy subspace. Note this condition is already enforced by the fact that $\mathcal{O}(X)$ appears in the numerator which would set the numerator to $0$ if any other combination were chosen. However, one could imagine issues if there were degeneracies for example. For that reason we simply restrict the summation.
+
+$\mathcal{L}(X)$ has the important feature that
+
+\begin{equation}
+\begin{split}
+\mathcal{L}([H_0,X]) &= -\mathcal{L}(\hat{X}(H_0))\\
+&= \sideset{}{'}\sum_{ij} \frac{\bra{i}\mathcal{O}(H_0X-XH_0)\ket{j}}{E_i - E_j} \ketbra{i}{j}\\
+&= \sideset{}{'}\sum_{ij} \frac{\bra{i}(P_0H_0XQ_0 + P_0XH_0Q_0 + Q_0H_0XP_0 + Q_0XH_0P_0)\ket{j}}{E_i-E_j}\ketbra{i}{j}\\
+&= \sum_{\substack{i\in\mathcal{P}_0 \\ j\in\mathcal{Q}_0}} \frac{\bra{i}P_0(E_i-E_j)XQ_0\ket{j}}{E_i-E_j} \ketbra{i}{j} + \sum_{\substack{i\in\mathcal{Q}_0 \\ j\in\mathcal{P}_0}} \frac{\bra{i}Q_0(E_i-E_j)XP_0\ket{j}}{E_i-E_j} \ketbra{i}{j}\\
+&=\sum_{\substack{i\in\mathcal{P}_0 \\ j\in\mathcal{Q}_0}} \bra{i}P_0XQ_0\ket{j} \ketbra{i}{j} + \sum_{\substack{i\in\mathcal{Q}_0 \\ j\in\mathcal{P}_0}} \bra{i}Q_0XP_0\ket{j} \ketbra{i}{j}\\
+&= \mathcal{O}(X)
+\end{split}
+\end{equation}
+
+If $X$ is already off diagonal then $X=\mathcal{O}(X)$ and we have $\mathcal{L}(\hat{X}(H_0)) = -X$. This means we can turn an expression involving $\hat{S}H_0$, for example, into an expression involving $S$.
+
+We rewrite
+
+\begin{equation}
+\begin{split}
+\tanh(\hat{S})(H_0 + \epsilon V_d) + \epsilon V_{od} &= 0\\
+\hat{S}(H_0 + \epsilon V_d) + \hat{S}(\coth(\hat{S})(\epsilon V_{od})) &=0
+\end{split}
+\end{equation}
+
+We then act $\mathcal{L}$ on both sides and use the above property to get
+
+\begin{equation}
+\begin{split}
+-S + \mathcal{L}(\hat{S}(\epsilon V_d)) + \mathcal{L}(\hat{S}(\coth(\hat{S})(\epsilon V_{od}))) = 0
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+S &= \mathcal{L}(\hat{S}(\epsilon V_d)) + \mathcal{L}(\hat{S}(\coth(\hat{S})(\epsilon V_{od})))\\
+S &= \mathcal{L}\hat{S}(\epsilon V_d) + \mathcal{L}\hat{S}\coth(\hat{S})(\epsilon V_{od})
+\end{split}
+\end{equation}
+
+It is helpful to recall that superoperators such as $\hat{S}$ and $\mathcal{L}$ have a scope which includes all operators to the right.
+
+We can now solve this equation for $S$ by Taylor expanding and matching powers in $\epsilon$ noting that $S_0=0$.
+
+\begin{align}
+S = \sum_{n=1}^{\infty} \epsilon^n S_n
+\end{align}
+
+Note the Taylor expansion for
+
+\begin{equation}
+\begin{split}
+x \coth(x) &= \sum_{j=0}^{\infty} a_{2j} x^{2j}\\
+a_{2j} = \frac{2^{2j} B_{2j}}{(2j)!}
+\end{split}
+\end{equation}
+
+Here $B_2j$ are the Bernoulli numbers. Apparently the Bernoulli numbers often arise when considering the quotient of power series. Plugging in the expansion we get
+
+\begin{equation}
+\begin{split}
+S &= \mathcal{L}\hat{S} (\epsilon V_d) + \sum_{j=0}^{\infty} a_{2j} \mathcal{L} \hat{S}^{2j}(\epsilon V_{od})\\
+\sum_{n=1}^{\infty} \epsilon^n S_n &= \sum_{n=1}^{\infty} \mathcal{L}\epsilon^n \hat{S}_n (\epsilon V_d) +  \sum_{j=0}^{\infty} a_{2j} \mathcal{L} \left(\sum_{n=1}^{\infty} \epsilon^n \hat{S}_n\right)^{2j} (\epsilon V_{od})
+\end{split}
+\end{equation}
+
+We can write
+
+\begin{align}
+\left(\sum_{n=1}^{\infty} \epsilon^n \hat{S}_n \right)^{k} = \sum_{n_1,\ldots,n_{k}\ge 1} \epsilon^{n_1+\ldots+n_{k}} \hat{S}_{n_1} \ldots \hat{S}_{n_{k}}
+\end{align}
+
+Note that each term in this series has $k$ $S_n$ operators chosen from $\{S_n\}_{n\in \mathbb{N}}$. Note that the order of each term (in terms of powers of epsilon) is $n_1+\ldots +n_{k}$ We can break this out further based on $n_1+ \ldots + n_{k}$ as
+
+\begin{equation}
+\begin{split}
+\left(\sum_{n=1}^{\infty} \epsilon^n \hat{S}_n \right)^{k} &= \sum_{n=1}^{\infty} \sum_{\substack{n_1,\ldots, n_k \ge 1\\ n_1+\ldots + n_k = n}} \epsilon^n \hat{S}_{n_1} \ldots \hat{S}_{n_k}
+\end{split}
+\end{equation}
+
+Note that the terms of this summation are only non-zero for $n \ge k$ because it is impossible to have $n_1+\ldots+n_k = n \ge k$ for $n_1,\ldots,n_k\ge 1$.
+
+We can write the above as
+
+\begin{align}
+\sum_{n=1}^{\infty} \epsilon^n S_n = \sum_{n=1}^{\infty} \epsilon^{n+1} \mathcal{L}\hat{S}_n V_d + \sum_{j=0}^{\infty} a_{2j} \sum_{n=1}^{\infty} \epsilon^{n+1} \sum_{\substack{n_1,\ldots, n_{2j} \ge 1\\n_1+\ldots+n_{2j} = n}} \mathcal{L}\hat{S}_{n_1}\ldots \hat{S}_{n_{2j}} V_{od}
+\end{align}
+
+Define
+
+\begin{align}
+\hat{S}^k(V_{od})_n = \sum_{\substack{n_1,\ldots,n_k\ge 1\\n_1+\ldots+n_k=n}} \hat{S}_{n_1}\ldots \hat{S}_{n_k} V_{od}
+\end{align}
+
+Note that $\hat{S}^k(V_{od})_n$ includes $k$ elements from $\{\hat{S}_1\ldots \hat{S}_n\}$.
+Also note that $\hat{S}^k(V_{od})_n$ is only non-zero for $n \ge k$.
+
+\begin{equation}
+\begin{split}
+\sum_{n=1}^{\infty} \epsilon^n S_n &= \sum_{n=1}^{\infty} \epsilon^{n+1} \mathcal{L}\hat{S}_n V_d + \sum_{j=0}^{\infty} a_{2j} \sum_{n=1}^{\infty} \epsilon^{n+1} \mathcal{L} \hat{S}^{2j}(V_{od})_n\\
+\sum_{n=1}^{\infty} \epsilon^n S_n &= \sum_{n=1}^{\infty} \epsilon^{n+1} \mathcal{L}\hat{S}_n V_d + \sum_{j=0}^{\infty} a_{2j} \sum_{n=2j}^{\infty} \epsilon^{n+1} \mathcal{L} \hat{S}^{2j}(V_{od})_n\\
+&= \sum_{n=2}^{\infty} \epsilon^{n} \mathcal{L}\hat{S}_{n-1} V_d + \sum_{j=0}^{\infty} a_{2j} \sum_{n=2j+1}^{\infty} \epsilon^{n} \mathcal{L} \hat{S}^{2j}(V_{od})_{n-1}
+\end{split}
+\end{equation}
+
+We are now in a position to start equating terms of the power series term by term.
+
+\begin{align}
+S_1 &= a_0 \mathcal{L}(V_{od}) = \mathcal{L}(V_{od})\\
+S_2 &= \mathcal{L}\hat{S}_1(V_d)\\
+S_n &=  \mathcal{L}\hat{S}_{n-1}(V_d) + \sum_{j=1}^{\infty}a_{2j} \mathcal{L}\hat{S}^{2j}(V_{od})_{n-1}\\
+&= \mathcal{L}\hat{S}_{n-1}(V_d) + \sum_{j=1}^{\text{floor}\left(\frac{n-1}{2}\right)}a_{2j} \mathcal{L}\hat{S}^{2j}(V_{od})_{n-1}\\
+\end{align}
+
+The upper limit on the sum follows because we must have $2j < n-1$.
+
+I will explicitly write out a few of the $S_n$ to make visible some patterns.
+
+\begin{equation}
+\begin{split}
+S_1 &= a_0\mathcal{L}(V_{od})\\
+S_2 &= \mathcal{L}\hat{S}_1(V_d)\\
+S_3 &= \mathcal{L}\hat{S}_2(V_d) + a_2 \mathcal{L}\hat{S}_1\hat{S}_1V_{od}\\
+S_4 &= \mathcal{L}\hat{S}_3(V_d) + a_2 \mathcal{L}(\hat{S}_1\hat{S}_2 + \hat{S}_2\hat{S}_1)(V_{od})\\
+S_5 &= \mathcal{L}\hat{S}_4(V_d) + a_2 \mathcal{L}(\hat{S}_1\hat{S}_3 + \hat{S}_2\hat{S}_2 + \hat{S}_3\hat{S}_1)(V_{od}) + a_4 \mathcal{L}\hat{S}_1\hat{S}_1\hat{S}_1\hat{S}_1(V_{od})\\
+S_6 &= \mathcal{L}\hat{S}_5(V_d) + a_2 \mathcal{L}(\hat{S}_1\hat{S}_4 + \hat{S}_2\hat{S}_3 + \hat{S}_3\hat{S}_2 + \hat{S}_4\hat{S}_1)(V_{od})\\
+&+ a_4(\hat{S}_1\hat{S}_1\hat{S}_1\hat{S}_2 + \hat{S}_1\hat{S}_1\hat{S}_2\hat{S}_1 + \hat{S}_1\hat{S}_2\hat{S}_1\hat{S}_1 + \hat{S}_2\hat{S}_1\hat{S}_1\hat{S}_1)(V_{od})
+\end{split}
+\end{equation}
+
+We see that $S_{n}$ depends on $S_{n-1}$ and lower. In particular, $S_n$ is a sum of terms each of which is a product of $S_i$ operators where the sum of the indices in each term is $n-1$. Because of the structure of the equations there is one term which includes $S_{n-1}$. Regarding the other terms it can be noted that each term contains an \textit{even} number of $S_i$ operators following the pattern mentioned above.
+
+\section{Effective Hamiltonian}
+
+We return to
+
+\begin{equation}
+H' = H_0 + \epsilon V_d + \tanh\left(\frac{\hat{S}}{2} \right)(\epsilon V_{od})
+\end{equation}
+
+Recall $H_{eff} = P_0 H' P_0$.
+
+\begin{equation}
+H_{eff} = P_0H_0P_0 + \epsilon P_0V_dP_0 + \epsilon P_0 \tanh\left(\frac{\hat{S}}{2}\right)(V_{od})P_0
+\end{equation}
+
+We can Taylor expand
+
+\begin{equation}
+\begin{split}
+\tanh\left(\frac{x}{2}\right) = \sum_{j=1}^{\infty} b_{2j-1} x^{2j-1}\\
+b_{2j-1} = \frac{2(2^{2j}-1)B_{2j}}{(2j)!}
+\end{split}
+\end{equation}
+
+$B_{2j}$ are again the Bernoulli numbers. The expansion will follow similar logic as that above.
+
+We have
+
+\begin{equation}
+\begin{split}
+\tanh\left(\frac{\hat{S}}{2}\right) &= \sum_{j=1}^{\infty} b_{2j-1}\left(\sum_{n=1}^{\infty} \epsilon^n\hat{S}_n \right)^{2j-1}\\
+&=\sum_{j=1}^{\infty}b_{2j-1} \sum_{n=1}^{\infty}\sum_{\substack{n_1,\ldots,n_{2j-1}\ge 1\\n_1+\ldots+n_{2j-1}=n}}\epsilon^n \mathcal{L}\hat{S}_{n_1}\ldots \hat{S}_{n_{2j-1}}\\
+\end{split}
+\end{equation}
+
+We can expand the above expression as
+
+\begin{equation}
+\begin{split}
+H_{eff} = \sum_{n=0}^{\infty} \epsilon^n H_{eff,n} &=  P_0H_0P_0 + \epsilon P_0V_dP_0 + P_0\sum_{j=1}^{\infty}b_{2j-1}\sum_{n=1}^{\infty}\epsilon^{n+1}\hat{S}^{2j-1}(V_{od})_nP_0\\
+&= P_0H_0P_0 + \epsilon P_0V_dP_0 + \sum_{j=1}^{\infty}b_{2j-1}\sum_{n=2}^{\infty} \epsilon^n \hat{S}^{2j-1}(V_{od})_{n-1}P_0
+\end{split}
+\end{equation}
+
+We can then see that
+
+\begin{equation}
+\begin{split}
+H_{eff,0} &= P_0H_0P_0\\
+H_{eff,1} &= P_0V_dP_0\\
+H_{eff,n} &= \sum_{j=1}^{\infty}b_{2j-1} P_0\hat{S}^{2j-1}(V_{od})_{n-1}P_0\\
+&= \sum_{j=1}^{\text{floor}\left(\frac{n}{2}\right)} b_{2j-1} P_0 \hat{S}^{2j-1}(V_{od})_{n-1}P_0
+\end{split}
+\end{equation}
+
+Where again the upper limit of the sum follows because we must have $2j-1<n-1$
+
+Writing down for example cases:
+
+\begin{equation}
+\begin{split}
+H_{eff,0} &= P_0 H_0 P_0\\
+H_{eff,1} &= P_0 V_d P_0\\
+H_{eff,2} &= b_1 P_0 \hat{S}_1(V_{od}) P_0\\
+H_{eff,3} &= b_1 P_0 \hat{S}_2(V_{od}) P_0\\
+H_{eff,4} &= b_1 P_0 \hat{S}_3(V_{od}) P_0 + b_3 P_0 (\hat{S}_1\hat{S}_1\hat{S}_1) (V_{od})P_0\\
+H_{eff,5} &= b_1 P_0 \hat{S}_4(V_{od}) P_0 + b_3 P_0 (\hat{S}_1\hat{S}_1\hat{S}_2 + \hat{S}_1\hat{S}_2\hat{S}_1 + \hat{S}_2\hat{S}_1\hat{S}_1)(V_{od})P_0\\
+H_{eff,6} &= b_1 P_0 \hat{S}_5(V_{od}) P_0\\
+&+ b_3 P_0(\hat{S}_1\hat{S}_1\hat{S}_3 + \hat{S}_1\hat{S}_3\hat{S}_1 +  \hat{S}_3\hat{S}_1\hat{S}_1 + \hat{S}_1\hat{S}_2\hat{S}_2 + \hat{S}_2\hat{S}_1\hat{S}_2+\hat{S}_2\hat{S}_2\hat{S}_1)(V_{od})P_0\\
+&+ b_5 P_0(\hat{S}_1\hat{S}_1\hat{S}_1\hat{S}_1\hat{S}_1)(V_{od})P_0
+\end{split}
+\end{equation}
+
+The pattern here is that $H_{eff,n}$ depends on $\{\hat{S}_1, \ldots \hat{S}_{n-1}\}$. $H_{eff,n}$ is a sum of products of $\hat{S}_i$ operators, each term of which contains an odd number of $\hat{S}_i$ and in each term all of the indices ad up to $n-1$. The coefficient $b_j$ indicates how many $\hat{S}_i$ there are in the term.
+
+\section{Second Order Example}
+
+It may be instructive to write out $H_{eff,2}$ in more detail.
+
+\begin{equation}
+\begin{split}
+H_{eff,2} &= b_1 P_0\hat{S}_1(V_{od})P_0 = b_1a_0P_0 [\mathcal{L}(V_{od}),V_{od}]P_0\\
+&=  \frac{1}{2} P_0\left( \sideset{}{'}\sum_{i,j}\frac{\bra{i}V_{od}\ket{j}}{E_i-E_j}\ketbra{i}{j}V_{od} - \frac{\bra{i}V_{od}\ket{j}}{E_i-E_j}V_{od}\ketbra{i}{j}\right)P_0\\
+&= \frac{1}{2} P_0\left( \sideset{}{'}\sum_{i,j}\sum_k\frac{\bra{i}V_{od}\ket{j}\bra{j}V_{od}\ket{k}}{E_i-E_j}\ketbra{i}{k} - \frac{\bra{k}V_{od}\ket{i}\bra{i}V_{od}\ket{j}}{E_i-E_j}\ketbra{k}{j}\right)P_0\\
+&= \frac{1}{2} \sum_{\substack{i,k \in \mathcal{P}_0\\j  \in \mathcal{Q}_0}} \frac{\bra{i}V_{od}\ket{j}\bra{j}V_{od}\ket{k}}{E_i-E_j} \ketbra{i}{k} - \frac{1}{2}\sum_{\substack{j,k \in \mathcal{P}_0\\i\in\mathcal{Q}_0}} \frac{\bra{k}V_{od}\ket{i}\bra{i}V_{od}\ket{j}}{E_i-E_j}\ket{k}\bra{j}\\
+&=\frac{1}{2} \sum_{\substack{i,k \in \mathcal{P}_0\\j  \in \mathcal{Q}_0}} \frac{\bra{i}V_{od}\ket{j}\bra{j}V_{od}\ket{k}}{E_i-E_j} \ketbra{i}{k} - \frac{1}{2}\sum_{\substack{k,i \in \mathcal{P}_0\\j\in\mathcal{Q}_0}} \frac{\bra{i}V_{od}\ket{j}\bra{j}V_{od}\ket{k}}{E_j-E_k}\ket{i}\bra{k}\\
+\end{split}
+\end{equation}
+
+Originally the sum over $i,j$ was such that $\ket{i}$ and $\ket{j}$ were in opposite subspaces. The sum over $k$ is over all states. In the fourth equality the $P_0$ operators were applied which restrict the summation. In the fifth equality I simply relabeled the indices. We see that this is sort of a familiar perturbation theory type expression.Since we are considering a situation in which the ground states and excited states are tightly packed together (especially compared to the ground-excited state splitting $|\Delta|$, we can let all of them be degenerate and include any ground state splittings in $V_d$. In this case we have $E_i = E_k$ and we can write
+
+\begin{equation}
+H_{eff,2} = \sum_{\substack{i,k \in \mathcal{P}_0\\j \in \mathcal{Q}_0}} \frac{\bra{i}V_{od}\ket{j}\bra{j}V_{od}\ket{k}}{E_i-E_j} \bra{i}\ket{k}
+\end{equation}
+
+We apply this formalism to the case of a Raman transition. Suppose we have a system described by Hamiltonian:
+
+\begin{equation}
+(H)_{ij} = \bra{i}H\ket{j} = \begin{bmatrix}
+0 & 0 & \frac{\Omega_1}{2}\\
+0 & \delta & \frac{\Omega_2}{2}\\
+\frac{\Omega_1}{2} & \frac{\Omega_2}{2} & \Delta
+\end{bmatrix}
+\end{equation}
+
+We can take
+
+\begin{equation}
+\begin{split}
+(H_0)_{ij} &= \bra{i}H_0\ket{j} = \begin{bmatrix}
+0 & 0 & 0\\
+0 & 0 & 0\\
+0 & 0 & \Delta
+\end{bmatrix}\\
+(V)_{ij} &= \bra{i}V\ket{j} = \begin{bmatrix}
+0 & 0 & \frac{\Omega_1}{2}\\
+0 & \delta & \frac{\Omega_2}{2}\\
+\frac{\Omega_1}{2} & \frac{\Omega_2}{2} & 0
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+We can see easily then that
+
+\begin{equation}
+\begin{split}
+(V_d)_{ij} &= \bra{i}V_d\ket{j} = \begin{bmatrix}
+0 & 0 & 0\\
+0 & \delta &0\\
+0 & 0 & 0
+\end{bmatrix}\\
+(V_{od})_{ij} &= \bra{i}V_{od}\ket{j} = \begin{bmatrix}
+0 & 0 & \frac{\Omega_1}{2}\\
+0 & 0 & \frac{\Omega_2}{2}\\
+\frac{\Omega_1}{2} & \frac{\Omega_2}{2} & 0
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+We can then work out the effective Hamiltonian.
+
+\begin{equation}
+\begin{split}
+(H_{eff,0})_{ij} &= (H_0)_{ij} = \begin{bmatrix}
+0 & 0\\
+0 & 0\\
+\end{bmatrix}\\ 
+(H_{eff,1})_{ij} &= (V_d)_{ij} = \begin{bmatrix}
+0 & 0\\
+0 & \delta\\
+\end{bmatrix}\\
+\end{split}
+\end{equation}
+
+And we can work out
+
+\begin{equation}
+\begin{split}
+(H_{eff,2})_{ij} &= \sum_{k \in \mathcal{Q}_0} \frac{\bra{i}V_{od}\ket{k}\bra{k}V_{od}\ket{j}}{E_i-E_k} \\
+&=  \frac{\bra{i}V_{od}\ket{3}\bra{3}V_{od}\ket{j}}{-\Delta}\\
+&= \begin{bmatrix}
+-\frac{\Omega_1^2}{4\Delta} & - \frac{\Omega_1\Omega_2}{4\Delta}\\
+-\frac{\Omega_1\Omega_2}{4\Delta} & -\frac{\Omega_2^2}{4\Delta}
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+We see that each ground state experiences a Stark shift of $-\frac{\Omega_i^2}{4\Delta}$ and that states $\ket{1}$ and $\ket{2}$ are coupled with a Rabi frequency of strength $-\frac{\Omega_1 \Omega_2}{\Delta}$.
+
+\section{Reducing a 5-level system}
+
+We consider now a 5-level system with 3 ground states and 2 excited states. Two of the ground states, $\ket{1}$ and $\ket{2}$ are degenerate and respectively coupled ($\Omega_{1,2}$) to one of the excited states, $\ket{4}$ and $\ket{5}$. The third ground state, $\ket{3}$ is at a slightly detuned from $\ket{1}$ and $\ket{2}$ and is coupled ($g_{1,2}$)
+to both of the excited states. Thus, there are 2-photon transitions between $\ket{1}$ and $\ket{3}$ and between $\ket{2}$ and $\ket{3}$. However, we can also consider a 4-photon transition between kets $\ket{1}$ and $\ket{2}$, mediated effectively by two of the 2-photon interactions. We will apply the 2nd order Schrieffer-Wolff twice to see this result.
+
+\begin{equation}
+\begin{split}
+(H)_{ij} = \begin{bmatrix}
+0 & 0 & 0 & \Omega_1 & 0\\
+0 & 0 & 0 & 0 & \Omega_2\\
+0 & 0 & \delta & g_1 & g_2\\
+\Omega_1 & 0 & g_1 & \Delta & 0\\
+0 & \Omega_2 & g_2 & 0 & \Delta
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+Note that often the Rabi frequencies appear as $\frac{\Omega_i}{2}$ rather than $\Omega_i$. Here I have omitted the factor of two for brevity/clarity. The physics does not change.
+For the first step of Schrieffer-Wolff we consider all three ground states to be the low energy subspace.
+
+\begin{equation}
+\begin{split}
+(H_0)_{ij} &= \begin{bmatrix}
+0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & \Delta_1 & 0\\
+0 & 0 & 0 & 0 & \Delta_2\\
+\end{bmatrix}\\
+V_{ij} & = \begin{bmatrix}
+0 & 0 & 0 & \Omega_1 & 0\\
+0 & 0 & 0 & 0 & \Omega_2\\
+0 & 0 & \delta & g_1 & g_2\\
+\Omega_1 & 0 & g_1 & 0 & 0\\
+0 & \Omega_2 & g_2 & 0 & 0
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+We have then that
+
+\begin{equation}
+\begin{split}
+(H_{eff,0})_{ij} & = \begin{bmatrix}
+0 & 0 & 0\\ 0 & 0 & 0\\ 0 & 0 & 0
+\end{bmatrix}\\
+(H_{eff,1})_{ij} & = \begin{bmatrix}
+0 & 0 & 0\\ 0 & 0 & 0\\0 & 0 & \delta
+\end{bmatrix}\\
+(H_{eff,2})_{ij} & = \begin{bmatrix}
+-\frac{\Omega_1^2}{\Delta_1} & 0 & -\frac{\Omega_1g_1}{\Delta_1}\\
+0 & -\frac{\Omega_2^2}{\Delta_2} & -\frac{\Omega_2g_2}{\Delta_2}\\
+-\frac{\Omega_1g_1}{\Delta_1} & -\frac{\Omega_2g_2}{\Delta_2} & - \frac{g_1^2}{\Delta_1} - \frac{g_2^2}{\Delta_2}
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+We see that all states pick up Stark shifts due to their coupling to the excited states and that the two degenerate states are coupled to the third state. The total effective Hamiltonian out to second order is
+
+\begin{equation}
+(H_{eff})_{ij} = \begin{bmatrix}
+-\frac{\Omega_1^2}{\Delta_1} & 0 & -\frac{\Omega_1g_1}{\Delta_1}\\
+0 & -\frac{\Omega_2^2}{\Delta_2} & -\frac{\Omega_2g_2}{\Delta_2}\\
+-\frac{\Omega_1g_1}{\Delta_1} & -\frac{\Omega_2g_2}{\Delta_2} & \delta - \frac{g_1^2}{\Delta_1} - \frac{g_2^2}{\Delta_2}
+\end{bmatrix}
+\end{equation}
+
+We then Take this new effective Hamiltonian to be the Hamiltonian we are working with and apply second order Schrieffer-Wolff again to reduce this effect 3-level system to an effective two-level system. We choose the detuning of the excited state to be $\delta$ and allow all of the Stark shifts to be small perturbation. If this is the physical case then it is convenient because the denominators appearing in the second order Schrieffer-Wolff expression are much less complicated.
+
+\begin{equation}
+\begin{split}
+(H_0)_{ij} &= \begin{bmatrix}
+0 & 0 & 0\\ 0 & 0 & 0\\0 & 0 & \delta
+\end{bmatrix}\\
+(V)_{ij} &= \begin{bmatrix}
+-\frac{\Omega_1^2}{\Delta_1} & 0 & -\frac{\Omega_1g_1}{\Delta_1}\\
+0 & -\frac{\Omega_2^2}{\Delta_2} & -\frac{\Omega_2g_2}{\Delta_2}\\
+-\frac{\Omega_1g_1}{\Delta_1} & -\frac{\Omega_2g_2}{\Delta_2} & - \frac{g_1^2}{\Delta_1} - \frac{g_2^2}{\Delta_2}
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+This leads to the effective Hamiltonian
+
+\begin{equation}
+\begin{split}
+(H_{eff,0})_{ij} &= \begin{bmatrix}
+0 & 0\\
+0 & 0
+\end{bmatrix}\\
+(H_{eff,1})_{ij} &= \begin{bmatrix}
+-\frac{\Omega_1^2}{\Delta_1} & 0\\
+0 & -\frac{\Omega_2^2}{\Delta_2}
+\end{bmatrix}\\
+(H_{eff,2})_{ij} &= \begin{bmatrix}
+-\frac{\Omega_1^2g_1^2}{\Delta_1^2\delta} & -\frac{\Omega_1g_1\Omega_2g_2}{\Delta_1\delta\Delta_2}\\
+-\frac{\Omega_1g_1\Omega_2g_2}{\Delta_1\delta\Delta_2} & -\frac{\Omega_2^2g_2^2}{\Delta_2^2\delta}
+\end{bmatrix}
+\end{split}
+\end{equation}
+
+We see Stark shifts as well as 4-photon couplings. Putting it together we get the effect two-level system
+
+\begin{equation}
+H_{eff} = \begin{bmatrix}
+-\frac{\Omega_1^2}{\Delta_1}-\frac{\Omega_1^2g_1^2}{\Delta_1^2\delta} & -\frac{\Omega_1g_1\Omega_2g_2}{\Delta_1\delta\Delta_2}\\
+-\frac{\Omega_1g_1\Omega_2g_2}{\Delta_1\delta\Delta_2} & -\frac{\Omega_2^2}{\Delta_2}-\frac{\Omega_2^2g_2^2}{\Delta_2^2\delta}
+\end{bmatrix}
+\end{equation}
+
+\end{document}

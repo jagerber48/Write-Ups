@@ -1,0 +1,203 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\begin{document}
+\title{Justin's Notes for Matched Filter Paper}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In the spin-mech cleaner write up I derive
+
+\begin{align}
+\hat{X}_c(t) &= \sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}}(t)\\
+\hat{P}_c(t) &= 2 \frac{\sqrt{\bar{n}}}{\kappa} \hat{D}(t) + \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}}(t) = 2 \frac{G_a}{\kappa} \hat{X}_a(t) + 2 \frac{G_b}{\kappa} \hat{X}_b(t) + \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}}(t)
+\end{align}
+
+In the Normal Ordered Heterodyne write up I derive
+
+\begin{align}
+&\Braket{\tilde{D}_Q(t_1)\tilde{D}_Q(t_2)} =\\ &\frac{A^2}{8}\left(\Braket{\left\{\hat{P}_c(t_1),\hat{P}_c(t_2)\right\}} - i\Braket{\left[\hat{P}_c(t_{\text{max}}),\hat{X}_c(t_{\text{min}})\right]}\right) + \frac{B^2}{2}\delta(t_1-t_2)
+\end{align}
+
+Here $\tilde{D}_Q$ is demodulated Q quadrature of the photocurrent. We have $\tilde{D}_Q = \tilde{D}_{\frac{\pi}{2}}$. I've introduced tildes to indicate that this is the photocurrent demodulated signal. Unfortunately I'm using $\hat{D}$ to represent that cavity displacement and $\tilde{D}_Q$ to indicate a demodulated quadrature. Sorry for the confusion. We can convert this from a photocurrent signal into a detected probe power signal (conventional for a lot of E3 work) by multiplying a square root factor of the quantum efficiency and dividing by the detector responsivity (units of $\frac{\text{A}}{\text{W}}$)
+
+\begin{align}
+D_Q(t) = \frac{\sqrt{\epsilon_Q}}{R} \tilde{D}_Q(t) = \frac{\hbar \omega}{e \sqrt{\epsilon_Q}} \tilde{D}_Q(t)
+\end{align}
+
+We also have
+
+\begin{align}
+A^2 &= e^2 \epsilon_Q |\alpha|^2 \epsilon_C \epsilon_P \epsilon_{MM} \epsilon_Q 2 \kappa = B^2 \epsilon_Q |\alpha|^2 \epsilon 2\kappa = B^2 2\kappa \epsilon\\
+B^2 &= e^2 \epsilon_Q |\alpha|^2
+\end{align}
+
+We can then see that
+
+\begin{align}
+\frac{(\hbar \omega)^2}{e^2 \epsilon_Q} B^2 &= \hbar \omega P_{\text{LO}} = S_{\text{SN}}\\
+\frac{(\hbar \omega)^2}{e^2 \epsilon_Q} A^2 &= 2 \kappa \epsilon S_{\text{SN}}
+\end{align}
+
+We will use these shortly. First let's consider this construction
+
+\begin{align}
+\Braket{\left\{\hat{P}_c(t_1),\hat{P}_c(t_2)\right\}} - i\Braket{\left[\hat{P}_c(t_{\text{max}}),\hat{X}_c(t_{\text{min}})\right]}
+\end{align}
+
+The first anti-commutator term will contain 4 terms. One in which the $\hat{D}$ term appears twice, one in which the $\hat{P}_c^{\text{in}}$ term appears twice, and two cross terms. The cross terms will be zero since the position of the oscillators is not correlated with phase fluctuations of the light field..
+
+The second commutator term will have two terms. One in which $\hat{D}$ appears and one in which $\hat{P}_c^{\text{in}}$ appears. In the case that $\Delta_{PC} = 0$, the case we are considering here, we have that $\hat{D}$ is driven by amplitude fluctuations of light. This means that $\hat{D}$ is correlated with $\hat{X}_c^{\text{in}}$ at different times. However, when we look at the commutator of $\hat{D}$ with $\hat{X}_c^{\text{in}}$ we will get zero since $\hat{X}_c^{\text{in}}$ commutes with itself at different times. The second term will persist. With all of this in mind we expand
+
+\begin{align}
+&\Braket{\left\{\hat{P}_c(t_1),\hat{P}_c(t_2)\right\}} - i\Braket{\left[\hat{P}_c(t_{\text{max}}),\hat{X}_c(t_{\text{min}})\right]}=\\
+&= 4 \frac{\bar{n}}{\kappa^2} \Braket{\left\{\hat{D}(t_1),\hat{D}(t_2)\right\}} + \frac{2}{\kappa} \Braket{\left\{\hat{P}_c^{\text{in}}(t_1),\hat{P}_c^{\text{in}}(t_2)\right\}} - \frac{2}{\kappa}i \Braket{\left[\hat{P}_c^{\text{in}}(t_{\text{max}}),\hat{X}_c^{\text{in}}(t_{\text{min}})\right]}
+\end{align}
+
+We can now work out
+
+\begin{align}
+&\Braket{\left\{\hat{P}_c^{\text{in}}(t_1),\hat{P}_c^{\text{in}}(t_2)\right\}} - i \Braket{\left[\hat{P}_c^{\text{in}}(t_{\text{max}}),\hat{X}_c^{\text{in}}(t_{\text{min}})\right]}\\
+&= 2\delta(t_1-t_2) - i(-2i\delta(t_1-t_2)) = 0
+\end{align}
+
+We see thus that the noise terms, $\hat{X}_c^{\text{in}}$ and $\hat{P}_c^{\text{in}}$ do not contribute to the measured signal at all! This could have been expected in fact. The demodulated signal depends on normal and time ordered products of $\hat{X}_c$ and $\hat{P}_c$. When this normal and time ordering happens, we can expect that these vacuum fluctuation terms will vanish. However, if the fluctuations leave signatures in the motion of the oscillators $\hat{D}(t)$ at early times, then at later times there will be correlations between the noise drives at early times and the oscillator motion at later times. This is the source of pondermotive squeezing.
+
+In any case, with all of this said we can write
+
+\begin{align}
+\Braket{\tilde{D}_Q(t_1)\tilde{D}_Q(t_2)} &= \frac{A^2}{8} 4 \frac{\bar{n}}{\kappa^2} \Braket{\left\{\hat{D}(t_1),\hat{D}(t_2)\right\}} + \frac{B^2}{2} \delta(t_1-t_2)\\
+&= \frac{A^2}{2} \frac{\bar{n}}{\kappa^2}\Braket{\left\{\hat{D}(t_1),\hat{D}(t_2)\right\}} + \frac{B^2}{2} \delta(t_1-t_2)\\
+&= \frac{B^2 2\kappa \epsilon}{2} \frac{\bar{n}}{\kappa^2}\Braket{\left\{\hat{D}(t_1),\hat{D}(t_2)\right\}} + \frac{B^2}{2} \delta(t_1-t_2)\\
+&= B^2 \epsilon \frac{\bar{n}}{\kappa} \Braket{\left\{\hat{D}(t_1),\hat{D}(t_2)\right\}} + \frac{B^2}{2} \delta(t_1-t_2)\\
+\end{align}
+
+We can now multiply by $\left(\frac{\hbar \omega}{e \sqrt{\epsilon_Q}}\right)$ to get the signal in units of detected probe power and we find
+
+\begin{align}
+\Braket{D_Q(t_1)D_Q(t_2)} &= S_{\text{SN}} \epsilon \frac{\bar{n}}{\kappa} \Braket{\left\{\hat{D}(t_1),\hat{D}(t_2)\right\}} + \frac{S_{\text{SN}}}{2} \delta(t_1-t_2)\\
+\end{align}
+
+We haven't yet worked out
+
+\begin{align}
+\Braket{D_{Q}(t)} &= \frac{\hbar \omega}{e \sqrt{\epsilon_Q}} \Braket{\tilde{D}_Q(t)} = -\frac{\hbar\omega}{e \sqrt{\epsilon_Q}} \frac{B \sqrt{2 \kappa \epsilon}}{2} \Braket{\hat{P}_c(t)}\\
+&= \sqrt{S_{\text{SN}} 2 \kappa \epsilon}\frac{1}{2} 2 \frac{\sqrt{\bar{n}}}{\kappa} \Braket{\hat{D}(t)} = \sqrt{2}\sqrt{S_{\text{SN}}\epsilon \frac{\bar{n}}{\kappa}}\Braket{\hat{D}(t)}
+\end{align}
+
+
+Note that if this were a classical problem then we would have
+
+\begin{align}
+\left\{\hat{D}(t_1),\hat{D}(t_2)\right\} = 2 \hat{D}(t_1)\hat{D}(t_2)
+\end{align}
+
+If that were the case we would have
+
+\begin{align}
+\Braket{D_Q(t)} &= \sqrt{2} \sqrt{S_{\text{SN}}\epsilon \frac{\bar{n}}{\kappa}}\Braket{\hat{D}(t)}\\
+\Braket{D_Q(t_1)D_Q(t_2)} &= 2 S_{\text{SN}}\epsilon \frac{\bar{n}}{\kappa}\Braket{D(t_1)D(t_2)} + \frac{S_{\text{SN}}}{2}\delta(t_1-t_2)
+\end{align}
+
+This looks like a random process with the following form.
+
+\begin{align}
+D_Q(t) = \sqrt{2 S_{\text{SN}} \epsilon \frac{\bar{n}}{\kappa}} \hat{D}(t) + \sqrt{\frac{S_{\text{SN}}}{2}}\xi(t)
+\end{align}
+
+Where $\xi(t)$ is uncorrelated with $\hat{D}(t)$ and $\Braket{\xi(t_1) \xi(t_2)} = \delta(t_1-t_2)$.
+
+\section{Solutions to equations of motion}
+
+After adiabatic elimination the evolution of the mechanical oscillator is
+
+\begin{align}
+\dot{\hat{X}}_a &= + \omega_a \hat{P}_a - \frac{\Gamma_a}{2} \hat{X}_a + \sqrt{\Gamma_a} \hat{X}_a^{\text{in}}\\
+\dot{\hat{P}}_a &= - \omega_a \hat{X}_a - \frac{\Gamma_a}{2} \hat{P}_a + 2 G_a \sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}} + \sqrt{\Gamma_a} \hat{P}_a^{\text{in}}\\
+\end{align}
+
+We can solve this by calculating
+
+\begin{align}
+\dot{\hat{a}} = -i\omega_a\hat{a} - \frac{\Gamma_a}{2} \hat{a} + iG_a \sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}} + \sqrt{\Gamma_a}\hat{a}^{\text{in}}
+\end{align}
+
+The solution to this Langevin equation is
+
+\begin{align}
+\hat{a}(t) = e^{\left(-i\omega_a - \frac{\Gamma_a}{2}\right)t}\hat{a}(0) + \int_{t'=0}^t e^{\left(-i\omega_a - \frac{\Gamma_a}{2}\right)(t-t')} \left(iG_a\sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}}(t') + \sqrt{\Gamma_a}\hat{a}^{\text{in}}(t')\right) dt'
+\end{align}
+
+We then recall $\hat{X}_a = 2 \text{Re}(\hat{a})$ to get
+
+\begin{align}
+\hat{X_a}(t) =&\\ 
+&e^{-\frac{\Gamma_a}{2} t} \cos(\omega_a t) \hat{X}_a(0) + e^{-\frac{\Gamma_a}{2} t} \sin(\omega_a t) \hat{P_a}(0)\\
++&\int_{t'=0}^{t}e^{-\frac{\Gamma_a}{2}(t-t')}\sqrt{\Gamma_a}\left(\cos(\omega_a(t-t'))\hat{X}_a^{\text{in}}(t') + \sin(\omega_a(t-t'))\hat{P}_a^{\text{in}}(t') \right) dt'\\
++&\int_{t'=0}^t e^{-\frac{\Gamma_a}{2}(t-t')} 2G_a \sqrt{\frac{2}{\kappa}} \sin(\omega_a(t-t'))\hat{X}_c^{\text{in}}(t') dt'\\
+&= \hat{X}_a^{\text{coh}}(t) + \hat{X}_a^{\text{therm}}(t) + \hat{X}_a^{\text{BA}}(t)
+\end{align}
+
+The first line represents the coherent motion of the oscillators. We see that in this on resonant case the oscillator's coherent motion is the same is if it was a free oscillator. The second line is the additional brownian motion that has been added to the oscillator by the white noise thermal bath driving the oscillator. The third line is the additional noise that the oscillator picks up as a result of amplitude fluctuations from the probe field.
+
+We can see
+
+\begin{align}
+\Braket{\hat{X}_a(t)} = \Braket{\hat{X}_a^{\text{coh}}(t)} = e^{-\frac{\Gamma_a}{2} t} \cos(\omega_a t) \Braket{\hat{X}_a(0)} + e^{-\frac{\Gamma_a}{2} t} \sin(\omega_a t) \Braket{\hat{P_a(0)}}\\
+\end{align}
+
+Now the two time correlation function. The three contributions to the oscillator position are uncorrelated with eachother so we can calculated them independently.
+
+\begin{align}
+\Braket{\hat{X}_a(t_1)\hat{X}_a(t_2)} = \Braket{\hat{X}^{\text{coh}}_a(t_1)\hat{X}^{\text{coh}}_a(t_2)} + \Braket{\hat{X}^{\text{therm}}_a(t_1)\hat{X}^{\text{therm}}_a(t_2)} + \Braket{\hat{X}^{\text{BA}}_a(t_1)\hat{X}^{\text{BA}}_a(t_2)}
+\end{align}
+
+\begin{align}
+&\Braket{\hat{X}^{\text{coh}}_a(t_1)\hat{X}^{\text{coh}}_a(t_2)} =\\ 
+&e^{-\frac{\Gamma_a}{2} t_1}e^{-\frac{\Gamma_a}{2} t_2}\bigg(\cos(\omega_a t_1)\cos(\omega_a t_2)\Braket{\hat{X}_a(0)\hat{X}_a(0)} + \sin(\omega_a t_1)\sin(\omega_a t_2)\Braket{\hat{P}_a(0)\hat{P}_a(0)}\\
+&+ \cos(\omega_a t_1)\sin(\omega_a t_2)\Braket{\hat{X}_a(0)\hat{P}_a(0)} + \sin(\omega_a t_1)\cos(\omega_a t_2)\Braket{\hat{P}_a(0)\hat{X}_a(0)} \bigg)\\
+\end{align}
+
+\begin{align}
+&\Braket{\hat{X}_a^{\text{therm}}(t_1)\hat{X}_a^{\text{therm}}(t_2)} =\\
+&\int_{t'=0}^{\text{min}(t_1,t_2)}\Gamma_a \Bigg( e^{-\frac{\Gamma_a}{2}(t_1-t')}e^{-\frac{\Gamma_a}{2}(t_2-t')}\\
+&\times \bigg(\cos(\omega_a (t_1-t'))\cos(\omega_a (t_2-t'))(2n_a+1) + \sin(\omega_a (t_1-t'))\sin(\omega_a (t_2-t'))(2n_a+1)\\
+&+ \cos(\omega_a (t_1-t'))\sin(\omega_a (t_2-t'))i+ \sin(\omega_a (t_1-t'))\cos(\omega_a (t_2-t'))(-i) \bigg) \Bigg)dt'\\
+&= \Gamma_a\big(\cos(\omega_a(t_1-t_2))(2n_a+1) -i\sin(\omega_a(t_1-t_2))\big)\\
+&\times e^{-\frac{\Gamma_a}{2}(t_1+t_2)}\int_{t'=0}^{\text{min}(t_1,t_2)} e^{\Gamma_a t} dt'\\
+&= \Gamma_a \left(e^{-i\omega_a(t_1-t_2)} + 2n_a \cos(\omega_a(t_1-t_2))\right)e^{-\frac{\Gamma_a}{2}(t_1+t_2)} \frac{1}{\Gamma_a}\left(e^{\Gamma_a t_{\text{min}}} - 1\right)\\
+&= \left(e^{-i\omega_a(t_1-t_2)} + 2n_a \cos(\omega_a(t_1-t_2))\right)e^{-\frac{\Gamma_a}{2}(t_1+t_2)}\left(e^{\Gamma_a t_{\text{min}}} - 1\right)\\
+\end{align}
+
+\begin{align}
+&\Braket{\hat{X}_a^{\text{BA}}(t_1)\hat{X}_a^{\text{BA}}(t_2)} =\\
+&8 \frac{G_a^2}{\kappa} \int_{t'=0}^{\text{min}(t_1,t_2)} e^{-\frac{\Gamma_a}{2}(t_1-t')}e^{-\frac{\Gamma_a}{2}(t_2-t')}\sin(\omega_a(t_1-t'))\sin(\omega_a(t_2-t'))(2n_c+1) dt'
+\end{align}
+
+We can put these all together to find
+
+\begin{align}
+&\Braket{\hat{X}_a(t_1)\hat{X}_a(t_2)} = \\
+&e^{-\frac{\Gamma_a}{2} t_1}e^{-\frac{\Gamma_a}{2} t_2}\bigg(\cos(\omega_a t_1)\cos(\omega_a t_2)\Braket{\hat{X}_a(0)\hat{X}_a(0)} + \sin(\omega_a t_1)\sin(\omega_a t_2)\Braket{\hat{P}_a(0)\hat{P}_a(0)}\\
+&+ \cos(\omega_a t_1)\sin(\omega_a t_2)\Braket{\hat{X}_a(0)\hat{P}_a(0)} + \sin(\omega_a t_1)\cos(\omega_a t_2)\Braket{\hat{P}_a(0)\hat{X}_a(0)} \bigg)\\
+&+ \left(e^{-i\omega_a(t_1-t_2)} + 2n_a \cos(\omega_a(t_1-t_2))\right)e^{-\frac{\Gamma_a}{2}(t_1+t_2)}\left(e^{\Gamma_a t_{\text{min}}} - 1\right)\\
+& + 8 \frac{G_a^2}{\kappa} \int_{t'=0}^{\text{min}(t_1,t_2)} e^{-\frac{\Gamma_a}{2}(t_1-t')}e^{-\frac{\Gamma_a}{2}(t_2-t')}\sin(\omega_a(t_1-t'))\sin(\omega_a(t_2-t'))(2n_c+1) dt'
+\end{align}
+
+
+
+\end{document}

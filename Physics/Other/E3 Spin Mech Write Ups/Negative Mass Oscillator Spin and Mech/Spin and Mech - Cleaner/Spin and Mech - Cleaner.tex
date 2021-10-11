@@ -1,0 +1,292 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\begin{document}
+\title{Spin and Mechanics Cleaner}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+This write up goes through a lot of the same content as my spin and mech write up but it uses much cleaner and simpler notation so that some of the salient features of the theory are much more clear. It basically takes the optomechanics + spin optodynamics hamiltonian, casts it into a simple theoretical cooupled oscillators Hamiltonian, and then finds the linearized equations of motion. It is jumping through a lot of hoops of redefining different variables so I hope everything is clear.
+
+We take the Hamiltonian from the spin and mech write up after the Holstein-Primakoff approximation has been applied and the variables have been made dimensionless.
+
+\begin{align}
+ \widehat{\mathcal{H}} =& 
+\hbar \omega_c \hat{a}^{\dag} \hat{a} 
++ \hbar \omega_M \hat{b}^{\dag} \hat{b} 
+- \gamma \hbar \Omega_L (S-\hat{c}^{\dag} \hat{c}) \\
+&+ \hbar \hat{a}^{\dag} \hat{a} \left[
+\frac{\xi}{2} g_c N_a 
++ \beta \xi g_{OM} \hat{z}_{M} 
++ \gamma g_c \frac{\nu}{2} \sqrt{\frac{S}{2}} \hat{z}_{s}
++ \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \hat{z}_{M} \hat{z}_{S}
+\right]
+\end{align}
+
+First note that the $-\gamma \hbar \Omega_L S$ term is just a constant offset so we can remove it. $\gamma = +1$ for spin down (positive mass) and $-1$ for spin up (negative mass). $\beta$ quantifies which linear spot we are at. I don't think it causes any difference for the evolution of the system.
+
+\begin{align}
+ \widehat{\mathcal{H}} =& 
+\hbar \omega_c \hat{a}^{\dag} \hat{a} 
++ \hbar \omega_M \hat{b}^{\dag} \hat{b} 
++ \gamma \hbar \Omega_L \hat{c}^{\dag} \hat{c} \\
+&+ \hbar \hat{a}^{\dag} \hat{a} \left[
+\frac{\xi}{2} g_c N_a 
++ \beta \xi g_{OM} \hat{z}_{M} 
++ \gamma g_c \frac{\nu}{2} \sqrt{\frac{S}{2}} \hat{z}_{s}
++ \gamma \beta \frac{\nu}{N_a} \sqrt{\frac{S}{2}} g_{OM} \hat{z}_{M} \hat{z}_{S}
+\right]
+\end{align}
+
+In it's essence, this Hamiltonian describes two oscillators (one positive, one negative) coupled to eachother and to a third oscillator, the cavity. The prefactors are just particular to our experimental system.
+
+For reference
+\begin{align}
+g_c &= \frac{g_0^2}{\Delta_{CA}}\\
+g_{OM} &= g_c N_a k_p Z_{CM,HO}\\
+Z_{CM,HO} &= \sqrt{\frac{\hbar}{2 N_a m \omega_M}}
+\end{align}
+
+$m$ is the mass of a single $^{87}$Rb atom.
+
+At this point I'm going to relabel everything to make this all more clear. However, for the sake of consistency with write ups which have been written AFTER this one was first made I'm going to seemingly confusing shuffle around the labelings of the oscillators.
+
+I will take $\hat{a}$ to be the possibly negative mass spin oscillator. $\hat{b}$ to be the positive mass mechanical oscillator and $\hat{c}$ to be the cavity oscillator. I will define the following quantities. Let $\omega_a = \Omega_L$, $\omega_b=\omega_M$ and $\omega_c = \omega_c$.
+
+\begin{align}
+\Delta_0 &= \frac{\xi}{2}g_c Na\\
+g_{a} &= g_c \frac{\nu}{2}\sqrt{\frac{S}{2}} = -2\pi \times 15.2 \text{ kHz}\\
+g_{b} &= \xi g_{OM} = -2\pi \times 20.8 \text{ kHz}\\
+g_{\text{stat}} &= \frac{\nu}{N_a}\sqrt{\frac{S}{2}}g_{OM} = -2\pi \times 116 \text{ Hz}
+\end{align}
+
+Experimental values given for $\Delta_{CA} = -2 \pi \times 42 \text{ GHz}$, $g_0 = 2 \pi \times 13.1 \text{ MHz}$, $\omega_M = 2\pi \times 130 \text{ kHz}$ and $N_a = 2000$.
+With all of this the Hamiltonian can be re-written as
+
+\begin{align}
+\widehat{\mathcal{H}} =& \gamma \hbar \omega_a\hat{a}^{\dag}\hat{a} + \hbar \omega_b \hat{b}^{\dag}\hat{b} + \hbar\tilde{\omega}_c\hat{c}^{\dag} \hat{c}\\
+&+\gamma \hbar g_{a} \hat{c}^{\dag}\hat{c} \hat{z}_a +
+\beta \hbar g_{b} \hat{c}^{\dag} \hat{c} \hat{z}_b +  \gamma \beta \hbar g_{\text{stat}} \hat{c}^{\dag} \hat{c} \hat{z}_a \hat{z}_b
+\end{align}
+
+with $\tilde{\omega}_c=\omega_c+\Delta_0$.
+Recall that because of the convention we take with the HP approximation $\hat{z}_a = -i(\hat{a}^{\dag}-\hat{a})$. This is going to be annoying when we try to work out the equations of motion. Let's make a small change of bosonic variables to make our lives easier.
+\begin{align}
+\hat{a}^* &= i\hat{a}  &\hat{a}^{*\dag} &= -i\hat{a}^{\dag}\\
+\end{align}
+
+These changes make it so that $\hat{z}_a = \hat{a}^{*\dag}+\hat{a}^*$. We also have $\hat{z}_b = \hat{b}^{*\dag} + \hat{b}^*$ so that
+
+\begin{align}
+\widehat{\mathcal{H}} &= \gamma \hbar \omega_a \hat{a}^{*\dag} \hat{a}^* + \hbar \omega_b \hat{b}^{*\dag}\hat{b}^* + \hbar \tilde{\omega_c} \hat{c}^{\dag} \hat{c} \\
+&+\gamma\hbar g_a \hat{c}^{\dag}\hat{c}(\hat{a}^{*\dag}+\hat{a}^*)\\
+&+\beta\hbar g_b \hat{c}^{\dag}\hat{c}(\hat{b}^{*\dag}+\hat{b}^*)\\
+&+\gamma \beta \hbar g_{\text{stat}} \hat{c}^{\dag}\hat{c} (\hat{a}^{*\dag}+\hat{a}^*)(\hat{b}^{*\dag}+\hat{b}^*)
+\end{align}
+
+Working towards the result at the beginning of the time domain linear optomechanics paper we work out the equations of motion, adding in noise drives and damping as well as a coherent drive term. $\dot{\hat{x}} = -\frac{i}{\hbar}[\hat{x},\hat{\mathcal{H}}]$
+
+\begin{align}
+\dot{\hat{a}}^* &= \left(-i \gamma \omega_a-\frac{\Gamma_a}{2}\right)\hat{a}^* - i \gamma g_a \hat{c}^{\dag}\hat{c} - i \gamma \beta g_{\text{stat}} \hat{c}^{\dag}\hat{c}(\hat{b}^{*\dag}+\hat{b}^*) + \sqrt{\Gamma_a}\hat{a}^{*\text{in}}\\
+\dot{\hat{b}}^* &= \left(-i \omega_b - \frac{\Gamma_b}{2}\right)\hat{b}^* - i \beta g_b \hat{c}^{\dag}\hat{c} - i \gamma \beta g_{\text{stat}} \hat{c}^{\dag}\hat{c}(\hat{a}^{*\dag}+\hat{a}^*) + \sqrt{\Gamma_b}\hat{b}^{*\text{in}}\\
+\dot{\hat{c}} &= \left(-i \tilde{\omega_c} -\kappa\right)\hat{c} - i\left[ \gamma g_a (\hat{a}^{*\dag}+\hat{a^*})+ \beta g_b (\hat{b}^{*\dag} + \hat{b}^*)+\gamma \beta g_{\text{stat}}(\hat{a}^{*\dag}+\hat{a}^*)(\hat{b}^{*\dag}+\hat{b}^*)\right]\hat{c}\\
+&+\sqrt{2\kappa}\bar{c}^{\text{in}}e^{-i\omega_p t} + \sqrt{2\kappa}\hat{c}^{\text{in}}
+\end{align}
+
+We move into a frame rotating with the probe drive by setting $\hat{c}^* = \hat{c}e^{+i\omega_p t}$ to get 
+
+\begin{align}
+\dot{\hat{a}}^* &= \left(-i \gamma \omega_a-\frac{\Gamma_a}{2}\right)\hat{a}^* - i \gamma g_a \hat{c}^{*\dag}\hat{c}^* - i \gamma \beta g_{\text{stat}} \hat{c}^{*\dag}\hat{c}^*(\hat{b}^{*\dag}+\hat{b}^*) + \sqrt{\Gamma_a}\hat{a}^{*\text{in}}\\
+\dot{\hat{b}}^* &= \left(-i \omega_b - \frac{\Gamma_b}{2}\right)\hat{b}^* -i \beta g_b \hat{c}^{*\dag}\hat{c}^* - i \gamma \beta g_{\text{stat}} \hat{c}^{*\dag}\hat{c}^*(\hat{a}^{*\dag}+\hat{a}^*) + \sqrt{\Gamma_b}\hat{b}^{*\text{in}}\\
+\dot{\hat{c}}^* &= \left(+i \Delta_{PC} -\kappa\right)\hat{c}^* - i\left[\gamma g_a (\hat{a}^{*\dag}+\hat{a^*})+ \beta g_b (\hat{b}^{*\dag} + \hat{b}^*)+ \gamma \beta g_{\text{stat}}(\hat{a}^{*\dag}+\hat{a}^*)(\hat{b}^{*\dag}+\hat{b}^*)\right]\hat{c}^*\\
+&+\sqrt{2\kappa}\bar{c}^{\text{in}} + \sqrt{2\kappa}\hat{c}^{*\text{in}}
+\end{align}
+
+$\Delta_{PC} = \omega_p-\tilde{\omega_c}$. To linearize these equations (dropping the $^*$ notation) we expand each operator as $\hat{x} = \bar{x}+\delta \hat{x}$ where $\bar{x} = \braket{\hat{x}}$. Then we assume $\delta \hat{x}\ll\bar{x}$ so we drop all terms which are first order or more in any quantum fluctuations. We also set $\dot{\bar{x}}=0$ so that $\bar{x}$ represents the steady-state average value for each operator. This leaves us with a set of nonlinear equations relating all of the average steady state values of the different operators. In principle this set of nonlinear equations can be solved to find the average steady state value of all of the operators giving us the static shifts on all of the operators. In particular, it will allow us to solve for $\bar{c}$ in terms of $\bar{c}^{\text{in}}$ and many other quantities of course. We assume that $\bar{c}=\sqrt{\bar{n}}$ is real which fixes the phase of $\bar{c}^{\text{in}}$.
+Next, once we have $\bar{x}$ for all of the operators we can go back to our expansion which includes factors of $\delta \hat{x}$. There will be a subset of terms in these equations which only involve $\bar{x}$ for all of the operators, the zeroth order terms if you will. We know that since these solve the nonlinear equation earlier in this paragraph that all of these terms cancel eachother out so we can drop them. Also, in the spirit of taking the linear approximation, we drop terms of second order or higher in any quantum fluctuations. This leaves us with a linear set of equations for the quantum fluctuations. We write (dropping the $^*$ notation on the operators and $\delta$ indicating quantum fluctuations; note that $^*$ now refers to complex conjugate of a c-number.):
+
+\begin{align}
+\dot{\hat{a}} &= \left(-i \gamma \omega_a-\frac{\Gamma_a}{2}\right)\hat{a} - i \gamma  g_a \sqrt{\bar{n}}(\hat{c}^{\dag}+\hat{c}) - i \gamma \beta g_{\text{stat}} \sqrt{\bar{n}}(\hat{c}^{\dag}+\hat{c})(\bar{b}^*+\bar{b})\\
+&- i \gamma \beta g_{\text{stat}} \bar{n}(\hat{b}^{\dag}+\hat{b}) + \sqrt{\Gamma_a}\hat{a}^{\text{in}}\\
+\dot{\hat{b}} &= \left(-i \omega_b - \frac{\Gamma_b}{2}\right)\hat{b} -i \beta g_b \sqrt{\bar{n}}(\hat{c}^{\dag}+\hat{c}) - i \gamma \beta g_{\text{stat}} \sqrt{\bar{n}}(\hat{c}^{\dag}+\hat{c})(\bar{a}^{*}+\bar{a}) \\
+&- i \gamma \beta g_{\text{stat}} \bar{n}(\hat{a}^{\dag}+\hat{a}) + \sqrt{\Gamma_b}\hat{b}^{\text{in}}\\
+\dot{\hat{c}} &= \left(+i \Delta_{PC} -\kappa\right)\hat{c}\\
+&-i\sqrt{\bar{n}}\left[\gamma g_a (\hat{a}^{\dag}+\hat{a})+ \beta g_b (\hat{b}^{\dag} + \hat{b})+\gamma \beta g_{\text{stat}}(\hat{a}^{\dag}+\hat{a})(\bar{b}^{*}+\bar{b})+ \gamma \beta g_{\text{stat}}(\bar{a}^{*}+\bar{a})(\hat{b}^{\dag}+\hat{b})\right]\\
+&-i\hat{c}\left[\gamma g_a (\bar{a}^{*}+\bar{a})+ \beta g_b (\bar{b}^{*} + \bar{b})+ \gamma \beta g_{\text{stat}}(\bar{a}^{*}+\bar{a}^*)(\bar{b}^{*}+\bar{b})\right]\\
+&+ \sqrt{2\kappa}\hat{c}^{\text{in}}
+\end{align}
+
+In the older spin mech write-up I made the approximation that $g_{\text{stat}}\ll g_a,g_b$. This has to do with the scaling of the different coupling rates with $N_a$. I'll make the approximation again here to drop some terms. this includes approximating that $\bar{z}_a$ and $\bar{z}_b$ are of order unity. We also identify the static cavity shift (recalling $\bar{z}_a = -\gamma (\bar{a}^* + \bar{a})$).
+
+\[
+\Delta_N = \gamma g_a \bar{z}_a + \beta g_b \bar{z}_b + \gamma \beta g_{\text{stat}}\bar{z}_a \bar{z}_b
+\]
+
+Letting $\tilde{\Delta}_{PC} = \Delta_{PC} - \Delta_N$ and 
+\begin{align}
+G_a &= -\gamma \sqrt{\bar{n}} g_a\\
+G_b &= -\beta \sqrt{\bar{n}} g_b\\
+G_{\text{stat}} &= -\gamma \beta \bar{n}g_{\text{stat}}
+\end{align}
+
+\begin{align}
+\dot{\hat{a}} &= \left(-i \gamma \omega_a-\frac{\Gamma_a}{2}\right)\hat{a} + i G_a (\hat{c}^{\dag}+\hat{c}) + i G_{\text{stat}}(\hat{b}^{\dag}+\hat{b}) + \sqrt{\Gamma_a}\hat{a}^{\text{in}}\\
+\dot{\hat{b}} &= \left(-i \omega_b - \frac{\Gamma_b}{2}\right)\hat{b} +i G_b(\hat{c}^{\dag}+\hat{c}) + iG_{\text{stat}}(\hat{a}^{\dag}+\hat{a}) + \sqrt{\Gamma_b}\hat{b}^{\text{in}}\\
+\dot{\hat{c}} &= \left(+i \tilde{\Delta}_{PC} -\kappa\right)\hat{c} +iG_a (\hat{a}^{\dag}+\hat{a})+i G_b (\hat{b}^{\dag} + \hat{b}) + \sqrt{2\kappa}\hat{c}^{\text{in}}
+\end{align}
+
+We can convert this into a set of equations for the $\hat{X}_{\alpha}$ and $\hat{P}_{\alpha}$ by using $\hat{X}_{\alpha} = 2 \text{Re}(\hat{\alpha})$ and $\hat{P}_{\alpha} = 2 \text{Im}(\hat{\alpha})$.
+
+\begin{align*}
+\dot{\hat{X}}_a &= +\gamma \omega_a \hat{P}_a -\frac{\Gamma_a}{2} \hat{X}_a + \sqrt{\Gamma_a}\hat{X}_a^{\text{in}}\\
+\dot{\hat{P}}_a &= -\gamma \omega_a \hat{X}_a -\frac{\Gamma_a}{2} \hat{P}_a + 2 G_a \hat{X}_c + 2G_{\text{stat}}\hat{X}_b + \sqrt{\Gamma_a}\hat{P}_a^{\text{in}}\\
+\dot{\hat{X}}_b &= +\omega_b \hat{P}_b -\frac{\Gamma_b}{2} \hat{X}_b + \sqrt{\Gamma_b}\hat{X}_b^{\text{in}}\\
+\dot{\hat{P}}_b &= -\omega_b \hat{X}_b -\frac{\Gamma_b}{2} \hat{P}_b + 2 G_b \hat{X}_c + 2G_{\text{stat}}\hat{X}_a + \sqrt{\Gamma_b}\hat{P}_b^{\text{in}}\\
+\dot{\hat{X}}_c &= -\tilde{\Delta}_{PC} \hat{P}_c - \kappa \hat{X}_c + \sqrt{2\kappa}\hat{X}_c^{\text{in}}\\
+\dot{\hat{P}}_c &= +\tilde{\Delta}_{PC} \hat{X}_c - \kappa \hat{P}_c + 2 G_a \hat{X}_a + 2 G_b \hat{X}_b + \sqrt{2\kappa}\hat{P}_c^{\text{in}}\\
+\end{align*}
+
+Putting it into matrix form (dropping the tilde on $\tilde{\Delta}_{PC}$
+
+\[ \textbf{v} = \begin{bmatrix}
+\hat{X}_a\\\hat{P}_a\\\hat{X}_b\\\hat{P}_b\\\hat{X}_c\\\hat{P}_c \end{bmatrix} \]
+
+\begin{equation}
+\textbf{g} = \begin{bmatrix}
+\sqrt{\Gamma}_a \hat{X}_a^{\text{in}}\\
+\sqrt{\Gamma}_a \hat{P}_a^{\text{in}}\\
+\sqrt{\Gamma}_b \hat{X}_b^{\text{in}}\\
+\sqrt{\Gamma}_b \hat{P}_b^{\text{in}}\\
+\sqrt{2\kappa} \hat{X}_c^{\text{in}}\\
+\sqrt{2\kappa} \hat{P}_c^{\text{in}}\\
+\end{bmatrix}
+\end{equation}
+
+\[ \textbf{M} = \begin{bmatrix}
+-\frac{\Gamma_a}{2} & +\gamma \omega_a & 0 & 0 & 0 & 0 \\
+-\gamma \omega_a & -\frac{\Gamma_a}{2} & 2G_{\text{stat}} & 0 & 2G_a & 0 \\
+0 & 0 & -\frac{\Gamma_b}{2} & +\omega_b & 0 & 0 \\
+2G_{\text{stat}} & 0 & -\omega_b & -\frac{\Gamma_b}{2} & 2G_b & 0\\
+0 & 0 & 0 & 0 & -\kappa & -\Delta_{PC} \\
+2G_a & 0 & 2G_b & 0 & +\Delta_{PC} & -\kappa \\ \end{bmatrix}\]
+
+gives
+
+\[
+\dot{\textbf{v}}(t) = \textbf{M} \textbf{v}(t) + \textbf{g}(t)
+\]
+
+\section{Adiabatic Elimination}
+
+In these equations of motion, $\kappa$ is the largest time scale. In particular $\kappa \gg \omega_a, \omega_b$. This means this system is in the unresolved sideband regime. In this regime the two cavity field quadrature will damp to their new equilibrium position on a timescale $\frac{1}{\kappa}$ which is instantaneous with respect to the other time scales of the problem. This means we can adiabatically eliminate these degrees of freedom by approximating $\dot{\hat{X}}_c =0$ and $\dot{\hat{P}}_c = 0$. We can then solve for $\hat{X}_c$ and $\hat{P}_c$ and plug the results into the other equations.
+
+\begin{align}
+\hat{X}_c &= -\frac{\tilde{\Delta}_{PC}}{\kappa} \hat{P}_c + \sqrt{\frac{2}{\kappa}}\hat{X}_c^{\text{in}}\\
+\hat{P}_c &= \frac{\tilde{\Delta}_{PC}}{\kappa} \hat{X}_c + 2\frac{G_a}{\kappa}\hat{X}_a + 2\frac{G_b}{\kappa} \hat{X}_b + \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}}
+\end{align}
+
+\begin{align}
+\hat{X}_c & = -\frac{\tilde{\Delta}_{PC}^2}{\kappa^2} \hat{X}_c - 2\frac{\tilde{\Delta}_{PC}}{\kappa^2}G_a \hat{X}_a - 2\frac{\tilde{\Delta}_{PC}}{\kappa^2}G_b \hat{X}_b  - \frac{\tilde{\Delta}_{PC}}{\kappa} \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}} + \sqrt{\frac{2}{\kappa}}\hat{X}_c^{\text{in}}\\
+\hat{P}_c &= - \frac{\tilde{\Delta}_{PC}^2}{\kappa^2} \hat{P}_c + \frac{\tilde{\Delta}_{PC}}{\kappa}\sqrt{\frac{2}{\kappa}}\hat{X}_c^{\text{in}} + 2\frac{G_a}{\kappa}\hat{X}_a + 2\frac{G_b}{\kappa} \hat{X}_b + \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}}
+\end{align}
+
+\begin{align}
+\hat{X}_c &= -2 \frac{\tilde{\Delta}_{PC}}{\kappa^2+\tilde{\Delta}_{PC}^2} \left(G_a \hat{X}_a + G_b \hat{X}_b\right) - \frac{\tilde{\Delta}_{PC}}{\kappa^2 + \tilde{\Delta}_{PC}^2} \sqrt{2\kappa} \hat{P}_c^{\text{in}} + \frac{\kappa}{\kappa^2+\tilde{\Delta}_{PC}^2} \sqrt{2\kappa} \hat{X}_c^{\text{in}}\\
+\hat{P}_c &= 2 \frac{\kappa}{\kappa^2+\tilde{\Delta}_{PC}^2} \left(G_a \hat{X}_a + G_b \hat{X}_b\right) + \frac{\tilde{\Delta}_{PC}}{\kappa^2 + \tilde{\Delta}_{PC}^2} \sqrt{2\kappa} \hat{X}_c^{\text{in}} + \frac{\kappa}{\kappa^2+\tilde{\Delta}_{PC}^2} \sqrt{2\kappa} \hat{P}_c^{\text{in}}
+\end{align}
+
+For consistency with the negative mass oscillator supplementary material I can work out
+
+\begin{align}
+\hat{c} &= \frac{1}{2}\left(\hat{X}_c + i\hat{P}_c\right)\\
+&= \frac{-\tilde{\Delta}_{PC}+i\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}\left(G_a\hat{X}_a + G_b \hat{X}_b\right) + \frac{1}{2}\frac{\sqrt{2\kappa}}{\kappa^2 + \tilde{\Delta}_{PC}^2} \left(\tilde{\Delta}_{PC}(i \hat{X}_c^{\text{in}} - \hat{P}_c^{\text{in}}) + \kappa (\hat{X}_c^{\text{in}} +i \hat{P}_c^{\text{in}})\right)\\
+&= i \frac{1}{\kappa - i\tilde{\Delta}_{PC}}\left(G_a \hat{X}_a + G_b \hat{X}_b\right) + \frac{\sqrt{2\kappa}}{\kappa - i\tilde{\Delta}_{PC}} \hat{c}^{\text{in}}
+\end{align}
+
+Consider
+
+\begin{align}
+\frac{i}{\kappa - i \tilde{\Delta}_{PC}} = \frac{-\tilde{\Delta}_{PC} + i\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}
+\end{align}
+
+This complex number can be written in magnitude angle form by
+
+\begin{align}
+\frac{i}{\kappa - i \tilde{\Delta}_{PC}} = \sqrt{\frac{1}{\kappa^2 + \tilde{\Delta}_{PC}^2}} e^{-i\phi_q}
+\end{align}
+
+Where $\tan(\phi_q) = \frac{\kappa}{\tilde{\Delta}_{PC}}$. We can then write
+
+\begin{align}
+\hat{c} = \sqrt{\frac{1}{\kappa^2 + \tilde{\Delta}_{PC}^2}} e^{-i\phi_q}\left(G_a \hat{X}_a + G_b \hat{X}_b\right) + \frac{\sqrt{2\kappa}}{\kappa - i\tilde{\Delta}_{PC}} \hat{c}^{\text{in}}
+\end{align}
+
+We can recall that
+
+\begin{align}
+G_a &= -\gamma \sqrt{\bar{n}} g_a\\
+G_b &= -\beta \sqrt{\bar{n}} g_b
+\end{align}
+
+For consistency with the negative mass oscillator paper supplemental material we will drop the $-\gamma$ and $-\beta$. There are a number of possible sign conventions that go into these signs None of this matters unless you are concerned with the sign of the relative phase between $X_a$ and $X_b$. We can then define
+
+\begin{align}
+\hat{D} = \left(G_a \hat{X}_a + G_b \hat{X}_b\right) = \sqrt{\bar{n}} \left(g_a \hat{X}_a + g_b \hat{X}_b\right)
+\end{align}
+
+In that case we get
+
+\begin{align}
+\hat{c} = \sqrt{\frac{\bar{n}}{\kappa^2 + \tilde{\Delta}_{PC}^2}} e^{-i\phi_q}\hat{D} + \frac{\sqrt{2\kappa}}{\kappa - i\tilde{\Delta}_{PC}} \hat{c}^{\text{in}}
+\end{align}
+
+Consistent with the supplemental material.
+
+From the form of $\phi_q$ we can write
+
+\begin{align}
+\cos(\phi_q) &= \frac{\tilde{\Delta}_{PC}}{\sqrt{\kappa^2 + \tilde{\Delta}_{PC}^2}}\\
+\sin(\phi_q) &= \frac{\kappa}{\sqrt{\kappa^2 + \tilde{\Delta}_{PC}^2}}\\
+\end{align}
+
+We can then revisit above equations to find
+
+\begin{align}
+\hat{X}_c &= -2\sqrt{\frac{\bar{n}}{\kappa^2 + \tilde{\Delta}_{PC}^2}}\cos(\phi_q) \hat{D} - \sqrt{\frac{2\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}}\cos(\phi_q) \hat{P}_c^{\text{in}} + \sqrt{\frac{2\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}}\sin(\phi_q)\hat{X}_c^{\text{in}}\\
+\hat{P}_c &= 2\sqrt{\frac{\bar{n}}{\kappa^2 + \tilde{\Delta}_{PC}^2}}\sin(\phi_q) \hat{D} + \sqrt{\frac{2\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}}\cos(\phi_q) \hat{X}_c^{\text{in}} + \sqrt{\frac{2\kappa}{\kappa^2 + \tilde{\Delta}_{PC}^2}}\sin(\phi_q)\hat{P}_c^{\text{in}}\\
+\end{align}
+
+if $\tilde{\Delta}_{PC} = 0$ then $\phi_q = \frac{\pi}{2}$ so the $\cos$ terms vanish and the $\sin$ terms are unity. In that case we get
+
+\begin{align}
+\hat{X}_c &= \sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}}\\
+\hat{P}_c &= 2 \frac{\sqrt{\bar{n}}}{\kappa} \hat{D} + \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}} = 2 \frac{G_a}{\kappa} \hat{X}_a + 2 \frac{G_b}{\kappa} \hat{X}_b + \sqrt{\frac{2}{\kappa}}\hat{P}_c^{\text{in}}
+\end{align}
+
+We could then plug these solutions for $\hat{P}_c$ into the equations for $\dot{\hat{X}}_a$, $\dot{\hat{X}}_b$, $\dot{\hat{P}}_a$, and $\dot{\hat{P}}_b$ to determine the new renormalized equations of motion for the oscillator. We will see the appearance of an optical spring coupling between the two oscillators as well as an optical spring shift of the frequencies of the two oscillators.
+
+I will work this out for the $\tilde{\Delta}_{PC} = 0$ case which is simplest since the light only contributes backaction noise.
+
+\begin{align}
+\dot{\hat{X}}_a &= + \gamma \omega_a \hat{P}_a - \frac{\Gamma_a}{2} \hat{X}_a + \sqrt{\Gamma_a} \hat{X}_a^{\text{in}}\\
+\dot{\hat{P}}_a &= - \gamma \omega_a \hat{X}_a - \frac{\Gamma_a}{2} \hat{P}_a + 2 G_{\text{stat}} \hat{X}_b + 2 G_a \sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}} + \sqrt{\Gamma_a} \hat{P}_a^{\text{in}}\\
+\dot{\hat{X}}_b &= +\omega_b \hat{P}_b - \frac{\Gamma_b}{2} \hat{X}_b + \sqrt{\Gamma_b} \hat{X}_b^{\text{in}}\\
+\dot{\hat{P}}_b &= -\omega_b \hat{X}_b - \frac{\Gamma_b}{2} \hat{P}_b + 2 G_{\text{stat}} \hat{X}_a + 2 G_b \sqrt{\frac{2}{\kappa}} \hat{X}_c^{\text{in}} + \sqrt{\Gamma_b} \hat{P}_b^{\text{in}}\\
+\end{align}
+
+
+\end{document}

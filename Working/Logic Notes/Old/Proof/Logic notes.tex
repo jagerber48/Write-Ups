@@ -1,0 +1,50 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{ND}
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\langle\{#1\} \rangle}
+\newcommand{\braketcomm}[1]{\langle[#1] \rangle}
+\newcommand{\lm}{\xleftarrow[LM]{}}
+
+\begin{document}
+	
+\title{Language of First Order Logic}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I'll try to summarize a set of rules of formation and inference for the language of first order logic (LFOL). I'll closely follow "Modern Logic: A Text in Elementary Symbolic Logic" by Graeme Forbes. I'll also pull some from "Lectures in Logic and Set Theory Volume 1" by George Tourlakis.
+
+\section{Language of First Order Logic}
+We will be concerned here with mathematical theories. What is a mathematical theory? In practice we ``write down'' a mathematical theory by first writing down a list of axioms, perhaps formally stated. Then from these axioms we can derive new statements from the existing statement by validly applying the rules of inference. As we do this we are ``building up'' the theory. We'll now explicate this more clearly.
+We require three elements to write down the theory. We require 
+\begin{enumerate}
+\item a list of allowed symbols, called the alphabet.
+\item a set of syntax rules which allow us to combine symbols into allowed strings called well formed formulas (WFFs).
+\item a set of inference rules which allow us to derive new statements from those already known to be present in the theory.
+\end{enumerate}
+
+Given the above rules we see that all of the valid WFFs and statements in the theory could in principle be algorithmically discovered once the rules are stated. That is, once the rules are stated the objects are already fully defined even if we have ``written down'' all of the statements in a given theory. The task of mathematicians is the `discover' new theorems that are valid in a given theory. With this point of view we can define the set \textbf{WFF} which is the set of all well-formed formulas as well as the set 
+
+\end{document}

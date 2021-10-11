@@ -1,0 +1,1530 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+\newtheorem{definition}{Definition}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+
+\begin{document}
+\title{Statistical Mechanics and Bose-Einstein Condensation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section*{Introduction}
+In this document I'll work through some of the very basics of statistical mechanics, build up to the derivation of the BEC phase transition for a non-interacting gas in various geometries, and thoroughly work through some of the required mathematical facts.
+
+\section{Boltzmann Factors}
+
+In this section I will define entropy, temperature and start working out the various thermodynamic ensembles.
+
+We first consider a general physical system system. We typically imagine a situation in which that system has a \textit{countable} cardinality of possible states. This means, for example, that there are a finite number of states with energy between finite $E_1$ and $E_2$. In many cases (classical mechanics) obtaining a countable (discrete) state space involves a coarse graining of phase space. This can be done by chunking $x$ and $p$ into blocks of area $h$, where $h$  is Planck's constant\footnote{The reason for the surprising appearance of the quantum $h$ in classical statistical mechanics is to ensure agreement between the classical and quantum approaches in problems which they can both access. I think there is a more sophisticated answer involving the phase space formulations of quantum mechanics.}. Bound quantum states are convenient in that they are already discrete. We call the discrete states of the system microstates.
+
+Lets also discretize energy into chunks of size $\delta E$. This means if we have a state which has an energy which is not an integer multiple of $\delta E$ we round its energy to the nearest integer multiple (or just round it down). We can now start counting states. Note that because of the rounding of energies we can speak about the number of states with a particular energy $E$ as opposed to the number of states with energy between $E$ and $E+\delta E$. As mentioned above this is a finite number. We call this number of microstates with energy $E$. We denote this by
+
+\begin{align}
+\Omega(E)
+\end{align}
+
+Statistical mechanics asks the question what properties is a system likely to exhibit. To answer this question we must know the likelihood that certain states are populated. The ergodic hypothesis says that every microstate is equiprobable. This means that if there are more microstates in energy range $A$ than in energy range $B$ that it is more likely to find the system in energy range $A$ than $B$.
+
+\section{Temperature and Entropy in the Canonical Ensemble}
+
+We consider the probability of finding a system in a given energy range.
+
+\begin{align}
+P(E) = C \Omega(E)
+\end{align}
+
+Here $C$ is a normalization constant chosen to ensure that the probability of being in a state with \textit{any} energy is $1$.
+
+Consider a supersystem $A^0$ which has two subsystems $A$ and$A'$. Suppose the subsystems can exchange energy. We are considering the canonical ensemble here.
+
+The microstate of system $A^{0}$ is uniquely identified by the microstates of the two subsystems. The total energy of the $A^0$ is $E^0 = E + E'$. We assume $\delta E = \delta E'$. We denote the number of states of the total system for which the system $A$ has energy $E$ by $\Omega^0(E)$. The total number of states for which system $A$ has energy $E$ is $\Omega(E)$ and the total number of states for which system $A'$ has energy $E'$ is $\Omega'(E')$.
+
+\begin{align}
+\Omega^0(E) = \Omega(E)\Omega'(E') = \Omega(E)\Omega(E^0-E)
+\end{align}
+
+That is, system $A$ has $\Omega(E)$ states with energy $E$ and system $A'$ has $\Omega'(E')$ states with energy $E'$ so the total number of states of the combined system $A^0$ where system $A$ has energy $E$ is the product $\Omega(E)\Omega'(E')$.
+
+The probability that system $A$ has energy $E$ is then given by
+
+\begin{align}
+P(E) = C \Omega(E)\Omega'(E')
+\end{align}
+
+We are now interested in finding the most probable energy for system $A$. To do this we will do something funny. We have now discrete states and discrete energies which may have arisen from discretizing a continuous statespace. We will now take the discrete functions $P(E), \Omega^0(E), \Omega(E)$ and $\Omega'(E')$ and treat them as if they were continuous functions of a continuous energy. That is we will write something like
+
+\begin{align}
+\frac{\Omega(E + \delta E) - \Omega(E)}{\delta E} = \frac{\partial\Omega(E)}{\partial E}
+\end{align}
+
+This should all be justified if $\delta E$ is chosen small enough.
+
+The most likely state will maximize $P(E)$ so that $\frac{\partial P(E)}{\partial E} = 0$. In statistical mechanics we often work with extremely large numbers. This is because the number of particles in macroscopic samples can be of the order $10^{20}$ or more. For this reason it is often nicer to work with the orders of magnitude of quantities rather than the quantities themselves. A number can be approximately converted to its order of magnitude by taking its logarithm. For that reason we often work with logarithms in statistical mechanics. We'll note that if $\frac{\partial P(E)}{\partial E} = 0$ then $\frac{\partial \ln(P(E))}{\partial E} = 0$ as well. We expand
+
+\begin{align}
+\ln(P(E)) = \ln(C) + \ln(\Omega(E)) + \ln(\Omega'(E'))
+\end{align}
+
+
+The maximization condition gives
+
+\begin{align}
+\frac{\partial \ln(P(E))}{\partial E} &= 0 + \frac{\partial \ln(\Omega(E))}{\partial E} + \frac{\partial \ln(\Omega'(E'))}{\partial E}\\
+&= \frac{\partial \ln(\Omega(E))}{\partial E} + \frac{\partial \ln(\Omega'(E'))}{\partial E'} \frac{\partial E'}{\partial E}\\
+&= \frac{\partial \ln(\Omega(E))}{\partial E} - \frac{\partial \ln(\Omega'(E'))}{\partial E'} = 0
+\end{align}
+
+Note that the first term depends only on system $A$ and the second term depends only on system $B$. We see clearly that
+
+\begin{align}
+\frac{\partial \ln(\Omega(E))}{\partial E} = \frac{\partial \ln(\Omega'(E'))}{\partial E'}
+\end{align}
+
+For a given system define
+
+\begin{align}
+\beta(E) = \frac{\partial \ln(\Omega(E))}{\partial E}
+\end{align}
+
+and we see that the most probable energy for system $A$ is the energy which satisfies
+
+\begin{align}
+\beta(E) = \beta'(E')
+\end{align}
+
+Where $E' = E^0-E$. We see that $\beta$ has dimensions of inverse energy. We define for a system
+
+\begin{align}
+k T(E) = \frac{1}{\beta(E)}
+\end{align}
+
+Where $k$ is Boltzmann's constant. and $T$ is the temperature of the system. Reif has a lot of text about how temperature should be defined. The upshot is that the temperatures of particular systems (the triple point of water) are defined by international convention in units of Kelvin. From that $k$ can be measured. It has been found that
+
+\begin{align}
+k = 1.3806488(13) \times 10^{-23} \frac{\text{J}}{\text{K}}
+\end{align}
+
+We define entropy
+
+\begin{align}
+S(E) = k \ln(\Omega(E))
+\end{align}
+
+We note that entropy is related to the order of magnitude of the multiplicity of a particular energy $E$.
+
+Note that
+
+\begin{align}
+\beta(E) &= \frac{1}{k} \frac{\partial \ln(S(E))}{\partial E}\\
+\frac{1}{T(E)} &= \frac{\partial S(E)}{\partial E}
+\end{align}
+
+At this stage, especially for the canonical ensemble, we see that everything is a function of the energy of the system, $E$. Often we drop this dependency from our notation.
+
+\subsection{System in Contact with a Heat Reservoir with Fixed Temperature}
+
+We now consider the canonical ensemble when one of the subsystems is our system of interest and the other is a large thermal reservoir. This will be very similar to what has been done above.
+
+Here we consider systems $A$ and $A'$ as above. Now $A'$ is a large reservoir and $A$ is a comparatively small (but still thermodynamically large) system.
+
+We consider the probability that the system $A$ is in state $r$.
+
+\begin{align}
+P_r = C' \Omega'(E^0-E_r)
+\end{align}
+
+Here the total system energy is $E^0$ so the energy of the reservoir must be $E^0-E_r$. Since we are considering system $A$ to be in state $r$ there is only one possible microstate for system $A$ thus the total multiplicity of states where system $A$ is in state $r$ is given by $\Omega'(E^0-E_r)$. $C'$ is again a normalization constant.
+
+Since $A'$ is a large reservoir we have that $E^0 \gg E_r$ so we can write and expand $\ln(\Omega'(E^0-E_r))$.
+
+\begin{align}
+\ln(\Omega'(E^0-E_r)) &\approx \ln(\Omega'(E^0)) - \frac{\partial(\ln(\Omega'(E')))}{\partial E'}\rvert_{E'=E^0} E_r\\
+&= \ln(\Omega'(E^0)) - \beta(E^0)E_r = \ln(\Omega'(E^0)) - \beta E_r
+\end{align}
+
+Noting that $\beta(E^0)$ is independent of $r$ and is thus the fixed temperature of the reservoir. The approximation of a large reservoir is related to the idea that $A'$ is so large that its energy and entropy are basically unchanged due to contact with $A$.
+Exponentiating we see
+
+\begin{align}
+\Omega'(E^0-E_r) = \Omega'(E^0) e^{-\beta E_r}
+\end{align}
+
+Plugging this in above we see
+
+\begin{align}
+P_r = C e^{-\beta E_r}
+\end{align}
+
+With $C = C'\Omega'(E^0)$. The factor $e^{-\beta E_r}$ is ubiquitous in statistical mechanics and is called the Boltzmann factor. We can solve for the normalization constant $C$.
+
+\begin{align}
+\sum_r P_r = 1 = C \sum_r e^{-\beta E_r}
+\end{align}
+
+so 
+
+\begin{align}
+\frac{1}{C} = Z = \sum_r e^{-\beta E_R}
+\end{align}
+
+Defining the canonical partition function $Z$
+and we finally see that
+
+\begin{align}
+P_r = \frac{e^{-\beta E_r}}{Z}
+\end{align}
+
+From this we can calculate many statistical quantities. For example, the average energy:
+
+\begin{align}
+\braket{E} &= \sum_r P_r E_r = \frac{1}{Z} \sum_r e^{-\beta E_r} E_r\\
+&= -\frac{1}{Z} \frac{\partial Z}{\partial \beta} = -\frac{\partial \ln(Z)}{\partial \beta}
+\end{align}
+
+\section{Ideal Gas}
+
+We consider an ideal gas. The energy of the gas is given by its kinetic energy:
+
+\begin{align}
+E(v_x,v_y,v_z) = \frac{m}{2} (v_x^2 + v_y^2 + v_z^2)
+\end{align}
+
+We can calculate the partition function:
+
+\begin{align}
+Z &= \int_{v_x=0}^{\infty}\int_{v_y=0}^{\infty} \int_{v_z=0}^{\infty} e^{-\frac{m}{2 k T} (v_x^2 + v_y^2+ v_z^2)} dv_x dv_y dv_z\\
+&= \left(\sqrt{\frac{2\pi k T}{m}}\right)^3\\ 
+&= \left(\frac{2\pi  k T}{m}\right)^{\frac{3}{2}}
+\end{align}
+
+The average energy of the system is found quickly by the equipartition theorem (see proof below):
+
+\begin{align}
+\Braket{E} = \frac{3}{2} kT
+\end{align}
+
+Note we can easily calculate the rms velocity variance
+
+\begin{align}
+\sqrt{\Braket{|\vec{v}|^2}} = \sqrt{\frac{2}{m}\Braket{E}} = \sqrt{\frac{3kT}{m}}
+\end{align}
+
+In fact we could calculate this a bit differently. Consider any function of velocity which we would like to calculate. We can calculate statistics of this function as follows.
+
+\begin{align}
+\Braket{f(v_x,v_y,v_z)} = \frac{1}{Z} \int_{v_x=-\infty}^{+\infty}\int_{v_y=-\infty}^{+\infty}\int_{v_z=-\infty}^{+\infty} f(v_x,v_y,v_z) e^{-\frac{m}{2kT} (v_x^2+v_y^2+v_z^2)} dv_xdv_ydv_z\\
+\end{align}
+
+If $f(v_x,v_y,v_z)$ is a spherically symmetric function then we have $f(v_x,v_y,v_z) = f(|\vec{v}|) = f(v)$. We can change variables so that $dv_xdv_ydv_z = v^2 \sin(\theta) dv d\theta d\phi$ then integrating $\theta$ and $\phi$ we get a factor of $4\pi$ resulting in
+
+\begin{align}
+\Braket{f(v_x,v_y,v_z)} = \Braket{f(v)} = \frac{1}{Z} \int_{v=0}^{+\infty} f(v) 4\pi v^2 e^{-\frac{m}{2kT} v^2} dv\\
+\end{align}
+
+Define
+
+\begin{align}
+D(v) = \left(\frac{m}{2\pi kT}\right)^{\frac{3}{2}} 4\pi v^2 e^{-\frac{m v^2}{2 kT}}
+\end{align}
+
+This is the probability function per unit speed. We see that
+
+\begin{align}
+\Braket{f(v)} = \int_{v=0}^{\infty} D(v) f(v) dv
+\end{align}
+
+\subsection{DeBroglie Wavelength}
+
+The Debroglie Wavelength of a particle is given by
+
+\begin{align}
+\lambda = \lambda_{DB} = \frac{h}{p} = \frac{2\pi}{k}
+\end{align}
+
+We see
+
+\begin{align}
+p = \frac{h}{2\pi} k = \hbar k
+\end{align}
+
+The idea is that a quantum particle with wavevector $k$ has momentum $\hbar k$.
+
+We can define an effective length scale which is the thermal DeBroglie wavelength. I will show two possible ways we can define it here.
+
+\subsubsection{First Thermal DeBroglie Wavelength}
+
+The first way is using the average thermal energy in an ideal gas. For a gas with a non-relativistic dispersion relation we have
+
+\begin{align}
+E &= \frac{p^2}{2m}\\
+p &= \sqrt{2mE}
+\end{align}
+
+So we get
+
+\begin{align}
+\lambda &= \frac{h}{\sqrt{2mE}}
+\end{align}
+
+The first thermal DeBroglie wavelength follows from considering the DeBroglie wavelength of a particle which has energy equal to the mean energy of an ideal gas in free space: $\Braket{E} = \frac{3}{2} kT$. In this case we get
+
+\begin{align}
+\lambda_T = \frac{h}{\sqrt{3mkt}}
+\end{align}
+
+\subsubsection{Second Thermal DeBroglie Wavelength}
+
+Consider the partition function we found above:
+
+\begin{align}
+Z = \left(\frac{2\pi kT}{m} \right)^{\frac{3}{2}}
+\end{align}
+
+Note that this quantity has dimensions of velocity cubed because it arose from an integral of the three dimensions of velocity. We will consider this velocity cubed to be a characteristic velocity.
+
+\begin{align}
+v_T = \sqrt{\frac{2\pi kT}{m}}
+\end{align}
+
+ We can convert this to a momentum by multiplying by $m$ to get
+ 
+ \begin{align}
+ p_T = m v_T = \sqrt{2\pi mkT}
+ \end{align}
+ 
+ Finally we can convert this to a thermal DeBroglie wavelength:
+ 
+\begin{align}
+\lambda_T &= \frac{h}{p_T} = \frac{h}{\sqrt{2\pi m kT}} = \sqrt{\frac{h^2}{2\pi mkT}} = \sqrt{\frac{2\pi \hbar^2}{mkT}}
+\end{align}
+
+Note that if we had written the energy and partition function down in terms of momentum rather than velocity we would have seen the factor $p_T = \sqrt{2\pi mkT}$ appear more directly:
+
+\begin{align}
+E(p_x,p_y,p_z) = \frac{1}{2m}(p_x^2+p_y^2+p_z^2)
+\end{align}
+
+\begin{align}
+Z &= \int_{p_x=0}^{\infty}\int_{p_y=0}^{\infty} \int_{p_z=0}^{\infty} e^{-\frac{1}{2m k T} (p_x^2 + p_y^2+ p_z^2)} dp_x dp_y dp_z\\
+&= \left(2\pi m k T\right)^{\frac{3}{2}} = p_T^3
+\end{align}
+
+\section{Grand Canonical Ensemble}
+
+In the Grand Canonical Ensemble the system $A$ is in contact with reservoir $A'$ but now the system and reservoir are able to exchange particle number $N$ as well as energy $E$. We have $N^0 = N+N'$. The multiplicity of microstates is now dependent on $N$ as well as $E$. As before we have the probability that hte system is in microstate $r$ is given by
+
+\begin{align}
+P_r = C' \Omega'(E^0-E_r, N^0 - N_r)
+\end{align}
+
+We take the logarithm and Taylor expand:
+
+\begin{align}
+&\ln(\Omega'(E^0-E_r,N^0-N_r)) \approx\\ 
+&\ln(\Omega'(E^0,N^0)) - \frac{\partial \ln(\Omega'(E',N^0))}{\partial E'}\rvert_{E'=E^0} E_r - \frac{\partial\ln(\Omega'(E^0,N'))}{\partial N'}\rvert_{N'=N^0} N_r
+\end{align}
+
+We have that
+
+\begin{align}
+\frac{\partial \ln(\Omega'(E',N^0))}{\partial E'}\rvert_{E'=E^0}  &= \beta(E^0,N^0)\\
+\frac{\partial \ln(\Omega'(E^0,N'))}{\partial N'}\rvert_{N'=N^0}  &= \alpha(E^0,N^0)\\
+\end{align}
+
+Note that $\alpha$ and $\beta$ characterize the reservoir under these conditions. We define $T$ and $\mu$ by $\beta = \frac{1}{kT}$ and $\alpha = -\beta \mu = -\frac{\mu}{kT}$.
+
+We then have
+
+\begin{align}
+\ln(\Omega'(E',N')) &= \ln(\Omega'(E^0,N^0)) - \beta E_r + \mu \beta N_r\\
+\Omega(E',N') &= \Omega'(E^0,N^0) e^{-\beta (E_r - \mu N_r)}
+\end{align}
+
+So that
+
+\begin{align}
+P_r = C e^{-\beta(E_r-\mu N_r)}
+\end{align}
+
+The grand canonical partition function, $\mc{Z}$ is defined by
+
+\begin{align}
+\sum_r P_r &= C\sum_r e^{-\beta(E_r-\mu N_r)} = 1\\
+\frac{1}{\mc{Z}} &= C = \frac{1}{\sum_r e^{-\beta(E_r-\mu N_r)}}\\
+\mc{Z} &= \sum_r e^{-\beta(E_r-\mu N_r)}
+\end{align}
+
+\begin{align}
+P_r = \frac{1}{\mc{Z}} e^{-\beta(E_r-\mu N_r)}
+\end{align}
+
+\section{Statistical Distribution Functions and Particle Statistics}
+
+We consider a grand canonical ensemble consisting of either distinguishable particles, bosons, or fermions. In all cases we are interested in the grand canonical partition function and the occupancy for state, $\braket{n_i}$, the expected number of particles in state $i$.
+
+For distinguishable or indistinguishable particles we can describe the state by specifying the number of particles in each state: $n_1,n_2,\ldots$ noting that for indistinguishable particles the list of occupancies gives complete state information while for distinguishable particles there is a multiplicity of states with a particular list of occupancies because the particles can be mixed amongst the states.
+
+The grand canonical partition function can then be written
+
+\begin{align}
+\mc{Z} &= \sum_R e^{-\beta(\ep_1 n_1 + \ep_1 n_2 + \ldots) + \beta \mu (n_1+n_2+\ldots)}\\
+&= \sum_R e^{-\beta((\ep_1-\mu)n_1 + (\ep_2-\mu)n_2+\ldots)}
+\end{align}
+
+Where $R$ is the set of all possible microstates. We then have
+
+\begin{align}
+\braket{n_i} &= \frac{\sum_R n_i e^{-\beta((\ep_1-\mu) n_1 + (\ep_2 -\mu)n_2 + \ldots)}}{\sum_R e^{-\beta((\ep_1-\mu) n_1 + (\ep_2-\mu) n_2 + \ldots)}}\\
+\braket{N} = \braket{n_1+n_1+\ldots} &= \frac{\sum_R (n_1+n_2+\ldots) e^{-\beta((\ep_1-\mu) n_1 + (\ep_2 -\mu)n_2 + \ldots)}}{\sum_R e^{-\beta((\ep_1-\mu) n_1 + (\ep_2-\mu) n_2 + \ldots)}}
+\end{align}
+
+We can see that
+
+\begin{align}
+\braket{n_i} = -\frac{1}{\mc{Z}}\frac{1}{\beta} \frac{\partial \mc{Z}}{\partial \epsilon_i} = -\frac{1}{\beta}\frac{\partial \ln(\mc{Z})}{\partial \epsilon_i}\\
+\braket{N} = \braket{n_1+n_2+\ldots} = \frac{1}{\mc{Z}}\frac{1}{\beta}\frac{\partial\mc{Z}}{\partial \mu} = \frac{1}{\beta}\frac{\partial\ln(\mc{Z})}{\partial \mu}
+\end{align}
+
+This expression will hold for each distribution but the form for $\mc{Z}$ will vary depending on the counting statistics for the particular type of particle.
+
+\section{Boltzmann Statistics}
+
+For Boltzmann statistics of indistinguishable particles we have
+
+\begin{align}
+\mc{Z} &= \sum_R e^{-\beta((\ep_1-\mu)n_1 + (\ep_2-\mu)n_2+\ldots)}\\
+&= \sum_{n_1=0}^{\infty}\sum_{n_2=0}^{\infty}\ldots \frac{(n_1+n_2+\ldots)!}{n_1!n_2!\ldots}e^{-\beta((\ep_1-\mu)n_1 + (\ep_2-\mu)n_2+\ldots)}\\
+&= \sum_{N=0}^{\infty} \sum_{n_1+n_2+\ldots=N} \frac{N!}{n_1!n_2!\ldots}e^{-\beta(\ep_1-\mu)n_1} e^{-\beta(\ep_2-\mu)n_2}\ldots\\
+&= \sum_{N=0}^{\infty} e^{\beta\mu N}(e^{-\beta \epsilon_1} + e^{-\beta\epsilon_2}+\ldots)^N\\
+&= \sum_{N=0}^{\infty}\left(e^{\beta \mu} Z \right)^N\\
+&= \frac{1}{1-e^{\beta\mu}Z}
+\end{align}
+
+The second equality follows by enumerating the states by the number of particles $n_i$ in each state $r_i$ with energy $\ep_i$. Note that every combination of number of particles in particular states, $\{n_i\}$ corresponds to $\frac{(n_1+n_2+\ldots)!}{n_1!n_2!\ldots}$ different microstates with the same Boltzmann factor. This is because this is the number of distinct ways of arranging $n_1+n_2+\ldots$ distinguishable particles into bins of size $n_1,n_2,\ldots$. That is, there are $n_1+n_2+\ldots$ particles so there are $(n_1+n_2+\ldots)!$ ways to order these particles. However, re-ordering the particles within the bins (there are $n_i!$ ways to order each bin) doesn't correspond to changing the state so we divide out this permutation multiplicity.
+
+The third equality is a re-ordering of the sum, collecting together terms that have a common $n_1+n_2+\ldots = N$. The fourth equality follows from the multinomial theorem. The fifth equality follows by noting the definition of the single particle canonical partition function $Z = \sum_i e^{-\beta \ep_i}$. The final equality follows as an application of the formula for a geometric series.
+
+Note we can write
+
+\begin{align}
+\ln{\mc{Z}} = -\ln(1-e^{\beta\mu}Z)
+\end{align}
+
+We then have
+
+\begin{align}
+\Braket{N} = \frac{1}{\beta}\frac{\partial \ln(\mc{Z})}{\partial \mu} = -\frac{1}{\beta}\frac{-\beta e^{\beta\mu}Z}{1-e^{\beta\mu}Z} = \frac{e^{\beta\mu}Z}{1-e^{\beta\mu}Z} = e^{\beta \mu}Z\mc{Z}
+\end{align}
+
+We also have
+
+\begin{align}
+\Braket{n_i} &= -\frac{1}{\beta}\frac{\partial \ln(\mc{Z})}{\partial \ep_i} = \frac{1}{\beta}\frac{-e^{\beta\mu} \frac{\partial Z}{\partial \ep_i}}{1-e^{\beta \mu}Z}\\
+&= -\frac{1}{\beta}\frac{\Braket{N}}{Z} \frac{\partial Z}{\partial \ep_i} = -\frac{1}{\beta}\frac{\Braket{N}}{Z}(-\beta)e^{-\beta \ep_i}\\
+&=\Braket{N}\frac{e^{-\beta \ep_i}}{Z} = \mc{Z} e^{-\beta(\ep_i-\mu)}
+\end{align}
+
+\begin{align}
+\frac{\braket{n_i}}{\braket{N}} = \frac{e^{-\beta \ep_i}}{Z} = \frac{e^{-\beta \ep_i}}{\sum_j e^{-\beta \ep_j}}
+\end{align}
+\section{Bose-Einstein Statistics}
+
+Bosons are indistinguishable particles with the property that an arbitrary number of bosons can populate a given state.
+
+The grand canonical partition function for a system of bosons is given by
+
+\begin{align}
+\mc{Z} &= \sum_R e^{-\beta((\ep_1 - \mu)n_1 + (\ep_2 - \mu)n_2 + \ldots)}\\
+&= \sum_{n_1=0}^{\infty} \sum_{n_2=0}^{\infty}\ldots e^{-\beta(\ep_1-\mu)n_1}e^{-\beta(\ep_2-\mu)n_2}\ldots\\
+&= \prod_{i=1}^{\infty} \sum_{n_i=0}^{\infty} e^{-\beta(\ep_i-\mu)n_i}\\
+&= \prod_{i=0}^{\infty} \frac{1}{1-e^{-\beta(\ep_i-\mu)}}
+\end{align}
+
+The second equality follows because the states are uniquely determined by the number of particles in each state with energy $\ep_i$. This follows from the indistinguishably of bosons. We only need specify how many particles are in a given state and not which particles are in which state. This means we do not have the factorial pre-coefficient that we saw in the Boltzmann statistics case.
+
+The logarithm is
+
+\begin{align}
+\ln(\mc{Z}) &= \ln\left(\prod_{i=1}^{\infty} \frac{1}{1-e^{-\beta(\ep_i-\mu)n_i}}\right)\\ 
+&= \sum_{i=1}^{\infty}\ln\left(\frac{1}{1-e^{-\beta(\ep_i-\mu)}}\right)\\
+&= -\sum_{i=1}^{\infty} \ln(1-e^{-\beta(\ep_i-\mu)})
+\end{align}
+
+The expected number in a particular state is given by
+
+\begin{align}
+\braket{n_i} &= -\frac{1}{\beta} \frac{\partial \ln(\mc{Z})}{\partial \ep_i} = \left(-\frac{1}{\beta}\right) (-1)\frac{(-1)(-\beta)e^{-\beta(\ep_i-\mu)}}{1-e^{-\beta(\ep_i-\mu)}}\\
+&= \frac{e^{-\beta(\ep_i-\mu)}}{1-e^{-\beta(\ep_i-\mu)}}\\
+&= \frac{1}{e^{\beta(\ep_i-\mu)}-1}
+\end{align}
+
+And the total atom number is given by
+
+\begin{align}
+\Braket{N} = \sum_{i=1}^{\infty} \braket{n_i} = \sum_{i=1}^{\infty} \frac{1}{e^{\beta(\ep_i-\mu)}-1}
+\end{align}
+
+This could also have been derived from $\Braket{N} = \frac{1}{\beta} \frac{\partial \ln(\mc{Z})}{\partial \mu}$.
+
+\section{Fermi-Dirac Statistics}
+
+For Fermi-Dirac statistics we consider indistinguishable Fermion particles. There can only be $0$ or $1$ fermion in a given state.
+
+\begin{align}
+\mc{Z} &= \sum_R e^{-\beta((\ep_1-\mu)n_1 + (\ep_2-\mu)n_2 + \ldots}\\
+&= \sum_{n_1=0}^1 \sum_{n_2=0}^1\ldots e^{-\beta(\ep_1-\mu)n_1}e^{-\beta(\ep_2-\mu)n_2}\ldots\\
+&= \prod_{i=1}^{\infty}\sum_{n_i=0}^1 e^{-\beta(\ep_i-\mu)n_i}\\
+&= \prod_{i=1}^{\infty} 1+e^{-\beta(\ep_i-\mu)}
+\end{align}
+
+The logarithm is
+
+\begin{align}
+\ln(\mc{Z}) &= \sum_{i=1}^{\infty} \ln(1+e^{-\beta(\ep_i-\mu)})
+\end{align}
+
+The expected particle number in a given state is
+
+\begin{align}
+\braket{n_i} &= -\frac{1}{\beta} \frac{\partial \ln(\mc{Z})}{\partial \ep_i} = \left(-\frac{1}{\beta}\right)\frac{-\beta e^{-\beta(\ep_i-\mu)}}{1+e^{-\beta(\ep_i-\mu)}}\\
+&= \frac{1}{e^{\beta(\ep_i-\mu)}+1}
+\end{align}
+
+The expected total atom number is
+
+\begin{align}
+\Braket{N} = \sum_{i=1}^{\infty} \braket{n_i} = \sum_{i=1}^{\infty} \frac{1}{e^{\beta(\ep_i-\mu)}+1}
+\end{align}
+
+\section{Bose-Einstein Condensation}
+
+Here I closely follow Pethick and Smith. The basic idea is to consider
+
+\begin{align}
+\Braket{N} = \sum_{i=1}^{\infty} \frac{1}{e^{\beta(\ep_i-\mu)}-1}
+\end{align}
+
+We can write $\ep_i = \Delta_i + \ep_0$ where $\ep_0$ is the energy of the ground state. Then from
+
+\begin{align}
+\braket{n_i} = \frac{1}{e^{\beta(\Delta_i + \ep_0 - \mu)}-1} \ge 0
+\end{align}
+
+We see 
+\begin{align}
+e^{\beta(\Delta_i+\ep_0-\mu)}-1 &\ge 0\\
+e^{\beta(\Delta_i+\ep_0-\mu)} &\ge 1\\
+\beta(\Delta_i+\ep_0-\mu) \ge \ln(1) = 0\\
+\Delta_i + \ep_0  &\ge \mu\\
+\end{align}
+
+So we see that $\mu \le \ep_0$ since $\Delta_0=0$. We can then define the fugacity, $z = e^{\beta \mu}$. We can set $\ep_0 = 0$ without changing the physics so that $\mu\le 0$ and then we see that $0<z \le 1$ and
+
+\begin{align}
+\braket{n_i} = \frac{1}{z^{-1} e^{\beta\ep_i}-1}
+\end{align}
+
+If the particle number of a sample is known then the equation
+
+\begin{align}
+\Braket{N} = N = \sum_{i=0}^{\infty} \frac{1}{z^{-1}e^{\beta\ep_i}-1}
+\end{align}
+
+sets a relationship between $\beta$, $N$ and $\mu$. We will calculate this sum by approximating it by an integral.
+
+\begin{align}
+\sum_{i=0}^{\infty} \frac{1}{z^{-1}e^{\beta \ep_i} - 1} \approx \int_{\ep=0}^{\infty} g(\ep) \frac{1}{z^{-1}e^{\beta \ep}-1} d\ep
+\end{align}
+
+Where $g(\ep)$ is the density of states which arises in the continuum limit. We will now calculate the density of states for a $d$-dimensional harmonic oscillator and for a non-relativistic particle in $d$-dimensions.
+
+\subsection{Harmonic Oscillator}
+For a harmonic oscillator we have
+
+\begin{align}
+\ep(n_1,\ldots,n_d) = \sum_{i=1}^d \hbar \omega_i n_i
+\end{align}
+
+We ask how many states are there with $\ep(n_1, \ldots, n_d)$ with $\ep(n_1, \ldots, n_d) \le \ep$ and denote this number by $G(\ep)$. Consider a space with $d$ axes, $n_1,\ldots, n_d$. For each unit cube in this space there is one state. The equation
+
+\begin{align}
+\ep(n_1, \ldots, n_d) = \sum_{i=1}^d \hbar \omega_i n_i \le \ep
+\end{align}
+
+with $n_i \ge 0$ corresponds to the simplex $\Delta_d\left(\frac{\ep}{\hbar \omega_1},\ldots,\frac{\ep}{\hbar \omega_d} \right)$ The volume of this simplex is
+
+\begin{align}
+\text{Vol}\left(\Delta_d\left(\frac{\ep}{\hbar \omega_1},\ldots,\frac{\ep}{\hbar \omega_d} \right) \right) = \frac{\ep^d}{\hbar^d (\omega_1\ldots \omega_d) d!}
+\end{align}
+
+define $\bar{\omega} = \left(\prod_{i=1}^d \omega_i\right)^{\frac{1}{d}}$ so that
+
+\begin{align}
+G(\ep) = \text{Vol}\left(\Delta_d\left(\frac{\ep}{\hbar \omega_1},\ldots,\frac{\ep}{\hbar \omega_d} \right) \right) = \left(\frac{\ep}{\hbar \bar{\omega}}\right)^d \frac{1}{d!}
+\end{align}
+
+The density of states, $g(\ep)$ is given by the derivative of $G(\ep)$:
+
+\begin{align}
+g(\ep) = \frac{dG(\ep)}{d\ep} = \frac{\ep^{d-1}}{(\hbar \bar{\omega})^d (d-1)!}
+\end{align}
+
+For three dimensions this works out to
+
+\begin{align}
+g(\ep) = \frac{1}{2\hbar^3\omega_x\omega_y\omega_z} \ep^2
+\end{align}
+
+\subsection{Particles in a Box}
+
+For particles in a $d$-dimensional box of lengths $L_1,\ldots, L_d$ with volume $V=L_1\ldots L_d$ we have 
+
+\begin{align}
+\ep(n_1,\ldots, n_d) = \frac{\pi^2 \hbar^2}{2m} \sum_{i=1}^d \left(\frac{n_i}{L_i}\right)^2
+\end{align}
+
+The equation
+
+\begin{align}
+\ep(n_1,\ldots, n_d) = \frac{\pi^2 \hbar^2}{2m} \sum_{i=1}^d \left(\frac{n_i}{L_i}\right)^2 \le \epsilon
+\end{align}
+
+with $n_i \ge 0$ corresponds to the positive space ellipsoid $E_d^+\left(\sqrt{2m\epsilon} \frac{L_1}{\hbar \pi}, \ldots, \sqrt{2m\epsilon} \frac{L_d}{\hbar \pi}\right)$ which has volume
+
+\begin{align}
+\text{Vol}\left(E_d^+\left(\sqrt{2m\epsilon} \frac{L_1}{\hbar \pi}, \ldots, \sqrt{2m\epsilon} \frac{L_1}{\hbar \pi}\right)\right)
+&= \left(\frac{2m\ep}{\pi^2 \hbar^2} \right)^{\frac{d}{2}} L_1\ldots L_d \frac{\pi^{\frac{d}{2}}}{2^d \Gamma\left(\frac{d}{2}+1\right)}
+\end{align}
+
+So we get
+
+\begin{align}
+G(\ep) &= 2^{-\frac{d}{2}}\pi^{-\frac{d}{2}} \hbar^{-d} m^{\frac{d}{2}}\ep^{\frac{d}{2}} \frac{L_1\ldots L_d}{\Gamma\left(\frac{d}{2}+1\right)}\\
+&= \left(\frac{m \ep}{2\pi \hbar^2}\right)^{\frac{d}{2}}\frac{V}{\Gamma\left(\frac{d}{2}+1\right)}
+\end{align}
+
+for three dimensions this works out to
+
+\begin{align}
+G(\ep)&=\left(\frac{m\ep}{2\pi \hbar^2} \right)^{\frac{3}{2}} \frac{V}{\frac{3}{4} \pi^{\frac{1}{2}}} = \frac{V m^{\frac{3}{2}} 2^{\frac{1}{2}}}{3\pi^2 \hbar^3} \ep^{\frac{3}{2}}\\
+\end{align}
+
+The density of states is then given by $g(\ep) = \frac{dG(\ep)}{d\ep}$.
+
+\begin{align}
+g(\ep) = \left(\frac{m}{2\pi\hbar^2} \right)^{\frac{d}{2}} \frac{V}{\Gamma\left(\frac{d}{2}+1\right)} \frac{d}{2} \ep^{\frac{d}{2}-1}
+\end{align}
+
+For three dimensions this works out to
+
+\begin{align}
+g(\ep) = \frac{m^\frac{3}{2}}{2^{\frac{3}{2}} \pi^{\frac{3}{2}} \hbar^3} \frac{4V}{3\pi^{\frac{1}{2}}} \frac{3}{2} \ep^{\frac{1}{2}} = \frac{V m^{\frac{3}{2}}}{2^{\frac{1}{2}} \pi^2 \hbar^3} \ep^{\frac{1}{2}}
+\end{align}
+
+\subsection{An Expression for the Expected Particle Number}
+
+We note that in all cases above the density of states is given by something like
+
+\begin{align}
+g(\ep) = C(\alpha)\ep^{\alpha-1}
+\end{align}
+
+Where $\alpha$ is an integer (harmonic oscillator) or half integer (rigid box) with
+
+\begin{align}
+C(\alpha) = \begin{cases}
+\frac{1}{(\hbar\bar{\omega})^\alpha (\alpha-1)!} \text{ for integer } \alpha\\
+\left(\frac{m}{2\pi\hbar^2}\right)^{\alpha} \frac{\alpha V}{\Gamma(\alpha+1)} \text{ for half-integer } \alpha\\
+\end{cases}
+\end{align}
+
+For the harmonic oscillator we have that $\alpha = d$ and for the rigid box we have $\alpha = \frac{d}{2}$.
+
+We then return to the particle number calculation.
+
+
+
+\begin{align}
+\Braket{N} = C(\alpha) \int_{\ep=0}^{\infty} \frac{\ep^{\alpha-1}}{z^{-1}e^{\beta \ep}-1} d\ep
+\end{align}
+
+We can calculate this integral as follows. First we perform a change of variables $x = \beta \ep$ to get
+
+\begin{align}
+\int_{\ep=0}^{\infty} \frac{\ep^{\alpha-1}}{z^{-1}e^{\beta \ep}-1} d\ep = \int_{x=0}^{\infty}\frac{\left(\frac{x}{\beta}\right)^{\alpha-1}}{z^{-1}e^x -1}\frac{dx}{\beta} = \beta^{-\alpha} \int_{x=0}^{\infty} \frac{x^{\alpha-1}}{z^{-1}e^x-1} dx
+\end{align}
+
+Then we note that for $|z|<1$ and $x>0$ we have
+
+\begin{align}
+\frac{1}{z^{-1}e^x -1} = \frac{\left(z e^{-x}\right)^1}{1-z e^{-x}} = \sum_{n=1}^{\infty} z^n e^{-xn}
+\end{align}
+
+So (interchanging sum and integral) we see
+
+\begin{align}
+\int_{x=0}^{\infty} \frac{x^{\alpha-1}}{z^{-1}e^x-1} dx = \sum_{n=1}^{\infty} z^n \int_{x=0}^{\infty} x^{\alpha-1} e^{-xn} dx
+\end{align}
+
+by another change of variables $nx=t$ we have
+
+\begin{align}
+= \sum_{n=1}^{\infty} z^n\int_{t=0}^{\infty} \left(\frac{t}{n}\right)^{\alpha-1} e^{-t} \frac{dt}{n} = \sum_{n=1}^{\infty}\frac{z^n}{n^{\alpha}}\int_{t=0}^{\infty} t^{\alpha-1}e^{-t}dt
+\end{align}
+
+We note that
+
+\begin{align}
+\int_{t=0}^{\infty} t^{\alpha-1} e^{-t} dt &= \Gamma(\alpha)\\
+\sum_{n=1}^{\infty} \frac{z^n}{n^{\alpha}} = \text{Li}_{\alpha}(z) = g_{\alpha}(z)
+\end{align}
+
+Where $\Gamma(\alpha)$ is the Gamma function (see below) and $\text{Li}_{\alpha}(z) = g_{\alpha}(z)$ is the polylog function of order $\alpha$. Thus we have
+
+\begin{align}
+\int_{x=0}^{\infty} \frac{x^{\alpha-1}}{z^{-1}e^x -1} dx = g_{\alpha}(z)\Gamma(\alpha)
+\end{align}
+
+So that
+
+\begin{align}
+\Braket{N} = C(\alpha) \beta^{-\alpha}\Gamma(\alpha)g_{\alpha}(z)
+\end{align}
+
+\section{Bose-Einstein Condensation}
+
+We now consider
+
+\begin{align}
+\braket{N} = C(\alpha) \beta^{-\alpha}\Gamma(\alpha)g_{\alpha}(z)
+\end{align}
+
+Note that $\alpha$ is a number determined by the nature of the system, that is the density of states for the system. For a given temperature the coefficient $C(\alpha)\beta^{-\alpha}\Gamma(\alpha)$ is some finite positive number. The polylogarithm, $g_{\alpha}(z)$ can vary with $z$. If we consider the total atom number $N=\braket{N}$ to be fixed or known then this expression is then an expression  which fixes $z$ and thus the chemical potential, $\mu$.
+
+However, we will see that for $0<z \le 1$ and for certain values of $\alpha$, the range of $g_{\alpha}(z)$ is bounded. In fact, note that $g_{\alpha}(z)$ is an increasing function of $z$ so $g_{\alpha}(z) \le g_{\alpha}(1)$ for $0<z\le 1$, noting that $g_{\alpha}(1)$ may be infinite. I note here that
+
+\begin{align}
+g_{\alpha}(1) = \sum_{n=1}^{\infty} \frac{1}{n^{\alpha}} = \zeta(\alpha)
+\end{align}
+
+Where $\zeta(\alpha)$ is the Riemann-Zeta function. However, there are some tricky questions about convergence. It turns out that because of convergence issues for $g_{\alpha}(1)$ this equality is only valid for $\alpha > 1$. One can see that $g_{\alpha}(z)$ is bounded on $0<z<1$ for $\alpha >1$ but unbounded for $\alpha \le 1$. This will have implications for Bose-Einstein condensation. Below we will write $g_{\alpha}(1) = \zeta(\alpha)$ but bear in mind there are issues for $\alpha \le 1$.
+
+
+Abbreviate $\tilde{C}_{\alpha,\beta} = C(\alpha)\beta^{-\alpha}\Gamma(\alpha)$. Then we have
+
+\begin{align}
+\Braket{N} = \tilde{C}_{\alpha,\beta}g_{\alpha}(z) \le \tilde{C}_{\alpha,\beta}\zeta(\alpha) = N_C(\alpha,\beta)
+\end{align}
+
+Where I've defined a critical number $N_C(\alpha,\beta) = \tilde{C}_{\alpha, \beta}\zeta(\alpha)$. But this is problematic, this says that $\Braket{N}$ must be less than some critical number $N_C$. However, in principle one could have a system at any temperature $\beta$ with any arbitrary particle number $N$. This seems to be a paradox. 
+
+In particular, lets explore the case of a 3D harmonic oscillator to build some intuition. Here we have for the total expected particle number
+
+\begin{align}
+\braket{N} = \frac{1}{2(\hbar \bar{\omega})^3}\beta^{-3} 2 g_{3}(z) = \left(\frac{kT}{\hbar\bar{\omega}} \right)^3 g_3(z)
+\end{align}
+
+However, compare this to the expected number of particles in the ground state:
+
+\begin{align}
+\braket{N_0} = \frac{1}{z^{-1} -1} = \frac{z}{1 -z}
+\end{align}
+
+One can immediately see that $\braket{n_0}$ is unbounded but $\Braket{N}$ is bounded for for $0<z\le1$ by looking at the behavior as $z\rightarrow 1$ ($\mu \rightarrow 0$). 
+
+The key to the paradox is to understand what went wrong with our approximations. Above we moved from a discrete sum to an integral. This works so long as the terms of the summation are some sense smoothly varying, or can approximate a continuous function. What is happening as $z\rightarrow 1$ is the ground state occupation becomes extremely large in such a way that the behavior of the ground is not captured by the continuous integral to estimate $\Braket{N}$. The most straightforward way to correct this is explicitly add back in the ground state occupation.
+
+So we recognize that what we have calculated above is actually the excited state occupation:
+
+\begin{align}
+\Braket{N_e} = C(\alpha)\beta^{-\alpha}\Gamma(\alpha)g_{\alpha}(z) = \tilde{C}_{\alpha,\beta}g_{\alpha}(z)
+\end{align}
+
+and that the total particle number should be the sum of the excited population plus the ground state population:
+
+\begin{align}
+\Braket{N} = \Braket{N_0} + \Braket{N_e} &= \frac{z}{1-z} + \tilde{C}_{\alpha,\beta}g_{\alpha}(z)\\
+&= \frac{z}{1-z} + C(\alpha)\Gamma(\alpha)\beta^{-\alpha}g_{\alpha}(z)
+\end{align}
+
+I now make a few statements without complete justification, but the justification will be seen in the figures below. First, I will state that the phase transition to BEC happens very close to $z=1$. I will now approximate $z=1$ to calculate the critical transition temperature or particle number and the condensate fraction.
+
+First the critical particle number. The critical particle number occurs when $\Braket{N_e}$ is maxed out. That is
+
+\begin{align}
+N_c &= C(\alpha)\Gamma(\alpha)\beta^{-\alpha}g_{\alpha}(1)\\
+&= C(\alpha)\Gamma(\alpha)\beta^{-\alpha}\zeta(\alpha)
+\end{align}
+
+For a 3D harmonic oscillator this gives
+
+\begin{align}
+N_c &= \zeta(3)\left(\frac{kT}{\hbar\bar{\omega}} \right)^3\\ &\approx 1.2 \left(\frac{kT}{\hbar\bar{\omega}}\right)^3
+\end{align}
+
+Or, we can invert this assuming a fixed atom number and tunable $T$ to find
+
+\begin{align}
+kT_c = \frac{\Braket{N}}{C(\alpha)\Gamma(\alpha)\zeta(\alpha)}
+\end{align}
+
+or for a 3D harmonic oscillator
+
+\begin{align}
+kT_c &= 0.94 \hbar \bar{\omega} N^{\frac{1}{3}}
+\end{align}
+
+Assuming a fixed total atom number $\Braket{N}$ we can then calculate the condensate fraction as follows.
+
+\begin{align}
+\Braket{N_e} &\approx C(\alpha)\Gamma(\alpha) (kT)^{\alpha} \zeta(\alpha)\\
+&= \Braket{N} \left(\frac{T}{T_c}\right)^{\alpha}
+\end{align}
+
+so
+
+\begin{align}
+\frac{\Braket{N_0}}{\Braket{N}} = \frac{\Braket{N}-\Braket{N_e}}{\Braket{N}} = 1-\left(\frac{T}{T_c}\right)^{\alpha}
+\end{align}
+
+or for a 3D harmonic oscillator:
+
+\begin{align}
+\frac{\Braket{N_0}}{\Braket{N}} = 1-\left(\frac{T}{T_c}\right)^3
+\end{align}
+
+
+\subsection{Bose-Einstein Condensation in four plots}
+
+The formula
+
+\begin{align}
+\Braket{N} = \Braket{N_0}+\Braket{N_e} &= \frac{z}{1-z} + C(\alpha)\Gamma(\alpha)\beta^{-\alpha}g_{\alpha}(z)\\
+\end{align}
+
+contains all of the information we need to understand Bose-Einstein Condensation. We will plot a few visualizations of this function to explain what happens. The basic idea is that as $z\rightarrow 1$ we have $g_{\alpha}(z)\rightarrow \zeta(\alpha)<\infty$ while $\frac{z}{1-z}\rightarrow \infty$. This means that at some point, close to $z=1$ we have $\Braket{N_0}=\Braket{N_e}$ and very quickly (as a function of $z$) we get $\Braket{N_0}\gg\Braket{N_e}$. Furthermore, noting that the above equation provides a constrained relationship between $N$, $z$, and $\beta$, we see that 1) for fixed $N$ that as $\beta$ increase ($T$ decreases) $z$ and 2) for fixed $\beta$ ($T$) that as $N$ increases $z$ must increase.
+
+Since $\frac{z}{1-z}$ is very rapidly growing for $z$ close to 1 we see a sharp transition in the total particle number as a function of $z$. This sharpness is what will provide the "phase transition". The phase transition as a function of $T$ or $N$ follows then from this sharp dependence of $\Braket{N}$ on $z$ and the relationship between $T$ or $N$ and $z$.
+
+This will be demonstrated in the following plots.
+
+We consider a 3D harmonic oscillator so that
+
+\begin{align}
+\Braket{N} = \frac{z}{1-z} + \left(\frac{kT}{\hbar\bar{\omega}} \right)^3 g_3(z)
+\end{align}
+
+And we introduce the unitless temperature $\tilde{T} = \frac{kT}{\hbar\bar{\omega}}$ so that
+
+\begin{align}
+\Braket{N} = \frac{z}{1-z} + \tilde{T}^3g_3(z)
+\end{align}
+
+\subsubsection{Particle Number vs. Fugacity}
+
+First we plot total atom number, $\Braket{N}$ vs. fugacity $z$. 
+
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{Nvsz.png}
+\caption{Total particle number $\braket{N}$ (solid lines) vs fugacity $z$. Particle number in excited state $\Braket{N_e}$ (dashed blue) and particle number in the ground state $\Braket{N_0}$ (dashed red). Plots shown for $\tilde{T} = \{10^{-\frac{1}{2}},10^0, 10^{\frac{1}{2}}, 10^1, 10^{\frac{3}{2}}, 10^2\}$ increasing from bottom to top.}
+\end{figure}
+
+Note that for typical situations in the lab we will have $\tilde{T}>1$. We see that for $\tilde{T}>1$ the generic situation is that for $z<1$ we have $\Braket{N} \approx \Braket{N_e}$. That is the ground state is only infinitesimally occupied. However, there is a critical $z$ when $\Braket{N_0}$ exceed $\Braket{N_e}$ after which $\Braket{N} \approx \Braket{N_0}$. However, note that for low $\tilde{T}$ we have that even for low $z$ that most of the particles are in the ground state.
+
+I make this last point regarding $\tilde{T}<1$ because it gets at a common misconception regarding BEC. The misconception goes like this. At lower and lower energy it is less and less likely for excited states to be occupied. Thus, \textit{obviously} as temperature is decreased we expect the situation to become that all of the atoms are in the ground state. However, this is emphatically \textit{not} the physics of BEC. The above plot demonstrates this. First of all, note that this misconceived effect, while true, would also occur for distinguishable particles. Also note that for $\tilde{T} <1$ there is no sharp transition in $\Braket{N}$ as a function of $z$. This means there is no phase transition per-se but rather a smooth occupation of the ground state as the temperature is lowered below the trap frequency. Also note that for this misconceived physical situation to occur we must have $kT$ becoming smaller than the trap frequency, or first excited state energy $\hbar \bar{\omega}$ and has no dependence on the total particle number. It is essentially a single particle effect and does not depend on quantum statistics. However, for true BEC, the sharp transition temperature at which the ground state is macroscopically occupied will depend on the particle number $\Braket{N}$.
+
+On the above plot we can read off when BEC will occur. For example, suppose the particle number of a sample is $\Braket{N} = 10^4$. Then we can see that for $\tilde{T} = 10^\frac{3}{2}$ the fugacity to support this atom number is very low, $z\approx 0.05$ while for $\tilde{T} = 10^1$ the fugacity is $z\approx 1$ in the regime where the particle number is dominated by the ground state population. Thus, we can see that the phase transition happens somewhere between $10^1 < \tilde{T}_c < 10^{\frac{3}{2}}$.
+
+\subsubsection{Parameters vs. Particle Number}
+
+We can numerically invert the above formula and plot relation $\Braket{N}$ to $z$ to get $z$ as a function of $\Braket{N}$ giving us our second plot.
+
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{zvsN.png}
+\caption{Fugacity $z$ vs. total particle number $\Braket{N}$ for different values of $\tilde{T}$. $\tilde{T} = \{10^0, 10^{\frac{1}{2}}, 10^1, 10^{\frac{3}{2}}, 10^2\}$ increasing from left to right.}
+\end{figure}
+
+In this figure we can see that for higher $\tilde{T}$ that as particle number increases the fugacity essentially rises linearly until a critical atom number is reached at which point the fugacity sharply saturates at unity. At lower temperatures the transition softens. Again, this softening at lower temperature corresponds to the slow occupation of the ground state due to energetics ($\tilde{T} <1$) as opposed to thermal statistics.
+
+Next I plot the ground state fraction, $\Braket{N_g} = \frac{z}{1-z}$ using the calculated $z$ as a function of $\Braket{N}$ for various values of $\tilde{T}$. I plot on both log-log and log-linear axes.
+
+\newpage
+\begin{figure}[h!]
+\includegraphics[width=0.9\linewidth]{gndvsnloglog.png}
+\includegraphics[width=0.9\linewidth]{gndvsnloglin.png}
+\caption{Ground state fraction, $\frac{\Braket{N_0}}{\Braket{N}}$ versus total particle number $\Braket{N}$ for various values of $\tilde{T}$. $\tilde{T} = \{10^0, 10^{\frac{1}{2}}, 10^1, 10^{\frac{3}{2}}, 10^2\}$ increasing from left to right. The red dashed line is formula for condensate fraction given above.}
+\end{figure}
+
+We see that for low particle number the ground state fraction is very small, but at a certain critical particle number the ground state fraction rapidly jumps up to near unity. The ``phase transition'' nature is very apparent for higher temperatures on the log-linear plot.
+
+Note that at low particle number the ground state fraction increases as $\tilde{T}$ decreases. This is again the single-particle effect whereby the ground state becomes energetically occupied for $\tilde{T}<1$. Note the qualitative difference between this effect and the Bose-Condensation effect which arises at higher temperatures and particle numbers.
+
+\subsubsection{Parameters vs. Temperature}
+
+Next we can plot the various parameters vs. temperature. First fugacity vs. temperature for various values of $\Braket{N}$.
+
+\begin{figure}[h]
+\includegraphics[width=\linewidth]{zvsT.png}
+\caption{Fugacity $z$ vs. temperature $\tilde{T}$ for various values of $\Braket{N}$. $\Braket{N} = \{10^1, 10^2, 10^3, 10^4\}$ increasing from left to right.}
+\end{figure}
+
+We see that as $\Braket{N}$ decreases the fugacity increases towards $1$ until a sharp transition occurs at some point. For low particle number the transition softens.
+
+We can plot the ground state fraction versus temperature, again of log and linear plots.
+
+\newpage
+
+\begin{figure}[h]
+\includegraphics[width=.8\linewidth]{gndvstloglog.png}
+\includegraphics[width=.8\linewidth]{gndvstlinlin.png}
+\caption{Ground state fraction $\frac{\Braket{N_0}}{\Braket{N}}$ vs. temperature$\tilde{T}$ for various values of $\Braket{N}$. $\Braket{N}=\{10^1, 10^2, 10^3, 10^4\}$. Dashed red line is ground state fraction formula for $\Braket{N}=100$.}
+\end{figure}
+
+Here we see that as temperature decreases the ground state fraction increases slowly, until a critical temperature is reached at which the ground state fraction grows rapidly. Again we can plot the analytic form for the ground state fraction and see good agreement. Here we see that the transition softens for low atom number.
+
+\subsection{Summary}
+
+Above I think I have given convincing graphical evidence of the existence of the Bose-Einstein Condensation phase transition. The transition relies on an interplay between the fugacity $z$ (or chemical potential $\mu$), the temperature $\beta$, and the total particle number $\Braket{N}$.
+
+Note that the main salient feature leading to the phase transition was the finiteness of $g_{\alpha}(z)$ combined with the rapid infinite grown of $\frac{z}{1-z}$ in the vicinity of $z=1$. For $\alpha \le 1$ we can see that $g_{\alpha}(z)$ is in fact also unbounded near $z=1$. The issue of condensation in lower dimensions is then even a bit more subtle.
+
+
+\subsection{Phase Space Density}
+
+Here we will calculate the density of atoms in a trap. In particular the density of the non-condensed atoms. We will take a semi-classical approach where we integrate over position and momentum (as opposed to summing over energy eigenstates). Position and momentum constitute a $2d$-dimensional continuous space so we must come up with a density of states for this continuum. It turns out that to get classical/semi-classical approaches to agree with quantum approaches the density of states should be 1 state per volume $h^d$ in position-momentum space. So the density of states is $\frac{1}{h^d}$. Note that Planck's constant $h$ has units of position times momentum. We will work in 3D.
+
+Define
+
+\begin{align}
+\ep(\bv{r},\bv{p}) = \frac{\bv{p}^2}{2m} + V(\bv{r})
+\end{align}
+
+So we then have an expression for the density:
+
+\begin{align}
+n(\bv{r}) =  \int \frac{d^3\bv{p}}{h^d} \frac{1}{e^{\beta(\ep(\bv{r},\bv{p})-\mu)}-1}  
+\end{align}
+
+We rewrite
+
+\begin{align}
+e^{\beta(\ep(\bv{r},\bv{p})-\mu)} = e^{\beta(V(\bv{r}) - \mu)}e^{\beta \frac{p^2}{2m}} = z(\bv{r})^{-1}e^{\beta \frac{p^2}{2m}}
+\end{align}
+
+So we then have
+
+\begin{align}
+n(\bv{r}) =  \int \frac{d^3\bv{p}}{h^3} \frac{1}{z(\bv{r})^{-1} e^{\beta\frac{p^2}{2m}}-1}  = \frac{4\pi}{h^3} \int_{p=0}^{\infty} \frac{p^2}{z(\bv{r})^{-1}e^{\beta \frac{p^2}{2m}}-1} dp
+\end{align}
+
+We perform a change of variables $u = \beta \frac{p^2}{2m}$ so that $du = \frac{\beta}{m} p dp$ and we can calculate $dp = \left(\frac{m}{\beta}\right)^{\frac{1}{2}}2^{-\frac{1}{2}} u^{-\frac{1}{2}} du$. We see
+
+\begin{align}
+n(\bv{r}) &= \frac{4\pi}{h^3} 2\frac{m}{\beta} 2^{-\frac{1}{2}} \left(\frac{m}{\beta} \right)^{\frac{1}{2}} \int_{u=0}^{\infty} \frac{u^{\frac{1}{2}}}{z(\bv{r})e^u - 1} du\\
+&= \frac{\pi}{h^3}2^{\frac{5}{2}}\left(\frac{m}{\beta}\right)^{\frac{3}{2}} g_{\frac{3}{2}}(z(\bv{r})) \Gamma\left(\frac{3}{2}\right)
+\end{align}
+
+Using the results from earlier. note that $\Gamma\left(\frac{3}{2}\right) = \frac{\pi^{\frac{1}{2}}}{2}$ so we get
+
+\begin{align}
+n(\bv{r}) &= \frac{(2\pi)^{\frac{3}{2}}}{h^3}\left(\frac{m}{\beta} \right)^{\frac{3}{2}} \text{Li}_{\frac{3}{2}}(z(\bv{r}))\\
+&=\left(\frac{2\pi m k T}{h^2} \right)^{\frac{3}{2}} g_{\frac{3}{2}}(z(\bv{r}))\\
+n(\bv{r}) &= \frac{g_{\frac{3}{2}}(z(\bv{r}))}{\lambda_T^3}
+\end{align}
+
+It will be helpful to also write out
+
+\begin{align}
+\braket{N_e} &= \int\int \frac{d^3 \bv{x} d^3\bv{p}}{h^3} \frac{1}{e^{\beta(\ep(\bv{r},\bv{p})-\mu)}-1}\\
+&= \sum_{n=1}^{\infty} \left(e^{\beta\mu}\right)^n\int\ldots\int \frac{dxdydzdp_xdp_ydp_z}{h^3} e^{-n\beta\frac{1}{2m}\left(p_x^2 + p_y^2+p_z^2 \right)}e^{-n\beta \frac{m}{2}(\omega_x^2 x^2 +  \omega_y y^2 + \omega_z z^2)}\\
+&= \sum_{n=1}^{\infty}\left(e^{\beta \mu}\right)^n \left(\frac{2m}{n\beta}\right)^{\frac{3}{2}}\left(\frac{2}{n \beta m}\right)^{\frac{3}{2}} \frac{1}{\omega_x\omega_y\omega_z} \int\ldots \int \frac{du_1du_2du_3du_4du_5du_5}{h^3} e^{-(u_1^2+u_2^2+u_3^2+u_4^2+u_5^2+u_6^2)}\\
+&= \left(\frac{kT}{\bar{\omega}}\right)^3 \left(\frac{2\pi}{h}\right)^3 \sum_{n=1}^{\infty}\frac{z(0)^n}{n^3}\\
+\Braket{N_e} &= \left(\frac{kT}{\hbar \bar{\omega}}\right)^3 g_3(z(0))
+\end{align}
+
+This is a slightly different calculation of $\Braket{N_e}$ which is different than the approach taken above which is a nice corroboration.
+
+For reference, at the condensation point $z(0)\rightarrow 1$ so that $g_3(z) \rightarrow \zeta(3) \approx 1.2$.
+
+\begin{align}
+\braket{N_e} \approx 1.2 \left(\frac{kT}{\hbar\bar{\omega}}\right)^3
+\end{align}
+
+An interesting figure of merit for a thermal system is the phase space density of the system.
+The phase space density is defined as the number of particles residing in a spatial volume given by a cubic thermal de Broglie wavelength.
+The maximum phase space density occurs where the density of the gas is maximum:
+
+\begin{align}
+\mc{D} = n(0) \lambda_T^3 = g_{\frac{3}{2}}(z(0))
+\end{align}
+
+
+Note that $z(0) = e^{\beta \mu}$. 
+The reason we are interested in the phase space density, as we will see shortly, is that 1) it serves as a dimensionless quantity which quantifies how close a gas is to the BEC phase transition and 2) it can be experimentally estimated without too much difficulty.
+
+We first consider two limits for the phase space density $\mc{D}$.
+The first limit is for a gas well above the transition temperature, $T\gg T_c$. in this case $z\rightarrow 0$ which implies $g_{\alpha}(z)\rightarrow z$. 
+We then have
+
+\begin{align}
+\mc{D} =& z(0)\\
+N =& \left(\frac{kT}{\hbar \bar{\omega}}\right)^3 z(0)
+\end{align}
+
+So we see that we can express phase space density in terms of the temperature, atom number, and trap frequencies:
+
+\begin{align}
+\mc{D} = N \left(\frac{\hbar \bar{\omega}}{kT}\right)^3 = \bar{\mc{D}}
+\end{align}
+
+Here I've defined $\bar{\mc{D}} = N\left(\frac{\hbar \bar{\omega}}{kT}\right)^3$ while $\bar{D}$ remains defined as $\bar{D} = n(0) \lambda_T^3$.
+As we will see below don't always have $\bar{\mc{D}} = \mc{D}$ as we do here, but we do typically have $\bar{\mc{D}} \approx \mc{D}$.
+This identification is valuable because $\bar{\mc{D}}$ will be more easily experimentally accessible than $\mc{D}$.
+We now consider the limit for $T\ll T_c$ in which case $z\rightarrow 1$ so that $g_{\alpha}(z)\rightarrow \zeta(\alpha)$:
+
+\begin{align}
+\mc{D} =& g_{\frac{3}{2}}(1) = \zeta\left(\frac{3}{2}\right) \approx 2.6\\
+N\left(\frac{\hbar \bar{\omega}}{kT}\right)^3 = \bar{\mc{D}}=& g_3(1) = \zeta(3) \approx 1.2
+\end{align}
+
+We can again express phase space density as a function of temperature, atom number and trap frequency:
+
+\begin{align}
+\mc{D} = \frac{\zeta\left(\frac{3}{2}\right)}{\zeta(3)} \bar{\mc{D}} \approx 2.2 \bar{\mc{D}}
+\end{align}
+
+Here I have simply multiplied by $1 = \frac{\bar{\mc{D}}}{\zeta(3)}$ which feels a bit contrived, however, the reason I have done this is to demonstrate that both above and below the transition point the quantity $\bar{\mc{D}}$ is a good estimate of the phase space density $\mc{D} = n(0) \lambda_T^3$. 
+This is valuable because in an experiment it is typically not too difficult to measure $N$ and $T$ using time of flight images and $bar{\omega}$ can be estimated from the power and waists of the trapping beam or measured using modulation spectroscopy.
+In contrast, the peak density of the gas may be quite difficult to estimate experimentally.
+Often we simply calculate $\bar{\mc{D}}$ and take it to be a direct measure of the phase space density, noting that the transition occurs when 
+
+\begin{align}
+\bar{\mc{D}} \rightarrow \zeta(3) \approx 1.2
+\end{align}
+
+It's principle, given the dependence of $\mc{D}$ on $g_{\frac{3}{2}}(z)$ and $\bar{\mc{D}}$ on $g_3(z)$ one could always calculate $\mc{D}$ give $\bar{\mc{D}}$ by
+
+\begin{align}
+\mc{D} = g_{\frac{3}{2}}\left(g^{-1}_3\left(\bar{\mc{D}}\right)\right)
+\end{align}
+
+Essentially $\bar{\mc{D}}$ can be taken to be a direct measure of $z$, the fugacity, or equivalently the chemical potential $\mu$ which can in turn be used to determine $\bar{\mc{D}}$.
+This discussion raises a helpful clarification for me.
+At the phase transition we have
+
+\begin{align}
+\mc{D} \rightarrow& \zeta\left(\frac{3}{2}\right) \approx 2.6\\
+\bar{\mc{D}} \rightarrow& \zeta(3) \approx 1.2
+\end{align}
+
+While both $\mc{D}$ and $\bar{\mc{D}}$ indicate how close we are to the phase transition they approach slightly different limiting values at the phase transition.
+However, both quantities always have the same order of magnitude (since $g_{\frac{3}{2}}(z)$ is in fact not that different from $g_{3}(z)$ and they both approach order unity at the transition.
+For this reason, in practice, we simply say that $\bar{\mc{D}}$ is a measure of the phase space density and we monitor this parameters closeness to unity to determine proximity to the phase transition.
+
+The goal then, to create a BEC, is to get many atoms at a high density and cold temperature such that the phase space density exceeds unity.
+
+\section{Spatial Distribution of Distinguishable Particles in Harmonic Trap}
+
+Above I showed that phase space density $\mc{D}$ can be approximated by $\bar{\mc{D}}$ because of their mutual dependence on $z$.
+In fact, part of what made this comparison possible was the ability to express the total atom number as a function of the temperature, chemical potential (fugacity $z$) and trap parameters $\bar{\omega}$.
+It turns out that, at least for the classical gas, we can express the peak density directly as a function of the temperature, trap parameters, and total atom number.
+This result will be in agreement with what is written above.
+
+In the previous section I calculated, using the Bose-Einstein distribution, the density of a gas as
+
+\begin{align}
+n(\bv{r}) = \frac{g_{\frac{3}{2}}(z(\bv{r}))}{\lambda_T^3} \approx \frac{z(\bv{r})}{\lambda_T^3} = \frac{e^{\beta \mu}}{\lambda_T^3} e^{-\beta V(\bv{r})}
+\end{align}
+
+The key result I'd like to focus on is the exponential dependence on $V(\bv{r})$. This is the behavior I would like to calculate now.
+
+Here I will calculate the spatial distribution of a classical ideal gas trapped in a harmonic trap.
+I'll do this calculation in the canonical ensemble.
+
+We consider a trap of the form
+
+\begin{align}
+V(\bv{r}) = \frac{m}{2}\left(\omega_x^2 x^2+\omega_y^2 y^2+\omega_z^2 z^2\right)
+\end{align}
+
+We have the probability for a particle to be found with position $\bv{r}$ and momentum $\bv{p}$:
+
+\begin{align}
+P(\bv{r},\bv{p}) = \frac{1}{Z} e^{-\frac{\beta}{2m}(p_x^2+p_y^2+p_z^2)} e^{-\beta V(\bv{r})}
+\end{align}
+
+Generally the probability for finding a particle at position $\bv{r}$ is given by
+
+\begin{align}
+P(\bv{r}) =& \frac{1}{Z} e^{-\beta V(\bv{r})} \int e^{-\frac{\beta}{2m}(p_x^2+p_y^2+p_z^2)} d^3\bv{p} = \frac{1}{Z} \left(\frac{2\pi m}{\beta}\right)^{\frac{3}{2}} e^{-\beta V(\bv{r})}\\
+=& \frac{1}{Z} \left(\frac{2\pi m}{\beta}\right)^{\frac{3}{2}} e^{-\frac{\beta m}{2}\left(\omega_x^2 x^2 + \omega_y^2 y^2 + \omega_z^2 z^2\right)}
+\end{align}
+
+Note the exponential dependence on $V(\bv{r})$ as we saw above.
+The prefactor remains to be determined.
+If a gas contains $N$ particles then the density of the gas is given by
+
+\begin{align}
+n(\bv{r}) = NP(\bv{r})
+\end{align}
+
+So we see already that for a harmonic trap we have
+
+\begin{align}
+n(\bv{r}) \sim N e^{-\frac{\beta m}{2}\left(\omega_x^2 x^2 + \omega_y^2 y^2 + \omega_z^2 z^2\right)}
+\end{align}
+
+Thus the gas is distributed like a 3d Gaussians with spatial variances
+
+\begin{align}
+\sigma_i^2 = \frac{1}{\beta m \omega_i^2} = \frac{kT}{m\omega_i^2}
+\end{align}
+
+We work a little further to determine the prefactor including $\frac{1}{\mc{Z}}$.
+
+\begin{align}
+\int P(\bv{r})d^3\bv{r} =& 1 = \frac{1}{Z}\left(\frac{2\pi m}{\beta}\right)^{\frac{3}{2}} \left(\frac{2\pi}{\beta m \omega_x^2} \right)^{\frac{1}{2}}\left(\frac{2\pi}{\beta m \omega_y^2} \right)^{\frac{1}{2}}\left(\frac{2\pi}{\beta m \omega_z^2} \right)^{\frac{1}{2}}\\
+=& \frac{1}{Z} \frac{(2\pi)^3}{\beta^3 \bar{\omega}^3}\\
+Z =& \frac{(2 \pi)^3}{\beta^3 \bar{\omega}^3}
+\end{align}
+
+The peak density $n(0) = \frac{N}{Z}\left(\frac{2\pi m}{\beta}\right)^{\frac{3}{2}}$ is given by
+
+\begin{align}
+n(0) =& N\left(\frac{\beta m}{2\pi}\right)^{\frac{3}{2}} \bar{\omega}^3\\
+=& N\left(\frac{m}{2\pi \hbar^2 \beta} \hbar^2 \beta^2 \right)^{\frac{3}{2}} \bar{\omega}^3\\
+=& N\left(\frac{mkT}{2\pi \hbar^2}\right) \left(\frac{\hbar \bar{\omega}}{kT}\right)^3\\
+=& N\left(\frac{\hbar \bar{\omega}}{kT}\right)^3 \frac{1}{\lambda_T^3}
+\end{align}
+
+So as above for the classical case we find
+
+\begin{align}
+\mc{D} = n(0)\lambda_T^3 = N\left(\frac{\hbar \bar{\omega}}{kT}\right)^3 = \bar{\mc{D}}
+\end{align}
+
+The total density everywhere is given by
+
+\begin{align}
+n(\bv{r}) = n(0) e^{-\frac{\beta m}{2}\left(\omega_x^2 x^2 + \omega_y^2 y^2 + \omega_z^2 z^2\right)}
+\end{align}
+
+Noting that $n(0) = \frac{\mc{\bar{D}}}{\lambda_T^3}$.
+In the distinguishable quantum case (in the grand canonical ensemble) we saw that both $\mc{D}$ and $\bar{\mc{D}}$ could be related to the fugacity $z$ and this allowed us to relate the two of them to eachother.
+In this indistinguishable case we see that $N$, $T$ and $\bar{\omega}$ is enough to constrain the density distribution of the gas so that $\bar{\mc{D}}$ essentially gives a direct measure of $n(0)$ is these other parameters are known.
+
+It is useful and instructive to express trap frequencies and thermal cloud sizes as a function of the beam waist and Rayleigh range for a running wave optical dipole trap.
+We have that
+
+\begin{align}
+\omega^2_{\text{radial}} =& \frac{4V_0}{m w_0^2}\\
+\omega^2_{\text{axial}} =& \frac{2 V_0}{mz_R^2}
+\end{align}
+
+From which we can calculate the trap variances as
+
+\begin{align}
+\sigma^2_{\text{radial}} =& w_0^2 \frac{kT}{4V_0}\\
+\sigma^2_{\text{axial}} =& z_R^2 \frac{kT}{2V_0}
+\end{align}
+
+This tells us the nice intuitive result the the cloud is a gaussian cigar with a radius (in the variance sense) which is proportional to the waist of the trapping laser scaled by the ratio of the temperature to the trap depth and a length which is proportional to the Rayleigh range of the beam and the ratio of the temperature to the trap depth.
+
+\subsection{Zero Chemical Potential?}
+
+There was some confusion for me around the validity of setting $\mu = 0$ (that is $z=1$). I wondered if it was related to the way photons have zero chemical potential. I think the answer is that it is not directly related. We saw above in the various plots that as $T$ is decreased the system undergoes a transition in which $z$ rapidly approaches 1 but we see that for any finite temperature and atom number $z$ will technically be slightly non-unity. Of course, thermodynamically speaking, the difference between $z$ and unity is negligible.
+
+The reason for vanishing chemical potential of a photon gas is I believe different. Here is my understanding of the vanishing photon chemical potential. Here we consider a blackbody oven filled with thermal electromagnetic radiation. Return to our derivation of the grand canonical ensemble. We will consider the blackbody matter to the thermal reservoir and the electromagnetic field to be the system of interest. The matter reservoir has a fixed number of atoms which can be in a number of states and have variable amounts of energy. The electromagnetic field has a variety of modes which can be filled with different amounts of energy (or rather particles).
+
+The question then is what is the chemical potential for the photon field? Well, recall that the chemical potential was defined when the reservoir could exchange particles with the system. However, in this case, the photon field and reservoir do not exchange particles. Rather, the exchange only energy. That is, when a photon leaves the electromagnetic field and is absorbed by an atom in the matter reservoir the reservoir doesn't gain a photon, it only gains energy. In other words, the entire story can be described entirely using energy. Said another way, the chemical potential is related to the change in entropy of the reservoir as a function of the particle number of the system. But the reservoirs entropy doesn't depend on the particle number in the system, it only depends on the energy in the reservoir. This is the reason we say the photon chemical potential vanishes.
+
+\section{Gaussian Integral}
+
+We work out the simple Gaussian integral:
+
+\begin{align}
+I = \int_{x=-\infty}^{+\infty} e^{-ax^2}dx = a^{-\frac{1}{2}}\int_{u=-\infty}^{+\infty}e^{-u^2}du
+\end{align}
+
+So
+
+\begin{align}
+I^2 &= \frac{1}{a} \int_{x=-\infty}^{+\infty}\int_{y=-\infty}^{+\infty} e^{-(x^2+y^2)}dydx\\
+&= \frac{1}{a}\int_{\theta=0}^{2\pi}\int_{r=0}^{\infty} r e^{-r^2}drd\theta = \frac{2\pi}{a} \frac{1}{2}\int e^{-u}du = \frac{\pi}{a} (-e^{-u})\Big\rvert_{u=0}^{+\infty}\\
+&= \frac{\pi}{a}
+\end{align}
+
+so
+
+\begin{align}
+I = \int_{x=-\infty}^{+\infty} e^{-ax^2} dx = \sqrt{\frac{\pi}{a}}
+\end{align}
+
+Now consider
+
+\begin{align}
+\frac{dI}{da} = -\int_{x=-\infty}^{+\infty} x^2 e^{-a x^2} dx = \sqrt{\pi} \left(-\frac{1}{2}\right) a^{-\frac{3}{2}}
+\end{align}
+
+So we see
+
+\begin{align}
+\int_{x=-\infty}^{+\infty} x^2 e^{-a x^2} dx = \frac{\sqrt{\pi}}{2 a^{\frac{3}{2}}}
+\end{align}
+
+\section{Equipartition Theorem}
+
+Reif has a slightly slicker proof which doesn't involve calculating any integrals.
+Consider a system with
+
+\begin{align}
+E(x_1,\ldots,x_n) = \sum_{i=0}^n \alpha_i x_i^2
+\end{align}
+
+We can then calculate
+
+\begin{align}
+Z &= \int_{x_1=-\infty}^{+\infty}\ldots \int_{x_n = -\infty}^{+\infty} e^{-\frac{E(x_1,\ldots,x_n)}{kT}} dx_1\ldots dx_n\\
+&=\int_{x_1=-\infty}^{+\infty}\ldots \int_{x_n = -\infty}^{+\infty} e^{-\frac{1}{kT}\sum_{i=1}^n \alpha_i x_i^2} dx_1\ldots dx_n\\
+&=\int_{x_1=-\infty}^{+\infty}\ldots \int_{x_n = -\infty}^{+\infty} \prod_{i=1}^n e^{-\frac{\alpha_i}{kT} x_i^2} dx_1\ldots dx_n\\
+&= \prod_{i=1}^n \int_{x_i=-\infty}^{+\infty} e^{-\frac{\alpha_i}{kT} x_i^2} dx_i\\
+&= \prod_{i=1}^n Z_i\\
+Z_i &= \int_{x_i=-\infty}^{+\infty} e^{-\frac{\alpha_i}{kT} x_i^2} dx_i = \sqrt{\frac{\pi kT}{\alpha_i}}
+\end{align}
+
+Now consider
+
+\begin{align}
+\Braket{x_j^2} &= \frac{1}{Z}  \left(\prod_{i=1, i\ne j}^n \int_{x_i=-\infty}^{+\infty} e^{-\frac{\alpha_i}{kT} x_i^2} dx_i\right) \int_{x_j=-\infty}^{+\infty} x_j^2 e^{-\frac{\alpha_j}{kT} x_j^2} dx_j\\
+&= \frac{\prod_{i=1,i\ne j}^n Z_i}{\prod_{i=1}^n Z_i} \frac{\sqrt{\pi}}{2\left(\frac{\alpha_j}{kT} \right)^{\frac{3}{2}}}\\
+&= \frac{1}{Z_j} \frac{1}{2} \sqrt{\pi} \left(\frac{kT}{\alpha_j} \right)^{\frac{3}{2}}\\
+&= \sqrt{\frac{\alpha_i}{\pi k T}} \frac{1}{2} \sqrt{\frac{\pi kT}{\alpha_j}} \frac{kT}{\alpha_j}\\
+&= \frac{kT}{2\alpha_j}
+\end{align}
+
+We see then that
+
+\begin{align}
+\Braket{\alpha_j x_j^2} = \frac{1}{2} kT
+\end{align}
+
+The total average energy is
+
+\begin{align}
+\Braket{E} &= \Braket{\sum_{i=1}^n \alpha_i x_i^2} = \sum_{i=1}^n \Braket{\alpha_i x_i^2} = \sum_{i=1}^n \frac{1}{2} kT\\
+&= \frac{n}{2} kT
+\end{align}
+
+We see that each quadratic degree of freedom in the energy contributes $\frac{1}{2} kT$ to the average energy. This is the famous equipartition theorem.
+
+\section{Volume of n-simplex}
+
+An $n$-simplex, $\Delta_n(a_1,\ldots,a_n) = \Delta_n(\vec{a})$ is the region of space in $\mathbb{R}^n$ defined by
+
+\begin{align}
+\Delta_n(\vec{a}) = \left\{(x_1,\ldots,x_n):\sum_{i=1}^n \frac{x_i}{a_i} = 1 \text{ and } 0\le x_1,\ldots,x_n  \right\}
+\end{align}
+
+
+
+The volume of this shape is given by
+
+\begin{align}
+\text{Vol}(\Delta_n(\vec{a})) = \int_{x_1=0}^{a_1}\int_{x_2=0}^{a_2\left(1-\frac{x_1}{a_1} \right)}\ldots\int_{x_n=0}^{a_n\left(1-\frac{x_1}{a_1} - \ldots - \frac{x_{n-1}}{a_{n-1}} \right)} dx_n\ldots dx_1
+\end{align}
+
+By a change of variables $x_i \rightarrow \frac{x_i}{a_i}$ we get
+
+\begin{align}
+\text{Vol}(\Delta_n(\vec{a})) &= a_1\ldots a_n \int_{x_1=0}^1 \int_{x_2=0}^{1-x_1}\ldots \int_{x_n=0}^{1-x_1-\ldots-x_{n-1}} dx_n\ldots dx_1\\
+&= \left(\prod_{i=1}^n a_i\right)\text{Vol}(\Delta_n(\vec{1})) = \left(\prod_{i=1}^n a_i\right) \text{Vol}(\Delta_n^0)
+\end{align}
+
+So we see that we need only determine $\text{Vol}(\Delta_n^0)$, the volume of a unit $n$-simplex. We will prove this by induction on $n$. We will prove that
+
+\begin{align}
+\text{Vol}(\Delta_n^0) = \frac{1}{n!}
+\end{align}
+
+First the base case for $n=1$.
+
+\begin{align}
+\text{Vol}(\Delta_1^0) = \int_{x_1=0}^1 dx_1 = 1 = \frac{1}{1!}
+\end{align}
+
+Lets suppose the induction hypothesis holds for $n=k-1$. We must now prove that it holds for $n=k$. Consider
+
+\begin{align}
+\text{Vol}(\Delta_k^0) &= \int_{x_1=0}^1 \int_{x_2=0}^{1-x_1} \ldots \int_{x_k=0}^{1-x_1-\ldots-x_{n-1}} dx_k\ldots dx_1\\
+&= \int_{x_1=0}^1 \left(\int_{x_2=0}^{1-x_1}\ldots\int_{x_n=0}^{1-x_1-x_2-\ldots-x_k}dx_k\ldots dx_2 \right) dx_1\\
+&= \int_{x_1=0}^1 \left(\int_{x_2=0}^{1-x_1}\ldots\int_{x_n=0}^{(1-x_1)\left(1-\frac{x_2}{1-x_1} -\ldots- \frac{x_k}{1-x_1}\right)}dx_k\ldots dx_2 \right) dx_1\\
+&= \int_{x_1=0}^1 \text{Vol}(\Delta_{k-1}(1-x_1,\ldots,1-x_1))dx_1\\
+&= \int_{x_1=0}^1 (1-x_1)^{k-1}\text{Vol}(\Delta_{k-1}^0) dx_1\\
+&= \int_{x_1=0}^1 \frac{(1-x_1)^{k-1}}{(k-1)!}dx_1 = -\frac{(1-x_1)^k}{k(k-1)!}\Big\rvert_{x_1=0}^1\\
+&= \frac{1}{k!}
+\end{align}
+
+As desired. We have thus proven that $\text{Vol}(\Delta_n^0) = \frac{1}{n!}$. We then have
+
+\begin{align}
+\text{Vol}(\Delta_n(a_1,\ldots,a_n)) = \text{Vol}(\Delta_n(\vec{a})) = \frac{a_1\ldots a_n}{n!} = \frac{\prod_{i=1}^n a_i}{n!}
+\end{align}
+
+Note in particular that for a simplex with side lengths $\epsilon$ we get
+
+\begin{align}
+\text{Vol}(\Delta_n(\epsilon,\ldots,\epsilon)) = \frac{\epsilon^n}{n!}
+\end{align}
+
+\section{Volume of an n-ellipsoid}
+
+An $n$-ellipsoid $E_n(a_1,\ldots,a_n) = E_n(\vec{a})$ is defined by
+
+\begin{align}
+E_n(\vec{a}) = \left\{ (x_1,\ldots,x_n): \sum_{i=1}^n \left(\frac{x_i}{a_i}\right)^2 \le 1\right\}
+\end{align}
+
+The volume of this shape is given by
+
+\begin{align}
+\text{Vol}\left(E_n(\vec{a}) \right) = \underset{\sum_{i=1}^n \left(\frac{x_i}{a_i}\right)^2 \le 1}{\int\ldots \int} dx_n\ldots dx_1
+\end{align}
+
+By a change of variables $x_i \rightarrow \frac{x_i}{a_i}$ we see
+
+\begin{align}
+\text{Vol}(E_n(\vec{a})) &= a_1\ldots a_n \underset{x_1^2+\ldots+x_n^2 \le 1}{\int\ldots \int}dx_n \ldots dx_1\\
+&= a_1\ldots a_n \text{Vol}(B_n^0)
+\end{align}
+
+Where $B_n^0 = E_n(1,\ldots,1)$ is the unit $n$-ball. We can define $B_n(r) = E_n(r,\ldots,r)$ so that $B_n^0 = E_n^0 = B_n(1)$.
+
+We thus must calculate the volume of the unit $n$-ball. We will proceed by deriving some recurrence relations and using properties of the gamma functions.
+
+First we show that $\text{Vol}(B_n) = \frac{2\pi}{n} \text{Vol}(B_{n-2})$. We can write
+
+\begin{align}
+\text{Vol}(B_n^0) &= \underset{x_1^2+\ldots+x_n^2\le 1}{\int \ldots \int} d_xn\ldots dx_1\\
+&= \underset{x_1^2+x_2^2\le 1}{\int\int}\left(\underset{x_3^2+\ldots+x_n^2\le 1- x_1^2-x_1^2}{\int\ldots \int} dx_n\ldots dx_3 \right)dx_2dx_1
+\end{align}
+
+We note that the expression in the inner parenthesis is equal to 
+
+\begin{align}
+\text{Vol}\left(E_{n-2}\left(\sqrt{1-x_1^2-x_2^2},\ldots, \sqrt{1-x_1^2-x_2^2}\right)\right) &= \text{Vol}\left(B_{n-2}\left(\sqrt{1-x_1^2-x_2^2}\right)\right)\\ &= \left(\sqrt{1-x_1^2-x_2^2}\right)^{n-2}\text{Vol}(B_{n-2}^0)\\
+\end{align}
+
+We then have
+
+\begin{align}
+\text{Vol}(B_n^0) &= \text{Vol}(B_{n-2}^0) \underset{x_1^2+x_2^2\le 1}{\int\int} \left(\sqrt{1-x_1^2-x_2^2}\right)^{n-2}dx_1dx_2\\
+&=  \text{Vol}(B_{n-2}^0)\int_{\theta=0}^{2\pi}\int_{r=0}^1 (1-r^2)^{\frac{n-2}{2}} r dr d\theta
+\end{align}
+
+We perform a change of variables $u=r^2$, $du = 2r dr$
+
+\begin{align}
+\text{Vol}(B_n^0) &= \text{Vol}(B_{n-2}^0) 2\pi \frac{1}{2} \int_{u=0}^1 (1-u)^{\frac{n-2}{2}} du\\
+&= \text{Vol}(B_{n-2}^0)\pi (-1)\frac{2(1-u)^{\frac{n}{2}}}{n}\Big\rvert_{u=0}^1\\
+&= \frac{2\pi}{n}\text{Vol}(B_{n-2}^0)
+\end{align}
+
+as desired.
+
+Now that we have a recurrence relation we would like to calculate the initial values.
+
+\begin{align}
+\text{Vol}(B_1^0) &= \int_{x_1^2\le1}dx_1 = \int_{x_1=-1}^{+1} dx_1 = 2\\
+\text{Vol}(B_2^0) &= \int_{x_1^2+x_2^2\le 1} dx_1dx_2 = \int_{\theta=0}^{2\pi}\int_{r=0}^1 r dr d\theta = \pi\\
+\end{align}
+
+So we see, for odd $n$:
+
+\begin{align}
+\text{Vol}(B_1^0) &= 2\\
+\text{Vol}(B_3^0) &= 2 \frac{2\pi}{3}\\
+\text{Vol}(B_5^0) &= 2 \frac{(2\pi)^2}{5\cdot3}\\
+&\vdots\\
+\text{Vol}(B_n^0) & = 2 \frac{(2\pi)^{\frac{n-1}{2}}}{n!!}\\
+&= \frac{(2) 2^{\frac{n-1}{2}}}{2^{\frac{n+1}{2}}} \frac{\pi^{\frac{n-1}{2}}}{\pi^{-\frac{1}{2}}} \frac{1}{\Gamma\left(\frac{n}{2}+1\right)}\\
+&= \frac{\pi^{\frac{n}{2}}}{\Gamma\left(\frac{n}{2}+1\right)}
+\end{align}
+
+Recalling that $n!! = 2^{\frac{n+1}{2}} \pi^{-\frac{1}{2}} \Gamma\left(\frac{n}{2}+1\right)$ for odd $n$.
+
+For even $n$ we see:
+
+\begin{align}
+\text{Vol}(B_2^0) &= \pi\\
+\text{Vol}(B_4^0) &= \pi \frac{2\pi}{4}\\
+\text{Vol}(B_6^0) &= \pi \frac{(2\pi)^2}{6\cdot 4}\\
+&\vdots\\
+\text{Vol}(B_{n}^0) &= 2\pi \frac{(2\pi)^{\frac{n}{2}-1}}{n!!}\\
+&= \frac{2^{\frac{n}{2}}}{2^{\frac{n}{2}}} \frac{\pi^{\frac{n}{2}}}{\Gamma\left(\frac{n}{2}+1\right)}\\
+&= \frac{\pi^{\frac{n}{2}}}{\Gamma\left(\frac{n}{2}+1\right)}
+\end{align}
+
+Recalling that $n!! = 2^{\frac{n}{2}}\Gamma\left(\frac{n}{2}+1\right)$.
+
+So we see that for all integer $n$ we have
+
+\begin{align}
+\text{Vol}(B_n^0) = \frac{\pi^{\frac{n}{2}}}{\Gamma\left(\frac{n}{2}+1\right)}
+\end{align}
+
+We finally come to our main result that
+
+\begin{align}
+\text{Vol}(E_n(a_1,\ldots,a_n)) = \text{Vol}(E_n(\vec{a})) &= a_1\ldots a_n \frac{\pi^{\frac{n}{2}}}{\Gamma\left(\frac{n}{2}+1\right)}\\
+\end{align}
+
+In particular for $a_1=\ldots=a_n=R$ we see
+
+\begin{align}
+\text{Vol}(E_n(R,\ldots,R)) = \text{Vol}(B_n(R)) = \frac{R^n \pi^{\frac{n}{2}}}{\Gamma\left(\frac{n}{2}+1\right)} = \frac{(\sqrt{\pi}R)^n}{\Gamma\left(\frac{n}{2}+1\right)}
+\end{align}
+
+For example, for a $3$-sphere we have
+
+\begin{align}
+\text{Vol}(B_3(R)) = R^3 \pi^{\frac{3}{2}} \frac{1}{\Gamma\left(\frac{3}{2}+1\right)}
+\end{align}
+
+\begin{align}
+\Gamma\left(\frac{3}{2}+1\right) = \frac{3}{2}\Gamma\left(\frac{1}{2}+1\right) = \frac{3}{2}\frac{1}{2}\Gamma\left(\frac{1}{2}\right) = \frac{3}{4} \sqrt{\pi}
+\end{align}
+
+so 
+
+\begin{align}
+\text{Vol}(B_3(R)) = \frac{4}{3}\pi R^3
+\end{align}
+
+We will in this text also be concerned with the subsets of ellipsoids for which all coordinates are positive. That is, sets like
+
+\begin{align}
+E^+_n(a_1,\ldots,a_n) = \left\{(x_1,\ldots,x_n): \sum_{i=1}^n \left(\frac{x_i}{a_i}\right)^2 \le 1 \text{ and } x_1,\ldots,x_n\ge 0 \right\}
+\end{align}
+
+If we are then interested in the volume of this space we see that we are simply cutting the space $E_n(a_1,\ldots,a_n)$ in half $n$ times, once for each coordinate $x_i$. It then follows that
+
+\begin{align}
+\text{Vol}(E_n^+(a_1,\ldots,a_n)) = \frac{1}{2^n} \text{Vol}(E_n(a_1,\ldots, a_n)) = a_1\ldots a_n \frac{\pi^{\frac{n}{2}}}{2^n\Gamma\left(\frac{n}{2}+1\right)}
+\end{align}
+
+\section{Gamma Function and Double Factorial Proofs}
+
+The $\Gamma(z)$ function is defined by
+
+\begin{align}
+\Gamma(z) = \int_{t=0}^{\infty} e^{-t}t^{z-1} dt
+\end{align}
+
+We calculate
+
+\begin{align}
+\Gamma(1) &= \int_{t=0}^{\infty} e^{-t} dt = e^{-t}\Big\rvert_{t=0}^{\infty} = 1\\
+\Gamma\left(\frac{1}{2}\right) &= \int_{t=0}^{\infty} e^{-t} t^{-\frac{1}{2}} dt = 2\int_{u=0}^{\infty} e^{-u^2}du = 2\frac{\sqrt{\pi}}{2} = \sqrt{\pi}
+\end{align}
+
+We note the important property of the $\Gamma$ function:
+
+\begin{align}
+\Gamma(z+1) &= \int_{t=0}^{\infty} e^{-t}t^z dt = -\int_{t=0}^{\infty} \frac{d}{dt}\left(e^{-t}\right) t^z dt\\
+&= -e^{-t}t^z\Big\rvert_{t=0}^{\infty} +\int_{t=0}^{\infty} e^{-t} zt^{z-1} dt = z \Gamma(z)\\
+\Gamma(z+1) &= z \Gamma(z)
+\end{align}
+
+We prove that $\Gamma(z) = (z-1)!$ for $z \in \mathbb{N}$. For $z=1$ we have $\Gamma(z) = 1 = 0! = (1-1)!$. Assume the relation holds for $z=k$. We prove it for $z=k+1$.
+
+\begin{align}
+\Gamma(k+1) = k\Gamma(k) = k(k-1)! = k!
+\end{align}
+
+so for $n\in\mathbb{N}$
+
+\begin{align}
+\Gamma(n) &= (n-1)!\\
+\Gamma(n+1) &= n!
+\end{align}
+
+Now we consider the double factorial and relate it to the Gamma function. 
+
+For even $n=2m$ ($m\in \mathbb{N}$) we will prove by induction that
+
+\begin{align}
+n!! = 2^{\frac{n}{2}}\Gamma\left(\frac{n}{2}+1\right)
+\end{align}
+
+The base case is $m=1$, $n=2$ and we have $2!! = 2$ and $2^{\frac{2}{2}}\Gamma\left(\frac{2}{2}+1\right) = 2\Gamma(2) = 2(1)\Gamma(1) = 2$. We assume the relation holds for $n=2k = 2m$ and prove it holds for $n=2k+2 = 2(m+1)$.
+
+\begin{align}
+(2k+2)!! &= (2k+2)(2k)!! = (2k+2)2^{\frac{2k}{2}}\Gamma\left(\frac{2k}{2}+1\right)\\
+&= 2^{k+1}(k+1)\Gamma(k+1) = 2^{k+1}\Gamma(k+2)\\
+&= 2^{\frac{2k+2}{2}}\Gamma\left(\frac{2k+2}{2}+1\right)
+\end{align}
+
+As desired
+
+For odd $n=2m+1$ ($m\in\mathbb{N}$) we will prove by induction that
+
+\begin{align}
+n!! = 2^{\frac{n+1}{2}}\pi^{-\frac{1}{2}}\Gamma\left(\frac{n}{2}+1\right)
+\end{align}
+
+The base case is $m=0$, $n=1$ and we have $1!! = 1$ and $2^{\frac{1+1}{2}}\pi^{-\frac{1}{2}}\Gamma\left(\frac{1}{2} + 1\right) = 2 \pi^{-\frac{1}{2}} \frac{1}{2}\Gamma\left(\frac{1}{2}\right) = \pi^{-\frac{1}{2}}\pi^{\frac{1}{2}} = 1$ as needed. We assume the relation holds for $n=2k+1 = 2m+1$ and prove it holds for $n=2k+3 = 2(m+1)+1$.
+
+\begin{align}
+(2k+3)!! &= (2k+3)(2k+1)!! = (2k+3)2^{\frac{2k+2}{2}}\pi^{-\frac{1}{2}} \Gamma\left(\frac{2k+1}{2}+1\right)\\
+&= 2^{k+2}\pi^{-\frac{1}{2}}\left(k+\frac{3}{2}\right)\Gamma\left(k+\frac{3}{2}\right)\\
+&= 2^{\frac{2k+3+1}{2}} \pi^{-\frac{1}{2}} \Gamma\left(k+1+\frac{3}{2}\right)\\
+&= 2^{\frac{2k+3+1}{2}} \pi^{-\frac{1}{2}} \Gamma\left(\frac{2k+3}{2} + 1\right)
+\end{align}
+
+As needed.
+
+To summarize
+
+\begin{align}
+n!! = \begin{cases}
+2^{\frac{n}{2}}\Gamma\left(\frac{n}{2}+1\right) \text{ for } n \text{ even}\\
+2^{\frac{n+1}{2}} \pi^{-\frac{1}{2}} \Gamma\left( \frac{n}{2}+1\right) \text{ for } n \text{ odd}
+\end{cases}
+\end{align}
+
+
+\end{document}
+
+

@@ -1,0 +1,225 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{siunitx}
+\usepackage{braket}
+\usepackage{multirow}
+
+\usepackage[
+sorting=none,
+style=numeric
+]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+	
+
+\begin{document}
+\title{Finite Convolution and Boundaries}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+I have been working with numerical convolution algorithms recently. While I have a fair understanding of continuous variable convolution and integration over infinite domains, I have had some confusion regarding discrete convolution over finite domains. Part of this confusion has stemmed from difficulties that arise due to ``boundary artifacts'' when convolving signals with finite domains.
+
+The convolution algorithms for Matlab and Python both have an option which can be used to specify how to deal with these boundary artifacts. The three options are `full', `valid', and `same'. This document will be an attempt to understand these boundary effects and how these different options handle them. In the end there will be a clear enough explanation of these modes so that one could write their own convolution algorithm which mimics the function of the built-in algorithms. Of course, the built-in algorithms have features which allow them to run much more quickly than the naive approach which will be taken here, but the computational goal will be figured out.
+
+\section{Continuous signals}
+In the ideal continuum and infinite limit the convolution of two functions $S$ and $K$ is defined as\footnote{Here $S$ stands for signal and $K$ stands for kernel. This terminology is relevant for signal processing. For example, a signal $S$ can be `smoothed' by convolution with a Gaussian kernel.}
+
+\begin{align}
+(S\ast K)(t) = \int_{t'=-\infty}^{+\infty} S(t')K(t-t') dt'
+\end{align}
+
+This definition is fundamentally motivated by the convolution theorem. If the Fourier transform is defined as
+
+\begin{align}
+\mathcal{FT}[S(t)][f] = \int_{t'=-\infty}^{+\infty} e^{-i2\pi f t'} S(t') dt'
+\end{align}
+
+Then the convolution theorem says that
+
+\begin{align}
+\mathcal{FT}[(S\ast K)(t)][f] = \mathcal{FT}[S(t)][f] \mathcal{FT}[K(t)][f]
+\end{align}
+
+That is, the Fourier transform of the convolution of two functions is the product of the Fourier transform of the two functions.
+
+\section{Discrete and Finite Convolution}
+
+When we consider discrete signals time becomes discretized. Then, instead of functions of time we have functions with discrete indices
+
+\begin{align}
+(S \ast K)[n] = \sum_{i=-\infty}^{+\infty} S[i]K[n-i]
+\end{align}
+
+Here we are interested in figuring out how one might implement this function in a computer program. In that case the indices are restricted to taking on certain values. For example, $S$ might be an array of length $N_S$. Using indexing starting with $0$, this means the index for $S$ can take on any value in $\{0,\ldots,N_S-1\}$. Likewise, if $K$ has length $N_K$ then the index of $K$ can take on any value in $\{0, \ldots, N_K-1\}$. 
+
+We can define the convolution above by only keeping terms for which the indices on $S$ and $K$ are valid. We see this constrains the values that $i$ can take on.
+
+\begin{align}
+0 &\le i \le N_S-1\\
+0 &\le n-i \le N_K-1\\
+\implies& n-N_K + 1 \le i \le n
+\end{align}
+
+The conditions taken together give us
+
+\begin{align}
+\max\left(0, n-N_K + 1\right) \le i \le \min\left(N_S-1, n\right)
+\end{align}
+
+We define
+
+\begin{align}
+i_{min}^n = \max\left(0, n-N_K+1\right)\\
+i_{max}^n = \min\left(N_S-1, n\right)
+\end{align}
+
+Note that the values of $n$ are also constrained. If $S\ast K$ is to be an array then it must also start with indexing at $0$ so $n\ge0$.
+
+\begin{align}
+0 &\le n \le k+N_K -1 \le i_{max}^n + N_K - 1 \le N_S - 1 + N_K - 1\\
+0 &\le n \le N_S + N_K - 2
+\end{align}
+
+This means that $S\ast K$ is an array of length $N_S + N_K - 1$.
+
+We define
+
+\begin{align}
+(S \ast K)_{\text{full}}[n] = \sum_{i=i_{min}^n}^{i_{max}^n} S[i]K[n-i]
+\end{align}
+
+Let's look at $i_{min}^n$ and $i_{max}^n$. First, a note on numerical use cases for convolution. Often we are considering the convolution of a long signal with a shorter kernel. For example, if we are smoothing an image then we might have an image which is 1000 pixels in length and we want to convolve it with a Gaussian which is 50 or so pixels in length. It helps to have a convention for which function is the signal and which is the kernel. We will let $S$ be the signal and $K$ be the kernel. This means that $N_S \ge N_K$. Such a constraint can be programmatically included in a convolution algorithm.
+
+Consider a signal with length $N_S = 1000$ with a kernel of length $N_K = 100$. Plotting $i_{min}^n$ and $i_{max}^n$ for $n$ running from $0$ to $N_S + N_K - 2$ we find:
+
+
+\begin{figure}
+\centering
+\includegraphics[width=6.5in]{iminmax}
+\caption{The value of $(S\ast K)_{\text{full}}[n]$ is calculated by integrating the product of $S$ and $K$ together over some range of indices for each. The indices which are integrated over for each value of $n$ are shown in the above figures. The part of $S$ included is from $i_{min}^n$ up to $i_{max}^n$ (depicted in the first figure) and the part of $K$ included is from $n-i_{min}^n$ until $n-i_{max}^n$ (depicted in the second figure). In addition to showing the bounds for the two functions I also include the difference. This says tells us how big of an integration window is included. Notice that the calculation window included is the same for $S$ and $K$ as a function of $n$. Note that there are three distinct region. There is a main interior region running from $n=N_K-1$ until $n=N_S-1$ within which the function inclusion has a width of $N_K-1$. Outside of this range of values of $n$ (near the boundaries) we see that the integration region is truncated and shortened due to the fact that the signal is finite in length. These regions are where boundary effects will be observed.}
+\end{figure}
+
+
+\section{Convolution Masking}
+
+We have seen above that a natural definition for discrete convolution of two finite signals $S$ and $K$ with lengths $N_S$ and $N_K$ yields a new signal of length $N_S + N_K - 1$. However, this new signal is marred by the fact that the beginning and end of the signal will carry distorted ``boundary effects''. One solution to mitigate these effects is to clip the output signal to eliminate the boundary effects.
+
+It is easy to calculate the values of $n$ which mark the transition between the boundary regions and the bulk regions. They occur when 
+
+\begin{align}
+n-N_S+1 = 0 \implies n &= N_S - 1\\
+n &= N_K-1
+\end{align}
+
+We know that $N_S > N_K$. We can then define a new convolution output:
+
+\begin{align}
+(S \ast K)_{\text{valid}} = (S \ast K)_{\text{full}}[N_K - 1:N_S]
+\end{align}
+
+Here the subscripts ``full'' and ``valid'' are consistent with Python's numpy.convolve function which uses these different clipping styles. We can see that the length of $(S \ast K)_{\text{valid}}$ is $N_S - N_K + 1$. Note I am using Python slicing convention where the first argument in the slice is inclusive while the second is exclusive. The bounds of this function are shown on the figure as black vertical lines.
+
+Another issue with both of these definitions of the convolution function is that they both have lengths which are different than the length of the original signal function, $N_S$. We can define another clipped convolution that gets around this problem. The straightforward idea here is to notice that $(S \ast K)_{\text{full}}$ is $N_K-1$ indices longer than $S$. We can simply remove this many indices symmetrically off of the beginning and end of $(S \ast K)_{\text{full}}$ to get a new signal with the desired length. Unfortunately, if $N_K-1$ is odd then we can't exactly split it up on both sides of the signal. Define $F=\frac{N_K-1}{2}$. We can take $\text{floor}(F) = \lfloor F \rfloor$ off of one end and $\text{ceil}(F) = \rceil F \rceil$ off of the other end. Noting that $\lfloor F \rfloor + \lceil F \rceil = N_K-1$ we see that this will remove a total of $N_K-1$ indices. If $F$ is odd then we see that we will take one more index off of either the left or the right. The python same mode for convolution uses the following convention:
+
+\begin{align}
+(S\ast K)_{\text{same}} = (S\ast K)_{\text{full}}\left[\lfloor F\rfloor:N_S + \lfloor F \rfloor\right]
+\end{align}
+
+We see that the length of this is $N_S$ as desired. Here $\lfloor F \rfloor$ indices are taken off on the left and $\lceil F \rceil$ indices are taken off on the right.
+
+\section{A note on time stamping}
+
+There is yet one more confusing feature of digital convolution. Suppose the signals $S$ and $K$ come with corresponding timestamps. That is, suppose $S[0]$ corresponds to the value of a signal at time $t_0^S$ and $K[0]$ corresponds to a signal at time $t_0^K$. The question then is what time does $(S\ast K)[0]$ correspond to? We can answer this as follows. Consider the definition of the convolution again.
+
+\begin{align}
+(S \ast K)_{\text{full}}[n] = \sum_{i=i_{min}^n}^{i_{max}^n} S[i]K[n-i]
+\end{align}
+
+We can recast this as an expression in terms of times rather than indices as follows:
+
+\begin{align}
+(S\ast K)_{\text{full}}[t_0^* + n\Delta t] = \sum_{i=i_{min}^n}^{i_{max}^n} S[t_0^S + i \Delta t]K[t_0^K + (n-i)\Delta t]
+\end{align}
+
+The question is what is $t_0^*$? For this to be interpreted as convolution if the argument of $S\ast K$ is $X$ then argument of $K$ should be something like $X-Y$ where $Y$ is the argument of $S$. The above can be written as
+
+\begin{align}
+(S\ast K)_{\text{full}}[t_0^* + n\Delta t] = \sum_{i=i_{min}^n}^{i_{max}^n} S[t_0^S + i \Delta t]K[t_0^K + t_0^S + n\Delta t - (t_0^S + i\Delta t)]
+\end{align}
+
+So, by the above logic we are able to see that $t_0^* = t_0^S + t_0^K$. 
+
+Let's consider what effect this has when we are using the `same' setting. In that case the indices up to $\lfloor F \rfloor$ are skipped. This means that the start time for the `same' convolution will be
+
+\begin{align}
+t_0^{same} = t_0^S + T_0^K + \lfloor F \rfloor\Delta t
+\end{align}
+
+If we choose things so that $t_0^K = -\lfloor F \rfloor\Delta t$ then we see that the starting time for the same convolution will be the same as the starting time for the original signal. This corresponds roughly to the kernel signal $K$ being centered about $t=0$.
+
+Thus, there is a natural inclination to interpret signal processing signals in this way. The signal can be thought of as starting at some time $t_0^S$ and it makes sense to think of the kernel as being centered about $t=0$. 
+
+These considerations came up when I was trying to figure out how causal or anti-causal kernels could be represented. For example, if the `same' option is used then one can see that if the kernel is centered within its range then the output signal will appear at the same position in its range. If the kernel is weighted to the left or the right of center then the output signal will be shifted backward or forward in its range. 
+
+However, this was slightly confusing because this story makes no reference to time at all. All that matters in this story is how the respective signals appear within their ranges. For example, if one chose to set $t_0^K=0$ at the start of the kernel window then \textit{all} signals should be causal but they will still seemingly shift the signals backwards within their range! How does this work? Well, if one goes through the time stamping details I mentioned above all such confusions can be resolved.
+
+\section{Padding to ameliorate edge effects}
+
+In the picture I have given above edge effects arise because we ``run out of indices'' in the signal. Another way to view the boundary effects is that it is what you would get if you padded the signal (and kernel) with zeros on either side and then did the convolution. 
+
+This suggests an idea which may be useful for processing signal. For example, suppose we are curious about the convolution of the step function. Say it is zero on the left end of the signal and unity on the right end of the signal with a step from zero to one at the center of the range. If we convolve this with a gaussian and use the `same' mode then we will see  a smoothed step at the center, but we will also see part of a smoothed step down at the right end of the signal. This is a boundary effect. We see that this makes sense from the perspective of thinking about the boundary effects as arising from padding the signal with zeros. What we can see is that if instead we had padded the signal on the right with ones instead of zeros the boundary effect would ``go away''.
+
+This will be the strategy taken in this section. It's worth bearing in mind that boundary effects fundamentally arise from not knowing what is outside the region of definition. Padding the signal to eliminate boundary effects is sort of a hack which relies on knowledge of how the signal should look outside of the range. If this is not actually known or it doesn't make sense to think about this then the padded convolution will still exhibit uncontrolled ``boundary'' effects.
+
+First let's have an index counting summary. Recall $F = \frac{N_K-1}{2}$ and that $\lfloor F \rfloor + \lceil F \rceil = N_K-1$
+
+\begin{table}[!h]
+\begin{tabular}{|c|c|c|c|}
+\hline
+Signal & Full Slice & Index list & Length \\ \hline
+$S$ & $[0:N_S]$ & $\{0, \ldots, N_S-1\}$ & $N_S$   \\ \hline
+$K$ & $[0:N_K]$ & $\{0, \ldots, N_K-1\}$ & $N_K$   \\ \hline
+$(S\ast K)_{full}$ & $[0:N_S+N_K-1]$ & $\{0, \ldots, N_S+N_K-2\}$ & $N_S+N_K-1$ \\ \hline
+\multirow{3}{*}{$(S\ast K)_{valid}$} & $[N_K-1:N_S]$ & $\{N_K-1,\ldots, N_S-1\}$ & $N_S-N_K+1$ \\ \cline{2-4} 
+                  & \multicolumn{3}{l|}{Take off $N_K-1$ indices on left, $[0:N_K-1]$} \\ \cline{2-4} 
+                  & \multicolumn{3}{l|}{Take off $N_K-1$ indices on right, $[N_S:N_S+N_K-1]$} \\ \hline
+\multirow{3}{*}{$(S\ast K)_{same}$} & $\left[\left\lfloor F \right\rfloor:N_S + \left\lfloor F \right\rfloor\right]$ & $\left\{ \left\lfloor F \right\rfloor, \ldots N_S + \left\lfloor F - 1 \right\rfloor\right\}$ & $N_S$ \\ \cline{2-4} 
+                  & \multicolumn{3}{l|}{Take off $\left\lfloor F \right\rfloor$ indices on left, $\left[0:\left\lfloor F \right\rfloor\right]$} \\ \cline{2-4} 
+                  & \multicolumn{3}{l|}{Take off $\left\lceil F \right\rceil$ indices on right, $\left[N_S + \left\lfloor F\right\rfloor:N_S + N_K-1 \right]$} \\ \hline
+\end{tabular}
+\end{table}
+
+The goal is to take the signal $S$, pad it on the left and right using some method (for example, take the edge value on the left or right and repeat that), do a convolution and the clip the convolution using the valid mode. The idea is to pad the signal with just the right amount of indices on the left and the right so that when the valid mode is applied we end up with a signal the same length as $S$. 
+
+Looking at the same function we can think of $(S\ast K)_{full}$ as having $\lfloor F \rfloor$ indices added to the left as compared to $S$ and $\lceil F \rceil$ indices added to the right as compared to $S$. Valid arises from removing $N_K-1$ indices on the left and right from $(S\ast K)_{full}$. This means that valid has $N_K-1 - \lfloor F \rfloor = \lceil F \rceil$ less indices on the left as compared to $S$ and $N_K-1 - \lceil F \rceil = \lfloor F \rfloor$ indices on the right as compared to $S$.
+
+This means that if we want to pad and then valid convolve we should pad on the left with $\lceil F \rceil$ indices and pad on the right with $\lfloor F \rfloor$ indices.
+
+\section{Appendix: indexing details}
+
+It is easy to get bogged down in the details of indices. Here are a few quick reminders. Consider an array $S$ which has length $N_S$. Using Python's slicing notation (start index is included, end index is excluded) we can write
+
+\begin{align}
+S = S[0:N_S]
+\end{align}
+
+The first element of $S$ is $S[0]$ and the last element of $S$ is $S[N_S-1]$.
+
+Consider the slice of $S$ 
+
+\begin{align}
+S[a:b]
+\end{align}
+
+The first element of this slice is $S[a]$. The last element is $S[b-1]$. The total length of this slice is $b-a$.
+
+
+\end{document}

@@ -1,0 +1,145 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\newcommand{\bv}[1]{\textbf{#1}}
+
+\begin{document}
+\title{Signal Processing and Fourier Bandwidths}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+Often analytical/theoretical predictions for physical phenomena result in dirac deltas. For example, the autocorrelation function of white noise is a dirac delta. The question of how to take these analytical expressions and predict the value of some measured quantity caused me a great deal of conclusion. I have since come to understand that it is ultimately resolved by the various bandwidths that arise in the detection chain.
+This led me down a road of trying to figure out how to, in a simple way, model certain aspects of the detection chain such as a low pass filter detection bandwidth and what the effect of such a signal processing stage would be on the final signal which is displayed say in Matlab.
+
+\section{Filtering}
+Consider a complex filter transfer function $\tilde{F}(f)$.
+
+\begin{align}
+\tilde{S}(f) = \tilde{F}(f) \tilde{I}(f)
+\end{align}
+
+$\tilde{I}(f)$ is the Fourier transform of the input signal and $\tilde{S}(f)$ is the Fourier transform of the output signal. We take the inverse Fourier transform and apply the convolution theorem (note for the cyclic frequencies dealt with in the processing of real signals I will work in the $(a,b) = (0,+2\pi)$ Fourier transform convention) to find
+
+\begin{align}
+S(t) = \int_{-\infty}^{+\infty} F(t-t')I(t') dt' = \int_{-\infty}^{+\infty} I(t-t') F(t') dt'
+\end{align}
+
+My goal is to come up with as simple a model for a filter as possible. Basically I want to figure out the answer to my questions assuming limits like the signal is WAY in the passband or WAY in the stopband. I don't want to consider what happens to signals in the transition band or determine any sort of distortion effects. I will be happy to simply be aware of when bandedges are close enougth to relevant signals to be cause for extra care.
+
+In that spirit, the most simple filter I can think of is a step function. Consider
+\begin{align}
+\tilde{F}_1(f) = \theta(f-f_0)\times \theta((f_0+f_{bw})-f)
+\end{align}
+
+This function is equal to $1$ for $f_0<f<f_0+f_{BW}$ and $0$ otherwise. This could be thought of as a bandpass filter but we've only captured the action on positive frequencies. We need to flip this function about $f=0$ to get a bandpass filter that will have a real time response.
+
+\begin{align}
+\tilde{F}(f) = \tilde{F}_1(f)+\tilde{F}_1(-f)
+\end{align}
+
+This can be thought of a simple model for a bandpass filter with center frequency $f_c = f_0+\frac{f_{bw}}{2}$ and bandwidth $f_{BW}$. If $f_0=0$ then this becomes a low pass filter with cutoff $f_{BW}$. To take the inverse Fourier transform we recall $\mathcal{FT}^{-1}[\tilde{F}(-f)](t) = \big(\mathcal{FT}^{-1}[\tilde{F}(f)](t)\big)^*$. That is the Inverse Fourier transform of a mirrored function is equal to the complex conjugate of the inverse fourier transform of the function itself. We then work out
+
+\begin{align}
+F_1(t) &= \int_{f_0}^{f_0+f_{BW}} e^{-i2\pi f t} df = \frac{-1}{i 2\pi t} e^{-2\pi\left(f_0+\frac{f_{bw}}{2}\right)t} \left[e^{-i\pi f_{BW} t}-e^{+i \pi f_{BW}}\right]\\
+&= e^{-2\pi\left(f_0+\frac{f_{bw}}{2}\right)t} \frac{\sin(\pi f_{BW} t)}{\pi t} = f_{BW} e^{-2\pi\left(f_0+\frac{f_{bw}}{2}\right)t} \text{sinc}(\pi f_{BW} t)
+\end{align}
+
+To find $F(t)$ we simply need to add the complex conjugate of what we have just found resulting in
+
+\begin{align}
+F(t) = 2 f_{BW} \text{cos}\left(2\pi \left(f_0+\frac{f_{BW}}{2}\right) t \right) \text{sinc}(\pi f_{BW} t)
+\end{align}
+
+We see that the Fourier transform of the bandpass or lowpass filter results in a sinc function multiplied by a cosine which depends on the center frequency. If $f_0 =0$ then the two trigonometric terms combine to give a single sin at twice the frequency. That is the Fourier transform of a hardstep low pass filter is exactly a sinc function.
+
+\begin{align}
+F(t) = 2 f_{BW} \text{sinc}(2 \pi f_{BW} t)
+\end{align}
+
+ Recall from my Fourier transform write up that a sinc function can be considered a nascent delta. To see this let $\epsilon = \frac{1}{2\pi f_{BW}}$ so that
+ 
+\begin{align}
+F(t) = \frac{\text{sinc}\left(\frac{t}{\epsilon}\right)}{\pi \epsilon}
+\end{align}
+
+We know from my Fourier write up that in the limit that $\epsilon\rightarrow 0$ we can treat this function as a delta. That is for $f_{BW}$ large we have
+
+\begin{align}
+F(t) \approx \delta(t)
+\end{align}
+
+Note that in this case $\epsilon$ isn't unitless. So what to we mean by $f_{BW}$? The answer is the $f_{BW}$ should be larger than the largest frequency components of the signal under consideration.
+
+Thinking of $F(t)$ as a delta function will be nice for signal well in the passband of the low pass filter but it doesn't correctly address what happens to a signal well in the stop band of the filter. To address this we will need a slightly more general model of the impulse response of the filter. The model I am aiming for is for $F(t)$ to be treated as a step function as well with a width $\Delta t$ and a height related to $\frac{1}{\Delta t}$ so that the total area under the curve is unity so that it still acts like a nascent delta function. Indeed we can see that $F(t=0)$ increases inversely proportionally with the bandwidth. I'll work that out in detail below to show that that model is sufficient for signals both in and out of the pass band. We will also find the exact relationship between $\Delta t$ and $f_{BW}$.
+
+Consider the low pass filter with $f_0=0$. Clearly in frequency space it cuts out anything above $f_{BW}$ and permits anything below. how is this accomplished in the time domain? We consider the time domain convolution to determine the filter action.
+
+\begin{align}
+S(t) = \int_{-\infty}^{+\infty} I(t-t') F(t') dt'
+\end{align}
+
+If $I(t)$ is well in the pass band then we see that the filter impulse response is just a delta function so $S(t) = I(t)$, the signal is unchanged by the filter. But what happens if we expand the model to considering $F(t')$ as the box function I described earlier. In that case
+
+\begin{align}
+S(t) = \frac{1}{\Delta t}\int_{-\frac{\Delta t}{2}}^{+\frac{\Delta t}{2}} I(t-t')dt'
+\end{align}
+
+This is exactly the formula for the average value of the function $I(t)$ from $t-\frac{\Delta t}{2}$ to $t+\frac{\Delta t}{2}$. So we see that the action of a low pass filter is to average it's input. If $I(t)$ doesn't vary much in the time window $\Delta t$ then we can pull it out of the integral and we recover $S(t) = F(t)$. However, what if we have a signal in the stop band of the filter? That is we have a very high frequency signal. Well, in that case $I(t)$ is oscillatory and undergoes many oscillations in the averaging time. However, since the signal oscillates about zero (no DC component since it is high frequency) the value of the integral is bounded to $\pm 1$ multiplied by some constants. If $\Delta t$ is large (that is $f_{BW}$ is much smaller than the frequency components of the signal) then the $\frac{1}{\Delta t}$ will dominate the equation bringing the entire solution down to 0 so that $S(t) = 0$. The high frequency signal is filtered.
+
+This picture all gets more complicated when we shift to $f_0 \neq 0$ to consider the bandpass filter. Basically the oscillatory nature of the function comes into play. For example, for a dc signal we can't only consider the impulse response between $\pm \frac{\Delta t}{2}$ because as you integrate over the whole function you actually get $0$ as opposed to $1$ for the case when $f_0 = 0$. That is the large time impulse response, via its oscillatory nature, cancels out the short time impulse response. However, inside the passband apparently all of these oscillations conspire to give a non-zero answer. It is more difficult for me to interpret the passband in the time domain.
+
+Returning to the low pass filter, the question remains of how $\Delta t$ is related to $f_{BW}$. Intuitively $\Delta t \approx \frac{1}{f_{BW}}$ but it would be nice to have a more rigorous definition of these terms for filters which are not simple step functions, for example, how should we define the bandwidth and $\Delta t$ for the Butterworth filters used in the Skaffold analysis? For most calculations these parameters should drop out of the formulas but for the sake of writing down equations and those circumstances where signals may depend on bandwidths it would be nice to have some way to define these terms to be able to work with them.
+
+We take a definition from Fundamental of Photonics by Saleh and Teich for the Power equivalent width and adjust it a little bit for our purposes.
+
+\begin{align}
+\Delta t = \frac{\int_{-\infty}^{+\infty} |F(t)|^2 dt}{|F(0)|^2}
+\end{align}
+
+We can work this out for the low pass filter. We know $F(t) = \frac{1}{\pi \epsilon} \text{sinc}\left(\frac{t}{\epsilon}\right)$. There are methods to calculate the sinc squared integral but we'll just look it up or throw it in mathematica to find
+
+\begin{align}
+\Delta t = \frac{\frac{1}{\pi \epsilon}}{\left(\frac{1}{\pi \epsilon}\right)^2} = \pi \epsilon = \frac{1}{2 f_{BW}}
+\end{align}
+
+This is good because it relates $\Delta t$ to $f_{BW}$. This all works and makes good sense in this example because the bandwidth is very clearly defined, however, lets see if we can come up with a definition for the bandwidth of a more general signal from this definition of $\Delta t$. Parseval's theorem tells us $\int |F(t)|^2 dt = \int |\tilde{F}(\omega)|^2 d\omega$ and the definition of inverse Fourier transform tells us $F(0) = \int \tilde{F}(\omega) d\omega$ so we have
+
+\begin{align}
+\Delta t = \frac{\int_{-\infty}^{+\infty} |F(t)|^2 dt}{|F(0)|^2} = \frac{\int_{-\infty}^{+\infty} |\tilde{F}(\omega)|^2 d\omega}{\left|\int_{-\infty}^{+\infty} \tilde{F}(\omega) d\omega\right|^2}
+\end{align}
+
+We work out the right hand side of this equation for our step function filter.
+
+\begin{align}
+\frac{\int_{-\infty}^{+\infty} |\tilde{F}(\omega)|^2 d\omega}{\left|\int_{-\infty}^{+\infty} \tilde{F}(\omega) d\omega\right|^2} = \frac{2 f_{BW}}{(2 f_{BW})^2} = \frac{1}{2 f_{BW}}
+\end{align}
+
+Loosely speaking the definition of the timespan of a signal is some signal height squared times the width divided by the signal height squared. The expression in frequency space is a signal height squared times the width divided by the (signal height times the width) squared. With all of this and seeing the agreement with expectation for our toy filter we can go ahead and take these as the definitions of impulse response duration and filter bandwidth for general filters.
+
+\begin{align}
+\Delta t = \frac{\int_{-\infty}^{+\infty} |F(t)|^2 dt}{|F(0)|^2} = \frac{\int_{-\infty}^{+\infty} |\tilde{F}(\omega)|^2 d\omega}{\left|\int_{-\infty}^{+\infty} \tilde{F}(\omega) d\omega\right|^2} = \frac{1}{2f_{BW}}
+\end{align}
+
+We see that $\Delta t f_{BW} = \frac{1}{2}$. The factor of 2 is related to the fact that $f_{BW}$ is not the full width of the filter in frequency domain but rather the width of the filter in positive frequency space.
+
+The general statement I want to make at the end of all of this is as follows:
+
+Consider a low pass filter with unity gain in the passband. We can use the formula above to define a bandwidth, $f_{BW}$ for this filter. In some sense, the Fourier transform of the filter can be thought of as a function with width $\Delta t$ and height $\frac{1}{\Delta t}$. My claim is that for signals well in the pass band or well in the stop band we can treat the filter in frequency as a unit step function from $-f_{BW}$ to $+f_{BW}$ and we can treat the impulse response as a step function of height $\frac{1}{\Delta t}$ from $-\frac{\Delta t}{2}$ to $+\frac{\Delta t}{2}$. For signals well in the pass band or well in the stop band I believe that all of this will approximate the results of carrying out calculations including all details of the filter.
+
+
+\end{document}

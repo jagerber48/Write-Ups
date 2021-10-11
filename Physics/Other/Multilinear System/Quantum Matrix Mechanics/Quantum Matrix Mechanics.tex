@@ -1,0 +1,356 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\newcommand{\bv}[1]{\bold{#1}}
+\newcommand{\bvs}[1]{\boldsymbol{#1}}
+
+\begin{document}
+\title{Quantum Matrix Mechanics}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In previous write ups I have been applying a linear systems analysis of our optomechanical system. The approaches taken there have been consistent with classical linear systems. In this write up I will describe how the quantum mechanics comes in.
+
+\section{Differences between Classical and Quantum}
+
+Here I'll explain which typical assumptions from classical control theory break down. In the next sections I will explain why/how in the specific case I am considering they break down.
+
+For a classical random process, if the process is stationary then the autocorrelation function is even in time.
+
+\begin{align}
+\braket{X(t_1)X(t_2)} = \braket{X(t_1-t_2)X(0)} = \braket{X(0)X(t_1-t_2)} = \braket{X(t_2-t_1)X(0)} = \braket{X(t_2)X(t_1)}
+\end{align}
+
+Note that in the third step $X(t_1-t_2)$ was commuted freely with $X(0)$. Quantum mechanically these two variables may not commute so that is clearly where this example breaks down.
+
+Classically the power spectral density of a real random process is always an even function of frequency. This is because $\tilde{X}(-f) = \tilde{X}^*(f)$ so that
+
+\begin{align}
+S_{XX}(f) &= \lim_{t_0\rightarrow \infty} \frac{1}{t_0} \braket{\tilde{X}_{t_0}(f) \tilde{X}_{t_0}^*(f)} =  \lim_{t_0\rightarrow \infty} \frac{1}{t_0} \braket{\tilde{X}_{t_0}^*(-f) \tilde{X}_{t_0}(-f)}\\
+&=  \lim_{t_0\rightarrow \infty} \frac{1}{t_0} \braket{\tilde{X}_{t_0}(-f) \tilde{X}_{t_0}^*(-f)} = S_{XX}(-f)
+\end{align}
+
+Where again I have relied on commuting $\tilde{X}_{t_0}^*(-f)$ with $\tilde{X}_{t_0}(-f)$, a move which may not be allowed quantum mechanically.
+
+Next, for a classical vector $\bv{v}$ the matrix $\bv{v}\bv{v}^T$ is always symmetric.
+
+\begin{align}
+(\bv{v}\bv{v}^T)_{ij} = v_i v_j = v_j v_i = (\bv{v}\bv{v}^T)_{ji}
+\end{align}
+
+so $\bv{v} \bv{v}^T = (\bv{v}\bv{v}^T)^T$ but again notice that this relied on commuting two variables.
+
+Next, classically, for any two real variables $X$ and $Y$ the expectation value of $\braket{XY}$ is also real. This is trivial classically but quantum mechanically we must look at Hermitian operators. $X$ and $Y$ being real classically corresponds to them being Hermitian quantum operators. The question is then if the product $XY$ is Hermitian to determine if $\braket{XY}$ is real.
+
+\begin{align}
+(XY)^{\dag} = Y^{\dag}X^{\dag} = YX
+\end{align}
+
+So if $YX = XY$ then $XY$ is Hermitian, but that would require $XY-YX = [X,Y] = 0$ which as we know is not always the case. However, there is an interesting thing here which is that $[X,Y]$ can be thought of as the imaginary part of $XY$ and $\{X,Y\}$ can be thought of as the real part of $XY$. $\{X,Y\}$ is the sum of an operator with its Hermitian conjugate so it must be hermitian and $[X,Y]$ is the difference of an operator with its Hermitian conjugate so it must be anti-Hermitian.
+
+\begin{align}
+XY = \frac{1}{2}\{X,Y\} + \frac{1}{2}[X,Y]
+\end{align}
+
+We can start to bring these ideas together. It is clear that in the one dimensional case each of these discrepancies arises because of the non-commutivity of quantum operators. In this write up I will spend some time showing how these effects manifest themselves in the multi-dimensional linear quantum system I have been considering.
+
+\section{Quantum Matrix Commutator}
+
+At the heart of the discrepancies in the linear amplifier model will be the matrices $\bvs{\beta}$ and $\bvs{\eta}$. These matrices arise as the initial conditions and noise correlations for a driven linear system. However, the equations from which they arise are real but their elements contain imaginary parts. These imaginary parts arose exactly from quantum commutation relations at some point. See the time domain linear amplifier write up to understand how they arise. In this write up I will explore their implications.
+
+Let's think about $\bvs{\beta}$.
+
+\begin{align}
+\bvs{\beta} = \braket{\bv{v}(0)\bv{v}(0)^T}
+\end{align}
+
+here $\bv{v}$ is a vector of quantum operators. As mentioned above, classically we would expect this matrix to be symmetric but since it is made of quantum operators it is not. Basically off-diagonal elements can be imaginary so we are rather left with the constraint that the matrix is only Hermitian. But doesn't it look like this matrix is it's own transpose by just applying the rule for taking transposes? It turns out that rule breaks down because of this non-commutivity. We can replace it with a more general rule however by defining an operator which is related to the (quantum) commutation of two quantum matrices.  
+
+In normal matrix operations we have the identity $(\bv{A}\bv{B})^T = (\bv{B}^T\bv{A}^T)^T$. This identity does not hold in the case that components of $\bv{A}$ and $\bv{B}$ are quantum operators which may not commute. I'll show why.
+
+\begin{align}
+(\bv{A}\bv{B})_{ik} - ((\bv{B}^T\bv{A}^T)^T)_{ik} &= (\bv{A}\bv{B})_{ik} - (\bv{B}^T\bv{A}^T)_{ki}\\
+= A_{ij} B_{jk} - (\bv{B}^T)_{kj}(\bv{A}^T)_{ji} &= A_{ij}B_{jk} - B_{jk} A_{ki}\\
+= [A_{ij},B_{jk}] &= ([[\bv{A},\bv{B}]])_{ik} 
+\end{align}
+
+We thus define an operator, $[[.,.]]$ such that $([[\bv{A},\bv{B}]])_{ik} = [A_{ij},B_{jk}]$ so that
+
+\begin{align}
+&\bv{A}\bv{B} - (\bv{B}^T\bv{A}^T)^T = [[\bv{A},\bv{B}]]
+\end{align}
+
+The case relevant for this write up is $\bv{A} = \bv{v}$ and $\bv{B} = \bv{v}^T$ (thinking of $\bv{v}$ as an $N\times1$ matrix) giving
+
+\begin{align}
+&\bv{v}\bv{v}^T - ((\bv{v}^T)^T\bv{v}^T)^T\\
+&= \bv{v}\bv{v}^T - (\bv{v}\bv{v}^T)^T = [[\bv{v},\bv{v}^T]]
+\end{align}
+
+However, do note that
+
+\begin{align}
+(\bv{v}\bv{v}^T)^{\dag} = \bv{v}^* \bv{v}^{\dag} = \bv{v}\bv{v}^T
+\end{align}
+
+so $\bv{v}\bv{v}^T$ is at least Hermitian as a matrix even its elements are not Hermitian operators. This follows since $\bv{v}$ is Hermitian on its own.
+
+Some properties
+
+Additivity:
+
+\begin{align}
+([[\bv{A}+\bv{B},\bv{C}]])_{ik} &= [A_{ij}+B_{ij},C_{jk}]\\
+&= [A_{ij},C_{jk}]+[B_{ij},C_{jk}] = ([[\bv{A},\bv{C}]])_{ik} + ([[\bv{B},\bv{C}]])_{ik}
+\end{align}
+
+so
+
+\begin{align}
+[[\bv{A}+\bv{B},\bv{C}]] &= [[\bv{A},\bv{C}]]+[[\bv{B},\bv{C}]]\\
+[[\bv{A},\bv{B}+\bv{C}]] &= [[\bv{A},\bv{B}]] + [[\bv{A},\bv{C}]]
+\end{align}
+
+Where the second line follows by a similar proof.
+
+Scalar multiplication. Consider $\bv{A}$ and $\bv{D}$ whose entries are all C-numbers.
+
+\begin{align}
+([[\bv{A}\bv{B},\bv{C}\bv{D}]])_{ik} &= [(\bv{A}\bv{B})_{ij},(\bv{C}\bv{D})_{jk}]] = [A_{il}B_{lj},C_{jm}D_{mk}]\\
+&= A_{il}[B_{lj},C_{jm}]D_{mk}= A_{il}([[\bv{B},\bv{C}]])_{lm} D_{mk}
+\end{align}
+
+so
+
+\begin{align}
+[[\bv{A}\bv{B},\bv{C}\bv{D}]] = \bv{A}[[\bv{B},\bv{C}]]\bv{D}
+\end{align}
+
+We can similarly define an anti-commutator operator $\{\{.,.\}\}$
+
+\begin{align}
+(\bv{A}\bv{B})_{ik} + ((\bv{B}^T\bv{A}^T)^T)_{ik} &= (\bv{A}\bv{B})_{ik} + (\bv{B}^T\bv{A}^T)_{ki}\\
+= A_{ij} B_{jk} + (\bv{B}^T)_{kj}(\bv{A}^T)_{ji} &= A_{ij}B_{jk} + B_{jk} A_{ij}\\
+= \{A_{ij},B_{jk}\} &= (\{\{\bv{A},\bv{B}\}\})_{ik}
+\end{align}
+
+\begin{align}
+\{\{\bv{A},\bv{B}\}\} = \bv{A}\bv{B} + (\bv{B}^T\bv{A}^T)^T
+\end{align}
+
+This anti-commutator operator will satisfy the same additive and scalar multiplication identities as the commutator.
+
+The point here is that the $[[.,.]]$ matrix is a matrix which quantifies how badly the two matrices which are used to construct it deviate from the classical expectation. It is a straightforward generalization of the regular quantum commutator. Note that is different than the regular matrix commutator, $[.,.]$. For example, the quantum commutator will always be zero for c-number matrices even if they don't commute under matrix commutation. Furthermore, the normal matrix commutation relation will not depend on whether the elements of the matrices are quantum or c-number.
+
+\section{Power Spectral Density}
+
+Consider $\bvs{\eta}$ which arises from $\braket{\bv{g}(t)\bv{g}^T(t')} = \bvs{\eta}\delta(t-t')$. Again classically we would expect $\bvs{\eta}$ to be real and symmetric since it is constructed from a vector multiplied by the transpose of another vector. However since quantum operators don't commute this isn't the case.
+
+In fact, we can see
+\begin{align}
+\braket{[[\bv{g}(t),\bv{g}^T(t')]]} &= \braket{\bv{g}(t)\bv{g}^T(t') - (\bv{g}(t')\bv{g}(t))^T}\\
+&= (\boldsymbol{\eta} - \boldsymbol{\eta}^T)\delta(t-t')
+\end{align}
+
+which follows from the evenness of the delta function.
+
+Likewise
+\begin{align}
+\braket{\{\{\bv{g}(t),\bv{g}^T(t')\}\}} &= \braket{\bv{g}(t)\bv{g}^T(t') + (\bv{g}(t')\bv{g}(t))^T}\\
+&= (\boldsymbol{\eta} + \boldsymbol{\eta}^T)\delta(t-t')
+\end{align}
+
+Note
+
+\begin{align}
+\boldsymbol{\eta} = \frac{1}{2}\left(\boldsymbol{\eta} + \boldsymbol{\eta}^T\right) + \frac{1}{2}\left(\boldsymbol{\eta} - \boldsymbol{\eta}^T\right) = \text{Re}(\boldsymbol{\eta}) + i\text{Im}(\boldsymbol{\eta})  
+\end{align}
+
+From the arguments at the beginning of this writeup we know the commutator expression must be imaginary (if $\bv{g}$ is composed of Hermitian quantum operators) and the anti commutator expression  must be real so we can conclude
+
+\begin{align}
+\braket{[[\bv{g}(t),\bv{g}^T(t')]]} = (\boldsymbol{\eta} - \boldsymbol{\eta}^T)\delta(t-t') = 2i\text{Im}(\boldsymbol{\eta})\\
+\braket{\{\{\bv{g}(t),\bv{g}^T(t')\}\}} = (\boldsymbol{\eta} + \boldsymbol{\eta}^T)\delta(t-t') = 2\text{Re}(\boldsymbol{\eta})\\
+\end{align}
+
+So we see that the quantum matrix commutator is exactly the imaginary anti-symmetric part of $\bvs{\eta}$ and the quantum matrix anti-commutator is exactly the real symmetric part of $\bvs{\eta}$. It can be shown with a few lines of work that $\boldsymbol{\eta}^{\dagger} = \boldsymbol{\eta}$, that $\boldsymbol{\eta}$ is hermitian. This all means we can clearly distinguish between quantum and classical affects which arise from $\bvs{\eta}$.
+
+Let's first consider the Power spectral density of the process described in the susceptibility write up. We have
+
+\begin{align}
+S_{\bv{v}\bv{v}} = \tilde{\bvs{\chi}}(f) \bvs{\eta} \tilde{\bvs{\chi}}^{\dag}(f)
+\end{align}
+
+Let's look at on diagonal elements. Let's first look at if the on diagonal elements of the power spectral density matrix are real as expected. Note that $\tilde{\bvs{\chi}}(f)$ is the Fourier transform of the real impulse response of the system so $\tilde{\bvs{\chi}}(-f) = \tilde{\bvs{\chi}}^*(f)$.
+
+\begin{align}
+S_{v_i v_i} = \tilde{\chi}_{ij}(f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(f)
+\end{align}
+
+And the complex conjugate
+
+\begin{align}
+S_{v_i v_i}^* = \tilde{\chi}^*_{ij}(f) \eta^*_{jk} \tilde{\chi}^T_{ki}(f) = \tilde{\chi}^{\dag}_{ji}(f) \eta^{\dag}_{kj} \tilde{\chi}_{ik}(f) = \tilde{\chi}_{ik}(f)\eta_{kj} \tilde{\chi}^{\dag}_{ji}(f) = \tilde{\chi}_{ij}(f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(f)
+\end{align}
+
+Where we have used the Hermiticy of $\bvs{\eta}$ and swapped indices in the last equality.
+
+Good this was as expected. Let's now calculate the sideband asymmetry, that is the difference between $S_{v_i v_i}(f)$ and $S_{v_i v_i}(-f)$.
+
+\begin{align}
+S_{v_i v_i}(f) - S_{v_i v_i}(-f) &= \tilde{\chi}_{ij}(f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(f) - \tilde{\chi}_{ij}(-f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(-f)\\
+&= \tilde{\chi}_{ij}(f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(f) - \tilde{\chi}^*_{ij}(f) \eta_{jk} \tilde{\chi}^{T}_{ki}(f)\\
+&= \tilde{\chi}_{ij}(f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(f) - \tilde{\chi}_{ik}(f) \eta^T_{kj} \tilde{\chi}^{\dag}_{ji}(f)\\
+&= \tilde{\chi}_{ij}(f) \eta_{jk} \tilde{\chi}^{\dag}_{ki}(f) - \tilde{\chi}_{ij}(f) \eta^T_{jk} \tilde{\chi}^{\dag}_{ki}(f)\\
+&= \tilde{\chi}_{ij}(f) (\eta_{jk}-\eta^T_{jk}) \tilde{\chi}^{\dag}_{ki}(f)\\
+\end{align}
+
+So we see that it is exactly the asymmetric part of the noise drive matrix that gives rise to sideband asymmetry. This is what we have always known from optodynamical theory but I think this is  a nice way of showing it. Furthermore, later on we will be able to see a time-domain representation of how these asymmetries propagate through time.
+
+\section{Commutator Cross-Correlations}
+In for example, the normal ordered Heterodyne detection we see that second order moments of the quadratures of the detected photocurrent are related to quantities like $[X(t_1),P(t_2)$ and $[P(t_1),P(t_2)$ etc. These sorts of terms will be elements of the matrix $[[\bv{v}(t_1),\bv{v}^T(t_2)]]$ and $\{\{\bv{v}(t_1),\bv{v}^T(t_2)\}\}$ so to that end I will calculate those matrices.
+
+We are interested in
+
+\begin{align}
+[[\bv{v}(t_1),\bv{v}^T(t_2)]]\\
+\{\{\bv{v}(t_1),\bv{v}^T(t_2)\}\}
+\end{align}
+
+And expectations of these quantities. 
+\begin{align}
+\bv{v}(t) &= \bv{A}(t) \bv{v}(0) + \int_{t'=0}^t \bv{A}(t-t') \bv{g}(t') dt'\\
+\bv{v}^T(t) &=  \bv{v}^T(0)\bv{A}^T(t) + \int_{t'=0}^t \bv{g}^T(t')\bv{A}^T(t-t')  dt'
+\end{align}
+
+Using the identities shown in the appendix
+
+\begin{align}
+[[\bv{v}(t_1),\bv{v}^T(t_2)]]&= \\
+&\bv{A}(t_1)[[\bv{v}(0),\bv{v}^T(0)]]\bv{A}^T(t_2)\\
+&+\int_{t'=0}^{t_2} \bv{A}(t_1) [[\bv{v}(0),\bv{g}^T(t')]] \bv{A}^T(t_2-t') dt'\\
+&+\int_{t'=0}^{t_1}\bv{A}(t_1-t')[[\bv{g}(t'),\bv{v}^T(0)]] \bv{A}^T(t_2) dt'\\
+&+\int_{t'=0}^{t_1}\int_{t''=0}^{t_2} \bv{A}(t_1-t')[[\bv{g}(t'),\bv{g}^T(t'')]]\bv{A}^T(t_2-t'') dt' dt''
+\end{align}
+
+When we take the expectation value the two central terms will vanish due to $\bv{g}(t')$ being uncorrelated with $\bv{v}(0)$.
+
+\begin{align}
+\braket{[[\bv{v}(t_1),\bv{v}^T(t_2)]]} =& \bv{A}(t_1)\braket{[[\bv{v}(0),\bv{v}^T(0)]]}\bv{A}^T(t_2)\\
+&+\int_{t'=0}^{t_1}\int_{t''=0}^{t_2} \bv{A}(t_1-t')\braket{[[\bv{g}(t'),\bv{g}^T(t'')]]}\bv{A}^T(t_2-t'') dt' dt'' 
+\end{align}
+
+We know
+
+\begin{align}
+\braket{[[\bv{v}(t_1),\bv{v}^T(t_2)]]} &= 2i \text{Im}(\bvs{\beta})\\
+\braket{[[\bv{g}(t'),\bv{g}^T(t'')]]} &= 2i \text{Im}(\bvs{\eta})\delta(t'-t'')
+\end{align}
+
+so we get
+
+\begin{align}
+\braket{[[\bv{v}(t_1),\bv{v}^T(t_2)]]} =& 2i \bv{A}(t_1) \text{Im}(\boldsymbol{\beta}) \bv{A}^T(t_2)\\
+&+2i \int_{t'=0}^{\text{min}(t_1,t_2)} \bv{A}(t_1-t')\text{Im}(\boldsymbol{\eta})\bv{A}^T(t_2-t') dt'
+\end{align}
+
+We can work out similar formulas for the anticommutators. The analysis is the exact same except
+
+\begin{align}
+\braket{\{\{\bv{v}(0),\bv{v}^T(0)\}\}} &= 2 \text{Re}(\bvs{\beta})\\
+\braket{\{\{\bv{g}(t'),\bv{g}^T(t'')\}\}} &= 2 \text{Re}(\bvs{\eta})\delta(t'-t'')
+\end{align}
+
+So we end up with
+
+\begin{align}
+\braket{\{\{\bv{v}(t_1),\bv{v}^T(t_2)\}\}} =& 2 \bv{A}(t_1) \text{Re}(\boldsymbol{\beta}) \bv{A}^T(t_2)\\
+&+2 \int_{t'=0}^{\text{min}(t_1,t_2)} \bv{A}(t_1-t')\text{Re}(\boldsymbol{\eta})\bv{A}^T(t_2-t') dt'
+\end{align}
+
+\section{Two-time correlation function}
+Consider elements of the two time cross-correlation function matrix from the susceptibility write up
+
+\begin{align}
+\left(\braket{\bv{v}(t_1)\bv{v}^T(t_2)}\right)_{ip} = \braket{v_i(t_1)v_p(t_2)} =\begin{cases}
+-\sum_{j,n} \frac{\zeta_{ijnp}}{d_j+d_n} e^{d_j(|\tau|)}, & \text{for } \tau>0\\
+-\sum_{j,n} \frac{\zeta_{ijnp}}{d_j+d_n} e^{d_n(|\tau|)}, & \text{for } \tau<0
+\end{cases}
+\end{align}
+
+with $\tau = t_1-t_2$.
+
+\begin{align}
+\zeta_{ijnp} = \sum_{l,m} \left(\bv{P}\right)_{ij}\left(\bv{P}^{-1}\right)_{jl}\eta_{lm} \left(\bv{P}^T\right)_{mn}\left(\left(\bv{P}^{T}\right)^{-1}\right)_{np}
+\end{align}
+
+We can see that the statistical processes are stationary. That is $\left(\braket{\bv{v}(t_1)\bv{v}^T(t_2)}\right)=\left(\braket{\bv{v}(\tau)\bv{v}^T(0)}\right)$. We know that classically these functions should be symmetric in time and also that we would expect this matrix to be symmetric. That is, if this was classical we could write
+
+\begin{align}
+\left(\braket{\bv{v}(\tau)\bv{v}^T(0)}\right)_{ip}= \braket{v_i(\tau)v_p(0)} = \braket{v_p(0)v_i(\tau)}\\
+=\braket{v_p(-\tau)v_i(0)} = \left(\braket{\bv{v}(-\tau)\bv{v}^T(0)}\right)_{pi}
+\end{align}
+
+Let's write out the formula for $\left(\braket{\bv{v}(-\tau)\bv{v}^T(0)}\right)_{pi}$
+
+\begin{align}
+\left(\braket{\bv{v}(-\tau)\bv{v}^T(0)}\right)_{pi} = =\begin{cases}
+-\sum_{j,n} \frac{\zeta_{pnji}}{d_j+d_n} e^{d_n(|\tau|)}, & \text{for } \tau<0\\
+-\sum_{j,n} \frac{\zeta_{pnji}}{d_j+d_n} e^{d_j(|\tau|)}, & \text{for } \tau>0
+\end{cases}
+\end{align}
+
+Note that I have relabeled some indices and also note the order of the different cases. This would be equal to $\left(\braket{\bv{v}(\tau)\bv{v}^T(0)}\right)_{ip}$ if $\zeta_{ijnp} = \zeta_{pnji}$. Lets see if this is the case or not.
+
+\begin{align}
+\zeta_{ijnp} = \sum_{l,m} \left(\bv{P}\right)_{ij}\left(\bv{P}^{-1}\right)_{jl}\eta_{lm} \left(\left(\bv{P}^T\right)^{-1}\right)_{mn}\left(\bv{P}^{T}\right)_{np}\\
+\sum_{l,m} \left(\bv{P^T}\right)_{ji}\left(\left(\bv{P}^T\right)^{-1}\right)_{lj}\eta^T_{ml} \left(\bv{P}^{-1}\right)_{nm}\left(\bv{P}\right)_{pn}\\
+\sum_{l,m} \left(\bv{P}\right)_{pn}\left(\bv{P}^{-1}\right)_{nm}\eta^T_{ml} \left(\left(\bv{P}^T\right)^{-1}\right)_{lj}\left(\bv{P}^{T}\right)_{ji}\\
+\sum_{l,m} \left(\bv{P}\right)_{ij}\left(\bv{P}^{-1}\right)_{jl}\eta^T_{lm} \left(\left(\bv{P}^T\right)^{-1}\right)_{mn}\left(\bv{P}^{T}\right)_{np}\\
+\end{align}
+
+If it were true that $\boldsymbol{\eta}^T = \boldsymbol{\eta}$ then this last expression would be equal to $\zeta_{pnji}$. However, we know from above that this is not the case. In fact, $\boldsymbol{\eta}$ has an anti-symmetric part which is imaginary. So we see that again this imaginary anti-symmetric part of $\boldsymbol{\eta}$ gives rise to non-classical behavior.
+
+\section{Cross Power Spectral Density of Commutators}
+
+Here i'll work out the cross spectral density of commutators and anti-commutators of the quadrature variables. We work in the case when the system is stable and at equilibrium so that $t'\rightarrow-\infty$. system is stationary so the two-time matrix anti-commutators have the following property:
+
+\begin{align}
+\{\{\bv{v}(t_1),\bv{v}^T(t_2)\}\} = \{\{\bv{v}(\tau),\bv{v}^T(0)\}\} = \bv{v}(\tau)\bv{v}^T(0) + \bv{v}(0)\bv{v}^T(\tau)
+\end{align}
+
+And we take the Fourier transform so that we can apply the Wiener-Khintchine theorem and get the cross power spectral density:
+
+\begin{align}
+&\int_{\tau=-\infty}^{+\infty}e^{i 2\pi f \tau}\left(\bv{v}(\tau)\bv{v}^T(0) + \bv{v}(0)\bv{v}^T(\tau)\right) d\tau\\
+&=\int_{\tau=-\infty}^{+\infty}e^{i 2\pi f \tau}\bv{v}(\tau)\bv{v}^T(0) d\tau + \int_{\tau=-\infty}^{+\infty}e^{i 2\pi f \tau}\bv{v}(0)\bv{v}^T(\tau) d\tau\\
+&=\int_{\tau=-\infty}^{+\infty}e^{i 2\pi f \tau}\bv{v}(\tau)\bv{v}^T(0) d\tau + \int_{\tau=-\infty}^{+\infty}e^{i 2\pi f \tau}\bv{v}(-\tau)\bv{v}^T(0) d\tau\\
+&=\int_{\tau=-\infty}^{+\infty}e^{i 2\pi f \tau}\bv{v}(\tau)\bv{v}^T(0) d\tau + \int_{\tau=-\infty}^{+\infty}e^{-i 2\pi f \tau}\bv{v}(\tau)\bv{v}^T(0) d\tau\\
+&= S_{\bv{v}\bv{v}}(f) + S_{\bv{v}\bv{v}}(-f) = 2\bar{S}_{\bv{v}\bv{v}}(f)
+\end{align}
+
+We see that the Fourier transform of the matrix commutator is the symmetrized power spectral density.
+
+In the normal ordered heterodyne write up we see a dependence of the heterodyne signal on quantities from the matrix
+
+\begin{align}
+\left[\left[\bv{v}(|\tau|),\bv{v}^T(0)\right]\right] = \bv{v}(|\tau|)\bv{v}^T(0) - \bv{v}(0)\bv{v}^T(|\tau|)
+\end{align}
+
+
+\end{document}

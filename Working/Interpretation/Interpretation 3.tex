@@ -1,0 +1,182 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Forced Driven Oscillator}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+Here I will summarize my findings on harmonic oscillators with a driven base. This has applications for vibration isolation.
+
+\section{Impulse Response for Damped Harmonic Oscillator}
+I'll first consider the impulse response function for an undriven damped harmonic oscillator. The differential equations of motion describing this system are:
+
+\begin{align}
+m \ddot{x}_1(t) = -k x_1(t) -c \dot{x}_1(t) + F(t)\\
+m\ddot{x}_1(t) + c \dot{x}_1(t) + k x_1(t) = F(t)
+\end{align}
+
+Recall that
+
+\begin{align}
+\mathcal{L}[\dot{x}](s) &= s \mathcal{L}[x(t)](s)\\
+\dot{x}(t) &\rightarrow s x(s)
+\end{align}
+
+In the second line I have dropped the Laplace Transform notation and it is simply understood that the variable on the right hand side is the Laplace Transform. I have assumed zero initial conditions for the $x$. Transforming the above differential equation we find
+
+\begin{align}
+s^2 m x_1(s) + s c x_1(s) + k x_1(s) = F_0(s)
+\end{align}
+
+We can divide through by $m$
+
+\begin{align}
+\left(s^2 + s \frac{c}{m} + \frac{k}{m}\right)x_1(s) = \frac{F_0(s)}{m}
+\end{align}
+
+The roots of the polynomial on the LHS are given by
+
+\begin{align}
+s = -\frac{c}{2m} \pm \sqrt{\left(\frac{c}{2m}\right)^2 - \frac{k}{m}}
+\end{align}
+
+In the case the $c=0$ and we have an undamped oscillator we see that the roots are given by
+
+\begin{align}
+s = \pm i \sqrt{\frac{k}{m}} = \pm i \omega_0
+\end{align}
+
+defining the undriven resonance frequency. We can express the damped roots in ``units of'' the bare resonance frequency by:
+
+\begin{align}
+s = \omega_0\left(-\frac{c}{2\sqrt{k m}} \pm \sqrt{\left(\frac{c}{2\sqrt{km}} \right)^2 - 1} \right)
+\end{align}
+
+Noting that $\frac{c}{m} \frac{1}{\sqrt{\frac{k}{m}}} = \frac{c}{2\sqrt{km}}$. We see that for small $c$ (small damping) the roots have an imaginary part (corresponding oscillator motion) whereas for large $c$ the roots become purely real. This indicates a transition from underdamped to over-damped behavior of the oscillator. This transition occurs at the critical damping rate
+
+\begin{align}
+c_c = 2\sqrt{km}
+\end{align}
+
+We can define the ratio of the damping rate to critical damping rate as
+
+\begin{align}
+\zeta = \frac{c}{c_c} = \frac{c}{2\sqrt{km}}
+\end{align}
+
+so that
+
+\begin{align}
+s = p_{\pm} = \omega_0\left(-\zeta \pm \sqrt{\zeta^2 -1} \right)
+\end{align}
+
+We can then write
+
+\begin{align}
+x_1(s) = \frac{\frac{F_0(s)}{m}}{(s-p_-)(s-p_+)}
+\end{align}
+
+The poles of the system, $p_{\pm}$ give a lot of information about how the system response to a driving force.
+
+\section{Driven Base}
+
+Suppose the system is driven by shaking the base on which the oscillator sits. The base position is given by $x_0(t)$. The differential equation can be rewritten as
+
+\begin{align}
+m \ddot{x}(t) = -c(\dot{x}_1(t) - \dot{x}_0(t)) - k(x_1(t)-x_0(t))\\
+m\ddot{x}(t) + c\dot{x}_1(t) + kx_1(t) = c \dot{x}_0(t) + k x_0(t)
+\end{align} 
+
+This is the same as the above formula with
+
+\begin{align}
+F_0(t) = c \dot{x}_0(t) + k x_0(t)
+\end{align}
+
+The Laplace transform of this is given by
+
+\begin{align}
+F_0(s) = (sc + k)x_0(s)
+\end{align}
+
+So we find
+
+\begin{align}
+x_1(s) = \frac{\frac{(sc + k)x_0}{m}}{(s-p_-)(s-p_+)}
+\end{align}
+
+We can define the position transmissibility function (motion induced divided by motion driving) by
+
+\begin{align}
+\frac{x_1(s)}{x_0(s)} &= \frac{s \frac{c}{m} + \frac{k}{m}}{(s-p_-)(s-p_+)}\\
+&= \frac{s2\zeta \omega_0 + \omega_0^2}{(s-p_-)(s-p_+)}\\
+&= 2 \zeta \omega_0 \frac{\left((s - \left(-\frac{\omega_0}{2 \zeta}\right)\right)}{(s-p_-)(s-p_+)}\\
+&= 2\zeta \omega_0 \frac{s-z}{(s-p_-)(s-p_+)}
+\end{align}
+
+so we see that the driven base system has one zero and two poles.
+
+\begin{align}
+z &= -\frac{\omega_0}{2\zeta}\\
+p_- &= \omega_0(-\zeta - \sqrt{\zeta^2 -1})\\
+p_+ &= \omega_0(-\zeta + \sqrt{\zeta^2-1})
+\end{align}
+
+The transfer function can be determined by
+
+\begin{align}
+H(\omega) = \frac{x_1(i\omega)}{x_0(i\omega)}
+\end{align}
+
+Note that this convention takes $\omega \rightarrow -\omega$ compared \textit{my} usual convention for the Fourier transform (with $(a,b) = (0,+2\pi)$). This arises because of the conflicting definition of the Laplace transform and my preferred convention for the Fourier transform. The conflict arises out the question of whether to call $e^{-i\omega t}$ a positive or negative frequency. According to my convention it is positive frequency (this is to make $e^{i(kx-\omega t)}$ natural to describe a right traveling wave) while it is negative frequency according to the typical Laplace transform definition.
+
+The contribution of any pole or zero at location $s_0$ to the squared magnitude of the transfer function will be given by
+
+\begin{align}
+|i\omega - s_0|^2 &= (i\omega - \text{Re}(s_0) - i \text{Im}(s_0))(-i\omega - \text{Re}(s_0) + i \text{Im}(s_0))\\
+&= \text{Re}(s_0)^2 + (\omega - \text{Im}(s_0))^2\\
+&= \text{Re}(s_0)^2 + \Delta^2
+\end{align}
+
+Here I've defined the detuning between the frequency and the pole $\Delta$.
+This means that every pole or zero has two behaviors with respect to its effect on the magnitude of the transfer function.
+
+\begin{align}
+|i \omega - s_0|^2 = 
+\begin{cases}
+\text{Re}(s_0)^2 \text{ for } \Delta \ll \text{Re}(s_0)\\
+\Delta^2 \text{ for } \Delta \gg text{Re}(s_0)
+\end{cases}
+\end{align}
+
+\end{document}

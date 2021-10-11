@@ -1,0 +1,538 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Atomic Absorption Imaging}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will lay out the theory of optical absorption imaging of an atomic sample and specify technical details about actual camera calibration.
+
+\section{Scattering Cross Section}
+
+First I would like to define the concepts of scattering cross section and optical density to set a general technical background.
+
+Imagine we have a beam of light with area $A$ and we place a completely opaque target with area $\sigma$.
+The power which is scattered out of the beam, $\Delta P = P_{out} - P_{in}$ will be given by
+
+\begin{align}
+-\frac{\Delta P}{P_{in}} = \frac{\sigma}{A}
+\end{align}
+
+We can re-arrange this for
+
+\begin{align}
+\Delta P = - \sigma I_{in}
+\end{align}
+
+Where $I_{in} = \frac{P_{in}}{A}$ where $I_{in}$ is the input intensity.
+We see that $\sigma$ relates the power which is scattered out of a beam to the incident optical flux.
+We could define a similar effective scattering cross section $\sigma$ for a target which is not totally opaque but still scatters some fixed power out of a beam with fixed intensity.
+This effective cross section would now be related to both the geometric size of the object but also its specific opacity.
+Most generally, the scattering cross section for a target is defined as the ratio of the total number of particles per second scattered out of beam of particles, $\Delta P$ with a fixed incident flux, $I_{in}$ (number of particles per second per area).
+Generally the cross section $\sigma$ may depend on on $I$.
+
+Suppose we have a thick sample of particles, such as a cloud of atoms, each of which has a cross section $\sigma$.
+Suppose the density of scatterers is $n$ with dimensions of inverse volume: $[n] = \left[\frac{1}{L^3}\right]$.
+If we choose an infinitesimal volume of the sample of (physical) cross section $\Delta A$ and length $\Delta z$ such that the total number of particles is given by $\Delta N = n \Delta A \delta z$ then we can calculate the infinitesimal change in intensity as the beam propagates through the sample:
+
+\begin{align}
+\Delta P =& - \Delta N \sigma I_{in}\\
+=& - n \Delta A \Delta z \sigma I_{in}\\
+\frac{1}{\Delta z} \frac{\Delta P}{\Delta A} =& -n \sigma I_{in}\\
+\frac{\Delta I}{\Delta z} =& - n \sigma I_{in}
+\end{align}
+
+If $\sigma$ is position and intensity independent and $n$ is a function of $z$ then we can cast this as an easily solvable differential equation:
+
+\begin{align}
+\frac{dI}{dz} = -n(z)\sigma I
+\end{align}
+
+and solve by
+
+\begin{align}
+\int_{I_{in}}^{I_{out}} \frac{1}{I} dI =& -\sigma \int_{z_{in}}^{z_{out}} n(z) dz = -\sigma \tilde{n}\\
+\ln\left(\frac{I_{out}}{I_{in}}\right) =& -\sigma \tilde{n}\\
+I_{out} =& I_{in} e^{-\sigma \tilde{n}}
+\end{align}
+
+Where I've defined the column density $\tilde{n} = \int_{z_{in}}^{z_{out}} n(z) dz$ with $[\tilde{n}] = \left[\frac{1}{L^2}\right]$.
+We see that the beam is exponentially attenuated with a factor $\sigma \tilde{n}$.
+This is the Beer-Lambert law.
+If the density of the sample is a constant function of $z$ then this factor is $\sigma n L$ where $L$ is the length of the sample.
+This factor is called the optical depth of the sample:
+
+\begin{align}
+\text{OD} =& \sigma \tilde{n} \rightarrow \sigma n L\\
+T =& \frac{I_{out}}{I_{in}} = e^{-\text{OD}}
+\end{align}
+
+$\text{OD}$ is the optical depth and $T$ is the transmittance.
+There is a closely related quantity called the absorbance:
+
+\begin{align}
+\text{OD} =& -\ln\left(T\right)\\
+\alpha =& -\log_{10}\left(T\right)
+\end{align}
+
+So that
+
+\begin{align}
+T =& e^{-\text{OD}} = 10^{-\alpha}\\
+\alpha =& \text{OD} \log_{10}(e) \approx 0.43 \times \text{OD}\\
+\text{OD} =& \alpha \ln(10) \approx 2.30 \times \alpha
+\end{align}
+
+So, for example, if the absorbance is 1 or 2 then we see that transmitted intensity drops by one or two orders of magnitude.
+Likewise, if the optical depth is 1 or 2 then the transmitted intensity drops by 1 or 2 $e$-folds.
+Note that absorbance is sometimes called the optical density of a sample which is a bit confusing given the similarity to optical depth.
+Thorlabs neutral density filters spec the absorbance as an optical density, for example.
+
+Above I have assumed that $\sigma$ is constant throughout the sample.
+If the sample is composed of a homogeneous material then this will be the case if the intensity of the light is not changed appreciably throughout the sample (that is the optical depth is much less than unity, $\text{OD} = \sigma \tilde{n} \ll 1$) or the cross section is intensity independent: $\sigma(I) = \sigma$.
+Below we will consider the solution to the differential equation when these conditions are relaxed.
+
+\section{Cross-Section for Atomic Transition}
+
+We can calculate the cross section for an atomic scatterer as follows.
+If we treat the atom as a two-level-system then the steady-state power scattered out of an incident beam is given by
+
+\begin{align}
+\Delta P = -\hbar \omega \Gamma_{sc}
+\end{align}
+
+Where $\Gamma_{sc}$ indicates the rate at which photons are scattered by the atom and $\hbar \omega$ is the energy per photon of frequency $\omega$.
+The scattering rate is given by
+
+\begin{align}
+\Gamma_{sc} = \Gamma \rho_{ee}
+\end{align}
+
+Where $\Gamma$ is the spontaneous emission rate from the excited state and $\rho_{ee}$ is the steady-state excited state population.
+$\rho_{ee}$ can be calculated using the optical Bloch equations as
+
+\begin{align}
+\rho_{ee} = \frac{1}{2}\frac{2 \frac{\Omega^2}{\Gamma^2}}{1 + \left(2\frac{\Delta}{\Gamma}\right)^2 + 2 \frac{\Omega^2}{\Gamma^2}}
+\end{align}
+
+Where $\Omega$ is the Rabi frequency given by
+
+\begin{align}
+\Omega \sim 2\frac{d_{eg} E}{\hbar}
+\end{align}
+
+Where $d_{eg}$ is the transition dipole and $E$ is the complex amplitude\footnote{Here I am writing $E_{tot} = E + E^* = 2\text{Re}(E)$. This is one possible convention, another common choice that leads to factors of 2 is $E_{tot} = \frac{1}{2}\left(E + E^*\right) = \text{Re}(E)$.} of the electric field.
+It is interesting to define the saturation intensity $I_{sat}$ so to that end we will relate $\Omega^2$ to the intensity $I$ using\footnote{Had we taken the other convention for the definitions of $E$ and $E_{tot}$ we would have had the, possibly more familiar, formula $I = \frac{1}{2}\ep_0 c E^2$.}, for a plane wave, $I = 2\ep_0 c E^2$.
+
+\begin{align}
+\Omega^2 = \frac{4}{\hbar^2} d_{eg}^2 E^2 = \frac{2d_{eg}^2}{\ep_0 c \hbar^2} I
+\end{align}
+
+We then have
+
+\begin{align}
+2\frac{\Omega^2}{\Gamma^2} = I \frac{4 d_{eg}^2}{\Gamma^2 \ep_0 c \hbar^2} = \frac{I}{I_{sat}} = s_0
+\end{align} 
+
+Where I've defined the saturation intensity:
+
+\begin{align}
+I_{sat} =& \frac{\Gamma^2 \ep_0 c \hbar^2}{4d_{eg}^2} = \frac{\Gamma \hbar \omega^3}{12 \pi c^2} = \hbar \omega \Gamma \frac{\pi}{3\lambda^2}\\
+\end{align}
+
+Where I have used $\frac{\omega}{c} = k = \frac{2\pi}{\lambda}$ and
+
+\begin{align}
+\Gamma = \frac{\omega^3 d_{ge}^2}{3\pi \ep_0 \hbar c^3}
+\end{align}
+
+Note that $\hbar \omega$ is a characteristic energy for the atomic transition, $\Gamma$, is a characteristic rate (so that $\hbar \omega$ and $\Gamma$ can be combined to form a characteristic power) and $\lambda^2$ is a characteristic area which can be used to form a characteristic intensity, the saturation intensity $I_{sat}$.
+
+We can then write
+
+\begin{align}
+\rho_{ee} = \frac{1}{2} \frac{\frac{I}{I_{sat}}}{1 + \left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}}
+\end{align}
+
+so that
+
+\begin{align}
+\Gamma_{sc} = \frac{\Gamma}{2} \frac{\frac{I}{I_{sat}}}{1 + \left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}}
+\end{align}
+
+and
+
+\begin{align}
+\Delta P = -\frac{1}{2}\hbar \omega \Gamma \frac{\frac{I}{I_{sat}}}{1 + \left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}} = - \sigma I
+\end{align}
+
+Relating the scattered power from this section to the scattering cross section defined in the previous section.
+With this we can solve for the atomic scattering cross section:
+
+\begin{align}
+\sigma = \frac{\frac{\hbar \omega \Gamma}{2I_{sat}}}{1+\left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}} = \frac{\sigma_0}{1 + \left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}}
+\end{align}
+
+Where I've defined the resonant cross section
+
+\begin{align}
+\sigma_0 = \frac{\hbar \omega \Gamma}{2I_{sat}} = \frac{3\lambda^2}{2\pi}
+\end{align}
+
+So we see that the resonant cross section is proportional to $\lambda^2$.
+We see that for $\Delta \ll \Gamma$ and $I\ll I_{sat}$ we have $\sigma \rightarrow \sigma_0$.
+In this limit we see that the scattering cross section is independent of intensity.
+However, for large intensity, $I\gg I_{sat}$, we see that the cross section decreases, going as
+
+\begin{align}
+\sigma \rightarrow \sigma_0 \frac{I_{sat}}{I}
+\end{align}
+
+That is when the atomic transition is saturated the cross section decreases.
+This is because increasing the light level does not increase the number of scattered photons any longer meaning that a larger percentage of photons pass by the atom.
+In contrast, below saturation, increasing the intensity also increases the excited state population in such a way that the total fraction of photons scattered is the same.
+Below saturation the atom scatters a fixed percentage of incident photons, above saturation the atom scatters a fixed number of incident photons.
+
+\section{Absorption Imaging on Atomic Transition}
+
+We can now calculate expected signal for absorption on an atomic transition.
+
+\begin{align}
+\frac{dI}{dz} =& -n(z)\sigma(I) I\\
+=& -n(z)\sigma_0 I \frac{1}{1+\left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}}
+\end{align}
+
+We will work on rewriting this to solve the differential equation.
+
+\begin{align}
+\int_{I=I_{in}}^{I_{out}} \frac{1+\left(2\frac{\Delta}{\Gamma}\right)^2 + \frac{I}{I_{sat}}}{I} dI = -\sigma_0 \int_{z=z_{in}}^{z_{out}} n(z) dz = -\sigma_0 \tilde{n}
+\end{align}
+
+We will perform two changes of variables now. 
+First we define the resonant saturation parameter 
+
+\begin{align}
+s_0 = \frac{I}{I_{sat}}
+\end{align}
+
+We see that when the transition is saturated (on resonance) we have $s_0 \gg 1$.
+We can transform
+
+\begin{align}
+=& \int_{s_0 = s_0^{in}}^{s_0^{out}} \frac{1+\left(2\frac{\Delta}{\Gamma}\right)^2 + s_0}{s_0} ds_0
+\end{align}
+
+We then define the saturation parameter as
+
+\begin{align}
+s = \frac{s_0}{1+\left(2\frac{\Delta}{\Gamma}\right)^2}
+\end{align}
+
+and change variables again
+
+\begin{align}
+=& \left(1+\left(2\frac{\Delta}{\Gamma}\right)^2\right) \int_{s=s_{in}}^{s_{out}} \frac{1 + s}{s} ds\\
+=& \left(1+\left(2\frac{\Delta}{\Gamma}\right)^2\right)\left[\ln\left(\frac{s_{out}}{s_{in}}\right) + \left(s_{out} - s_{in}\right) \right]
+\end{align}
+
+We can put this all together to find
+
+\begin{align}
+\tilde{n} = \frac{1 + \left(2\frac{\Delta}{\Gamma}\right)^2}{\sigma_0} \left[ \ln\left(\frac{s_{in}}{s_{out}}\right) + (s_{in} - s_{out})\right]
+\end{align}
+
+In the event that $s\ll1$ we can neglect the second term and in the event that $s\gg1$ we can neglect the first term. 
+This again shows us that below saturation the ratio of scattered photons to incident photons is fixed and above saturation the number of scattered photons subtracted from the incident photons is fixed.
+
+\section{Experimental Calibrations}
+
+How do we extract the above quantities from a real measurement?
+In an actual measurement we take two important images. 
+We prepare an atomic sample, we shine light through the sample and take a picture of the image of the atoms illuminated by the light.
+The atoms will re-scatter some of the light creating a `shadow'.
+We then remove the atoms from the frame and take a second picture of the light alone so that we can determine how dark the shadow is.
+We often take a third background image with no imaging light as a background reference to be subtracted from both the other images.
+
+\subsection{Camera Conversion Gain}
+
+Each image constitutes an array of photocounts $C$ per pixel across the camera sensor.
+How can we convert these photocounts into numbers of photons?
+
+Let us imagine the column of an atomic cloud which gets imaged into a single pixel on the camera sensor.
+The area of a single pixel is given by $A_{px}$. 
+If the magnification of the imaging system is $M$ then the area of the atomic column imaged onto that pixel will be $A_{cl} = \frac{1}{M^2} A_{px}$.
+We are interested in the total number of atoms within this column of the atomic cloud given by $N = \tilde{n} A_{cl}$.
+
+Consider light traveling from a point just past this column towards the camera with intensity $I = \frac{P}{A_{cl}}$.
+If the atoms were present we would have $I = I_{out}$ and if the atoms were not present we would have $I = I_{in}$.
+This light will propagate from the center of the vacuum chamber through any optics being attenuated by any path inefficiencies and magnified so that
+
+\begin{align}
+I_{\text{det}} \rightarrow \ep_{P} I_{\text{vac}} M^2
+\end{align}
+
+This light will then fall on a pixel.
+???We know the total power falling on the pixel is given by $\ep_P P$.???
+The total power falling on the pixel is given by $P = I_{\text{det}}A_{px} = I_{\text{vac}}A_{cl}$
+Suppose the pixel is exposed for a time $\tau$.
+The total number of photons falling on the pixel is given by
+
+\begin{align}
+N_{\gamma} = \frac{P}{\hbar \omega} \ep_P \tau
+\end{align}
+
+These photons will be converted into photoelectrons with quantum efficiency $\ep_Q$
+
+\begin{align}
+N_{e^-} = \ep_Q N_{\gamma} = \frac{P}{\hbar \omega} \ep_P \ep_Q \tau
+\end{align}
+
+Next the number of photoelectrons undergoes a number of conversions before it is finally converted to a digital pixel count.
+First, the number of photoelectrons might be multiplied as in an avalanche photodiode or EMCCD:
+
+\begin{align}
+N_{e^-} \rightarrow G_e N_{e^-}
+\end{align}
+
+Next the number of photoelectrons is converted to a voltage by a charge to voltage converter.
+This may be implemented as a simple capacitor, $c$:
+
+\begin{align}
+V = \frac{G_e N_{e^-}}{c}
+\end{align}
+
+Next this voltage might be amplified by a voltage amplifier
+
+\begin{align}
+V \rightarrow G_{AMP} V
+\end{align}
+
+Next this voltage is converted to a digital number on an ADC:
+
+\begin{align}
+G_{AMP}V\rightarrow G_{ADC}G_{AMP}V
+\end{align}
+
+Finally, in some cases an ADC may be used with a certain number of bits but in the end the total number of bits displayed may be different than the ADC's native output.
+In this case ADC output is truncated or padded resulting in a final conversion factor:
+
+\begin{align}
+G_{ADC}G_{AMP}V \rightarrow G_{BIT}G_{ADC}G_{AMP}V
+\end{align}
+
+For example, if the ADC has a 14-bit output but only 8-bits are displayed then we'll have $G_{BIT} = 2^{-6}$ indicating the truncation of the final 6 least significant bits.
+In total we have the total count $C$ is given by
+
+\begin{align}
+C = G_{BIT}G_{ADC}G_{AMP}\frac{1}{c} G_e \ep_Q N_{\gamma} = G_{TOT} N_{\gamma}
+\end{align}
+
+We see that $G_{TOT}$ converts a number of photons collected into a pixel count.
+With this we can express
+
+\begin{align}
+C =G_{TOT} \frac{\tau}{\hbar \omega} \ep_P P
+\end{align}
+
+Here $P$ is the power exiting the atomic column. 
+We can convert this to an intensity after the atoms using $I = \frac{P}{A_{cl}} = \frac{M^2}{A_{px}} P$ giving us
+
+\begin{align}
+C =& G_{TOT} \frac{\tau}{\hbar \omega} \frac{A_{px}}{M^2} \ep_P I\\
+C =& G_{CONV} I
+\end{align}
+
+Where I've defined the total intensity (in object plane) to pixel count conversion gain $G_{CONV}$.
+
+\subsection{Absorption Image}
+
+To take an absorption image we take three images.
+A with atoms image (taken with the atoms), a bright image (taken without the atoms but with the imaging beam) and a dark image taken with no atoms or imaging beam.
+
+For these three we have
+
+\begin{align}
+\tilde{C}_{atom} =& G_{CONV} I_{out} + C_{dark}\\
+\tilde{C}_{bright} =& G_{CONV} I_{in} + C_{dark}\\
+\end{align}
+
+Here I've assumed $C_{dark}$ is some fixed number of dark counts that appears equally on the atom, bright and dark images.
+We then get after background subtraction
+
+\begin{align}
+C_{atom} =& \tilde{C}_{atom} - C_{dark}\\
+C_{bright} =& \tilde{C}_{bright} - C_{dark}
+\end{align}
+
+Note that shot noise on $C_{dark}$ will contribute to total image shot noise after this background subtraction so it is best if $C_{dark}$ is as small as possible.
+
+From this we can then calculate
+
+\begin{align}
+I_{out} =& \frac{C_{atom}}{G_{CONV}}\\
+I_{in} =& \frac{C_{bright}}{G_{CONV}}
+\end{align}
+
+and from this we can calculate the resonant saturation parameter
+
+\begin{align}
+s_0^{out} =& \frac{I_{out}}{I_{sat}}\\
+s_0^{in} =& \frac{I_{in}}{I_{sat}}
+\end{align}
+
+Next, if we have an estimate for $\Delta$ and $\Gamma$ we can calculate
+
+\begin{align}
+s_{out} =& \frac{s_{out}^0}{1+\left(2\frac{\Delta}{\Gamma}\right)^2}\\
+s_{in} =& \frac{s_{in}^0}{1+\left(2\frac{\Delta}{\Gamma}\right)^2}
+\end{align}
+
+Finally we can estimate $\tilde{n}$:
+
+\begin{align}
+\tilde{n} = \frac{1 + \left(2\frac{\Delta}{\Gamma}\right)^2}{\sigma_0} \left[ \ln\left(\frac{s_{in}}{s_{out}}\right) + (s_{in} - s_{out})\right]
+\end{align}
+
+We can convert this column density into a number of atoms within a column by multiplying by the area of the column, $A_{cl} = \frac{A_{px}}{M^2}$.
+
+\begin{align}
+N = \left(1 + \left(2\frac{\Delta}{\Gamma}\right)^2\right) \frac{A_{px}}{M^2 \sigma_0}\left[ \ln\left(\frac{s_{in}}{s_{out}}\right) + (s_{in} - s_{out})\right]
+\end{align}
+
+Note that we can write
+
+\begin{align}
+\frac{s_{in}}{s_{out}} = \frac{C_{bright}}{C_{atom}}
+\end{align}
+
+We can expand this as two terms that depend directly on the number of photocounts.
+
+\begin{align}
+N = N_1 + N_2
+\end{align}
+
+With
+
+\begin{align}
+N_1 =& \left(1 + \left(2\frac{\Delta}{\Gamma}\right)^2\right) \frac{A_{px}}{M^2} \ln \left(\frac{s_{in}}{s_{out}}\right) = \left(1 + \left(2\frac{\Delta}{\Gamma}\right)^2\right) \frac{A_{px}}{M^2} \ln \left(\frac{C_{bright}}{C_{atom}}\right)\\
+N_2 =& \left(1 + \left(2\frac{\Delta}{\Gamma}\right)^2\right) \frac{A_{px}}{M^2} \left(s_{in} - s_{out}\right) = \frac{A_{px}}{M^2} \frac{1}{I_{sat} G_{CONV}}\left(C_{bright} - C_{atom}\right)
+\end{align}
+We thus see that, given the two images for absorption we need a few calibration factors.
+
+We see that for $N_1$, the below saturation estimate, we require knowledge of the pixel size $A_{px}$, the imaging magnification $M$, and the detuning $\Delta$ and linewidth $\Gamma$.
+One major advantage of $N_1$ is that it does not depend on any calibration of $G_{CONV}$.
+This is really helpful because $G_{CONV}$ can be difficult to measure.
+Note that $\ln\left(\frac{C_{bright}}{C_{atom}}\right)$ is exactly the optical depth $\text{OD}$ of the sample so that the atom number $N_1$ is related by a conversion factor to the $\text{OD}$.
+
+$N_2$ also depends on the pixel size $A_{px}$ and magnification $M$.
+$N_2$ also depends on the saturation intensity $I_{sat}$ and the conversion gain $G_{CONV}$.
+$N_2$ has the advantage that the dependence on $\Delta$ drops out.
+This is because, well above saturation $s\gg1$ the atoms scatter photons at the same rate regardless of the detuning.
+
+\section{$G_{TOT}$ for Grasshopper Cameras}
+
+In E6 we use FLIR Grasshopper USB3 cameras (GS3-U3-15S5M). 
+I've spent some time both performing real calibrations of $G_{TOT}$ by putting a known power on the camera (calibrated with a power meter) and summing up the resultant photocounts and I've also spent time determining the power to photocount gain $G_{TOT}$ from the datasheet.
+Recall
+
+\begin{align}
+G_{TOT} =& G_{BIT} G_{ADC} G_{AMP}\frac{1}{c} G_{e}\ep_Q\\
+C =& G_{TOT} \frac{\tau}{\hbar \omega} \ep_P P
+\end{align}
+
+The product $G_{TOT}$ can be measured by applying a known power $P$ with frequency $\omega$ directly onto the camera for a known exposure time $\tau$.
+For this measurement $\ep_P = 1$.
+
+However, the datasheet does not give a direct specification for $G_{TOT}$.
+Instead the datasheet for an EMVA certified camera specifies the quantum efficiency, $\ep_Q$ and gives a specification called the `Gain' $G_{ADU}$ which they specify in units of $e^- / ADU$ where an ADU is an analog digital unit which can be thought of as an increment of one in the digital count.
+I will describe now how $G_{ADU}$ is related to the gain factors I have defined above.
+
+In the Grasshopper camera $G_e = 1$ because there is no electron multiplication.
+However, $G_{AMP}$ can be tuned from about -1.5 dB to +24 dB and $G_{BIT}$ is non-trivial as well.
+$G_{AMP}$ is not included in $G_{ADU}$ so it is best to set $G_{AMP} = 1$, that is 0 dB, to try to compare $G_{TOT}$ to $G_{ADU}$.
+
+The $G_{BIT}$ is a bit confusing for the grasshopper but I believe this is how it works.
+First off, the ADC is a 14-bit ADC, $G_{ADC}^{14}$. 
+However, 16-bits seems to be `standard' for at least some set of cameras so I think this 14-bit output is padded with two zero bits $G_{PAD}^2 = 2^2$.
+The Grasshopper then has a 8-bit output mode which arises by truncated the last 8 bits (after padding the 2 bits $G_{TRUNC}^8 = 2^{-8}$.
+So in total:
+
+\begin{align}
+G_{BIT} = G_{TRUNC}^8 G_{PAD}^2
+\end{align}
+
+The total gain is then given by 
+
+\begin{align}
+G_{TOT} = G_{TRUNC}^8 G_{PAD}^2 G_{ADC}^{14}G_{AMP} \frac{1}{c} \ep_Q
+\end{align}
+
+I believe that the ADU gain specified on the datasheet is given by
+
+\begin{align}
+G_{ADU} = \frac{c}{G_{ADC}^{14}G_{PAD}^2}
+\end{align}
+
+Recalling that $c$ has dimensions of charge per volt and $G_{ADC}^{14}$ has dimensions of 14-bit ADU per volt.
+We then have
+
+\begin{align}
+G_{TOT} = \frac{G_{TRUNC}^8}{G_{ADU}} G_{AMP} \ep_Q
+\end{align}
+
+\subsection{Actual Values}
+
+With all of the above we can put in actual numbers and perform a calibration.
+The EMVA datasheet for the camera specifies $G_{ADU} = 0.37 e^-/ADU$ and $\ep_Q \approx 0.38$.
+This means with 0 dB of voltage gain we expect
+
+\begin{align}
+G_{TOT} = \frac{G_{TRUNC}^8}{G_{ADU}} = \frac{2^{-8}}{0.37 e^-/ADU} = 0.011 ADU/e^-
+\end{align}
+
+I performed a measurement to calibrate/test this.
+I used a power meter to measure a \SI{85}{\micro \watt} beam of \SI{780}{\nm} light (frequency \SI{384}{\THz}) and put this onto the camera with an exposure time of \SI{40}{\micro \second}.
+
+I expect if I sum up all of the pixel counts on the camera to get
+
+\begin{align}
+C_{TOT} = G_{TOT} \frac{\tau}{\hbar \omega} \ep_Q P \approx 55856000 \approx 5.6 \times 10^7
+\end{align}
+
+The actual integrated pixel counts were $C_{TOT} = 43060406 \approx 4.3\times 10^7$. 
+This is the correct answer within about 30\% which is roughly the level of agreement I might expect.
+The discrepancy could be due to an overestimate of the power measurement from power meter (which could be due to scratches on the sensor) or modification to either the quantum efficiency of the camera or ADU gain. 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\linewidth]{img.png}
+\caption{Image of beam used for calibration}
+\end{figure}
+
+\end{document}

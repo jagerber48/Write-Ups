@@ -1,0 +1,828 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+ 
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{physics}
+\usepackage{empheq}
+\usepackage{tensor}
+\usepackage{xfrac}
+
+\newcommand{\pll}{\parallel}
+\newcommand{\pardiv}[2][]{\frac{\partial #1}{\partial #2}}
+\newcommand{\vecnab}{\vec{\nabla}}
+\newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
+
+ 
+\begin{document}
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+\title{Canonical Quantization of the Electromagnetic Field}%replace X with the appropriate number
+\author{Justin Gerber}
+
+\maketitle
+
+Here we give a general procedure for the quantization of the electromagnetic field.
+The intent of this document is to expose the intuitive leaps and unravel all of the conventions involved in the expressions for quantized fields.
+This is perhaps the simplest example of a physical quantum field theory and, as such, is in some ways much more complicated than particle or first quantized quantum mechanics.
+The goal of this document is to make all of these leaps in a clear way.
+
+The goal is to develop a theory of photons, or quanta of the electromagnetic field, from the most basic principles possible.
+In my opinion, the most basic derivation would be to start from the electromagnetic Lagrangian (which can be deduced from very basic symmetries) then convert that Lagrangian to a Hamiltonian, and then to perform canonical quantization on that Hamiltonian.
+As a reminder canonical quantization is the process whereby we take a classical theory and convert it to a quantum theory by identifying the classical canonical variables $x$ and $p$ and promoting them to operators, $\hat{x}$ and $\hat{p}$ and imposing the canonical commutation relation: $[\hat{x},\hat{p}]=i\hbar$.
+
+This basic outline will work but there will be many details to make sure everything works out mechanically, and in the end the process will not necessarily be as clean as possible, but I will do my best.
+\section{Lagrangian Formulation of Electromagnetism}
+When I first learned about the electromagnetic Lagrangian it was not clear to me how this related to everything I learned in introductory electricity and magnetism.
+There were complicated Lorentz transformations and gauge choices all of the place and all of the derivation were stated as ``possible''.
+Here, for the purpose of gaining familiarity with the electromagnetic Lagrangian and to convince ourselves that it does produce the basic results, we will derive the basic results of electromagnetism  from the electromagnetic Lagrangian.
+
+We will derive Maxwell's equations, the continuity equation, and the Lorentz force equation.
+This is enough to derive all of the results in say Griffith's Introduction to Electricity and Magnetism.
+
+We begin by defining some 4-vectors, the vector potential, $A^{\alpha}$, the current density, $J^{\alpha}$ and the covariant derivative, $\partial_{\alpha}$.
+In this document I will use the $(-,+,+,+)$ Minkowski metric.
+This is more convenient than the $(+,-,-,-)$ metric for our purposes, because the $(+,-,-,-)$ metric leaves the spatial part with a left-handed coordinate system which results in the left-hand rule for cross products.
+We don't want to worry about that here.
+
+I will work in SI units and retain all factors of $c$ and $\hbar$.
+
+\[A^{\alpha} = \left(\frac{\phi}{c},\vec{A}\right)\]
+
+$\phi$ is the scalar potential. $\vec{A}$ is the spatial 3-vector of the vector potential.
+
+\[J^{\alpha} = (c \rho, \vec{J}) \]
+
+$\rho$ is the charge density and $\vec{J}$ is the 3-current density vector.
+
+\[ \partial_{\alpha} = \left(\frac{1}{c} \pardiv{t}, \vecnab\right)\] \
+
+We extract the electric, $\vec{E}$, and magnetic, $\vec{B}$, fields from the vector potential and scalar potential.
+
+\[\vec{E} = -\pardiv[\vec{A}]{t} - \vecnab \phi \qquad \qquad \vec{B} = \vecnab\cross \vec{A}\]
+
+Lets look at a few particular components.
+
+\[ \frac{E_x}{c} = -\frac{1}{c} \pardiv[A_x]{t} - \pardiv[\frac{\phi}{c}]{x} = \partial^0 A^1 - \partial^1 A^0 \]
+\[ B_x = \pardiv[A_z]{y} - \pardiv[A_y]{z} = \partial^2 A^3 - \partial^3 A^2\]
+
+Noticing the pattern, we see that the components of the $\vec{E}$ and $\vec{B}$ fields can be identified with components of a rank 2 anti-symmetric tensor known as the electromagnetic tensor, $F^{\alpha \beta}$.
+
+\[F^{\alpha \beta} = \partial^{\alpha}A^{\beta} - \partial^{\beta}A^{\alpha} \]
+
+\renewcommand{\arraystretch}{1.5}
+
+\[F^{\alpha \beta} = 
+\left(\begin{array}{cccc}
+0 & +\frac{E_x}{c} & +\frac{E_y}{c} & +\frac{E_z}{c} \\
+-\frac{E_x}{c} & 0 & B_z & -B_y \\
+-\frac{E_y}{c} & -B_z & 0 & B_x \\
+-\frac{E_z}{c} & B_y & -B_x & 0 \\
+\end{array}\right)
+\]
+
+We can write down the electromagnetic Lagrangian, $\mathcal{L}_{EM}$ in terms of the electromagnetic field tensor.
+Since it is a Lagrangian it is typical for it to be 2nd order in the fields.
+It should also be Gauge and Lorentz invariant.
+Apparently the only combination which satisfies this is
+
+\[\mathcal{L}_{EM} = D F_{\alpha \beta}F^{\alpha \beta} \]
+
+There is also a term related to the coupling to matter. The simplest form this term can take is
+
+\[\mathcal{L}_{INT} = KA_{\alpha}J^{\alpha}\]
+
+
+$D$ and $K$ are proportionality constants which will be constrained so that Maxwell's equations and the Lorentz force equation have the right scalings.
+Of course in the end these scalings are fixed by experiment.
+
+\[\mathcal{L} = \mathcal{L}_{EM} + \mathcal{L}_{INT} = D F_{\alpha \beta}F^{\alpha \beta} + KA_{\alpha}J^{\alpha}\]
+
+We can derive Maxwell's equations from what has been presented so far.
+
+First We note that the homogeneous Maxwell equations follow immediately by taking the divergence of the equation which defines $\vec{B}$ and the curl of the equation which defines $\vec{E}$
+\[ \vecnab \cdot \vec{B} = \vecnab \cdot (\vecnab \cross \vec{A}) =  0\]
+\[ \vecnab \cross \vec{E} = -\pardiv[\vecnab \cross \vec{A}]{t} - \vecnab \cross \vecnab \phi = -\pardiv[\vec{B}]{t} -0\]
+
+so we find the two homogeneous Maxwell equations
+
+\begin{subequations}
+\begin{empheq}[box=\widefbox]{align*}
+\vecnab \cdot \vec{B} &= 0 \\ 
+\vecnab \cross \vec{E} + \pardiv[\vec{B}]{t}&=0
+\end{empheq}
+\end{subequations}
+
+To derive the inhomogeneous Maxwell equations we must work out the Euler-Lagrange equations so that we can determine the equations of motion for the electromagnetic fields.
+Recall the Lagrangian density $\mathcal{L}(A^{\mu}, \partial^{\nu}A^{\mu})$ depends on coordinates $A^{\mu}$ and spatial and temporal derivatives $\partial^{\nu} A^{\mu}$.
+$A^{\mu}(x,y,z,t)$ depends on $x, y, z,$ and $t$.
+
+Minimizing the action $S = \int dt L = \int d^4x\mathcal{L}$ yields the Euler-Lagrange equations
+
+\[\pardiv[\mathcal{L}]{A^{\mu}} = \partial^{\nu}\pardiv[\mathcal{L}]{(\partial^{\nu}A^{\mu})} \]
+
+We now evaluate this
+
+\[ \mathcal{L}_{EM} = D g_{\alpha \gamma} g_{\beta \delta} F^{\gamma \delta} F^{\alpha \beta} \]
+
+$g_{\alpha \gamma}$ is the metric which can be used to raise and lower indices.
+We take the derivative and apply the product rule
+
+\[ \pardiv[\mathcal{L}_{EM}]{(\partial^{\nu} A^{\mu})} = D  g_{\alpha \gamma} g_{\beta \delta} [(\delta_{\nu}^{\gamma} \delta_{\mu}^{\delta} - \delta_{\nu}^{\delta} \delta_{\mu}^{\gamma})F^{\alpha \beta} + F^{\gamma \delta}(\delta_{\nu}^{\alpha} \delta_{\mu}^{\beta} - \delta_{\nu}^{\beta} \delta_{\mu}^{\alpha} ) ] \]
+
+\[ = D[F_{\nu \mu} - F_{\mu \nu} + F_{\nu \mu} - F_{\mu \nu}] = 4DF_{\nu \mu} \]
+
+And
+
+\[ \pardiv[\mathcal{L}_{EM}]{A^{\mu}} = K \pardiv[A_{\alpha}J^{\alpha}]{A^{\mu}} = K\pardiv[A^{\alpha}J_{\alpha}]{A^{\mu}} = KJ_{\mu} \]
+
+So we find (raising and lowering pairs of indices)
+
+\[\partial_{\nu}F^{\nu \mu} = \frac{K}{4D} J^{\mu} = Z J^{\mu} \]
+
+We can extract the inhomogeneous Maxwell equations from this expression and, by comparison, extract the value for $Z$.
+
+First we take $\mu=0$.
+
+\[ \partial_{\nu} F^{\nu 0} = Z J^0 = Z c \rho \]
+\[ = \partial_{\nu} \partial^{\nu} A^0 - \partial_{\nu} \partial^0 A^{\nu} \]
+\[ = -\frac{1}{c^3} \pardiv[^2\phi]{t^2} + \frac{1}{c^3} \pardiv[^2\phi]{t^2} +\sum_{i=1}^3 \left(\partial_i^2 \frac{\phi}{c} +\frac{1}{c}\pardiv{t} \partial_i A^i\right) \]
+\[ =  \sum_i -\frac{\partial_i}{c}\left(-\pardiv[A^i]{t}-\partial_i \phi\right) = -\sum_i\frac{\partial_i E^i}{c} =  -\frac{\vecnab \cdot \vec{E}}{c} = Z \rho c\]
+
+Comparison to the well known equation for Gauss's law leads to $-Z c^2 = \frac{1}{\epsilon_0}$ so that $Z=-\mu_0$.
+Note that we have used the fact that, due to the $(-,+,+,+)$ metric convention that we chose, we need to take care to remember that $\partial_0$ is the usual derivative but that $\partial^0 = -\partial_0$. 
+$\partial^i=\partial_i$ for our choice of convention.
+We have explicitly included summation symbols when the vector components are components of a 3-vector rather than a 4-vector.
+
+\[\boxed{\vecnab \cdot \vec{E} = \frac{\rho}{\epsilon_0}}\]
+
+Now we take the terms where $\mu \neq 0$.
+Note that we will index spatial components by $i$ or $j$ when we are explicitly referring to the spatial components of a 4-vector.
+
+\[ \partial_\nu F^{\nu i} = \partial_{\nu} \partial^{\nu} A^i - \partial_{\nu} \partial^i A^{\nu} = ZJ^i\]
+\[ = \left(-\frac{1}{c^2} \pardiv[^2 A^i]{t^2} - \frac{1}{c^2} \pardiv[(\partial_i \phi)]{t}\right) + \sum_j \left(\partial_j^2 A^i - \partial_j \partial_i A^j\right)    \]
+
+\[ = \frac{1}{c^2} \pardiv{t} \left(-\pardiv[A^i]{t} -\partial_i \phi\right) -\sum_{jklm} \epsilon_{ijk} \epsilon_{klm} \partial_j \partial_l A^m\]
+
+\[ = \frac{1}{c^2} \pardiv[E^i]{t} - (\vecnab \cross (\vecnab \cross \vec{A}))^i \]
+
+\[ = \frac{1}{c^2} \pardiv[E^i]{t} - (\vecnab \cross \vec{B})^i = ZJ^i \]
+
+Here we have used a well-known vector calculus identity.
+Since we are in the $(-,+,+,+)$ metric we can raise and lower indices of the Levi-Civita symbol at will.
+However, we have decided to be lazy about maintaining any convention for matching raised and lowered indices since we threw a lot of that elegance (Lorentz invariance) out the door when we decided to look at specific components of our equation.
+Recalling from above that $Z=-\mu_0$ we write the final Maxwell equation:
+
+\[ \boxed{\vecnab \cross \vec{B} = \mu_0\left(\vec{J} + \epsilon_0 \pardiv[\vec{E}]{t}\right) }\]
+
+Note that even though we have derived all four Maxwell equations we have still not fully determined the Lagrangian.
+We have $Z$ which is related to the ratio of $D$ and $K$, but to constrain $D$ and $K$ independently we must derive the Lorentz force and constrain the constants that way.
+(Note that there are other ways to constrain this, for example we could convert this Lagrangian to a Hamiltonian and compare it to the known value for the energy contained in the electromagnetic field.)
+
+We now consider the Lagrangian for matter interacting with the electromagnetic field.
+We will retain $\mathcal{L}_{INT}$ but will not need $\mathcal{L}_{EM}$ for this section.
+We will need a matter Lagrangian $L_{MAT}$ which governs the matter dynamics.
+Lets consider a set or particles with mass $m_{a}$ and charge $q_{a}$ which are at position $\vec{r}_{a}$ moving with velocity $\vec{v}_{a} = \dot{\vec{r}}_a$.
+The motion of this particle will be altered due to the presence of $\vec{E}(\vec{r}_{a})$ and $\vec{B}(\vec{r}_a)$.
+
+Note that we convert $\mathcal{L}_{INT}$ into a Lagrangian rather than a Lagrangian density by 
+
+\[L_{INT} = \int d^3 x KA_{a}(\vec{x},t)J^{a}(\vec{x},t) \]
+
+We take
+
+\[ \rho(\vec{x},t) = \sum_{a} q_{a} \delta(\vec{x} - \vec{r}_{a}(t))\]
+\[ \vec{J}(\vec{x},t) = \sum_{a} q_{a} \dot{\vec{r}}_{a}\delta(\vec{x}-\vec{r}_{a}(t)) \]
+
+The matter Lagrangian is
+
+\[L_{MAT} = \sum_{a} \frac{1}{2} m_{a} \dot{r}^2 \]
+
+When we drop the over vector symbol of a vector we take the magnitude, $r = |\vec{r}|$.
+
+Plugging in the formulas for $\rho$ and $\vec{J}$ we find the total Lagrangian
+
+\[ L_{I+M} = \sum_{a}\left[ K q_{a} \left(-\phi(\vec{r}_{a}(t),t) + \vec{A}(\vec{r}_{a}(t),t) \cdot \dot{\vec{r}}_{a}\right) + \frac{1}{2} m_{a} |r|^2 \right]\]
+
+We now work out the Euler-Lagrange equations for this Lagrangian
+
+\[\frac{d}{dt} \pardiv[L]{\dot{r}_{a}^i} = \pardiv[L]{r_{a}^i} \]
+
+Here we take derivatives with respect to the spatial components, $i$, of the individual particle positions $\vec{r}_{a}$ and velocities $\dot{\vec{r}}_{a}$.
+Note also that we are now doing particle Lagrangian mechanics rather than field Lagrangian mechanics was the case above.
+
+The left hand side yields
+
+\[\frac{d}{dt}\left[K q_{a} A^i(\vec{r}_{a}(t),t) +m_{a}\dot{r}_{a}^i\right] = K q_{a} \left(\pardiv[A^i]{t} + \pardiv[A^i]{r_a^j} \pardiv[r_a^j]{t}\right) + m_a \ddot{r}_a^i \]
+\[ = K q_a \left( \pardiv[A^i]{t} + (\partial_{j,a} A^i) \dot{r}_a^j\right) + m_a \ddot{r}_a^i \]
+
+Note that the conjugate momentum $p_a^i = \pardiv[L]{\dot{r}_a^i} = Kq_a A^i + m_a \dot{r}_a^i$ so $\vec{p}_a = Kq_a \vec{A} +m_a \dot{\vec{r}}_a$.
+
+And the right hand side:
+\[Kq_a \left(- \pardiv[\phi]{r_a^i} + \pardiv[A^j]{r_a^i} \dot{r}_a^j \right) = Kq_a\left(-\partial_{i,a} \phi +(\partial_{i,a}A^j)\dot{r}_a^j\right)\]
+
+We equate the two sides and solve for $m \ddot{r}_a^i$.
+
+\[m\ddot{r}_a^i = Kq_a \left[ -\partial_{i,a} \phi -\pardiv[A^i]{t} - \dot{r}_a^j(\partial_{j,a}A^i) +\dot{r}_a^j (\partial_{i,a} A^j) \right]    \]
+\[ = K q_a \left[ E^i + \left(\dot\vec{{r}}_a \cross(\vecnab \cross \vec{A})\right)^i \right] \]
+
+We compare this to the well known equation for the Lorentz force to find $K=1$ and thus
+
+\[\boxed{ m_a \ddot{\vec{r}}_a = \vec{F}_a =  q_a \left[\vec{E}(\vec{r}_a) + \vec{v}_a \cross \vec{B}(\vec{r}_a) \right] } \]
+
+We recall that $Z = \frac{K}{4D} = -\mu_0$ and $K=1$ so $D=-\frac{1}{4\mu_0}$
+
+For completeness we derive the continuity equation from the equation of motion for the electromagnetic field tensor (note the index order on $F^{\nu \mu}$:
+
+\[ \partial_{\nu} F^{\mu \nu} = \mu_0 J^{\mu} \]
+
+Taking $\partial_{\mu}$ on both sides
+
+\[ \partial_{\mu} \partial_{\nu} F^{\mu \nu} = \mu_0 \partial_{\mu} J^{\mu} = \mu_0 \left(\frac{1}{c} \pardiv{t} (c\rho) + \vecnab \cdot \vec{J}\right) \]
+\[= \partial_{\mu} \partial_{\nu} (\partial^{\mu} A^{\nu} - \partial^{\nu} A^{\mu}) = \partial_{\mu} \partial_{\nu} \partial^{\mu} \partial^{\nu} - \partial_{\mu} \partial_{\nu} \partial^{\nu} \partial^{\mu} = 0 \]
+The second line relies on commuting derivatives.
+This yields: 
+\[ \boxed{ \pardiv[\rho]{t} = -\vecnab \cdot \vec{J}} \]
+
+We summarize now the main results of this section.
+
+Electromagnetic Lagrangian including matter interaction term.
+
+\[\boxed{\mathcal{L}_{EM}+\mathcal{L}_{INT} = -\frac{1}{4\mu_0} F_{\alpha \beta}F^{\alpha \beta} + A_{\alpha} J^{\alpha}}\]
+
+Maxwell's equations
+
+\begin{subequations}
+\begin{empheq}[box=\widefbox]{align*}
+\vecnab \cdot \vec{B} &= 0 \\ 
+\vecnab \cross \vec{E} + \pardiv[\vec{B}]{t}&=0 \\
+\vecnab \cdot \vec{E} & = \frac{\rho}{\epsilon_0} \\
+\vecnab \cross \vec{B} &= \mu_0\left(\vec{J} + \epsilon_0 \pardiv[\vec{E}]{t} \right)
+\end{empheq}
+\end{subequations}
+
+The Lorentz force equation
+
+\[ \boxed{\vec{F}_a =  q_a \left(\vec{E} + \vec{v}_a \cross \vec{B}\right)} \]
+
+And the continuity equation
+\[ \boxed{ \pardiv[\rho]{t} = -\vecnab \cdot \vec{J} } \]
+
+Before moving on we prove one final result of classical electromagnetism.
+We will prove
+\[\mathcal{L}_{EM} = -\frac{1}{4\mu_0} F_{\alpha \beta} F^{\alpha \beta} = \frac{1}{2} \left(\epsilon_0 |E|^2 - \frac{1}{\mu_0} |B|^2 \right) \]
+
+We proceed with a bunch of index notation:
+
+\[ F_{\alpha \beta}F^{\alpha \beta} = (\partial_{\alpha} A_{\beta} - \partial_{\beta} A_{\alpha})(\partial^{\alpha} A^{\beta} - \partial^{\beta} A^{\alpha})  \]
+\[ = (\partial_{\alpha} A_{\beta} \partial^{\alpha} A^{\beta} - \partial_{\alpha} A_{\beta} \partial^{\beta} A^{\alpha} - \partial_{\beta} A_{\alpha} \partial^{\alpha} A^{\beta} + \partial_{\beta} A_{\alpha} \partial^{\beta} A^{\alpha})  \]
+by reindexing:
+\[ = 2 (\partial_{\alpha} A_{\beta} \partial^{\alpha} A^{\beta} - \partial_{\alpha} A_{\beta} \partial^{\beta} A^{\alpha}) = 2\partial_{\alpha} A_{\beta} ( \partial^{\alpha} A^{\beta} - \partial^{\beta} A^{\alpha})     \]
+
+We split this into 4 components, $(\alpha,\beta =0)$, $(\alpha=0,\beta \neq 0)$, $(\alpha\neq 0, \beta=0)$, and $(\alpha,\beta \neq 0)$.
+
+
+\begin{align*}
+ = 2 \sum_{ijlm} \left[ \left( \partial_0 A_0(\partial^0 A^0 - \partial^0 A^0) \right) + \left(\partial_0 A_j (\partial^0 A^j - \partial^j A^0) \right)\right. \\+ 
+  \left.\left( \partial_j A_0 (\partial^j A^0 - \partial^0 A^j) \right) + \left(\partial_i A_j \partial^l A^m (\delta_{il} \delta_{jm} - \delta_{im} \delta_{jl})\right)  \right]    
+\end{align*}
+
+
+\[ = 2\sum_{ijlmn} \left[ -(\partial_0 A^j)^2 -(\partial_j A^0)^2 -2 \partial_0 A^j \partial_j A^0 + \epsilon_{nij}\partial_i A^j \epsilon_{nlm} \partial_l A^m \right]\]
+\[ = 2 \sum_j \left[ - (\partial_0 A^j + \partial_j A^0)^2 + (\vecnab \cross \vec{A})^2 \right] = 2 \sum_j \left[ -\left(\frac{1}{c}\pardiv[A^j]{t} + \frac{1}{c} (\vecnab \phi)^j   \right)^2 +(\vecnab \cross \vec{A})^2 \right ]\]
+\[ = 2 \left(-\frac{1}{c^2}|E|^2+|B|^2\right) \]
+
+So we find that
+
+\[\mathcal{L}_{EM} = -\frac{1}{4\mu_0} 2 \left(-\frac{1}{c^2}|E|^2+|B|^2\right) = \frac{1}{2}\left( \epsilon_0 |E|^2 -\frac{1}{\mu_0} |B|^2\right)    \]
+
+After this section we should be convinced that all of classical electromagnetism can be derived from the electromagnetic Lagrangian. Thus, we should be comfortable with the idea of using the electromagnetic Lagrangian as the starting point for quantum electromagnetism.
+
+\section{Longitudinal and transverse fields and the Coulomb gauge}
+We introduce the concept of longitudinal and transverse vector fields.
+Let $\vec{F}(\vec{x})$ be a real vector field.
+We can take the vector Fourier transform of this field
+\[ \tilde{\vec{F}}(\vec{k}) = \int \frac{d^3\vec{x}}{(2\pi)^{\sfrac{3}{2}}} e^{-i \vec{k} \cdot \vec{x}} \vec{F}(\vec{x}) \]
+
+\[ \vec{F}(\vec{x}) = \int \frac{d^3\vec{k}}{(2\pi)^{\sfrac{3}{2}}} e^{i \vec{k} \cdot \vec{x}} \tilde{\vec{F}}(\vec{k}) \]
+
+Since $\vec{F}(\vec{x})$ is real we have that $\tilde{\vec{F}}(-\vec{k})^* = \tilde{\vec{F}}(\vec{k})$.
+We also recall Parseval's identity:
+\[\int d^3 \vec{x} \left(\vec{F}(\vec{x}) \cdot \vec{G}(\vec{x})\right) = \int d^3 \vec{k} \left(\tilde{\vec{F}}(\vec{x}) \cdot \tilde{\vec{G}}(\vec{x})\right) \]
+
+We can now define the longitudinal and perpendicular fields.
+
+\[ \tilde{\vec{F}}(\vec{k}) = \tilde{\vec{F}}_{\perp}(\vec{k}) + \tilde{\vec{F}}_{\pll}(\vec{k})\]
+
+Where the longitudinal component is defined as
+\[ \tilde{\vec{F}}_{\pll}(\vec{k}) = \hat{k}\left(\hat{k} \cdot \tilde{\vec{F}}(\vec{k})\right) \]
+and the perpendicular component is defined as
+\[ \tilde{\vec{F}}_{\perp}(\vec{k}) = \tilde{\vec{F}}(\vec{k}) - \tilde{\vec{F}}_{\pll}(\vec{k})\]
+It can be seen that
+\[ \vec{k} \cdot \tilde{\vec{F}}_{\perp}(\vec{k}) = 0 \hspace{.5 in}\text{ and } \hspace{.5 in} \vec{k} \cross \tilde{\vec{F}}_{\pll}(\vec{k}) = 0\]
+Hence the names.
+We define the longitudinal and transverse components in real (as opposed to $\vec{k}$) space by taking the inverse Fourier transform of the respective $\vec{k}$ space components.
+
+\[\vec{F}(\vec{x}) = \vec{F}_{\perp}(\vec{x})+\vec{F}_{\pll}(\vec{x}) \]
+
+Recalling the correspondence between $\vecnab_{\vec{x}} \leftrightarrow  i \vec{k}$ (or by calculation) we can see that
+
+\[\vecnab \cdot \vec{F}_{\perp}(\vec{x}) =  0 \hspace{.5 in} \text{ and } \hspace{.5 in} \vecnab \cross \vec{F}_{\pll}(\vec{x})=0 \]
+
+Because of the second equation above we can write
+\[\vec{F}_{\pll}(\vec{x}) = \vecnab f(\vec{x}) \]
+where $f$ is some potential function. 
+\[ \vecnab \cdot \vec{F}(\vec{x}) = \vecnab \cdot \vec{F}_{\pll}(\vec{x}) = \vecnab^2 f\]
+We can invert the Laplacian to find
+\[ f(\vec{x}) = -\frac{1}{4\pi} \int d^3 \vec{x}' \frac{\vecnab'\cdot\vec{F}(\vec{x}')}{|\vec{x} - \vec{x}'|} = \frac{1}{4\pi} \int d^3\vec{x}' \vecnab'\left(\frac{1}{|\vec{x}-\vec{x}'|}\right) \cdot \vec{F}(\vec{x}') \]
+
+$\vecnab'\left(\frac{1}{|\vec{x}-\vec{x}'|}\right) = -\vecnab\left(\frac{1}{|\vec{x}-\vec{x}'|}\right)$ so we find
+
+\[f(\vec{x}) = -\frac{1}{4\pi} \int d^3\vec{x}' \vecnab\left(\frac{1}{|\vec{x}-\vec{x}'|}\right) \cdot \vec{F}(\vec{x}') \] 
+
+\[\vec{F}_{\pll}(\vec{x}) = \vecnab f(\vec{x}) = -\frac{1}{4\pi} \vecnab \int d^3\vec{x}' \vecnab\left(\frac{1}{|\vec{x}-\vec{x}'|}\right) \cdot \vec{F}(\vec{x}') \]
+
+and
+
+\[\vec{F}_{\perp}(\vec{x}) = \vec{F}(\vec{x}) - \vec{F}_{\pll}(\vec{x})  = \vec{F}(\vec{x}) +\frac{1}{4\pi} \vecnab \int d^3 \vec{x}' \vecnab\left(\frac{1}{|\vec{x}-\vec{x}'|}\right) \vec{F}(\vec{x}') \]
+
+These expressions for the transverse and perpendicular fields will be useful in describing the electromagnetic field in the presence of charge.
+
+combining $\tilde{\vec{F}}_{\perp} \cdot \tilde{\vec{G}}_{\pll} = 0$ at each $\vec{k}$ point with Parseval's identity yields
+
+\[\int d^3 \vec{x} \left(\vec{F}_{\perp}(\vec{x}) \cdot \vec{G}_{\pll}(\vec{x}) \right) =0 \]
+
+\section{Electromagnetic Lagrangian in the Coulomb Gauge}
+
+A few quick manipulations. Starting with the definitions of $\vec{E}$ and $\vec{B}$ and Gauss's Law
+
+\[ \vec{E} = -\pardiv[\vec{A}]{t} - \vecnab \phi \hspace{1 in} \vec{B} = \vecnab \cross \vec{A} \]
+
+\[ \vecnab \cdot \vec{E} = \frac{\rho}{\epsilon_0} = -\pardiv[\vecnab\cdot\vec{A}]{t} - \nabla^2 \phi \]
+
+so
+
+\[ \nabla^2 \phi = -\frac{\rho}{\epsilon_0} - \pardiv[\vecnab \cdot \vec{A}]{t} \]
+
+Starting with Ampere's law:
+
+\[ \vecnab \cross \vec{B} = \mu_0 \left(\vec{J} +\epsilon_0 \pardiv[\vec{E}]{t} \right) = \vecnab \cross(\vecnab \cross \vec{A})\]
+
+\[\mu_0 \vec{J} +\frac{1}{c^2}\left(-\pardiv[^2\vec{A}]{t^2} - \pardiv{t} \vecnab \phi \right) = -\nabla^2 \vec{A} +\vecnab(\vecnab\cdot \vec{A})\]
+
+\[ \nabla^2 \vec{A} -\frac{1}{c^2} \pardiv[^2 \vec{A}]{t^2} = -\mu_0 \vec{J} + \vecnab\left(\frac{1}{c^2}\pardiv[\phi]{t}+\vecnab\cdot\vec{A}\right) \]
+
+To simplify calculations we will work in the Coulomb gauge for electromagnetism when we quantize the electromagnetic field.
+The Coulomb gauge amounts to setting the divergence of the vector potential to 0.
+\[\vecnab \cdot \vec{A} = 0\]
+This is equivalent to 
+\[ \vec{A}_{\pll} = 0 \hspace{1 in} \vec{A}_{\perp} = \vec{A} \]
+\[ \nabla^2 \phi = -\frac{\rho}{\epsilon_0} \]
+
+$\vec{E}$ can be broken into longitudinal and transverse parts similarly to $\vec{A}$.
+
+\[\vec{E}_{\perp} = -\pardiv[\vec{A}]{t} \hspace{1 in} \vec{E}_{\pll} = -\vecnab\phi \]
+
+We will perform some manipulations to simplify the sourced wave equation above.
+
+\[\vecnab \pardiv[\phi]{t} = \vecnab \left(\frac{1}{4\pi \epsilon_0} \int d^3\vec{x}' \frac{1}{|\vec{x}-\vec{x}'|} \pardiv[\rho(\vec{x}',t)]{t} \right) = -\vecnab \left(\frac{1}{4\pi \epsilon_0} \int d^3\vec{x}' \frac{1}{|\vec{x}-\vec{x}'|} \vecnab' \cdot \vec{J}(\vec{x}',t)\right)\]
+\[= -\frac{1}{\epsilon_0} \frac{1}{4\pi} \vecnab \int d^3\vec{x}' \vecnab\left(\frac{1}{|\vec{x}-\vec{x}'|} \right) \cdot \vec{J}(\vec{x}',t) = \frac{1}{\epsilon_0} \vec{J}_{\pll} \]
+
+The first equality follows from inverting the Laplace equation above and the second equality follows from the continuity equation and the third equality follows from integration by parts and replacing $\vecnab' \leftrightarrow -\vecnab$.
+Plugging this and the gauge condition into the wave equation above we find
+
+\[ \nabla^2 \vec{A} - \frac{1}{c^2} \pardiv[^2\vec{A}]{t^2} = -\mu_0 \vec{J} + \frac{1}{c^2 \epsilon_0} \vec{J}_{\pll} = -\mu_0 \vec{J}_{\perp} \]
+
+In the Coulomb gauge $\nabla^2 \vec{A} = - \vecnab \cross( \vecnab \cross \vec{A}) =  -\vecnab \cross \vec{B}$ and $\vec{E}_{\perp} = -\pardiv[\vec{A}]{t}$ so
+
+\[ \vecnab \cross \vec{B} = \mu_0 \vec{J}_{\perp} + \frac{1}{c^2} \pardiv[\vec{E}_{\perp}]{t} \]
+
+Note that the electromagnetic Lagrangian
+\[\mathcal{L}_{EM} = \frac{1}{2}\left( \epsilon_0 |E|^2 -\frac{1}{\mu_0} |B|^2\right)    \]
+
+appears to depend on all four components of $A^{\alpha}$, however, because of the constraints of electromagnetism these components are constrained and we in fact only need two such components.
+Working in the Coulomb gauge has allowed us to eliminate $\vec{A}_{\pll}$ and $\phi$ from the equations of motion.
+We will now eliminate them from the Lagrangian.
+It will be important for us to keep track of our coordinate degrees of freedom carefully when we attempt to change over from the electromagnetic Lagrangian to the Hamiltonian for purposes of quantization.
+
+We include the interaction Lagrangian
+
+\[L_1 = L_{EM} + L_{INT} =\int d^3 \vec{x} \left[ \frac{1}{2}\left(\epsilon_0 |E|^2 - \frac{1}{\mu_0} |B|^2 \right) +A_{\alpha}J^{\alpha} \right]= \int d^3\vec{x} \left[\frac{1}{2}\left(\epsilon_0 |E|^2 - \frac{1}{\mu_0} |B|^2 \right) - \rho \phi + \vec{J} \cdot \vec{A}\right] \]
+
+Chewing on a few terms and recalling $\int d^3 \vec{x} \left(\vec{F}_{\perp}(\vec{x}) \cdot \vec{G}_{\pll}(\vec{x}) \right) =0 $
+
+\[\int d^3 \vec{x} |E|^2 = \int d^3\vec{x} \left(|E_{\pll}|^2 + |E_{\perp}|^2 + 2 \vec{E}_{\pll} \cdot \vec{E}_{\perp} \right) \]
+But the cross term vanishes. Also,
+
+\[ \frac{\epsilon_0}{2} \int d^3\vec{x} |E_{\pll}|^2 = \frac{\epsilon_0}{2} \int d^3 \vec{x} |\vecnab \phi|^2 = -\frac{\epsilon_0}{2}\int d^3 \vec{x} \phi \nabla^2 \phi = -\frac{\epsilon_0}{2} \int d^3\vec{x} \phi\frac{-\rho}{\epsilon_0} = \frac{1}{2} \int d^3 \vec{x} \phi \rho\]
+
+We also have
+\[ \int d^3 \vec{x} \vec{J} \cdot \vec{A} = \int d^3 \vec{x} \vec{J} \cdot \vec{A}_{\perp} = \int d^3 \vec{x} \vec{J}_{\perp} \cdot \vec{A}_{\perp} \]
+
+We put this together to find
+
+\[ L_1 = \int d^3 \vec{x} \left[ \frac{1}{2} \left(\epsilon_0 |E_{\perp}|^2 - \frac{1}{\mu_0} |B|^2\right) - \frac{1}{2} \rho \phi + \vec{J}_{\perp} \cdot \vec{A}_{\perp}\right] \]
+And finally we can eliminate $\phi$ by inverting the Laplace equation.
+
+\[ L_1 = \int d^3 \vec{x} \left[ \frac{1}{2} \left(\epsilon_0 |E_{\perp}|^2 - \frac{1}{\mu_0} |B|^2\right) + \vec{J}_{\perp} \cdot \vec{A}_{\perp} \right] -\frac{1}{2} \frac{1}{4\pi \epsilon_0} \int d^3\vec{x} d^3 \vec{x}' \frac{\rho(\vec{x},t) \rho(\vec{x}',t)}{|\vec{x}-\vec{x}'|} \]
+
+Taking again
+
+\[ \rho(\vec{x},t) = \sum_{a} q_{a} \delta(\vec{x} - \vec{r}_{a}(t))\]
+\[ \vec{J}(\vec{x},t) = \sum_{a} q_{a} \dot{\vec{r}}_{a}\delta(\vec{x}-\vec{r}_{a}(t)) \]
+
+and recalling $\vec{A}_{\perp} = \vec{A}$ we find
+
+\[L_1 = \int d^3 \vec{x} \frac{1}{2} \left(\epsilon_0 |E_{\perp}|^2 - \frac{1}{\mu_0} |B|^2\right) + \sum_{a} q_a \dot{\vec{r}}_a\cdot\vec{A}(\vec{r}_a) - \frac{1}{2}\frac{1}{4\pi \epsilon_0} \sum_{a,b} \frac{q_a q_b}{|\vec{r}_a-\vec{r}_b|}\]
+
+\section{Separation of Variables and Fourier Decomposition}
+
+For a bit of intuition lets look at the homogeneous wave equation. This equations follows from the equation above by setting $\vec{J}_{\perp}=0$.
+\[ \nabla^2 \vec{A} - \frac{1}{c^2}\pardiv[^2\vec{A}]{t^2} = 0 \]
+This equation is separable. We write $\vec{A}(\vec{x},t) = \vec{X}(\vec{x})T(t)$ to yield
+
+\[(\nabla^2 \vec{X}(\vec{x}))T(t) - \vec{X}(\vec{x})\frac{1}{c^2}\pardiv[^2 T(t)]{t^2}=0 \]
+In components this reads
+
+\[\partial_i^2 X^j(\vec{x})T(t) - X^j(\vec{x})\frac{1}{c^2}\ddot{T}(t) = 0\]
+
+\[ \frac{\partial_i^2 X^j(\vec{x})}{X^j(\vec{x})} = \frac{1}{c^2} \frac{\ddot{T}(t)}{T(t)} = -k^2 \]
+
+Right now $k$ is the separation of variables constant, but, for example, in the case of a plane wave, $k$ will represent the magnitude of the wave-vector $\vec{k}$.
+
+The time component satisfies
+
+\[ \ddot{T}(t) = -k^2c^2 T(t) = -\omega_k^2 T(t)  \]
+
+where we have defined $\omega_k=ck$. This differential equation is solved by
+
+\[T(t) = e^{\pm i \omega_k t}\]
+
+The spatial part can be written as
+
+\[(\partial_i^2 + k^2)X^j(\vec{x}) = 0\]
+
+which we recognize as the vector Helmholtz equation
+
+\[ (\nabla^2 + k^2) \vec{X}(\vec{x}) = 0 \]
+
+Subject to no boundary conditions this equation is solved by 
+
+\[ \vec{X}(\vec{x}) = e^{\pm i \vec{k} \cdot \vec{x}} \]
+
+Where $\vec{k}$ is any vector with magnitude $k$.
+Any superposition of terms like $e^{\pm i \omega_k t}e^{\pm i \vec{k} \cdot \vec{x}}$ Will solve the homogeneous wave equation.
+When we impose boundary conditions only certain linear combinations of terms will solve the problem, however they still take the same general form.
+
+With this in mind we will now decompose the vector potential, $\vec{A}$, into mode functions.
+
+\[ \vec{A} = \sum_{\lambda} b_{\lambda}(t) \vec{f}_{\lambda}(\vec{x}) + b_{\lambda}^* \vec{f}_{\lambda}^*(\vec{x}) \]
+
+Here $\lambda$ indexes all of the possible modes.
+For the free fields ($J^{\alpha}=0$,) $\lambda$ runs over a continuum of wavevectors $\vec{k}$ and two polarizations $\hat{\epsilon}_{\lambda}$.
+$\lambda$ will run over different sorts of modes if the fields are subject to boundary conditions such as those imposed by waveguides.
+
+$b_{\lambda}(t)$ are complex coefficients which carry information about the temporal structure and amplitude of the modes.
+Note that $\vec{A}$ is real.
+
+$\vec{f}_{\lambda}(\vec{x})$ are complex, orthogonal, normalized mode functions which carry the spatial structure of the modes. 
+In general $\vec{f}_{\lambda}(\vec{x})$ are linear combinations of terms $e^{\pm i \vec{k} \cdot \vec{x}}$ with different weights.
+All of the $\vec{k}$ will have the same magnitude $k$ and thus correspond to the same $\omega_k$.
+The modes are normalized
+
+\[\int_V d^3\vec{x} \vec{f}_{\lambda}(\vec{x}) \cdot \vec{f}_{\lambda'}^*(\vec{x}) = \delta_{\lambda \lambda'} \]
+
+Here we integrate over the volume $V$.
+For our purposes it will be most convenient to always have $V$ be finite.
+If an infinite space (free space) is desired we can always take the limit of a box as the side length $L\rightarrow \infty$.
+Taking the volume $V$ to be infinite ensures this remains a Kronecker delta rather than a Dirac delta and in general makes solutions more well-behaved.
+
+The $\vec{f}_{\lambda}$ satisfy the Helmholtz equation, $(\nabla^2+k^2)\vec{f}=0$.
+From the discussion above it is clear that $\vec{f}_{\lambda}$ is taken to $\vec{f}_{\lambda}^*$ by taking $\vec{k}\rightarrow -\vec{k}$. This means that
+
+\[ \vec{f}_{\lambda}^* = \vec{f}_{-\lambda} \]
+
+and we can regroup terms by summing only over half of all $\lambda$ indicated by $\lambda \left( \frac{1}{2}\right)$ in the summation.
+If we were working with free space this would mean we only sum over half over $\vec{k}$-space.
+Since we are trying to be more general we just note that $\lambda$ and $-\lambda$ in some sense describe the same mode traveling forward and backwards, and our notation means we only sum over the forward traveling modes.
+
+\[ \vec{A} = \sum_{\lambda \left(\frac{1}{2}\right)} (b_{\lambda}(t) + b_{-\lambda}^*(t))\vec{f}_{\lambda}(\vec{x}) +(b_{\lambda}^*(t) + b_{-\lambda}(t))\vec{f}_{\lambda}^*(\vec{x})    \]
+
+\[ = \sum_{\lambda \left( \frac{1}{2} \right)} A_\lambda(t)\vec{f}_{\lambda}(\vec{x}) +A_{\lambda}^*(t) \vec{f}_{\lambda}^*(\vec{x}) \]
+
+Noting that $A_{-\lambda} = A_{\lambda}^*$ we write
+
+\[\vec{A} = \sum_{\lambda} A_{\lambda}(t) \vec{f}_{\lambda}(\vec{x}) \]
+
+We now work towards rewriting the electromagnetic Lagrangian in terms of this mode expansion.
+
+\[\vec{E}_{\perp} = -\pardiv[\vec{A}]{t}=-\sum_{\lambda}\dot{A}_{\lambda}(t) \vec{f}_{\lambda}(\vec{x}) \]
+
+\[ \vec{B} = \vecnab \cross \vec{A} = \sum_{\lambda}A_{\lambda}(t)\left(\vecnab \cross \vec{f}_{\lambda}(\vec{x})\right) \]
+
+The $\vec{E}$ field terms
+
+\[ \int d^3 \vec{x} |E_{\perp}|^2 = \int d^3 \vec{x} \sum_{\lambda \lambda'} \dot{A}_{\lambda} \dot{A}^*_{\lambda'} \vec{f}_{\lambda} \cdot \vec{f}_{\lambda'}^* = \sum_{\lambda} |\dot{A}_{\lambda}|^2 \]
+
+The $\vec{B}$ field terms
+
+\[ \int d^3 \vec{x} |B|^2 = \int d^3 \vec{x} \sum_{\lambda \lambda'} A_{\lambda} A_{\lambda'}^* \left(\vecnab\cross \vec{f}_{\lambda}\right)\cdot\left(\vecnab\cross\vec{f}_{\lambda}^*\right) \]
+
+integrating by parts and applying the triple cross product identity in the Coulomb gauge
+
+\[ = \int d^3\vec{x} \sum_{\lambda \lambda'} A_{\lambda} A_{\lambda'}^* \vec{f}_{\lambda} \cdot \left(\vecnab \cross \left(\vecnab \cross \vec{f}_{\lambda'}^*\right)\right) = 
+-\int d^3 \vec{x} \sum_{\lambda \lambda'} A_{\lambda} A_{\lambda}^* \vec{f}_{\lambda} \cdot \nabla^2 \vec{f}_{\lambda'}^* \]
+
+And using the fact that $\vec{f}_{\lambda'}^*$ satisfies the Helmholtz equation
+
+\[ = \int d^3 \vec{x} \sum_{\lambda \lambda'} A_{\lambda} A_{\lambda'}^* k^2 \vec{f}_{\lambda} \cdot \vec{f}_{\lambda'}^* = \frac{\omega_{\lambda}^2}{c^2} \sum_{\lambda} |A_{\lambda}|^2 \]
+
+We put this together to re-express the electromagnetic Lagrangian
+
+\[L_{EM} = \frac{\epsilon_0}{2} \sum_{\lambda} \left(|\dot{A}_{\lambda}|^2 - \omega_{\lambda}^2 |A_{\lambda}|^2\right) \]
+
+
+\section{Deriving the Hamiltonian}
+We now want to convert this Lagrangian into a Hamiltonian.
+We need to correctly identify the coordinate degrees of freedom so we don't need to worry about constraint equations.
+In particular, recall that $A_{-\lambda} = A_{\lambda}^*$.
+
+\[\sum_{\lambda} |\dot{A}_{\lambda}|^2 = \sum_{\lambda \left(\frac{1}{2}\right)} \dot{A}_{\lambda} \dot{A}_{\lambda}^* + \dot{A}_{-\lambda} \dot{A}_{-\lambda}^* = 2\sum_{\lambda \left(\frac{1}{2}\right)} |\dot{A}_{\lambda}|^2 \]
+
+The same goes for the $|A_{\lambda}|^2$ terms so
+
+\[L_{EM} = \epsilon_0 \sum_{\lambda \left(\frac{1}{2}\right)} |\dot{A}_{\lambda}|^2 -\omega_{\lambda}^2|A_{\lambda}|^2 \]
+
+This Lagrangian is now written in terms of the generalized coordinates $A_{\lambda}$ and generalized coordinate velocity $\dot{A}_{\lambda}$, but these are complex coordinates and the complex conjugates are involved as well.
+We must learn how to deal with this.
+
+Consider a Lagrangian depending on real coordinates $L(x_1,x_2,\dot{x}_1,\dot{x}_2)$. We can then define complex coordinates
+
+\[X = \frac{x_1+ix_2}{\sqrt{2}} \hspace{.5 in} x_1 = \frac{X+X^*}{\sqrt{2}} \]
+\[X^* = \frac{x_1-ix_2}{\sqrt{2}} \hspace{.5 in} x_2 = \frac{X-X^*}{i\sqrt{2}} \]
+
+We now work out the Euler-Lagrange equations
+
+\[ \frac{d}{dt} \left(\pardiv[L]{\dot{X}}\right) = \frac{d}{dt}\left(\pardiv[L]{\dot{x}_1}\pardiv[\dot{x}_1]{\dot{X}} +  \pardiv[L]{\dot{x}_2}\pardiv[\dot{x}_2]{\dot{X}}\right) = \frac{1}{\sqrt{2}} \left(\pardiv[L]{x_1} -i \pardiv[L]{x_2} \right) \]
+
+\[ = \pardiv[L]{x_1} \pardiv[x_1]{X} + \pardiv[L]{x_2} \pardiv[x_2]{X} = \pardiv[L]{X} \] 
+
+The same holds for $X^*$ so
+\[ \frac{d}{dt} \left(\pardiv[L]{\dot{X}}\right) = \pardiv[L]{X}\]
+\[ \frac{d}{dt} \left(\pardiv[L]{\dot{X^*}}\right) = \pardiv[L]{X^*}\]
+
+We define $P$ and $P^*$ and find their relationships to $p_1$ and $p_2$.
+\[P = \pardiv[L]{\dot{X}^*} = \pardiv[L]{\dot{x}_1} \pardiv[\dot{x_1}]{\dot{X}^*} + \pardiv[L]{\dot{x}_2} \pardiv[\dot{x_2}]{\dot{X}^*} = \frac{p_1+ip_2}{\sqrt{2}}  \]
+
+\[P^* = \pardiv[L]{\dot{X}} = \frac{p_1-ip_2}{\sqrt{2}} \]
+
+\[ p_1 = \frac{P+P^*}{\sqrt{2}} \hspace{.5 in} p_2 = \frac{P-P^*}{i\sqrt{2}} \]
+
+The Hamiltonian is found by taking the Legendre transform of the Lagrangian.
+
+\[H = p_1\dot{x}_1 + p_2 \dot{x}_2 - L\]
+\[ = \frac{1}{2}\left(P\dot{X} + P^*\dot{X}^* + P\dot{X}^* +P^*\dot{X} - (P\dot{X} +P^*\dot{X}^* -P\dot{X}^*-P^*\dot{X})\right) -L\]
+\[H = P\dot{X}^* + P^*\dot{X} -L \]
+Hamilton's equations of motion are
+
+\[\dot{X} = \pardiv[H]{P^*} \hspace{.5 in} \dot{P} = -\pardiv[H]{X^*} \]
+
+We now apply this to our Lagrangian of interest,
+\[L=L_{EM} +L_{INT} +L_{MAT}= \epsilon_0 \sum_{\lambda \left(\frac{1}{2}\right)} |\dot{A}_{\lambda}|^2 -\omega_{\lambda}^2|A_{\lambda}|^2 + \sum_{a} q_a \dot{\vec{r}}_a\cdot\vec{A}(\vec{r}_a) - \frac{1}{4\pi \epsilon_0} \sum_{a<b} \frac{q_a q_b}{|\vec{r}_a-\vec{r}_b|} + \frac{1}{2}\sum_a m_a |\dot{r}_a|^2 \]
+
+\[ \pi_{\lambda} = \pardiv[L]{\dot{A}_{\lambda}^*} = \epsilon_0 \dot{A}_{\lambda} \]
+
+We define $\pi_{-\lambda} = \pi_{\lambda}^*$.
+
+We also have
+\[p_a^i = \pardiv[L]{\dot{r}_a^i} = q_a A^i + m_a \dot{r}_a^i\] 
+so 
+\[\vec{p}_a = q_a \vec{A}(\vec{r}_a) +m_a \dot{\vec{r}}_a\]
+
+Combining this with the expression for the Hamiltonian above yields
+
+\[H = \sum_{\lambda \left(\frac{1}{2}\right)} \left( \pi_{\lambda} \dot{A}_{\lambda}^* + \pi_{\lambda}^* \dot{A}_{\lambda} \right) +\sum_a \vec{p}_a \cdot \dot{\vec{r}}_a -L \]
+
+We will first rewrite this in terms of the generalized coordinates and generalized coordinate velocities.
+As for the first sum
+
+\[\sum_{\lambda \left(\frac{1}{2}\right)} \left( \pi_{\lambda} \dot{A}_{\lambda}^* + \pi_{\lambda}^* \dot{A}_{\lambda} \right) = \sum_{\lambda}\pi_{\lambda}\dot{A}_{\lambda}^* = \epsilon_0 \sum_\lambda |\dot{A}_{\lambda}|^2 \]
+
+The second sum becomes
+
+\[\sum_a \vec{p}_a \cdot \dot{\vec{r}}_a = \sum_a \left(q_a \vec{A}\cdot\dot{\vec{r}}_a + m_a |\dot{r}_a|^2 \right) \]
+
+Putting it all together into the Hamiltonian yields
+
+\[H = \frac{\epsilon_0}{2}\sum_{\lambda}|\dot{A}_{\lambda}|^2 +\omega_{\lambda}^2|A_{\lambda}|^2 + \sum_a \frac{1}{2} m_a|\dot{r}_a|^2 +\frac{1}{4\pi\epsilon_0} \sum_{a<b} \frac{q_a q_b}{|\vec{r}_a-\vec{r}_b|} \]
+
+\[H_{EM} = \frac{\epsilon_0}{2}\sum_{\lambda}|\dot{A}_{\lambda}|^2 +\omega_k^2|A_{\lambda}|^2 = \frac{1}{2}\int d^3\vec{x} \left(\epsilon_0 |E_{\perp}|^2 + \frac{1}{\mu_0}|B|^2 \right) \]
+
+\[H_{MAT} = \sum_a \frac{1}{2} m_a|\dot{r}_a|^2 +\frac{1}{4\pi\epsilon_0} \sum_{a<b} \frac{q_a q_b}{|\vec{r}_a-\vec{r}_b|} \]
+
+However, typically we express the Hamiltonian in terms of the canonical momenta rather than the generalized coordinate velocities.
+
+When we do this we find 
+\[H_{EM} = \frac{\epsilon_0}{2} \sum_{\lambda} \frac{1}{\epsilon_0^2} |\pi_\lambda|^2 +\omega_k^2|A_{\lambda}|^2 = \frac{1}{2} \sum_{\lambda} \frac{1}{\epsilon_0} |\pi_{\lambda}|^2 +\epsilon_0\omega_k^2|A_{\lambda}|^2 \] 
+ 
+\[ H_{MAT} = \sum_a \frac{1}{2m_a} \left[\vec{p}_a - q_a \vec{A}(\vec{r}_a)\right]^2 +\frac{1}{4\pi\epsilon_0} \sum_{a<b} \frac{q_a q_b}{|\vec{r}_a-\vec{r}_b|}\] 
+ 
+For now we leave $H_{MAT}$ behind and massage $H_{EM}$.
+We make this expression more symmetric by defining
+
+\[ \pi_{\lambda}' = \frac{\pi_{\lambda}}{\sqrt{\epsilon_0}} \hspace{.5 in} A_{\lambda}' = \sqrt{\epsilon_0} A_{\lambda} \]
+
+so that
+
+\[H_{EM} = \frac{1}{2} \sum_{\lambda} |\pi_{\lambda}'|^2 +\omega_\lambda^2|A_{\lambda}'|^2 \]
+
+Let me show quickly that these primed variables are still canonically conjugate. Suppose we have a Lagrangian $\mathcal{L}(q,\dot{q})$. Now suppose we re-express this Lagrangian in terms of a new variable $q' = \beta q$, where $\beta$ is a constant. The conjugate momentum to $q$ is $p = \pardiv[\mathcal{L}]{\dot{q}}$. Then
+
+\[p' = \pardiv[\mathcal{L}]{\dot{q}'} = \pardiv[\mathcal{L}]{\dot{q}} \pardiv[\dot{q}]{\dot{q}'} = p \frac{1}{\beta} \]
+
+
+
+
+
+We look at Hamilton's equations of motion for this Hamiltonian
+
+\[\dot{A}_{\lambda}' = \pardiv[H_{EM}]{\pi_{\lambda}^{'*}} = \pi_{\lambda}' 
+\hspace{.5 in}
+\dot{\pi}_{\lambda}' = -\pardiv[H_{EM}]{A_{\lambda}^{'*}} = -\omega_\lambda^2 A_{\lambda}'  \]
+
+The solutions to this system of equations are
+
+\[A_{\lambda}' = C_1 e^{-i\omega_\lambda t} + C_2 e^{i \omega_{\lambda} t} \]
+\[\pi_{\lambda}' = -i\omega_{\lambda} C_1 e^{-i\omega_{\lambda} t} +i\omega_{\lambda}C_2 e^{i\omega_{\lambda} t} \]
+
+Note that these solutions have both positive and negative frequency components.
+For our normal modes we seek something which rotates at only positive or negative frequency components.
+To this end we define new variables.
+
+\[a_{\lambda} = N_{\lambda}\left(A_\lambda' + \frac{i}{\omega_{\lambda}} \pi_{\lambda}'\right) \]
+
+\[a_{\lambda}^* = N_{\lambda}\left(A_\lambda^{'*} - \frac{i}{\omega_{\lambda}} \pi_{\lambda}^{'*}\right) \]
+
+\[a_{-\lambda} = N_{\lambda}\left(A_\lambda^{'*} + \frac{i}{\omega_{\lambda}} \pi_{\lambda}^{'*}\right) \]
+
+\[a_{-\lambda}^* = N_{\lambda}\left(A_\lambda' - \frac{i}{\omega_{\lambda}} \pi_{\lambda}'\right) \]
+
+$N_{\lambda}$ is a normalization constant which will be fixed later. We would like these variables to be unitless. Examining the equation for the Hamiltonian reveals $A_{\lambda}'$ must have units of $[\text{M}^{\frac{1}{2}} \text{L}^1]$. A "quantum" quantity which has these same units is $\sqrt{\frac{\hbar}{\omega_{\lambda}}}$. This is proportional to the value we will use for $N_{\lambda}$ in the end. 
+ 
+The inverse relations are
+
+\[A_{\lambda}' = \frac{1}{2N_{\lambda}} (a_{\lambda}+a_{-\lambda}^*) \] 
+\[\pi_{\lambda}' = \frac{\omega_{\lambda}}{2iN_{\lambda}}(a_{\lambda} - a_{-\lambda}^*) \]
+
+With the complex conjugates.
+From the equations of motion above we have
+
+\[a_{\lambda}(t) = 2N_{\lambda}C_1 e^{-i\omega_{\lambda}t} \]
+so that
+\[\dot{a}_{\lambda} = -i\omega_{\lambda} a_{\lambda} \]
+and
+
+\[\dot{a}_{\lambda}^* = i\omega_{\lambda} a_{\lambda}^* \]
+
+We rewrite $H_{EM}$ in terms of the $a_{\lambda}$.
+ 
+\[H_{EM} = \frac{1}{2}\sum_{\lambda} \pi_{\lambda}^{'*} \pi_{\lambda}' + \omega_{\lambda}^2 A_{\lambda}^{'*} A_{\lambda}' = 
+\frac{1}{2} \sum_{\lambda} \frac{\omega_{\lambda}^2}{4N_{\lambda}^2} \left[ (a_{\lambda} -a_{-\lambda}^*)(a_{\lambda}^* - a_{-\lambda}) + (a_{\lambda}+a_{-\lambda}^*)(a_{\lambda}^* +a_{-\lambda})\right]   \]
+
+\[ = \frac{1}{2} \sum_{\lambda} \frac{\omega_{\lambda}^2}{4N_{\lambda}^2} \left[ a_{\lambda}a_{\lambda}^* + a_{-\lambda}a_{-\lambda}^* - a_{\lambda}a_{-\lambda}  - a_{\lambda}^*a_{-\lambda}^*  + a_{\lambda}a_{\lambda}^*  +a_{-\lambda}a_{-\lambda}^*  + a_{\lambda}a_{-\lambda}  + a_{\lambda}^*a_{-\lambda}^* \right] \]
+
+\[ = \sum_{\lambda} \frac{\omega_{\lambda}^2}{4N_{\lambda}^2} \left[a_{\lambda}^* a_{\lambda} + a_{-\lambda}^* a_{-\lambda}\right] 
+= \sum_{\lambda \left(\frac{1}{2}\right)} \frac{\omega_{\lambda}^2}{4N_{\lambda}^2} \left[a_{\lambda}^* a_{\lambda} + a_{-\lambda}^* a_{-\lambda} + a_{-\lambda}^* a_{-\lambda} + a_{\lambda}^* a_{\lambda}\right] \]
+\[ = \sum_{\lambda \left(\frac{1}{2}\right)} \frac{\omega_{\lambda}^2}{4N_{\lambda}^2} 2\left[a_{\lambda}^* a_{\lambda} + a_{-\lambda}^*a_{-\lambda} \right] 
+= \sum_{\lambda} \frac{\omega_{\lambda}^2}{2N_{\lambda}^2} a_{\lambda}^* a_{\lambda}  \]
+
+This is finally starting to look a lot like the Hamiltonian for a quantum harmonic oscillator. 
+We will now run away with this analogy for the harmonic oscillator. 
+The energy of a harmonic oscillator is given by $H = \frac{1}{2} (\frac{p^2}{m} + m\omega^2 q^2)$. We can symmetrize this expression by splitting the units between $q$ and $p$ with a canonical transformation as above with $q=\frac{q'}{\sqrt{m\omega}}$, $p =\sqrt{m\omega} p'$ to yield $H=\frac{\omega}{2}(p^{'2}+q^{'2})$. If we solve this we see that $q'$ and $p'$ oscillate sinusoidally with equal amplitude and $\frac{\pi}{2}$ out of phase. We can represent the motion as revolving around a circle with a certain radius in the plane where $q'$ represents the $x$ or real axis and $p'$ represents the $y$ or imaginary axis. This is the phase space representation. The position of the Harmonic oscillator can then be represented by a complex number whose real part is $q'$ and whose imaginary part is $p'$. $a = q' + ip'$. The amplitude squared of this complex number (the radius of circle which is traced out) is $|a|^2 = a^* a = q^{'2} + p^{'2}$. So now we can see the main point of this paragraph which is that the Hamiltonian for a harmonic oscillator is proportional to the radius of this traced out circle in phase space: $H = \frac{\omega}{2} a^* a$. Note that $q'$ and $p'$ are still unitful quantities so $a^*a$ is unitful. In contrast, for the quantum harmonic oscillator $\hat{a}^{\dag}\hat{a}$ will be unitless so for the expression to have units of energy we insert an $\hbar$. 
+
+Motivated by this analogy we are going to give significance to the real and imaginary parts of $a_{\lambda}$. For comparison with the Harmonic oscillator Hamiltonian in the paragraph above we will divide the units evenly between the "position" and "momentum" variables. To help with this we introduce another constant $M_{\lambda}$.
+
+\[Q_{\lambda} = \text{Re}(a_{\lambda}) M_{\lambda} = \frac{a_{\lambda}+a_{\lambda}^*}{2} M_{\lambda} \]
+
+\[P_{\lambda} = \text{Im}(a_{\lambda}) M_{\lambda} = \frac{a_{\lambda}-a_{\lambda}^*}{2i} M_{\lambda} \]
+
+\[a_{\lambda} = (Q_{\lambda} + i P_{\lambda})\frac{1}{M_{\lambda}} \]
+
+\[a_{\lambda}^* = (Q_{\lambda} - i P_{\lambda})\frac{1}{M_{\lambda}} \]
+
+\[H_{EM} = \sum_{\lambda} \frac{\omega_{\lambda}^2}{2N_{\lambda}^2}\frac{1}{M_{\lambda}^2} (Q_{\lambda}^2 + P_{\lambda}^2)\]
+
+We must fix the values of $N_{\lambda}$ and $M_{\lambda}$ now. These two variables will be chosen to satisfy two constraints. The first constraint is that $Q_{\lambda}$ and $P_{\lambda}$ are conjugate variables, in other words, that they satisfy Hamilton's equations of motion.
+
+\[\dot{Q}_{\lambda} = \frac{\dot{a}_{\lambda}+\dot{a}_{\lambda}^*}{2} M_{\lambda} = (-i\omega_{\lambda} a_{\lambda} + i\omega_{\lambda}a_{\lambda}^*) \frac{M_{\lambda}}{2} = \omega_{\lambda}\frac{a_{\lambda}-a_{\lambda}^*}{2i}M_{\lambda} = \omega_{\lambda}P_{\lambda}  \] 
+
+Hamilton's equations of motion claim that
+
+\[ \dot{Q}_{\lambda} = \pardiv[H_{EM}]{P_{\lambda}} = \frac{\omega_{\lambda}^2}{N_{\lambda}^2 M_{\lambda}^2} P_{\lambda} \]
+
+So we observe that
+
+\[N_{\lambda}^2 M_{\lambda}^2 = \omega_{\lambda} \]
+
+The other constraint is quantum in nature and answer the question of why an $\hbar$ appears. When we canonically quantize a system we promote the classical canonical variables to operators on Hilbert space and demand that the commutator between the canonical position and canonical momentum is $i \hbar$. It is made plain here that $\hbar$ is introduced at the very moment the theory is made quantum. The constraint in our case will come from demanding the $\hat{a}_{\lambda}$ operators which arise from the $a_{\lambda}$ variables have the correct commutation relations to act as proper ladder operators: $[\hat{a},\hat{a}^{\dag}] = 1$.
+
+\[ Q_{\lambda} \rightarrow \hat{Q}_{\lambda} \hspace{.5 in} P_{\lambda} \rightarrow \hat{P}_{\lambda} \]
+
+\[ [\hat{Q}_{\lambda},\hat{P}_{\lambda}] = i\hbar \] 
+
+\[ [\hat{a},\hat{a}^{\dag}] = \frac{1}{M_{\lambda}^2}[\hat{Q}_{\lambda} + i \hat{P}_{\lambda},\hat{Q}_{\lambda} - i \hat{P}_{\lambda} ] = \frac{i}{M_{\lambda}^2} (-[\hat{Q}_{\lambda},\hat{P}_{\lambda}] + [\hat{P}_{\lambda},\hat{Q}_{\lambda}])  \]
+\[ = \frac{i}{M_{\lambda}^2}(-i\hbar - i\hbar) = \frac{2 \hbar}{M_{\lambda}^2} \]
+
+We demand this commutator is $1$ so that $M_{\lambda} = \sqrt{2\hbar}$. This sets $N_{\lambda} = \sqrt{\frac{\omega_{\lambda}}{2 \hbar}}$.
+
+This gives us
+
+\[H_{EM} = \sum_{\lambda} \frac{\omega_{\lambda}}{2} (Q_{\lambda}^2 + P_{\lambda}^2 ) = \sum_{\lambda} \hbar \omega_{\lambda} a_{\lambda}^* a_{\lambda} \]
+
+The analogy with the classical and eventually quantum harmonic oscillator is now entirely evident and well-motivated.
+
+The quantum Hamiltonian is 
+
+\[\hat{H}_{EM} = \sum_{\lambda} \frac{\omega_{\lambda}}{2} (\hat{Q}_{\lambda}^2 + \hat{P}_{\lambda}^2 ) = \sum_{\lambda} \frac{\omega_{\lambda}}{2} \frac{2\hbar}{4} (\hat{a}\hat{a} +\hat{a}^{\dag} \hat{a}^{\dag} + \hat{a} \hat{a}^{\dag} + \hat{a}^{\dag} \hat{a} - \hat{a}\hat{a} - \hat{a}^{\dag} \hat{a}^{\dag} + \hat{a} \hat{a}^{\dag} + \hat{a}^{\dag} \hat{a} )\]
+
+We now must take care that the order of the operators is maintained. Since $[\hat{a},\hat{a}^{\dag}]=1$ we have $\hat{a}\hat{a}^{\dag} = \hat{a}^{\dag} \hat{a} + 1$. We apply the commutation and find
+
+\[\hat{H}_{EM} = \sum_{\lambda} \hbar \omega_{\lambda} \left(\hat{a}^{\dag} \hat{a} + \frac{1}{2}\right) \]
+
+
+Now all that remains is a re-writing of the important physical quantities in terms of these new $a_{\lambda}$ variables. Quantization of the relevant physical quantities is achieved by promoting $Q_{\lambda}$ and $P_{\lambda}$ to quantum operators $\hat{Q}_{\lambda}$ and $\hat{P}_{\lambda}$ which is equivalent to promoting $a_{\lambda}$ and $a_{\lambda}^*$ to the ladder operators $\hat{a}_{\lambda}$ and $\hat{a}_{\lambda}^{\dag}$.
+Note that
+\[\hat{a}(t) = e^{-i \omega t} \hat{a}(0) \hspace{1 in} 
+\hat{a}^{\dag}(t) = e^{i\omega t} \hat{a}^{\dag}(0)\]
+Where $\hat{a}(0)$ and $\hat{a}^{\dag}(0)$ are the Schr{\"o}dinger picture operators.
+We go back to an early decomposition of $\vec{A}$.
+
+\[ \vec{A}(\vec{x},t) = \sum_{\lambda \left(\frac{1}{2}\right)} \vec{f}_{\lambda}(\vec{x}) A_{\lambda}(t) + \vec{f}_{\lambda}^*(\vec{x}) A_{\lambda}^*(t)
+ = \frac{1}{\sqrt{\epsilon_0}} \sum_{\lambda \left(\frac{1}{2}\right)} \vec{f}_{\lambda}(\vec{x}) A_{\lambda}'(t) + \vec{f}_{\lambda}^*(\vec{x}) A_{\lambda}^{'*}(t)\]
+ 
+\[ = \frac{1}{\sqrt{\epsilon_0}} \sum_{\lambda \left(\frac{1}{2} \right)} \frac{1}{2} \sqrt{\frac{2 \hbar}{\omega_{\lambda}}} \left(\vec{f}_{\lambda}(\vec{x}) (a_{\lambda}(t)+a_{-\lambda}^*(t))+\vec{f}_{\lambda}^*(\vec{x})(a_{\lambda}^*(t)+a_{-\lambda}(t))\right) \]
+
+using $\vec{f}_{\lambda}^*=\vec{f}_{-\lambda}$
+
+\[ = \frac{1}{\sqrt{\epsilon_0}} \sum_{\lambda \left(\frac{1}{2} \right)} \frac{1}{2} \sqrt{\frac{2 \hbar}{\omega_{\lambda}}} \left(\vec{f}_{\lambda}(\vec{x}) a_{\lambda}(t) + \vec{f}_{\lambda}^*(\vec{x}) a_{\lambda}^*(t) + \vec{f}_{-\lambda}(\vec{x}) a_{-\lambda}(t) +\vec{f}_{-\lambda}^*(\vec{x}) a_{-\lambda}^*(t)    \right)  \]
+
+\[ \vec{A}(\vec{x},t) = \sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left(\vec{f}_{\lambda}(\vec{x}) a_{\lambda}(t) + \vec{f}_{\lambda}^*(\vec{x})a_{\lambda}^*(t)\right) \]
+
+\[ \vec{E}(\vec{x},t) = -\pardiv[\vec{A}]{t} = -\sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda} \frac{1}{\sqrt{\omega_{\lambda}}}\left(-\vec{f}_{\lambda}(\vec{x}) i\omega_{\lambda}a_{\lambda}(t) + \vec{f}_{\lambda}^*(\vec{x})i\omega_{\lambda}a_{\lambda}^*(t)\right)\]
+\[ = i\sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda} \sqrt{\omega_{\lambda}}\left(\vec{f}_{\lambda}(\vec{x}) a_{\lambda}(t) - \vec{f}_{\lambda}^*(\vec{x})a_{\lambda}^*(t)\right)\]
+
+\[ \vec{B}(\vec{x},t) = \vecnab \cross \vec{A} = \sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left((\vecnab \cross \vec{f}_{\lambda}(\vec{x})) a_{\lambda}(t) + (\vecnab \cross \vec{f}_{\lambda}^*(\vec{x}))a_{\lambda}^*(t)\right) \]
+
+For a bit of intuition we will write $\vec{A}$ out in terms of $Q_{\lambda}$ and $P_{\lambda}$ so we can see what is actually represented by the chosen canonical coordinates.
+
+\[ \vec{A}(\vec{x},t) = \sqrt{\frac{\hbar}{2\epsilon_0}} \sum_{\lambda} \frac{1}{\sqrt{\omega_{\lambda}}} \frac{1}{\sqrt{2\hbar}} \left( \vec{f}_{\lambda}(\vec{x})(Q_{\lambda}(t)+iP_{\lambda}(t)) + \vec{f}_{\lambda}^*(\vec{x})(Q_{\lambda}(t)-iP_{\lambda}(t)) \right)\]
+
+Let $\vec{G} = \text{Re}(\vec{f}) = \frac{\vec{f}+\vec{f}^*}{2}$ and $\vec{H} = \text{Im}(\vec{f}) = \frac{\vec{f}-\vec{f}^*}{2i}$. Then we have
+
+\[\vec{A}(\vec{x},t) = \frac{1}{\sqrt{\epsilon_0}} \sum_{\lambda} \frac{1}{\sqrt{\omega_{\lambda}}} \left(\vec{G}_{\lambda}(\vec{x}) Q_{\lambda}(t) - \vec{H}_{\lambda}(\vec{x}) P_{\lambda}(t)\right) \]
+
+We see that $P_{\lambda}$ and $Q_{\lambda}$ represent the amplitudes of the \textit{real} and \textit{imaginary} Fourier decomposition functions as opposed to the positive and negative frequency complex Fourier decomposition functions. In other words, $Q$ and $P$ represent the amplitudes of the different phase quadratures of the electromagnetic field.
+
+We summarize the classical results.
+
+\begin{subequations}
+\begin{empheq}[box=\widefbox]{align*}
+\vec{A}(\vec{x},t) &= \sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left(\vec{f}_{\lambda}(\vec{x}) a_{\lambda}(t) + \vec{f}_{\lambda}^*(\vec{x})a_{\lambda}^*(t)\right) \\ \vec{E}(\vec{x},t) &= i\sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda} \sqrt{\omega_{\lambda}}\left(\vec{f}_{\lambda}(\vec{x}) a_{\lambda}(t) - \vec{f}_{\lambda}^*(\vec{x})a_{\lambda}^*(t)\right) \\ \vec{B}(\vec{x},t) &= \sqrt{\frac{\hbar}{2\epsilon_0}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left((\vecnab \cross \vec{f}_{\lambda}(\vec{x})) a_{\lambda}(t) + (\vecnab \cross \vec{f}_{\lambda}^*(\vec{x}))a_{\lambda}^*(t)\right) 
+\end{empheq}
+\end{subequations}
+
+It has been convenient to work with mode functions normalized so that
+
+\[ \int d^3 \vec{x} \vec{f}_{\lambda}(\vec{x}) \cdot \vec{f}_{\lambda'}^*(\vec{x}) = \delta_{\lambda \lambda'} \]
+
+But note that these mode functions have units of $[L^{-\sfrac{3}{2}}]$.
+It is sometimes convenient to think about dimensionless mode functions normalized so that the maximum value the function attains is 1. The dimensionless mode function captures only the "shape" of the mode and nothing else. We can obtain a dimensionless mode function from a normalized mode function by defining the effective mode volume $V$ by $\text{max}(|f_{\lambda}(\vec{x})|^2) = \frac{1}{V}$ and then we define
+
+\[ \tilde{\vec{f}}_{\lambda}(\vec{x}) = \sqrt{V} \vec{f}_{\lambda}(\vec{x}) \]
+
+We can now re-write the fields including the effective mode volume and dimensionless mode functions.
+
+\begin{subequations}
+\begin{empheq}[box=\widefbox]{align*}
+\vec{A}(\vec{x},t) &= \sqrt{\frac{\hbar}{2\epsilon_0 V}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left(\tilde{\vec{f}}_{\lambda}(\vec{x}) a_{\lambda}(t) + \tilde{\vec{f}}_{\lambda}^*(\vec{x})a_{\lambda}^*(t)\right) \\ \vec{E}(\vec{x},t) &= i\sqrt{\frac{\hbar}{2\epsilon_0 V}}\sum_{\lambda} \sqrt{\omega_{\lambda}}\left(\tilde{\vec{f}}_{\lambda}(\vec{x}) a_{\lambda}(t) - \tilde{\vec{f}}_{\lambda}^*(\vec{x})a_{\lambda}^*(t)\right) \\ \vec{B}(\vec{x},t) &= \sqrt{\frac{\hbar}{2\epsilon_0 V}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left((\vecnab \cross \tilde{\vec{f}}_{\lambda}(\vec{x})) a_{\lambda}(t) + (\vecnab \cross \tilde{\vec{f}}_{\lambda}^*(\vec{x}))a_{\lambda}^*(t)\right) 
+\end{empheq}
+\end{subequations}
+
+And the quantum counterparts
+
+\begin{subequations}
+\begin{empheq}[box=\widefbox]{align*}
+\hat{\vec{A}}(\vec{x},t) &= \sqrt{\frac{\hbar}{2\epsilon_0 V}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left(\tilde{\vec{f}}_{\lambda}(\vec{x}) \hat{a}_{\lambda}(t) + \tilde{\vec{f}}_{\lambda}^*(\vec{x})\hat{a}_{\lambda}^{\dag}(t)\right) \\ \hat{\vec{E}}(\vec{x},t) &= i\sqrt{\frac{\hbar}{2\epsilon_0 V}}\sum_{\lambda} \sqrt{\omega_{\lambda}}\left(\tilde{\vec{f}}_{\lambda}(\vec{x}) \hat{a}_{\lambda}(t) - \tilde{\vec{f}}_{\lambda}^*(\vec{x})\hat{a}_{\lambda}^{\dag}(t)\right) \\ \hat{\vec{B}}(\vec{x},t) &= \sqrt{\frac{\hbar}{2\epsilon_0 V}}\sum_{\lambda}\frac{1}{\sqrt{\omega_{\lambda}}}\left((\vecnab \cross \tilde{\vec{f}}_{\lambda}(\vec{x})) \hat{a}_{\lambda}(t) + (\vecnab \cross \tilde{\vec{f}}_{\lambda}^*(\vec{x}))\hat{a}_{\lambda}^{\dag}(t)\right) 
+\end{empheq}
+\end{subequations}
+
+
+
+
+\end{document}

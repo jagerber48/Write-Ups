@@ -1,0 +1,210 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+
+\begin{document}
+\title{Heisenberg Uncertainty relation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I will derive the Heisenberg Uncertainty relation from some simple calculations involving expectation values of operators. What I find interesting about this derivation is the fact that it will not make any reference to the quantum state. All that is required is the Cauchy inequality and the fact that quantum random variable, unlike classical random variables, do not commute.
+
+\section{Cauchy inequality}
+
+Since it is central to the Heisenberg uncertainty principle i will derive the Cauchy inequality here. The Cauchy inequality is a property of inner products. An inner product space is a set $\bv{V}$ which has a binary function, $\Braket{\cdot,\cdot}$ Satisfying
+
+\begin{align}
+\Braket{\cdot,\cdot}: \bv{V} \times \bv{V} \rightarrow \mathbb{C}
+\end{align}
+
+\begin{align}
+&\Braket{x,y} = \Braket{y,x}^*\\
+&\Braket{x,ay} = a \Braket{x,y}\\
+&\Braket{x,y+z} = \Braket{x,y} + \Braket{x,z}\\
+&\Braket{x,x} \ge 0\\
+&\Braket{x,x} = 0 \implies x = 0
+\end{align}
+
+For $x,y,z \in \bv{V}$ and $a \in \mathbb{C}$.
+
+The Cauchy inequality states that
+
+\begin{align}
+|\Braket{x,y}|^2 \le \Braket{x,x} \Braket{y,y}
+\end{align}
+
+The proof is as follows.
+
+First consider $y=0$. If $y=0$ then both sides of the inequality are 0 and the inequality holds trivially.
+Consider $x \neq 0$ and the vector $y - \frac{\Braket{x,y}}{\Braket{x,x}}x$. Since this vector is in general non-zero we have
+
+\begin{align}
+&0 \le \Braket{y - \frac{\Braket{x,y}}{\Braket{x,x}}x,y - \frac{\Braket{x,y}}{\Braket{x,x}}x}\\
+&=\Braket{y,y} - \frac{\Braket{x,y}\Braket{y,x}}{\Braket{x,x}} - \frac{\braket{x,y}^*\Braket{x,y}}{\Braket{x,x}} + \frac{\Braket{x,y}^*\Braket{x,y}}{\Braket{x,x}^2} \Braket{x,x}\\
+&=\Braket{y,y} - \frac{|\Braket{x,y}|^2}{\Braket{x,x}}
+\end{align}
+
+Where we have used a few of the conjugation properties of the inner product. Re-arranging we then have
+
+\begin{align}
+|\Braket{x,y}|^2 \le \Braket{x,x}\Braket{y,y}
+\end{align}
+
+This concludes the proof of Cauchy's inequality.
+
+\section{Products of Hermitian Operators}
+
+I'll now prove some facts about Hermitian operators, the objects to which the uncertainty principle applies. That is, quantum observables such as $\hat{x}$ and $\hat{Y}$.
+
+\begin{align}
+\left(\hat{X}\hat{Y}\right)^{\dag} = \hat{Y}\hat{X}
+\end{align}
+I'll also note the expansion
+
+\begin{align}
+\hat{X}\hat{Y} = \frac{1}{2}\left\{\hat{X},\hat{Y}\right\} + \frac{1}{2}\left[\hat{X},\hat{Y}\right]
+\end{align}
+
+The anti-commutator is a sum of an operator and it's Hermitian conjugate meaning that it is a Hermitian operator. This means $\Braket{\left\{\hat{X},\hat{Y}\right\}}$ is real. The commutator is the difference of an operator and it's Hermitian conjugate meaning it is anti-Hermitian. That means $\Braket{\left[\hat{X},\hat{Y}\right]}$ is purely imaginary. This means we can write
+
+\begin{align}
+&\text{Re}\left(\Braket{\hat{X}\hat{Y}}\right) = \frac{1}{2}\Braket{\left\{\hat{X},\hat{Y}\right\}}\\
+&\text{Im}\left(\Braket{\hat{X}\hat{Y}}\right) = \frac{1}{2i}\Braket{\left[\hat{X},\hat{Y}\right]}
+\end{align}
+
+I will use these facts fluidly in what's to come.
+
+\section{Expectation Value of Product as Inner Product}
+
+A major realization for this proof is the realization that the space of Hermitian operators forms an inner product space under the inner product defined by
+
+\begin{align}
+\Braket{\hat{X},\hat{Y}} = \Braket{\hat{X}\hat{Y}}
+\end{align}
+
+The notation here might be a bit unclear. The brackets on the left denote the inner product between Hermitian operators (thought of as elements of an inner product space) and the brackets on the left denote the expectation value of the product of the two Hermitian operators (now thought of as measurable quantum observables).
+
+I'll prove the conjugation property of the inner product and leave the rest for the reader.
+
+\begin{align}
+\Braket{\hat{X},\hat{Y}} &= \Braket{\hat{X}\hat{Y}} = \frac{1}{2}\Braket{\left\{\hat{X},\hat{Y}\right\}} + \frac{1}{2}\Braket{\left[\hat{X},\hat{Y}\right]}\\
+&=\frac{1}{2}\Braket{\left\{\hat{Y},\hat{X}\right\}} - \frac{1}{2}\Braket{\left[\hat{Y},\hat{X}\right]}\\
+&=\Braket{\hat{Y}\hat{X}}^* = \Braket{\hat{Y},\hat{X}}^*
+\end{align}
+
+\section{Heisenberg Uncertainty Limit}
+
+We are now ready for the main proof.
+
+For Hermitian operator $\hat{O}$  We define
+
+\begin{align}
+&\Delta\hat{O} = \hat{O} - \Braket{\hat{O}}\\
+&\text{Var}\left(\hat{O}\right) = \sigma_{\hat{O}}^2 = \Braket{\Delta \hat{O}^2} = \Braket{\left(\hat{O}-\Braket{\hat{O}}\right)^2} = \Braket{\hat{O}^2} - \Braket{\hat{O}}^2
+\end{align}
+
+Where $\Braket{\hat{O}}$ indicates the quantum expectation value. Note that in quantum mechanics we are trained to use the quantum state, $\ket{\psi}$ or density matrix $\rho$ to calculate this expectation value. However, I want to emphasize that the proof here does not rely on any such format for the calculation of the expectation value. Instead, it only relies on the fact that taking the expectation value of a product of operators is an inner product operation and some benign properties of expectation values. Again, the twist will be that the operators do not commute.
+
+Now consider
+
+\begin{align}
+\sigma_{\hat{X}}^2\sigma_{\hat{Y}}^2 &= \Braket{\Delta \hat{X}^2}\Braket{\Delta \hat{Y}^2} = \Braket{\Delta \hat{X},\Delta{\hat{X}}}\Braket{\Delta\hat{Y},\Delta\hat{Y}}\ge \left\lvert\Braket{\Delta\hat{X},\Delta\hat{Y}}\right\rvert^2\\
+&=\left\lvert\Braket{\Delta\hat{X} \Delta \hat{Y}}\right\rvert^2
+\end{align}
+
+Where I am being especially pedantic about the inner product notation to really drive the point home and clearly apply the Cauchy inequality. We now expand this last expression
+
+\begin{align}
+\left \lvert \Braket{\Delta\hat{X} \Delta\hat{Y}} \right \rvert^2 &= \Braket{\Delta\hat{X} \Delta \hat{Y}} \Braket{\Delta\hat{Y} \Delta \hat{X}}\\
+&= \Braket{\left(\hat{X} - \Braket{\hat{X}}\right)\left(\hat{Y}-\Braket{\hat{Y}}\right)}\Braket{\left(\hat{Y}-\Braket{\hat{Y}}\right)\left(\hat{X}-\Braket{\hat{X}}\right)}\\
+&=\left(\Braket{\hat{X}\hat{Y}} - \Braket{\hat{X}}\Braket{\hat{Y}}\right)\left(\Braket{\hat{Y}\hat{X}} - \Braket{\hat{X}}\Braket{\hat{Y}}\right)\\
+&= \Braket{\hat{X}\hat{Y}}\Braket{\hat{Y}\hat{X}} - \Braket{\left\{\hat{X},\hat{Y}\right\}}\Braket{\hat{X}}\Braket{\hat{Y}}+\Braket{\hat{X}}^2\Braket{\hat{Y}}^2
+\end{align}
+
+We note
+
+\begin{align}
+\Braket{\hat{X}\hat{Y}}\Braket{\hat{Y}\hat{X}} &= \left\lvert \Braket{\hat{X}\hat{Y}}\right\rvert^2 = \text{Re}\left(\Braket{\hat{X}\hat{Y}}\right)^2 + \text{Im}\left(\Braket{\hat{X}\hat{Y}}\right)^2\\
+&= \frac{1}{4}\Braket{\left\{\hat{X}, \hat{Y}\right\}}^2 - \frac{1}{4}\Braket{\left[\hat{X}, \hat{Y}\right]}^2
+\end{align}
+
+Putting it together
+
+\begin{align}
+\left \lvert \Braket{\Delta\hat{X} \Delta\hat{Y}} \right \rvert^2 = &\frac{1}{4}\Braket{\left\{\hat{X}, \hat{Y}\right\}}^2 - \Braket{\left\{\hat{X},\hat{Y}\right\}}\Braket{\hat{X}}\Braket{\hat{Y}}+\Braket{\hat{X}}^2\Braket{\hat{Y}}^2\\
+-&\frac{1}{4}\Braket{\left[\hat{X}, \hat{Y}\right]}^2\\
+&= \left\lvert\frac{1}{2}\Braket{\left\{\hat{X},\hat{Y}\right\}} - \Braket{\hat{X}}\Braket{\hat{Y}}\right\rvert^2 + \left\lvert\frac{1}{2i}\Braket{\left[\hat{X},\hat{Y}\right]} \right\rvert^2
+\end{align}
+
+According to Wikipedia this is the Robertson-Heisenberg uncertainty limit. 
+
+Let me note the definition of the covariance of two variables.
+
+\begin{align}
+\text{Cov}(\hat{X},\hat{Y}) = \Braket{\left(\hat{X}-\Braket{\hat{X}}\right)\left(\hat{Y}-\Braket{\hat{Y}}\right)}=\Braket{\hat{X}\hat{Y}}-\Braket{\hat{X}}\Braket{\hat{Y}}
+\end{align}
+
+Quantum mechanically we have, since $\hat{X}$ and $\hat{Y}$ don't necessarily commutate that $\text{Cov}\left(\hat{X},\hat{Y}\right) \neq \text{Cov}\left(\hat{Y},\hat{X}\right)$ But similar to the commutator and anti-commutator we can define the symmetrized and anti-symmetrized quantum covariances.
+
+\begin{align}
+&\text{Cov}_+\left(\hat{X},\hat{Y}\right) = \frac{1}{2}\left(\text{Cov}\left(\hat{X},\hat{Y}\right) + \text{Cov}\left(\hat{Y},\hat{X}\right)\right)\\
+&\text{Cov}_+\left(\hat{X},\hat{Y}\right) = \frac{1}{2}\left(\text{Cov}\left(\hat{X},\hat{Y}\right) - \text{Cov}\left(\hat{Y},\hat{X}\right)\right)\\
+\end{align}
+
+We can then rewrite the uncertainty relation
+
+\begin{align}
+&\sigma_{\hat{X}}^2\sigma_{\hat{Y}}^2 \ge \left\lvert\frac{1}{2}\Braket{\left\{\hat{X},\hat{Y}\right\}} - \Braket{\hat{X}}\Braket{\hat{Y}}\right\rvert^2 + \left\lvert\frac{1}{2i}\Braket{\left[\hat{X},\hat{Y}\right]} \right\rvert^2\\
+&\sigma_{\hat{X}}^2\sigma_{\hat{Y}}^2 \ge \left\lvert\text{Cov}_+\left(\hat{X},\hat{Y}\right) \right\rvert^2
++ \left\lvert\text{Cov}_-\left(\hat{X},\hat{Y}\right) \right\rvert^2
+\end{align}
+
+If we neglect the second term we have a typical expression from classical statistics. We see that quantum mechanically the product of the variances of the two variables is increased by an amount related to the anti-symmetrized covariance of the two variables which is precisely related to the anti-commutator of the two variables. 
+
+I'll also point out that quantum mechanically (at least for bosons) we don't have constraints on the anti-commutator of the two variables meaning in general the first term can take on any value. If we set it to zero we recover the usual Heisenberg uncertainty principle which every undergraduate physics major learns in intro quantum.
+
+\begin{align}
+\sigma_{\hat{X}}^2\sigma_{\hat{Y}}^2 \ge \left\lvert \frac{1}{2i} \Braket{\left[\hat{X},\hat{Y}\right]}\right\rvert^2
+\end{align}
+
+Or taking the square root and recalling the commutator is anti-Hermitian and thus the expectation is purely imaginary
+
+\begin{align}
+\sigma_{\hat{X}}\sigma_{\hat{Y}} \ge \left\lvert\frac{1}{2i} \Braket{\left[\hat{X},\hat{Y}\right]} \right\rvert
+\end{align}
+
+Suppose for example $\hat{X}$ is the canonical position and $\hat{Y} = \hat{P}$ is the canonical momentum. We then hat $\left[\hat{X},\hat{P}\right] = i\hbar$ so we get
+
+\begin{align}
+\sigma_{\hat{X}}\sigma_{\hat{P}} \ge \frac{\hbar}{2}
+\end{align}
+
+\section{Conclusion}
+In the language used in this document the Heisenberg Uncertainty Principle is a generalization of the expression for the covariance between two variables for the case in which those variables do not commute.
+
+
+
+\end{document}

@@ -1,0 +1,130 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Scattering Matrix Formalism}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will work through the hairy details of scattering matrix formalism for an optical mirror.
+In particular I will work out the signs and such for the various terms.
+
+I will take a right traveling plane wave to be expressed as
+
+\begin{align}
+e^{i(kx-\omega t)}
+\end{align}
+
+Where both $k,\omega >0$ and $e^{ikx}$ represents a positive frequency spatial tone and $e^{-i\omega t}$ represents a positive frequency temporal tone.
+
+\section{Optical Mirror}
+
+We consider an optical mirror as a two port network where each port has an input and an output.
+Port 1 is on the left of the mirror and port 2 is on the right.
+Input fields point towards the mirror and output fields point away from the mirror.
+The four fields are described by
+
+\begin{align}
+E_1^{\text{in}}(z,t) =& A_{1}^{\text{in}} e^{i(k(z-z_a)-\omega t)}\\
+E_1^{\text{out}}(z,t) =& A_{1}^{\text{out}} e^{i(-k(z-z_b)-\omega t)}\\
+E_2^{\text{in}}(z,t) =& A_{2}^{\text{in}} e^{i(-k(z-z_c)-\omega t)}\\
+E_2^{\text{out}}(z,t) =& A_{2}^{\text{out}} e^{i(k(z-z_d)-\omega t)}
+\end{align}
+
+Each of these fields is defined with respect to a particular reference plane $z_i$ which can be different for each field.
+Intuitively it makes the most sense for all of the reference planes to be at the same location, however, there may be applications where we are interested in having different reference planes so we formally keep the theory general.
+$z=0$ is taken to be the leftmost physical surface of the mirror.
+
+Maxwell's equations constrain these four complex amplitudes to be related to eachother by a scattering matrix:
+
+\begin{align}
+\begin{bmatrix}
+A_1^{\text{out}} \\ A_2^{\text{out}}
+\end{bmatrix}
+=&
+\begin{bmatrix}
+S_{11} & S_{10} \\
+S_{01} & S_{00}
+\end{bmatrix}
+\begin{bmatrix}
+A_1^{\text{in}} \\ A_2^{\text{in}}
+\end{bmatrix}\\
+\bv{A}^{\text{out}} =& \bv{S}\bv{A}^{\text{in}}
+\end{align}
+
+Each element of $\bv{S}$ is in general a complex number.
+The energy in an electromagnetic wave is proportional to $|A|^2$.
+This means the ingoing energy is proportional to $|\bv{A}^{\text{in}}|^2$ and the outgoing energy is proportional to $|\bv{A}^{\text{out}}|^2$.
+Conservation of energy then demands that
+
+\begin{align}
+|\bv{A}^{\text{out}}|^2 = \left(\bv{A}^{\text{out}}\right)^{\dagger}\bv{A}^{\text{out}} = \left(\bv{A}^{\text{in}}\right)^{\dagger}\bv{S}^{\dagger}\bv{S}\bv{A}^{\text{in}} = \left(\bv{A}^{\text{in}}\right)^{\dagger}\bv{A}^{\text{in}} = |\bv{A}^{\text{in}}|^2
+\end{align}
+
+This in turn implies that
+
+\begin{align}
+\bv{S}^{\dagger}\bv{S} = \bv{I}
+\end{align}
+
+That is, the scattering matrix must be unitary to satisfy conservation of energy.
+
+I now want to consider how these equations transform under time reversal and parity transformations. 
+Note that the scattering matrix formalism greatly reduces the number of degrees of freedom from the full 3D vector solution. 
+I would like to make a note about how the $A$ complex coefficients were distilled from the full solution to represent the complex amplitudes for the various input and output channels.
+
+The key is that each $A$ factor corresponds to the coefficient of a term that looks like $e^{\pm ik(z-z_0)}e^{-i\omega t}$, valid on either the left or right side of the mirror.
+
+
+
+
+
+To do this it will be helpful to write out the full real electric field.
+
+\begin{align}
+E(z, t) = E_0e^{i(kz-\omega t)} + E_0^* e^{-i(kz-\omega t)}
+\end{align}
+
+Under time reversal symmetry we have $t\rightarrow -t$ so we get
+
+\begin{align}
+E(z,t) \rightarrow E_0e^{i(kz+\omega t)} + E_0^* e^{-i(kz+\omega t)}
+\end{align}
+
+We see a few things happening here.
+Let's consider what 
+
+\end{document}

@@ -1,0 +1,1266 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Linear Multiplexed Matched Filtering}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+\section{System Evolution}
+\subsection{Problem Setup}
+Consider a system (potentially quantum) which evolves under the following equations of motion:
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{A}\bv{v}(t) + \bv{\eta}(t)
+\end{align}
+
+With
+
+\begin{align}
+\bv{v} =
+\begin{bmatrix}
+v_1\\
+v_2\\
+v_3\\
+v_4\\
+\vdots\\
+v_{2n^*-1}\\
+v_{2n^*}
+\end{bmatrix}
+=
+\begin{bmatrix}
+X_1\\
+P_1\\
+X_2\\
+P_2\\
+\vdots\\
+X_{n^*}\\
+P_{n^*}
+\end{bmatrix}
+\hspace{1 in}
+\bv{\eta} =
+\begin{bmatrix}
+\eta_1\\
+\eta_2\\
+\eta_3\\
+\eta_4\\
+\vdots\\
+\eta_{2n^*-1}\\
+\eta_{2n^*}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\sqrt{\Gamma_1}X^{in}_1\\
+\sqrt{\Gamma_1}P^{in}_1\\
+\sqrt{\Gamma_2}X^{in}_2\\
+\sqrt{\Gamma_2}P^{in}_2\\
+\vdots\\
+\sqrt{\Gamma_{n^*}}X^{in}_{n^*}\\
+\sqrt{\Gamma_{n^*}}P^{in}_{n^*}
+\end{bmatrix}
+\end{align}
+
+Here $X_i$ and $T_i$ represent the position and momentum of the $i^{th}$ oscillator. Note I use the index $n^*$ rather than $n$. This is because throughout I will sometimes use $n$ as a regular index within summations, whereas $n^*$ is some fixed number. I will try my best to not have an expression include both of these indices.
+The $X_i^{in}$ and $P_i^{in}$ are stochastic drive terms (arising due to coupling to thermal reservoirs, for example). The coupling rate for each reservoir is $\Gamma_i$. These terms satisfy
+
+\begin{align}
+[X_i^{in}(t_1),P_j^{in}(t_2)] &= 2i\delta(t_1-t_2)\delta_{ij}\\
+[X_i^{in}(t_1),X_j^{in}(t_2)] = [P_i^{in}(t_1),P_j^{in}(t_2)] &= 0\\
+\Braket{X_{i}^{in}(t)} = \Braket{P_i^{in}(t)} &= 0\\
+\Braket{X_i^{in}(t_1)X_j^{in}(t_2)} = \Braket{P_i^{in}(t_1)P_j^{in}(t_2)} &= (2n_i+1)\delta(t_1-t_2)\delta_{ij}\\
+\Braket{X_i^{in}(t_1)P_j^{in}(t_2)} = -\Braket{P_i^{in}(t_1)X_j^{in}(t_2)} &= i\delta(t_1-t_2)\delta_{ij}
+\end{align}
+
+Note that in the expressions above the indices run from $1\ldots n^*$. In what follows below the indices will run from $1\ldots n^*$ since we are indexing directly over all elements of these arrays.
+
+\subsection{Diagonalization}
+
+We suppose that $\bv{A}$ is diagonalizable so that
+
+\begin{align}
+\bv{A} &= \bv{T}\bv{D}\bv{T}^{-1}\\
+\bv{D} &= \bv{T}^{-1}\bv{D}\bv{T}
+\end{align}
+
+Where $\bv{D}$ is diagonal with the eignvalues of $\bv{A}$ along the diagonal and $\bv{T}$ is the matrix of eigenvectors of $\bv{A}$
+Rewritten in index notation for later use:
+
+\begin{align}
+A_{ij} &= T_{ik}D_{kl}T^{-1}_{lj} = T_{ik}d_k\delta_{kl}T^{-1}_{lj} = T_{ik}d_k T^{-1}_{kj}\\
+D_{ij} &= T^{-1}_{ik}A_{kl}T_{lj}
+\end{align}
+
+Here $d_k$ is the $k^{th}$ eigenvalue of $\bv{A}$. Note that the index $k$ appears three times in these expressions. The explicit expansion of $D_{kl}$ into $d_k \delta_{kl}$ breaks the standard rules of Einstein summation convention so we will sometimes have weird summations like those above. This ambiguity could be lifted somewhat by writing in explicit summations but I will forego that for now to save space/time.
+
+We are interested in the time evolution of this system. In the end we will be interested in the covariance matrix of this system. Our approach will be to solve this linear system for $\bv{v}(t)$ In terms of the system parameters contained in $\bv{A}$, $\bv{\eta}$ and $\bv{v}(0)$. Then, with $\bv{v}(t)$ in hand and knowing the statistics of $\bv{v}(0)$ we can calculate formulas for more complex function of $\bv{v}(t)$ such as the two-time autocorrelation matrix $\Braket{\bv{v}(t_1)\bv{v}^T(t_2)}$.
+
+It will be helpful to work entirely in index notation, especially when working out the effects of applying a matched filter.
+
+\subsection{Time Evolution}
+We rewrite the equations of motion in index notation form:
+
+\begin{align}
+\dot{v}_i(t) = A_{ij}v_j(t) + \eta_i(t)
+\end{align}
+
+We can expand this into normal modes by applying the diagonalization of $\bv{A}$
+
+\begin{align}
+\dot{v}_i(t) = T_{ik}d_k T^{-1}_{kj} v_j(t) + \eta_i(t)
+\end{align}
+
+Multiplying on the left by $T^{-1}_{li}$
+
+\begin{align}
+T^{-1}_{li} \dot{v}_i(t) &= T^{-1}_{li}T_{ik} d_k T^{-1}_{kj} v_j(t) + T^{-1}_{li}\eta_i(t) = \delta_{lk} d_k T^{-1}_{kj} v_j(t) + T^{-1}_{li}\eta_i(t)\\
+&= d_l T^{-1}_{lj}v_j(t) + T^{-1}_{li}\eta_i(t)
+\end{align}
+
+Note here how I've explicitly shown how the step $T^{-1}_{li}T_{ik} = \delta_{lk}$. This is how tensor inverse operations are performed in index notation. Later on we will face higher dimensional tensors which must be inverted but the scheme will be similar.
+
+We can then identify $T^{-1}_{li}v_i = \tilde{v}_l$ as the normal mode vectors of the system. We also identify $T^{-1}_{li}\eta_{i} = \tilde{\eta}_l$. The corresponding vector formulae are
+
+\begin{align}
+\tilde{\bv{v}} = \bv{T}^{-1}\bv{v}\\
+\tilde{\bv{\eta}} = \bv{T}^{-1}\bv{\eta}\\
+\end{align}
+
+And the inverses
+
+\begin{align}
+\bv{v} = \bv{T}\tilde{\bv{v}}\\
+\bv{\eta} = \bv{T}\tilde{\bv{\eta}}\\
+\end{align}
+
+This yields
+
+\begin{align}
+\dot{\tilde{v}}_l(t) = d_l \tilde{v}_l(t) + \tilde{\eta}_l(t)
+\end{align}
+
+The different modes are decoupled here into a differential equation which is easily solvable
+
+\begin{align}
+e^{-d_l t}\left(\dot{\tilde{v}}_l(t) - d_l \tilde{v}_l(t)\right) = e^{-d_lt}\tilde{\eta}_l(t)\\
+\frac{d}{dt}\left(e^{-d_l t} \tilde{v}_l(t)\right) = e^{-d_l t}\tilde{\eta}_l(t)
+\end{align}
+
+Integrating and solving
+
+\begin{align}
+e^{-d_l t} \tilde{v}_l(t) - \tilde{v}_l(0) = \int_{t'=0}^{t}e^{-d_l t'}\tilde{\eta}_l(t')dt'\\
+\tilde{v}_l(t) = e^{d_l t}\tilde{v}_l(0) + \int_{t'=0}^{t} e^{d_l (t-t')} \tilde{\eta}(t')dt'
+\end{align}
+
+Note that summation is NOT implied for the first term here. This is the pesky $d_l$ breaking Einstein summation convention again. Here we have solved the time evolution of the normal modes. We see that each normal mode evolves like an independent Ornstein-Uhlenbeck process driven by noise drive $\tilde{\eta}_l(t)$.
+
+In what follows we will be concerned with the evolution of the bare oscillators rather than just the normal modes. We convert back into bare oscillator expressions.
+
+\begin{align}
+\tilde{v}_l(t) = T^{-1}_{li}v_i(t) = e^{d_l t}T^{-1}_{li}v_i(0) + \int_{t'=0}^{t}e^{d_l(t-t')}T^{-1}_{li}\eta_i(t')dt'
+\end{align}
+
+We multiply on the left by $T_{jl}$ and apply the requisite kronecker deltas to find
+
+\begin{align}
+v_j(t) = e^{d_l t} T_{jl}T^{-1}_{li} v_i(0) + \int_{t'=0}^{t} e^{d_l(t-t')}T_{jl}T^{-1}_{li}\eta_i(t')dt'
+\end{align}
+
+\subsection{Mode Overlap Tensor}
+
+It is tempting to contract $T_{jl}T^{-1}_{li}$ to $\delta_{ji}$ but this in fact cannot be done because of the presence of the exponential term which contains an $l$ index. Again this confusion is because we broke Einstein summation conventions earlier.
+
+A bit of intuition on this point. The construction $T_{jl}T^{-1}_{li}$ is a three index tensor. It could be written, for example (with summation on $l$ NOT implied on the RHS), as
+
+\begin{align}
+\tau_{jli} = T_{jl}T^{-1}_{li}
+\end{align}
+
+The intuition behind this tensor is as follows. In general we see that $v_j(t)$ has components of evolution at the frequencies of all of the eigenvalues of $\bv{A}$. That is, in general, $v_j(t)$ contains terms like $e^{d_l}(t)$ for all values of $l$. In addition, The magnitude of this evolution is modified by the presence of initial occupation of any of the oscillator quadratures, $v_i(0)$. That is, an initial occupation of quadrature $i$ indicated by $v_i(0)$, causes some evolution of quadrature $j$, indicated by $v_j(t)$ and eigenfrequency $d_l$ indicated by $e^{d_l t}$. $\tau_{jli}$ captures this dependency.
+
+Said a slightly different way, the first factor of $T^{-1}_{li}$ captures the overlap of the $i^{th}$ bare oscillator mode onto the $l^{th}$ eigenvector. So if there is an initial contribution of the $v_i(0)$ then it will cause some amount of oscillation at eigenfrequency $d_l$. The second factor, $T_{jl}$ captures the overlap of the $l^{th}$ eigenvector onto the $j^{th}$ bare oscillator mode to tell us how much oscillation at eigenfrequency $d_l$ shows up on the $j^{th}$ oscillator. The net result is the three index tensor $\tau_{jli} = T_{jl}T^{-1}_{li}$.
+
+I admit this is a strange tensor at first but I'll write the expression out in terms of it anyways..
+
+\begin{align}
+v_j(t) = e^{d_l t} \tau_{jli} v_i(0) + \int_{t'=0}^t e^{d_l(t-t')} \tau_{jli}\eta_i(t') dt'
+\end{align}
+
+\subsection{Average Value}
+We can calculate the mean of the above expression.
+
+\begin{align}
+\Braket{v_j(t)} = \Braket{e^{d_l t}\tau_{jli} v_i(0)} + \int_{t'=0}^{t}\Braket{e^{d_l(t-t')}\tau_{jli} \eta_i(t')}dt'
+\end{align}
+
+Here we note that the initial position of the oscillators, $v_i(0)$ and the noise drives $\eta_i(t')$ are independent of the system parameters which means we can split the expectation values.
+
+\begin{align}
+\braket{v_j(t)} = \braket{e^{d_l t}\tau_{jli}}\Braket{v_i(0)} + \int_{t'=0}^t \Braket{e^{d_l (t-t')}\tau_{jli}}\Braket{\eta_i(t')}dt'
+\end{align}
+
+But $\Braket{\eta_i(t')} = 0$ so the second term vanishes and we are left with
+
+\begin{align}
+\braket{v_j(t)} = \Braket{e^{d_l t}\tau_{jli}}\Braket{v_i(0)}
+\end{align}
+
+Note that if the system parameters, $\bv{A}$, are deterministic/fixed for each realization of the system we can rewrite
+
+\begin{align}
+\braket{v_j(t)} = e^{d_l t} \tau_{jli} \Braket{v_i(0)}
+\end{align}
+
+However, we will keep those expectation value symbols because that allows us to model the possibility of fluctuating system parameters. For example, in the E3 spin/mechanics work, if the magnetic field fluctuates from shot to shot then the frequency of the spin oscillator (one of the $d_l$) will not be fixed but vary from shot to shot with some distribution.
+
+\subsection{Two-Time Correlation}
+We now work out the two time correlation function. First
+
+\begin{align}
+v_i(t_1)v_j(t_2) = &e^{d_k t_1}\tau_{ikl} v_{l}(0) e^{d_m t_2}\tau_{jmn}v_{n}(0)\\
+&+\int_{t'=0}^t \int_{t''=0}^t e^{d_k (t_1-t')}\tau_{ikl} \eta_{l}(t') e^{d_m (t_2-t'')}\tau_{jmn}\eta_{n}(t'')dt'dt''\\
+&+ \int_{t'=0}^t e^{d_k (t_1-t')}\tau_{ikl} \eta_{l}(t')e^{d_m t_2}\tau_{jmn}v_{n}(0) dt'\\
+&+ \int_{t''=0}^t e^{d_k t_1}\tau_{ikl} v_{l}(0) e^{d_m (t_2-t'')}\tau_{jmn}\eta_{n}(t'')dt''
+\end{align}
+
+The last two cross terms vanish upon taking expectation because the $\bv{\eta}$ terms are independent of the other symbols and $\Braket{\bv{\eta}} = 0$.
+We proceed to take the expectation value
+
+\begin{align}
+\Braket{v_i(t_1)v_j(t_2)} = &\Braket{e^{d_k t_1}\tau_{ikl} e^{d_m t_2}\tau_{jmn}}\Braket{v_l(0)v_n(0)}\\
+&+\int_{t'=0}^{t_{\text{min}}} \Braket{e^{d_k (t_1-t')}\tau_{ikl} e^{d_m (t_2-t')}\tau_{jmn}}N_{ln}dt'
+\end{align}
+
+Where I have defined $\bv{N}$ by $\Braket{\bv{\eta}(t_1)\bv{\eta}^T(t_2)} = \bv{N}\delta(t_1-t_2)$ and $t_{\text{min}} = \text{min}(t_1,t_2)$.
+
+If we define $\bv{C}(t_1,t_2) = \Braket{\bv{v}(t_1)\bv{v}^T(t_2)}$ and $\bv{C}^0 = \bv{C}(0,0)$ then we can rewrite this as
+
+\begin{align}
+C(t_1,t_2)_{ij} = \Braket{e^{d_k t_1}e^{d_m t_2} \tau_{ikl}\tau_{jmn}} C^0_{ln} +\int_{t'=0}^{t_{\text{min}}}\Braket{e^{d_k (t_1-t')}e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}} N_{ln} dt'
+\end{align}
+
+I will note here that in the case that the system parameters are deterministic that we can remove the expectation brackets on the right hand side. In that case the integral is a simple exponential integral which we can easily evaluate. For this work I will leave the expectation values.
+
+
+\subsection{Commutator and Anti-Commutator}
+
+We now want to work out $\Braket{[v_i(t_1),v_j(t_2)]}$ and $\Braket{\{v_i(t_1),v_j(t_2)\}}$ as we suspect the heterodyne signal will depend on these combinations. Note that for two hermitian operators $A$ and $B$ we have that $AB$ is not necessarily Hermitian. However, we can write
+
+\begin{align}
+AB = \frac{1}{2}\{A,B\} + \frac{1}{2}[A,B]
+\end{align}
+
+Where by inspection it is clear that $\{A,B\}$ is purely Hermitian and $[A,B]$ is purely anti-Hermitian. This means that in terms of expectation values we have
+
+\begin{align}
+\frac{1}{2}\Braket{\{A,B\}} &= \text{Re}(\Braket{AB})\\
+\frac{1}{2i}\Braket{[A,B]} &= \text{Im}(\Braket{AB})
+\end{align}
+
+We begin work on the anti-commutator,proceeding similarly to the two time correlation function.
+
+\begin{align}
+\{v_i(t_1),v_j(t_2)\} = &e^{d_k t_1}\tau_{ikl} e^{d_m t_2}\tau_{jmn}\{v_l(0),v_{n}(0)\}\\
+&+\int_{t'=0}^t \int_{t''=0}^t e^{d_k (t_1-t')}\tau_{ikl} e^{d_m (t_2-t'')}\tau_{jmn}\{\eta_l(t'),\eta_{n}(t'')\}dt'dt''\\
+&+ \int_{t'=0}^t e^{d_k (t_1-t')}\tau_{ikl} e^{d_m t_2}\tau_{jmn}\{\eta_l(t'),v_{n}(0)\} dt'\\
+&+ \int_{t''=0}^t e^{d_k t_1}\tau_{ikl} e^{d_m (t_2-t'')}\tau_{jmn}\{v_l(0),\eta_{n}(t'')\}dt''
+\end{align}
+
+As before the last two terms will vanish upon taking the expectation value. The first two terms can be evaluated and written by noticing
+
+\begin{align}
+\Braket{\{v_i(0),v_j(0)\}} &= 2 \text{Re}(C^0_{ij})\\
+\Braket{\{\eta_i(t'),\eta_n(t'')\}} &= 2\text{Re}(N_{ij})\delta(t'-t'')
+\end{align}
+
+We write
+
+\begin{align}
+\Braket{\{v_i(t_1),v_j(t_2)\}} &= 2 \text{Re}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2\text{Re}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2\text{Re}(N_{ln})
+\end{align}
+
+The same pattern follows for the commutator version but with imaginary parts instead of real parts.
+
+\begin{align}
+\Braket{[v_i(t_1),v_j(t_2)]} &= 2i \text{Im}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2i\text{Im}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2i\text{Im}(N_{ln})
+\end{align}
+
+\subsection{Time Evolution Summary}
+We summarize these different expressions for time evolution.
+
+\begin{align}
+\braket{v_j(t)} = \Braket{e^{d_l t}T_{jl}T^{-1}_{li}}\Braket{v_i(0)} = \Braket{e^{d_l t} \tau_{jli}} \Braket{v_i(0)}
+\end{align}
+
+\begin{align}
+\Braket{v_i(t_1)v_j(t_2)} &= C(t_1,t_2)_{ij}\\
+&= \Braket{e^{d_k t_1}e^{d_m t_2} \tau_{ikl}\tau_{jmn}} C^0_{ln}\\ &+\int_{t'=0}^{t_{\text{min}}}\Braket{e^{d_k t_1-t'}e^{d_m t_2-t'} \tau_{ikl}\tau_{jmn}} N_{ln} dt'
+\end{align}
+
+\begin{align}
+\Braket{\{v_i(t_1),v_j(t_2)\}} &= 2 \text{Re}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2\text{Re}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2\text{Re}(N_{ln})
+\end{align}
+
+\begin{align}
+\Braket{[v_i(t_1),v_j(t_2)]} &= 2i \text{Im}(C_{ij}(t_1,t_2))\\
+&= \Braket{e^{d_k t_1} e^{d_m t_2} \tau_{ikl}\tau_{jmn}}2i\text{Im}(C^0_{ln})\\ 
+&+ \int_{t'=0}^{t_{\text{min}}}  \Braket{e^{d_k (t_1-t')} e^{d_m (t_2-t')} \tau_{ikl}\tau_{jmn}}2i\text{Im}(N_{ln})
+\end{align}
+
+\section{Measured Heterodyne Signal}
+For the types of systems I am hoping to explain here the oscillators $1\ldots (n^*-1)$ are oscillators which are inside of an optical cavity mode (oscillator $n^*$). These individual oscillators are coupled to the cavity and possibly directly to each other. Using the above formalism we can determine the time evolution of this multi-oscillator linear system. However, the interesting part about this sort of system is that the cavity field, $X_{n^*}$ and $P_{n^*}$ leaks out of the cavity and can then be detected (in our case using a heterodyne detector). Because this cavity field was coupled to all of the oscillator inside of the cavity, when it leaks out it carries information about them. The purpose of detection of this field is to extract that information about the state inside of the cavity using the light which has leaked out.
+
+Here I have given expressions that allow us to determine $X_{n^*}$ and $P_{n^*}$ for the cavity field. In other write ups I have given expressions that determine how the detected cavity field will depend on the intracavity field. In this write up we will consider our signal to be the demodulated version of the raw heterodyne detector. 
+
+In the normal ordered heterodyne detection write up I give expressions for expectation values of the demodulated quadratures and two time correlations $\Braket{D_{\phi}(t)}$ and $\Braket{D_{\phi_1}(t_1)D_{\phi_2}(t_2)}$ where $\phi_1$ and $\phi_2$ are the demodulation angles, potentially different. They depend upon normal ordered combinations of $X_{n^*}$ and $P_{n^*}$ In this write up we will be concerned with demodulation into the Q quadrature, $\phi_1=\phi_2 = \frac{\tau}{2}$. We have $S(t) = D_Q(t) = D_{\frac{\pi}{2}}(t)$ The expressions we need are then
+
+\begin{align}
+\Braket{S(t)} = -G\frac{A}{2}\Braket{P_{n^*}(t)}
+\end{align}
+
+In the normal ordered heterodyne write up the expressions are given in terms of the detected photocurrent. $G$ is a classical gain which converts the photocurrent into our detected voltage on Gagescope. $G$ includes the transimpedance gain of the detector as well as the gain of the subsequent amplifier.
+
+\begin{align}
+\Braket{S(t_1)S(t_2)} = \left(G\frac{A}{2}\right)^2\frac{1}{2}\big(\Braket{\{P_{n^*}(t_1),P_{n^*}(t_2)\}} - i \Braket{[P_{n^*}(t_{\text{max}}),X_{n^*}(t_{\text{min}})]}  \big) + G^2\frac{B^2}{2}\delta(t_1-t_2)
+\end{align}
+
+We can rewrite these two expressions using notation introduced above. I will introduce the fixed indices $\alpha = 2n^*$ and $\beta = 2n^*-1$ so that $v_{\alpha} = P_{n^*}$ and $v_{\beta} = X_{n^*}$.
+
+\begin{align}
+\Braket{S(t)} = -G\frac{A}{2}\Braket{v_{\alpha}(t)}
+\end{align}
+
+\begin{align}
+\Braket{S(t_1)S(t_2)} = \left(G\frac{A}{2}\right)^2\left(\text{Re}(C_{\alpha\alpha}(t_1,t_2)) + \text{Im}(C_{\alpha\beta}(t_{\text{max}},t_{\text{min}}))\right) + G^2\frac{B^2}{2}\delta(t_1-t_2)
+\end{align}
+
+Note that the commutator term arises purely from the presence of quantum mechanics. In particular, if all operators here are taken to be classical operators then they will always commute and this term will go to zero. The $\delta(t_1-t_2)$ term is the shot noise term.
+
+These are the two expressions we will need for what follows.
+
+\section{Matched Filtering}
+Note that by looking at the Q quadrature we are essentially looking at one or two of the $2n^*$ quadratures present in the system of interest. However, due to the coupling tensors $\tau_{\alpha li}$, this single measurement channel, $v_{\alpha}$, contains signatures of all quadratures, $v_i(0)$ at frequencies $d_l$. The goal of this next step is to filter the demodulated signal to extract these individual signatures. We will filter the signal as follows.
+
+\begin{align}
+q_i = \int_{t'=0}^T m_i(t') S(t') dt'
+\end{align}
+
+Where we can call $q_i$ the filter output. Note that at this point in the analysis $q_i$ is a classical stochastic variable. This is because $S(t')$ is a random process that will be different from shot to shot. The randomness arises from the quantum nature of the photon field we are detecting (the fact that $P_{n^*}$ is quantum) as well as from the quantum nature of the detector, seen as the presence of shot noise in the signal. Since $q_i$ is a random variable it doesn't make sense to ask ``what is value of $q_i$'' but it does make sense to ask questions like what will be the mean/covariance of $q_i$ if it is calculated for many runs of the experiment.
+
+\subsection{Filter Mean}
+We can look for the average value of $q_i$. The index here runs from $1\dotsc 2n^*$.
+
+\begin{align}
+\Braket{q_i} &= \int_{t'=0}^T m_i(t') \Braket{S(t')} dt' = \int_{t'=0}^T m_i(t') \left(-G\frac{A}{2}\right)\Braket{v_{\alpha}(t')} dt'\\
+&= \int_{t'=0}^T m_i(t')\left(-G\frac{A}{2}\right) \Braket{e^{d_j t'}\tau_{\alpha jk}} \Braket{v_k(0)} dt'
+\end{align}
+
+Note that this expression for $\Braket{q_i}$ is something which we can extract by processing our data stream. We would now like to invert this expression and solve for $\Braket{v_k(0)}$ in terms of $\Braket{q_i}$. In that case we would then have a procedure for extracting $\Braket{v_k(0)}$, a quantity of interest for our science, from the measured signal, $S(t)$.
+
+I will define
+
+\begin{align}
+f_j(t) = -G\frac{A}{2} e^{d_j t}\\
+\end{align}
+
+so that
+
+\begin{align}
+\Braket{q_i} =  \int_{t'=0}^T m_i(t')\Braket{f_j(t')\tau_{\alpha jk}} dt' \Braket{v_k(0)}
+\end{align}
+
+Note that the entire integral expression can be calculated from the system parameters alone and the filter expression. When this is done it constitutes a 2 index tensor. Note that $\alpha$ is a fixed index and $j$ is summed over. We define
+
+\begin{align}
+M_{ik} = \int_{t'=0}^T m_i(t')\Braket{f_j(t')\tau_{\alpha jk}} dt'
+\end{align}
+
+so that
+
+\begin{align}
+\Braket{q_i} = M_{ik}\Braket{v_k(0)}
+\end{align}
+
+If we can find a tensor $M^{-1}_{ik}$ with the property that 
+
+\begin{align}
+M^{-1}_{li}M_{ik} = \delta_{lk}
+\end{align}
+
+then we can invert the expression and solve for $\Braket{v_k(0)}$
+
+\begin{align}
+\Braket{v_{l}(0)} = M^{-1}_{li}\Braket{q_i}
+\end{align}
+
+\subsection{Filter Covariance}
+We now wish to extract the initial covariance matrix, $C^0_{ij}$ using the filters. Let's see how this can be done.
+
+\begin{align}
+q_i q_j = \int_{t_1=0}^T\int_{t_2=0}^T m_i(t_1)m_j(t_2) S(t_1)S(t_2) dt_1 dt_2
+\end{align}
+
+\begin{align}
+\Braket{q_i q_j} = \int_{t_1=0}^T\int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{S(t_1)S(t_2)} dt_1 dt_2
+\end{align}
+
+Let's take a quick accounting of the terms we expect to see in this expression. From above we know that $\Braket{S(t_1)S(t_2)}$ has three terms, one which depends on $\text{Re}(C_{\alpha\alpha}(t_1,t_2))$, one which depends on $\text{Im}(C_{\alpha\beta}(t_1,t_2))$, and a shot noise term which goes like $\delta(t_1-t_2)$. Also note that the $\text{Re}(C_{\alpha\alpha}(t_1,t_2))$ and $\text{Im}(C_{\alpha\beta}(t_1,t_2))$ each contain two terms. One term that depends on either $\text{Re}(C^0_{ij})$ or $\text{Im}(C^0_{ij})$ and one involving an integral up from $t'=0$ to $t'=t_{\text{min}}$ which depends on $\text{Re}(N_{ij})$ or $\text{Im}(N_{ij})$. In total then we expect five terms in this expression.
+
+Lets begin writing out these terms.
+
+\begin{align}
+&\Braket{q_iq_j} =\\
+&\int_{t_1=0}^{T}\int_{t_2=0}^T m_i(t_1)m_j(t_2) \left(G\frac{A}{2}\right)^2 \Braket{e^{d_k t_1}\tau_{\alpha kl} e^{d_m t_2} \tau_{\alpha mn}} \text{Re}(C^0_{ln}) dt_1 dt_2\\
+&+\int_{t_1=0}^{T}\int_{t_2=0}^T\int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \left(G\frac{A}{2}\right)^2 \Braket{e^{d_k (t_1-t')}\tau_{\alpha kl} e^{d_m (t_2-t')} \tau_{\alpha mn}} \text{Re}(N_{ln}) dt' dt_1 dt_2\\
+&+\int_{t_1=0}^{T}\int_{t_2=0}^T m_i(t_1)m_j(t_2) \left(G\frac{A}{2}\right)^2 \Braket{e^{d_k t_{\text{max}}}\tau_{\alpha kl} e^{d_m t_{\text{min}}} \tau_{\beta mn}} \text{Im}(C^0_{ln}) dt_1 dt_2\\
+&+\int_{t_1=0}^{T}\int_{t_2=0}^T\int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \left(G\frac{A}{2}\right)^2 \Braket{e^{d_k (t_{\text{max}}-t')}\tau_{\alpha kl} e^{d_m (t_{\text{min}}-t')} \tau_{\beta mn}} \text{Im}(N_{ln}) dt' dt_1 dt_2\\
+&+\int_{t_1=0}^T\int_{t_2=0}^T m_i(t_1)m_j(t_2) G^2\frac{B^2}{2}\delta(t_1-t_2) dt_1 dt_2
+\end{align}
+
+Rearranging terms
+
+\begin{align}
+&\Braket{q_iq_j} =\\
+& \int_{t_1=0}^{T}\int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{f_k(t_1)f_m(t_2)\tau_{\alpha kl}\tau_{\alpha mn}} dt_1 dt_2 \text{Re}(C^0_{ln})\\
+& +\int_{t_1=0}^{T}\int_{t_2=0}^T\int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \Braket{f_k(t_1-t')f_m(t_2-t')\tau_{\alpha kl}\tau_{\alpha mn}} dt' dt_1 dt_2 \text{Re}(N_{ln})\\
+&+\int_{t_1=0}^{T}\int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{f_k(t_1)f_m(t_2)\tau_{\alpha kl}\tau_{\beta mn}} dt_1 dt_2 \text{Im}(C^0_{ln})\\
+& +\int_{t_1=0}^{T}\int_{t_2=0}^T\int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \Braket{f_k(t_1-t')f_m(t_2-t')\tau_{\alpha kl}\tau_{\beta mn}} dt' dt_1 dt_2 \text{Im}(N_{ln})\\
+&+G^2 \frac{B^2}{2}\int_{t=0}^T m_i(t)m_j(t) dt_1 dt_2
+\end{align}
+
+Note that all of the integrals can be calculated independent from the measured signal as they only depend on the statistics of the system parameters.
+
+We capture these terms in new defintions
+
+\begin{align}
+M^{\text{Re}}_{ijln} &= \int_{t_1=0}^{T}\int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{f_k(t_1)f_m(t_2)\tau_{\alpha kl}\tau_{\alpha mn}} dt_1 dt_2\\
+K^{\text{Re}}_{ijln} &= \int_{t_1=0}^{T}\int_{t_2=0}^T\int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \Braket{f_k(t_1-t')f_m(t_2-t')\tau_{\alpha kl}\tau_{\alpha mn}} dt' dt_1 dt_2\\
+M^{\text{Im}}_{ijln} &= \int_{t_1=0}^{T}\int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{f_k(t_1)f_m(t_2)\tau_{\alpha kl}\tau_{\beta mn}} dt_1 dt_2\\
+K^{\text{Im}}_{ijln} &= \int_{t_1=0}^{T}\int_{t_2=0}^T\int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \Braket{f_k(t_1-t')f_m(t_2-t')\tau_{\alpha kl}\tau_{\beta mn}} dt' dt_1 dt_2\\
+K^{\text{SN}}_{ij} &= G^2 \frac{B^2}{2}\int_{t=0}^T m_i(t)m_j(t) dt_1 dt_2 
+\end{align}
+
+The names of these tensors are a bit opaque since I'm running out of letters. $\bv{M}^{\text{re}}$ and $\bv{M}^{\text{im}}$ are tensors that multiply the real and imaginary parts of the initial covariance matrices. We would want to ``invert'' these tensors to single out and extract the real or imaginary parts of the covariance matrices from these expressions. $\bv{K}^{\text{Re}}$ and $\bv{K}^{\text{Im}}$ are tensors that multiply spurious terms of the filter covariances which arise due to the noise entering the system through the real and imaginary parts of the noise correlation matrix $\bv{N}$. $\bv{K}^{\text{SN}}$ is a tensor that multiplies the contribution of shot noise acting within overlapping filter windows onto the filter covariance.
+
+We can then write
+
+\begin{align}
+\Braket{q_iq_j} = M^{\text{Re}}_{ijln} \text{Re}(C^0_{ln}) + M^{\text{Im}}_{ijln} \text{Im}(C^0_{ln}) + K^{\text{Re}}_{ijln} \text{Re}(N_{ln}) + K^{\text{Im}}_{ijln} \text{Im}(N_{ln}) + K^{\text{SN}}_{ij}
+\end{align}
+
+This is the culmination of a lot of work. It arises from a quite general derivation of the filter output based on a general system allowing for the possibility of many quantities to fluctuate. The final 3 terms can all be calculated from known the system parameters. The first two terms depend on the initial covariance matrix of the system. Ideally we could back out these two terms. However, as the expression appears currently, I don't believe it would be possible to, in general, deconvolve the effect of these two terms.
+
+However, Suppose for a minute that the terms arising form imaginary parts of matrices were not present or negligible. This could happen, for example, if the system was purely classical. I will also argue shortly that in our system, since we probe on resonance and look at the demodulated Q quadrature, the eigenvector overlap tensor components appearing in these terms will be negligible. Interestingly, I believe that if we instead looked at cross correlations of filter outputs from both the Q and the I quadratures we could instead make the terms arising from the real parts of the matrices vanish and would then have sensitivity to the imaginary part of the initial covariance matrix. More on that later. For now we suppose the terms involving imaginary parts are not present.
+
+\begin{align}
+\Braket{q_iq_j} = M^{\text{Re}}_{ijln}\text{Re}(C^0_{ln}) + K^{\text{Re}}_{ijln}\text{Re}(N_{ln}) + K^{\text{SN}}_{ij}
+\end{align}
+
+We then hope that we can find a tensor with the property that
+
+\begin{align}
+L_{ijkm}M^{\text{Re}}_{ijln} = \delta_{kl}\delta_{mn}
+\end{align}
+
+If we can find such a tensor, then we can rewrite
+
+\begin{align}
+\text{Re}(C^0_{km}) = L_{ijkm}\Braket{q_iq_j} - L_{ijkm}K^{\text{Re}}_{ijln} \text{Re}(N_{ln}) - L_{ijkm}K^{\text{SN}}_{ij}
+\end{align}
+
+I have confirmed that it is not difficult to find sucha an ``inverting'' tensor using Mathematica or Matlab. The tensor $L_{ijkm}$ has $(2n^*)^4$ unknown components and the formula $L_{ijkm}M^{\text{Re}}_{ijln} = \delta_{kl}\delta_{mn}$ stands for $(2n^*)^4$ linear equations. for $n^* = 3$ that is $6^4 = 1296$ coupled linear equations for $6^4 = 1296$ unknowns. Once this is set up in Mathematica the solution can be found in less than one second on my laptop.
+
+Now a final note justifying dropping the $\bv{M}^{\text{Im}}$ and $\bv{K}^{\text{Im}}$ terms. First off, in general I do not believe these terms can be dropped. However, in the specific circumstances during the readout phase in E3 I think it we can justify dropping them. The justification will not come from neglecting $\text{Im}(\bv{C}^0)$ or $\text{Im}(\bv{N})$ as I don't think this can be justified, but rather from dropping $\bv{M}^{\text{Im}}$ and $\bv{K}^{\text{Im}}$.
+
+The difference between $\bv{M}^{\text{Im}}$ and $\bv{K}^{\text{Im}}$ and $\bv{M}^{\text{Re}}$ and $\bv{K}^{\text{Re}}$ is that in the latter two the tensor $\tau_{\alpha mn}$ appears but in the former two the tensor $\tau_{\beta mn}$ appears. My justification from dropping the terms with the Im label will be that $\tau_{\beta mn}$ is negligible in the physical situation we are considering.
+
+Recall that $\tau_{\beta mn}$ tells us how much oscillator quadrature $n$ contributes to oscillation of eigenvector $m$ at oscillation frequency $d_m$ and then how much this oscillation shows up on oscillator quadrature $\beta$. Also recall that oscillator quadrature $\beta$ is $v_{\beta} = X_{n^*}$, the AM quadrature of the cavity field. 
+
+In the readout period during the E3 spin/mech experiment the cavity probe is on resonance. We know from intuition/experience or looking at the equations of motion that motion of the oscillators does not show up on the AM quadrature of light when the probe is on resonance. With respect to the mathematical notation here, this idea is expressed by saying the components of $\tau_{\beta mn}$ are small. In the next section I specialize further to the E3 system of interest and I will show that these terms are small.
+
+I'll also note that this $\tau_{\beta mn}$ term arose from the $\Braket{[P_{n^*}(t_{\text{max}}),X_{n^*}(t_{\text{min}})]}$ term in the expression for $\Braket{S(t_1)S(t_2)} = \Braket{D_{\frac{\pi}{2}}(t_1)D_{\frac{\pi}{2}}(t_2)}$. It arises due to the appearance of $X_{n^*}$. If instead we had looked at $\Braket{D_{\frac{\pi}{2}}(t_1)D_0(t_2)}$, that is a combination of the Q and I quadrature, then we would have parts of our expression which look like $[P_{n^*},P_{n^*}]$. Such an expression would not end up involving $\tau_{\beta mn}$ and would depend on the imaginary part of the covariance matrix and the noise drive. In that case, the $\bv{K}^{\text{Im}}$ and $\bv{M}^{\text{Im}}$ would be non-zero. Furthermore, the expressions involving anti-commutators would now involve $X_{n^*}$ and would vanish. Thus, in this way, we could achieve sensitivity to the quantum nature of the evolution by looking at cross correlations between the two quadratures.
+
+What I am describing here is very similar to the approach taken in the recent 2017 Purdy Science paper on ``Quantum correlations from a room-temperature optomechanical cavity''  Science, 356(6344), 1265–1268.
+
+\section{Specialization}
+
+So far I have presented a very general treatment of the problem. Now I will spend more time specializing my treatment to what is needed for the E3 spin/mech experiment. This section is to make contact between the abstract linear algebra presented above and the more concrete/applicable write-ups by Jonathan and Emma on the matched filters.
+
+The main simplifications will be 1) making the adiabatic approximation. This eliminate the cavity mode so that that evolution of the two oscillators can be described by a 4x4 matrix. In addition to the 4x4 matrix there will be a simple relationship between the measured signal on the $P_{n^*}$ PM quadrature of the cavity and the positions of the two oscillators. 2) The next simplification will be that we are probing on cavity resonance. This will simplify some of the dynamics and allow us to get explicit expressions for some of the abstract tensors above.
+
+When removing the generality of this problem we face one particular annoyance. This is the question of whether to work in the $a$ and $a^{\dag}$ basis or the $X$ and $P$ basis. Clearly working in either basis we should get the right answer. The question is if one or the other will be more convenient. The answer is that both approaches have some annoyance. The reason both of these have some annoyance is because the $a$ and $a^{\dag}$ are eigenmodes of the system while $X$ and $P$ are not, but our measured signal, $S(t)$ is proportional to $X$. This means the problem intrinsically contains expressions involving elements of both bases so that no matter what the change of basis matrix is going to appear somewhere. In the approach that follows here the change of basis can be easily identified as a particular matrix. In the existing matched filter write ups this change of basis appears in the form of taking the real and imaginary part of expressions, or expressing rotations in sines and cosines rather then exponentials.
+
+\subsection{Adiabatic Elimination}
+
+In this section I'll perform simple adiabatic elimination of the cavity field. I'll accomplish this by setting $\dot{X}_{n^*}$ and $\dot{P}_{n^*}$ to zero. This is a first order approximation of an adiabatic elimination, and, while this treatment can account for the individual oscillator self-spring shifts, the optical spring coupling the two oscillators, and the effects of back action, it cannot account for optomechanical damping. To derive the effects of optomechanical damping a more sophisticated approach must be taken.
+
+In any case, we rearrange the equations of motion as follows.
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{A}\bv{v}(t) + \bv{\eta}(t)
+\end{align}
+
+We define
+
+\begin{align}
+\bv{v}^{(1)} =
+\begin{bmatrix}
+X_1\\
+T_1\\
+X_2\\
+T_2\\
+\vdots\\
+X_{n^*-1}\\
+T_{n^*-1}
+\end{bmatrix}
+\hspace{1 in}
+\bv{\eta}^{(1)} =
+\begin{bmatrix}
+\sqrt{\Gamma_1}X^{in}_1\\
+\sqrt{\Gamma_1}P^{in}_1\\
+\sqrt{\Gamma_2}X^{in}_2\\
+\sqrt{\Gamma_2}P^{in}_2\\
+\vdots\\
+\sqrt{\Gamma_{n^*-1}}X^{in}_{n^*-1}\\
+\sqrt{\Gamma_{n^*-1}}P^{in}_{n^*-1}
+\end{bmatrix}
+\end{align}
+
+\begin{align}
+\bv{v}^{(2)} =
+\begin{bmatrix}
+X_{n^*}\\
+P_{n^*}
+\end{bmatrix}
+\hspace{1 in}
+\bv{\eta}^{(2)} =
+\begin{bmatrix}
+\sqrt{\Gamma_{n^*}}X^{in}_{n^*}\\
+\sqrt{\Gamma_{n^*}}P^{in}_{n^*}
+\end{bmatrix}
+\end{align}
+
+And we divide $\bv{A}$ into 4 matrix blocks
+
+\begin{align}
+\bv{A} = 
+\begin{bmatrix}
+\bv{\alpha} & \bv{\beta}\\
+\bv{\gamma} & \bv{\epsilon}
+\end{bmatrix}
+\end{align}
+
+We can then write the equations of motion as
+
+\begin{align}
+\begin{bmatrix}
+\dot{\bv{v}}^{(1)}(t)\\
+\dot{\bv{v}}^{(2)}(t)
+\end{bmatrix} = 
+\begin{bmatrix}
+\bv{\alpha} & \bv{\beta}\\
+\bv{\gamma} & \bv{\epsilon}
+\end{bmatrix}
+\begin{bmatrix}
+\bv{v}^{(1)}(t)\\
+\bv{v}^{(2)}(t)
+\end{bmatrix}
++ 
+\begin{bmatrix}
+\bv{\eta}^{(1)}(t)\\
+\bv{\eta}^{(2)}(t)
+\end{bmatrix}
+\end{align}
+
+Which can be broken into
+
+\begin{align}
+\dot{\bv{v}}^{(1)}(t) = \bv{\alpha}\bv{v}^{(1)}(t) + \bv{\beta}\bv{v}^{(2)}(t) + \bv{\eta}^{(1)}(t)\\
+\dot{\bv{v}}^{(2)}(t) = \bv{\gamma}\bv{v}^{(1)}(t) + \bv{\epsilon}\bv{v}^{(2)}(t) + \bv{\eta}^{(2)}(t)
+\end{align}
+
+To make the adiabatic approximation we set $\bv{v}^{(2)}(t)=0$ and solve for $\bv{v}^{(2)}(t)$ in the second equation.
+
+\begin{align}
+\bv{v}^{(2)}(t) = -\bv{\epsilon}^{-1}(\bv{\gamma}\bv{v}^{(1)}(t) + \bv{\eta}^{(2)}(t))
+\end{align}
+
+We can then plug this into the first equation to eliminate the cavity degrees of freedom from the first equation entirely. The effect of the cavity shows up as a change to the dynamics.
+
+\begin{align}
+\dot{\bv{v}}^{(1)}(t) &= \bv{\alpha}\bv{v}^{(1)}(t) - \bv{\beta}\bv{\epsilon}^{-1}\bv{\gamma}\bv{v}^{(1)}(t) + \bv{\eta}^{(1)}(t) - \bv{\beta}\bv{\epsilon}^{-1}\bv{\eta}^{(2)}(t)\\
+\dot{\bv{v}}^{(1)}(t) &= (\bv{\alpha} - \bv{\beta}\bv{\epsilon}^{-1}\bv{\gamma})\bv{v}^{(1)}(t) + \bv{\eta}^{(1)}(t) - \bv{\beta}\bv{\epsilon}^{-1}\bv{\eta}^{(2)}(t)
+\end{align}
+
+The $-\bv{\beta}\bv{\epsilon}^{-1}\bv{\gamma}\bv{v}^{(1)}(t)$ term captures the optomechanical spring shifts and coupling springs and the $-\bv{\beta}\bv{\epsilon}^{-1}\bv{\eta}^{(2)}(t)$ term captures the effects of backaction.
+
+We define
+
+\begin{align}
+\bv{A}^{(\text{eff})} &= \bv{\alpha}-\bv{\beta}\bv{\epsilon}^{-1}\bv{C}\\
+\bv{\eta}^{(\text{eff})}(t) &= \bv{\eta}^{(1)}(t) - \bv{\beta}\bv{\epsilon}^{-1}\bv{\eta}^{(2)}(t)
+\end{align}
+
+So that
+
+\begin{align}
+\dot{\bv{v}}^{(1)}(t) = \bv{A}^{(\text{eff})} \bv{v}^{(1)}(t) + \bv{\eta}^{(\text{eff})}(t)
+\end{align}
+
+This has the same solution as before.
+
+\begin{align}
+v^{(1)}_{j}(t) = e^{d_l t} \tau_{jli} v^{(1)}_{i}(0) + \int_{t'=0}^t e^{d_l(t-t')} \tau_{jli}\eta^{(\text{eff})}_{i}(t') dt'
+\end{align}
+
+Where $d_l$ are the eigenvalues of $\bv{A}^{(\text{eff})}$ and $\tau_{jli} = T_{jl}T^{-1}_{li}$ where $\bv{T}$ is the matrix of eigenvectors of $\bv{A}^{(\text{eff})}$
+
+\subsubsection{Adiabatic Elimination Artifacts}
+
+This next section gets into some weird artifacts that arise from the way the adiabatic elimination is done. I think these artifacts get into a deep rabbit hole of Quantum (or not quantum) stochastic integration. Since I've already written it all down I'll leave it here for later reference. This section is probably not so important. The main takeaway is that the second term in the equation 
+
+\begin{align}
+\bv{v}^{(2)}(t) = -\bv{\epsilon}^{-1}(\bv{\gamma} \bv{v}^{(1)}(t) + \bv{\eta}^{(2)}(t))
+\end{align}
+
+causes some weird complications. This is because when we multiply $\bv{v}^{(2)}(t_1)$ by $\bv{v}^{(2)T}(t_2)$ we get cross terms. $\bv{v}^{(2)}(t)$ actually depends on $\bv{\eta}^{(2)}(t)$ at earlier times. This means these cross terms don't necessarily go away but they do enter in in a strange way. The presence of these terms greatly complicates the math and it's not clear to me how they should be treated. My take away is that I will simply drop the $\bv{\eta}^{(2)}(t)$ term from the expression for $\bv{v}^{(2)}(t)$. I have no idea if this is justified or not, but in any case I think it will lead me to the same results as what we have in the rest of the matched filter write ups. In principle I could set up simulations of both sets of equations of motion and see how well they agree with this term dropped.
+
+For now I'll show the results of keeping this term. In the subsequent sections I will drop the term and the results should be familiar.
+
+The formula above tells us the time evolution of the oscillators within the cavity evolving under the cavity modified dynamics. We can plug this into the formula for $\bv{v}^{(2)}(t)$ to determine how these dynamics are imprinted onto the cavity modes and thus what is subsequently detected.
+
+\begin{align}
+v^{(2)}_{i}(t) &= -\epsilon^{-1}_{ij}\gamma_{jk}v^{(1)}_{k}(t) - \epsilon^{-1}_{ij}\eta^{(2)}_{j}(t)\\
+&= -\epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}e^{d_l t}v^{(1)}_{m}(0)  -\int_{t'=0}^t \epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}e^{d_l (t-t')}\eta^{(\text{eff})}_{m}(t')dt' - \epsilon^{-1}_{ij}\eta^{(2)}_{j}(t)
+\end{align}
+
+\begin{align}
+v^{(2)}_{i}(t)&= -\epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}e^{d_l t}v^{(1)}_{m}(0)\\
+&-\epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}\int_{t'=0}^{t}e^{d_l (t-t')}\eta^{(1)}_{m}(t') dt' + \epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}\beta_{mn}\epsilon^{-1}_{no}\int_{t'=0}^t e^{d_l(t-t')}\eta^{(2)}_{o}(t')dt'\\
+&-\epsilon^{-1}_{ij}\eta^{(2)}_{j}(t)
+\end{align}
+
+To save on indices I'll define some new matrices.
+
+\begin{align}
+E_{ilm} &= -\epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}\\
+F_{ilo} &= -\epsilon^{-1}_{ij}\gamma_{jk}\tau_{klm}\beta_{mn}\epsilon^{-1}_{no} = -E_{ilm}\beta_{mn}\epsilon^{-1}_{no}
+\end{align}
+
+Allowing me to rewrite
+
+\begin{align}
+v^{(2)}_{i}(t) &= E_{ilm}e^{d_l t}v^{(1)}_{m}(0)\\
+&+E_{ilm}\int_{t'=0}^t e^{d_l(t-t')}\eta^{(1)}_{m}(t')dt' + F_{ilo}\int_{t'=0}^t e^{d_l(t-t')}\eta^{(2)}_{o}(t')dt'\\
+&-\epsilon^{-1}_{ij}\eta^{(2)}_{j}(t)
+\end{align}
+
+Re-indexing
+
+\begin{align}
+v^{(2)}_{i}(t) &= E_{ijk}e^{d_j t}v^{(1)}_{k}(0)\\
+&+E_{ijk}\int_{t'=0}^t e^{d_j(t-t')}\eta^{(1)}_{k}(t')dt' + F_{ijk}\int_{t'=0}^t e^{d_j(t-t')}\eta^{(2)}_{k}(t')dt'\\
+&-\epsilon^{-1}_{ij}\eta^{(2)}_{j}(t)
+\end{align}
+
+We can take the expectation value and find
+
+\begin{align}
+\Braket{v^{(2)}_{i}(t)} = \Braket{E_{ijk}e^{d_jt}}\Braket{v^{(1)}_{k}(0)}
+\end{align}
+
+It will be a little more complicated to calculate second order moments. We want to calculate $\Braket{v^{(2)}_{i}(t_1)v^{(2)}_{l}(t_2)}$. There will be 16 terms in general, but many of them vanish upon taking the expectation value. Here I'll just show the non-vanishing terms.
+
+\begin{align}
+\Braket{v^{(2)}_{i}(t_1)v^{(2)}_{l}(t_2)} &= \Braket{E_{ijk}E_{lmn}e^{d_j t_1}e^{d_m t_2}}\Braket{v^{(1)}_{k}(0)v^{(1)}_{n}(0)}\\
+&+ \int_{t'=0}^{t_1} \int_{t''=0}^{t_2} \Braket{E_{ijk}E_{lmn}e^{d_j(t_1-t')}e^{d_m(t_2-t'')}}\Braket{\eta^{(1)}_{k}(t')\eta^{(1)}_{n}(t'')}dt'dt''\\
+&+ \int_{t'=0}^{t_1} \int_{t''=0}^{t_2} \Braket{F_{ijk}F_{lmn}e^{d_j(t_1-t')}e^{d_m(t_2-t'')}}\Braket{\eta^{(2)}_{k}(t')\eta^{(2)}_{n}(t'')}dt'dt''\\
+&+ \Braket{\epsilon^{-1}_{ij} \epsilon^{-1}_{lm}}\Braket{\eta^{(2)}_{j}(t_1)\eta^{(2)}_{n}(t_2)}\\
+&+ \int_{t'=0}^{t_1} \Braket{E_{ijk}\epsilon^{-1}_{lm} e^{d_j (t_1-t')}}\Braket{\eta^{(2)}_{k}(t')\eta^{(2)}_{m}(t_2)}dt'\\
+&+ \int_{t''=0}^{t_2} \Braket{E_{lmn}\epsilon^{-1}_{ij}e^{d_m (t_2-t'')}}\Braket{\eta^{(2)}_{j}(t_1)\eta^{(2)}_{n}(t'')}dt''
+\end{align}
+
+Ok, I'm not sure what is going on with the final terms. They are a bit strange and it is not clear to me if they should be present or if they artifacts of how the adiabatic elimination has been done. In fact, I think this questions might pertain to some deep questions/confusions about Langevin equations, and Ito vs. Stranovich stochastic integration. I found a reference by C Gardiner which addresses related questions: ``Adiabatic elimination in stochastic systems'' Phys. Rev. A 29, 2814.
+
+That is a very deep rabbit hole of quantum stochastic integration. For now I'm just going to completely ignore it and pretend those last three terms don't exist. I believe this should lead me to the same results as the rest of the E3 matched filter write ups. In principle the results of eliminating these terms could be compared to numerical results obtained from the full (no adiabatic approximation) model.
+
+Those three terms all arise from the presence of $\epsilon^{-1}_{ij}\eta^{(2)}_{j}(t)$ in the equation for $v^{(2)}_{i}(t)$. and this term actually has no other contribution. To that end, I will back up and continue from that point, but from dropping that term.
+
+\begin{align}
+v^{(2)}_{i}(t) = -\epsilon^{-1}_{ij}\gamma_{jk}v^{(1)}_{k}(t)
+\end{align}
+
+\begin{align}
+\bv{v}^{(2)}(t) = -\bv{\epsilon}^{-1}\bv{v}^{(1)}(t)
+\end{align}
+
+\subsection{Explicit Matrices - Complex Amplitude Basis}
+
+I will finally start to plug in explicit matrices to connect with the system in E3. For E3 we can work out
+
+\begin{align}
+\bv{A} = \begin{bmatrix}
+-\frac{\Gamma_1}{2} & \pm \omega_1 & 0 & 0 & 0 & 0 \\
+\mp \omega_1 & -\frac{\Gamma_1}{2} & 2G_{\text{stat}} & 0 & 2G_1 & 0 \\
+0 & 0 & -\frac{\Gamma_2}{2} & \omega_2 & 0 & 0 \\
+2G_{\text{stat}} & 0 & -\omega_2 & -\frac{\Gamma_2}{2} & 2G_2 & 0\\
+0 & 0 & 0 & 0 & -\kappa & -\Delta \\
+2G_1 & 0 & 2G_2 & 0 & \Delta & -\kappa \\ \end{bmatrix}
+\end{align}
+
+with
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{A}\bv{v}(t) = \bv{\eta}(t)
+\end{align}
+
+The $\pm$ and $\mp$ on the $\omega_1$ correspond to the spin in the positive or negative mass configuration.
+
+This equation is expressed in the $X$ and $P$ basis, since $\bv{v}$ is a vector expressed in the $X$ and $P$ basis. In this section I want to work out the dynamics in the $a$ and $a^{\dag}$ basis. The advantage of this approach will be that, when the oscillators are uncoupled, as in the zero detuning readout phase, $a$ and $a^{\dag}$ are normal mode variables of the system.
+
+Note quickly that
+
+\begin{align}
+a &= \frac{1}{2}(X+iP)\\
+a^{\dag} &= \frac{1}{2}(X-iP)\\
+X&=\text{Re}(a) = a^{\dag} + a\\
+P&=\text{Im}(a) = i(a^{\dag}-a)
+\end{align}
+
+
+We can convert between bases with the following transformation
+
+\begin{align}
+\bv{z} = 
+\begin{bmatrix}
+z_1\\
+z_2\\
+z_3\\
+z_4\\
+z_5\\
+z_6
+\end{bmatrix}
+=
+\begin{bmatrix}
+a_1\\
+a_1^{\dag}\\
+a_2\\
+a_2^{\dag}\\
+a_3\\
+a_3^{\dag}\\
+\end{bmatrix}
+=
+\frac{1}{2}
+\begin{bmatrix}
+1 & i & 0 & 0 & 0 & 0\\
+1 & -i & 0 & 0 & 0 & 0\\
+0 & 0 & 1 & i & 0 & 0\\
+0 & 0 & 1 & -i & 0 & 0\\
+0 & 0 & 0 & 0 & 1 & i\\
+0 & 0 & 0 & 0 & 1 & -i\\
+\end{bmatrix}
+\begin{bmatrix}
+X_1\\
+P_1\\
+X_2\\
+P_2\\
+X_3\\
+P_3\\
+\end{bmatrix}
+=
+\bv{W}\bv{v}
+\end{align}
+
+
+With obvious generalization to more intracavity oscillators. I'm pretty badly running out of variable names here.. We can write
+
+\begin{align}
+\dot{\bv{v}}(t) = \bv{A} \bv{v}(t) + \bv{\eta}(t)
+\end{align}
+
+in terms of $\bv{z}$ by multiplying on the left by $\bv{W}$ to get
+
+\begin{align}
+\dot{\bv{z}}(t) = \bv{W}\bv{A}\bv{W}^{-1}\bv{z}(t) + \bv{W}\bv{\eta}
+\end{align}
+
+and define $\bv{W}\bv{A}\bv{T}^{-1} = \tilde{\bv{A}}$ and $\bv{W}\bv{\eta}(t) = \bv{\xi}(t)$ to get
+
+\begin{align}
+\dot{\bv{z}}(t) = \tilde{\bv{A}}\bv{z}(t) + \bv{\xi}(t)
+\end{align}
+
+We can get Mathematica (or workout by hand if we wish) to give us
+
+\begin{align}
+\tilde{\bv{A}} = 
+\begin{bmatrix}
+\mp i\omega_1 - \frac{\Gamma_1}{2} & 0 & iG_{\text{stat}} & iG_{\text{stat}} & iG_1 & iG_1\\
+0 & \pm i\omega_1 - \frac{\Gamma_2}{2} & -iG_{\text{stat}} & -iG_{\text{stat}} & -iG_1 & -i G_1\\
+i G_{\text{stat}} & iG_{\text{stat}} & -i\omega_2 - \frac{\Gamma_2}{2} & 0 & iG_2 & iG_2\\
+-i G_{\text{stat}} & -iG_{\text{stat}} & 0 & i\omega_2 - \frac{\Gamma_2}{2} & -iG_2 & -iG_2\\
+iG_1 & iG_1 & iG_2 & iG_2 & i\Delta-\kappa & 0\\
+-iG_1 & -iG_1 & -iG_2 & -iG_2 & 0 & -i\Delta - \kappa
+\end{bmatrix}
+\end{align}
+
+The rest of the analysis can proceed as before. We can work out the submatrices.
+
+\begin{align}
+\tilde{\bv{\alpha}} = 
+\begin{bmatrix}
+\mp i\omega_1 - \frac{\Gamma_1}{2} & 0 & iG_{\text{stat}} & iG_{\text{stat}}\\
+0 & \pm i\omega_1 - \frac{\Gamma_2}{2} & -iG_{\text{stat}} & -iG_{\text{stat}}\\
+i G_{\text{stat}} & iG_{\text{stat}} & -i\omega_2 - \frac{\Gamma_2}{2} & 0\\
+-i G_{\text{stat}} & -iG_{\text{stat}} & 0 & i\omega_2 - \frac{\Gamma_2}{2}\\
+\end{bmatrix}
+\end{align}
+
+\begin{align}
+\tilde{\bv{\beta}} = 
+\begin{bmatrix}
+iG_1 & iG_1\\
+-iG_1 & -i G_1\\
+iG_2 & iG_2\\
+-iG_2 & -iG_2
+\end{bmatrix}
+\end{align}
+
+\begin{align}
+\tilde{\bv{\gamma}} = 
+\begin{bmatrix}
+iG_1 & iG_1 & iG_2 & iG_2\\
+-iG_1 & -iG_1 & -iG_2 & -iG_2
+\end{bmatrix}
+\end{align}
+
+\begin{align}
+\tilde{\bv{\epsilon}} = 
+\begin{bmatrix}
+i\Delta-\kappa & 0\\
+0 & -i\Delta - \kappa
+\end{bmatrix}
+\end{align}
+
+Let's first work out the time evolution of the oscillators, that is $\bv{a}_1(t)$.
+
+We should have
+
+\begin{align}
+z^{(1)}_{j}(t) = e^{d_l t}\tau_{jli}z^{(1)}_{i}(0) + \int_{t'=0}^t e^{d_l(t-t')}\tilde{\tau}_{jli}\xi^{(\text{eff})}_{i}(t')dt'
+\end{align}
+
+Where
+
+\begin{align}
+\bv{\xi}^{(\text{eff})}(t) = \bv{\xi}^{(1)}(t) - \tilde{\bv{\beta}}\tilde{\bv{\epsilon}}^{-1}\bv{\xi}^{(2)}(t)
+\end{align}
+
+and
+
+\begin{align}
+\tau_{jli} = T_{jl}T^{-1}_{li}
+\end{align}
+
+Where $T_{jl}$ is the matrix of eigenvectors of $\tilde{\bv{\alpha}}$. At present $\tilde{\bv{\alpha}}$ is a bit complicated because there are $G_{\text{stat}}$ is all over the place. $G_{\text{stat}}$ is basically a coupling between the two oscillators. However, if the two oscillators are far apart then this coupling is very off resonant and we know that it shouldn't strongly affect the evolution of the two oscillators. More technically, far from resonance the presence of the coupling does not appreciably affect the eigenvalues and eigenvectors. To that end, We can ignore $G_{\text{stat}}$ if the oscillators are pulled far enough apart. This should be something like $|\omega_1|-|\omega_2| > G_{\text{stat}}$. In that case we get
+
+\begin{align}
+\tilde{\bv{\alpha}} \approx
+\begin{bmatrix}
+\mp i\omega_1 - \frac{\Gamma_1}{2} & 0 & 0 & 0\\
+0 & \pm i\omega_1 - \frac{\Gamma_2}{2} & 0 & 0\\
+0 & 0 & -i\omega_2 - \frac{\Gamma_2}{2} & 0\\
+0 & 0 & 0 & i\omega_2 - \frac{\Gamma_2}{2}\\
+\end{bmatrix}
+\end{align}
+
+We see that this matrix is already diagonal. This means the diagonal elements are the eigenvalues. Note that the eigenvalues are complex conjugates of each other. There is oscillation at the positive and negative frequency, both decaying at the appropriate decay rate. This also means that the eigenvector matrix is the identity. That is $T_{jl} = \delta_{jl}$ so that
+
+\begin{align}
+\tilde{\tau}_{jli} = \delta_{jl}\delta_{li}
+\end{align}
+
+I'll just state again that summation on $l$ is not implied here.
+
+When we plug this into the above equation we will find
+
+\begin{align}
+z^{(1)}_{j}(t) = e^{d_j t}z^{(1)}_{j}(0) + \int_{t'=0}^t e^{d_j(t-t')}\xi^{(\text{eff})}_{j}(t') dt'
+\end{align}
+
+And there is no mixing of the oscillators. We are already working in normal modes variables!
+
+To get the signal terms we have (neglecting the weird terms discussed above)
+
+\begin{align}
+z^{(2)}_{i}(t) = -\tilde{\epsilon}^{-1}_{ij}\tilde{\gamma}_{jk}z^{(1)}_{k}(t)
+\end{align}
+
+We (or Mathematica) can calculate without too much trouble
+
+\begin{align}
+-\tilde{\bv{\epsilon}}^{-1}\tilde{\bv{\gamma}} = 
+\begin{bmatrix}
+-\frac{G_1}{\Delta+i\kappa} & -\frac{G_1}{\Delta+i\kappa} & -\frac{G_2}{\Delta+i\kappa} & -\frac{G_2}{\Delta+i\kappa}\\
+-\frac{G_1}{\Delta-i\kappa} & -\frac{G_1}{\Delta-i\kappa} & -\frac{G_2}{\Delta-i\kappa} & -\frac{G_2}{\Delta-i\kappa}\\
+\end{bmatrix}
+\end{align}
+
+Setting $\Delta = 0$ to model probing on resonance we see
+
+\begin{align}
+-\tilde{\bv{\epsilon}}^{-1}\tilde{\bv{\gamma}} = \frac{i}{\kappa}
+\begin{bmatrix}
+G_1 & G_1 & G_2 & G_2\\
+-G_1 & -G_1 & -G_2 & -G_2
+\end{bmatrix}
+\end{align}
+
+We see then that
+
+\begin{align}
+z^{(2)}_{1}(t) &= a_3(t) = \frac{i}{\kappa}\left(G_1 \left(z^{(1)}_{1}(t) + z^{({1})\dag}_{2}(t)\right) + G_2\left(z^{(1)}_{3}(t) + z^{(1)}_{4}(t)\right)\right)\\
+&=\frac{i}{\kappa}\left(G_1\left(a_1(t) + a^{\dag}_1(t)\right) + G_2\left(a_2(t) + a^{\dag}_2(t)\right)\right)= \frac{i}{\kappa}\left(G_1 X_1(t) + G_2 X_2(t)\right)\\
+z^{(2)}_{2}(t) &= a^{\dag}_3(t) = -\frac{i}{\kappa}\left(G_1 \left(z^{(1)}_{1}(t) + z^{({1})\dag}_{2}(t)\right) + G_2\left(z^{(1)}_{3}(t) + z^{(1)}_{4}(t)\right)\right)\\
+&=-\frac{i}{\kappa}\left(G_1\left(a_1(t) + a^{\dag}_1(t)\right) + G_2\left(a_2(t) + a^{\dag}_2(t)\right)\right)= -\frac{i}{\kappa}\left(G_1 X_1(t) + G_2 X_2(t)\right)\\
+\end{align}
+
+We see that the complex amplitudes are a weighted sum of the positions of the two oscillators. We can see that
+
+\begin{align}
+X_3(t) = W^{-1}_{5,i}a_i(t) = a_3(t)+a^{\dag}_3(t) = 0
+\end{align}
+
+and
+
+\begin{align}
+P_3(t) = i(a^{\dag}_3(t)-a_3(t)) = \frac{2}{\kappa}(G_1 X_1(t) + G_2 X_2(t))
+\end{align}
+
+The fact that the AM quadrature, $X_3(t)$ is zero in this approximation justifies the statements made above regarding neglecting $\tau_{\beta mn}$ to show why in the present configuration we have not been sensitive to the imaginary part of the covariance matrices. However, the fact that $X_3(t)$ is identically zero is a bit strange since it is a quantum operator and should have at least some fluctuations. I think this oddity again arises from the funny business with the adiabatic approximation.
+
+\subsection{Reconnect with general theory}
+
+Now that we have the above machinery we are in a position to make contact between the simple formulas we have found in the section above and the general theory earlier in this write up. The key is that we have found formulas for $X_3(t)$ and $P_3(t)$ which are the terms upon which statistics of $S(t)$ depend. In particular we have $X_3(t)$ and $P_3(t)$ are the two components of $\bv{v}^{(2)}$. To that end we can write
+
+\begin{align}
+\bv{v}^{(2)}(t) = \left(\bv{W}^{(2)}\right)^{-1}\bv{z}^{(2)}(t) = -(\bv{W}^{(2)})^{-1}\tilde{\bv{\epsilon}}^{-1}\tilde{\bv{\gamma}}\bv{z}^{(1)}(t)
+\end{align}
+
+with
+
+\begin{align}
+\bv{W}^{(2)} = 
+\frac{1}{2}\begin{bmatrix}
+1 & I\\
+1 & -I
+\end{bmatrix}
+\hspace{1 in}
+\left(\bv{W}^{(2)}\right)^{-1} = 
+\begin{bmatrix}
+1 & 1 \\
+-I & I
+\end{bmatrix}
+\end{align}
+
+And then of course since we know the time evolution for the components of $\bv{z}^{(1)}(t)$ we can put that in.
+
+\begin{align}
+v^{(2)}_i &= -\left(W^{(2)}\right)^{-1}_{ij}\tilde{\epsilon}^{-1}_{jk}\tilde{\gamma}_{kl}z^{(1)}_l(t)\\
+&= (-1)\left(W^{(2)}\right)^{-1}_{ij}\tilde{\epsilon}^{-1}_{jk}\tilde{\gamma}_{kl} e^{d_l t} z^{(1)}_l(0) + \int_{t'=0}^t (-1)\left(W^{(2)}\right)^{-1}_{ij}\tilde{\epsilon}^{-1}_{jk}\tilde{\gamma}_{kl} e^{d_l(t-t')}\xi^{(\text{eff})}_l(t') dt'
+\end{align}
+
+Consider the combination
+
+\begin{align}
+(-1)\left(W^{(2)}\right)^{-1}_{ij}\tilde{\epsilon}^{-1}_{jk}\tilde{\gamma}_{kl} = \sigma_{il}
+\end{align}
+
+This could be written something like
+
+\begin{align}
+\sigma_{il} = \tau_{ill} = \tau_{ilm} \delta_{ml}
+\end{align}
+
+with summation over $l$ not implied. What I am trying to say here is that the combination of matrices above essentially provides us with a formula for the $\tau_{ikl}$ eigenvector overlap tensor which was defined above. We can see that the last two indices are redundant with each other. That is because in the situation we are considering at the moment (oscillators far apart and probing on resonance,) the two bare oscillators are the same as the eigenvectors of the system. 
+
+There is also a bit of a difference having to do with dimensionality. The $\tau$ tensor is more general and, in this case, would be a 6x6x6 tensor. the $\sigma_{il}$ tensor here is only 2x4. The adiabatic approximation has separated out a lot of degrees of freedom and reduced dimensionalities which can make some things easier to work with.
+
+In any case, we can write
+
+\begin{align}
+v^{(2)}_i(t) = \sigma_{il}e^{d_l t}z^{(1)}_l(0) + \int_{t'=0}^t \sigma_{il} e^{d_l(t-t')}\xi^{(\text{eff})}_l(t') dt'
+\end{align}
+
+We can then proceed exactly as above in determining the outputs of the matched filters with the recognition that $P_{n^*} = v^{(2)}_2$, $X_{n^*} = v^{(2)}_1$, and $\tau_{ijk} = \tau_{ijk}\delta_{jk} = \tau_{ikk} =  \sigma_{ik}$.
+
+We can easily find
+
+\begin{align}
+\bv{\sigma} = 
+\frac{2}{\kappa}\begin{bmatrix}
+0 & 0 & 0 & 0\\
+G_1 & G_1 & G_2 & G_2
+\end{bmatrix}
+\end{align}
+
+We see here that we can write 
+
+\begin{align}
+\sigma_{1l} &= 0\\
+\sigma_{2,l} &= \frac{2}{\kappa}G_l
+\end{align}
+
+Where $G_l$ is the appropriate coupling constant. We get
+
+\begin{align}
+v^{(2)}_1(t) &= 0\\
+v^{(2)}_2(t) &= \frac{2}{\kappa}\left(G_l e^{d_l t}z^{(1)}_l(0) + \int_{t'=0}^t G_l e^{d_l t}\xi^{(\text{eff})}_l(t') dt'\right)
+\end{align}
+
+\subsection{Plugging into Matched Filters}
+
+I'll now plug the above specialized results into the matched filter formulas for reference.
+
+\begin{align}
+\Braket{S(t)} = -G\frac{A}{2}\Braket{v^{(2)}_{\alpha}(t)} = -G\frac{A}{2}\Braket{\sigma_{\alpha j} e^{d_j t}}\Braket{z^{(1)}_j(0)} = -GA\Braket{\frac{G_j}{\kappa}e^{d_j t}}\Braket{z^{(1)}_j(0)}
+\end{align}
+
+In the general treatment above I have allowed all of the components of $\bv{A}$, i.e. the system parameters, to be non-deterministic. However, in E3's treatment most of the system parameters are deterministic. In fact it is only the bare oscillator frequencies, $d_j$, which may vary from shot to shot. We can write
+
+\begin{align}
+\Braket{S(t)} &= -\frac{GA}{\kappa}G_j \Braket{e^{d_j t}}\Braket{z^{(1)}_j(0)} = G-j \Braket{e_j(t)}\Braket{z^{(1)}_j(0)}\\
+e_j(t) &= -\frac{GA}{\kappa} e^{d_j t}
+\end{align}
+
+We can then work out the matched filter mean.
+
+\begin{align}
+q_i &= \int_{t=0}^T m_i(t) S(t) dt\\
+\Braket{q_i} &= \int_{t=0}^T m_i(t) G_j \Braket{e_j(t)} dt \Braket{z^{(1)}_j(0)} = M_{ij} \Braket{z^{(1)}_j(0)}\\
+\Braket{z^{(1)}_l(0)} &= M^{-1}_{li} \Braket{q_i}
+\end{align}
+
+To work out the filter covariances we start with
+
+\begin{align}
+\Braket{S(t_1)S(t_2)} = \left(G\frac{A}{2}\right)^2\left(\text{Re}(C^{(2)}_{\alpha\alpha}(t_1,t_2)) + \text{Im}(C^{(2)}_{\alpha\beta}(t_{\text{max}},t_{\text{min}}))\right) + G^2\frac{B^2}{2}\delta(t_1-t_2)
+\end{align}
+
+Where $\alpha=2$ and $\beta = 1$. $C^{(2)}_{ij}(t_1,t_2) = \Braket{v^{(2)}_i(t_1)v^{(2)}_j(t_2)}$.
+
+As before these three terms will expand out into 5 terms which will show up in the matched filter formula
+
+\begin{align}
+q_iq_j &= \int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1)m_j(t_2) S(t_1)S(t_2) dt_1 dt_2\\
+\Braket{q_iq_j} &= \int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1)m_j(t_2) \Braket{S(t_1)S(t_2)} dt_1 dt_2\\
+\end{align}
+
+I'll expand out the above terms.
+
+\begin{align}
+&\text{Re}\left((C^{(2)}_{\alpha \alpha}(t_1,t_2)\right) =\\ &\left(\frac{2}{\kappa}\right)^2\left(G_i G_j \Braket{e^{d_{i} t_1} e^{d_j t_2}} \text{Re}\left(C^{(1)}_{ij}(0)\right)  + \int_{t'=0}^{t_{\text{min}}} G_i G_j \Braket{e^{d_{i} (t_1-t')} e^{d_j (t_2-t')}} \text{Re}\left(\zeta^{(\text{eff})}_{ij}\right) dt' \right)
+\end{align}
+
+Where $\Braket{\xi^{(\text{eff})}_i(t')\xi^{(\text{eff})}_j(t'')} = \zeta^{(\text{eff})}_{ij} \delta(t'-t'')$
+
+We know from above that $C^{(2)}_{\alpha \beta}(t_1,t_2) = 0$ since $v^{(2)}_1(t) = 0$.
+
+We can then plug into the filter formula
+
+\begin{align}
+&\Braket{q_i q_j} =\\
+&\int_{t_1=0}^T \int_{t_2 = 0}^T m_i(t_1)m_j(t_2) \left(\frac{2}{\kappa}\right)^2\left(G\frac{A}{2}\right)^2 G_k G_l \Braket{e^{d_k t_1} e^{d_l t_2}} dt_1 dt_2 \text{Re}\left(C^{(1)}_{kl}(0,0)\right)\\
+&+\int_{t_1=0}^T \int_{t_2=0}^T \int_{t'=0}^{t_{\text{min}}} m_i(t_1)m_j(t_2) \left(\frac{2}{\kappa}\right)^2\left(G\frac{A}{2}\right)^2 G_k G_l \Braket{e^{d_k (t_1-t')} e^{d_l (t_2-t')}} dt' dt_1 dt_2 \text{Re}\left(\zeta^{(1)}_{kl}\right)\\
+&+\int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1) m_j(t_2) G^2 \frac{B^2}{2} \delta(t_1-t_2)dt_1 dt_2
+\end{align}
+
+Simplifying
+
+\begin{align}
+&\Braket{q_i q_j} =\\
+&\int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1) m_j(t_2) G_k G_l \Braket{e_k(t_1) e_l(t_2)} dt_1 dt_2 \text{Re}\left(C^{(1)}_{kl}(0,0)\right)\\
+&+\int_{t_1=0}^T \int_{t_2=0}^T \int_{t'=0}^{t_{\text{min}}} m_i(t_1) m_j(t_2) G_k G_l \Braket{e_k(t_1-t')e_l(t_2-t')} dt' dt_1 dt_2 \text{Re}\left(\zeta^{(\text{eff})}_{kl}\right)\\
+&+ G^2\frac{B^2}{2}\int_{t_1=0}^T m_i(t_1)m_j(t_1) dt_1
+\end{align}
+
+As before we define
+
+\begin{align}
+M^{\text{Re}}_{ijkl} &= \int_{t_1=0}^T \int_{t_2=0}^T m_i(t_1) m_j(t_2) G_k G_l \Braket{e_k(t_1) e_l(t_2)} dt_1 dt_2\\
+K^{\text{Re}}_{ijkl} &=\int_{t_1=0}^T \int_{t_2=0}^T \int_{t'=0}^{t_{\text{min}}} m_i(t_1) m_j(t_2) G_k G_l \Braket{e_k(t_1-t')e_l(t_2-t')} dt' dt_1 dt_2\\
+K^{\text{SN}}_{ij} &= G^2\frac{B^2}{2}\int_{t_1=0}^T m_i(t_1)m_j(t_1) dt_1
+\end{align}
+
+So that
+
+\begin{align}
+\Braket{q_i q_j} = M^{\text{Re}}_{ijkl} \text{Re}\left(C^{(1)}_{kl}(0,0)\right) + K^{\text{Re}}_{ijkl}\text{Re}\left(\zeta^{(\text{eff})}_{kl}\right) + K^{\text{SN}}_{ij}
+\end{align}
+
+And inverting with $L_{ijmn}M^{\text{Re}}_{ijkl} = \delta_{mk}\delta_{nl}$
+
+\begin{align}
+\text{Re}\left(C^{(1)}_{mn}(0,0)\right) = L_{ijmn}\Braket{q_i q_j} + L_{ijmn}K^{\text{Re}}_{ijkl}\text{Re}\left(\zeta^{(\text{eff})}_{kl}\right) + L_{ijmn}K^{\text{SN}}_{ij}
+\end{align}
+
+\subsection{Sinusoidal Representation}
+
+There is one final piece to make contact with the existing results. Much of what I have presented here has utilized the exponential and complex amplitude representation for the oscillators. However, a lot of the matched filter work that we have done so far has been in sinusoidal representation. Here is how I can express that in this sort of language.
+
+First recall that we can write
+
+\begin{align}
+\bv{z}^{(1)} = 
+\begin{bmatrix}
+z_1\\
+z_2\\
+z_3\\
+z_4\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+a_1\\
+a_1^{\dag}\\
+a_2\\
+a_2^{\dag}\\
+\end{bmatrix}
+=
+\frac{1}{2}
+\begin{bmatrix}
+1 & i & 0 & 0\\
+1 & -i & 0 & 0\\
+0 & 0 & 1 & i\\
+0 & 0 & 1 & -i\\
+\end{bmatrix}
+\begin{bmatrix}
+X_1\\
+P_1\\
+X_2\\
+P_2\\
+\end{bmatrix}
+=
+\bv{W}^{(1)}\bv{v}
+\end{align}
+
+Similarly we can write
+
+\begin{align}
+\bv{e}(t) =
+\left(-\frac{GA}{\kappa}\right)
+\begin{bmatrix}
+e^{d_1 t}\\
+e^{d_2 t}\\
+e^{d_3 t}\\
+e^{d_4 t}
+\end{bmatrix}
+=
+\left(-\frac{GA}{\kappa}\right)
+\begin{bmatrix}
+1 & i & 0 & 0\\
+1 & -i & 0 & 0\\
+0 & 0 & 1 & i\\
+0 & 0 & 1 & -i\\
+\end{bmatrix}
+\begin{bmatrix}
+e^{\text{Re}(d_1) t} \cos\left(\text{Im}(d_1) t\right)\\
+e^{\text{Re}(d_1) t} \sin\left(\text{Im}(d_1) t\right)\\
+e^{\text{Re}(d_3) t} \cos\left(\text{Im}(d_3) t\right)\\
+e^{\text{Re}(d_3) t} \sin\left(\text{Im}(d_3) t\right)\\
+\end{bmatrix}
+= \bv{W}^{(1)} \bv{h}(t)
+\end{align}
+
+Where I've defined
+
+\begin{align}
+\bv{h}(t) = \left(-\frac{2GA}{\kappa}\right) 
+\begin{bmatrix}
+e^{\text{Re}(d_1) t} \cos\left(\text{Im}(d_1) t\right)\\
+e^{\text{Re}(d_1) t} \sin\left(\text{Im}(d_1) t\right)\\
+e^{\text{Re}(d_3) t} \cos\left(\text{Im}(d_3) t\right)\\
+e^{\text{Re}(d_3) t} \sin\left(\text{Im}(d_3) t\right)\\
+\end{bmatrix}
+\end{align}
+
+Now reconsider
+
+\begin{align}
+v^{(2)}_2(t) &= \frac{2}{\kappa}\left(G_l e^{d_l t}z^{(1)}_l(0) + \int_{t'=0}^t G_l e^{d_l t}\xi^{(\text{eff})}_l(t') dt'\right)\\
+&= \left(\frac{-2}{GA}\right)\left(G_l e_l(t) z^{(1)}_l(0) + \int_{t'=0}^t G_l e_l(t-t') \xi^{(\text{eff})}_l(t')dt'\right)
+\end{align}
+
+We rewrite this as
+
+\begin{align}
+v^{(2)}_2(t) &= \left(\frac{-2}{GA}\right) \left(W^{(1)}_{lj}W^{(1)}_{lk} G_l h_j(t) v^{(1)}_k(0) + \int_{t'=0}^T W^{(1)}_{lj}W^{(1)}_{lk} G_l h_j(t) \eta^{(\text{eff})}_k(0) dt' \right)
+\end{align}
+
+We can evaluate (summing on $l$)
+
+\begin{align}
+G_l W^{(1)}_{lj} W^{(1)}_{lk} = 
+\frac{1}{2}
+\begin{bmatrix}
+G_1 & 0 & 0 & 0\\
+0 & -G_1 & 0 & 0\\
+0 & 0 & G_2 & 0\\
+0 & 0 & 0 & -G_2
+\end{bmatrix}
+= \frac{1}{2}\delta_{jk}\tilde{G}_k
+\end{align}
+
+Where the $\tilde{G}_k$ has to be annoyingly introduced to cope with those pesky negative signs. We can then write
+
+\begin{align}
+v^{(2)}_2(t) &= \left(\frac{-1}{GA}\right) \left(\tilde{G}_j h_j(t) v^{(1)}_j(0) + \int_{t'=0}^T \tilde{G}_j h_j(t) \eta^{(\text{eff})}_j(0) dt' \right)
+\end{align}
+
+This is basically the same form as the equation above in terms of $\bv{e}(t)$ and $\bv{z}^{(1)}$. The only difference is a couple of factors of 2 and minus signs here and there which I may not have kept perfect track of here.
+
+The upshot is that applying the matched filters in one basis gives you access to $\bv{z}^{(1)}$ and the correlation matrix thereof and working in the other basis gives you access to $\bv{v}^{(1)}$ and the correlation matrix thereof. Of course, the transformation can always be made at the beginning or end of the problem by applying the $\bv{W}^{(1)}$ matrix appropriately.
+
+\section{Cross Correlation}
+
+Here I will work out the details for the case where we look at cross correlations between the Q and I quadratures.
+
+I define
+
+\begin{align}
+q^q_i = \int_{t=0}^T m_i
+\end{align}
+
+
+\end{document}

@@ -1,0 +1,195 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{braket}
+\usepackage{siunitx}
+
+\newcommand{\ep}{\epsilon}
+
+\begin{document}
+\title{Cavity Parameter Summary}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+Fundamental Constants:
+
+\begin{align}
+\hbar &= 1.054~571~817\ldots \times 10^{-34} \text{ J s}\\
+c &= 299~792~458 \text{ m s}^{-1}\\
+\epsilon_0 &= 8.854~187~812~8 \times 10^{-12} \text{ F m}^{-1}
+\end{align}
+
+Gaussian Modes in a cavity.
+
+\begin{align}
+\delta &= R_1 + R_2 - L\\
+z_0 &= \frac{L(L-R_2)}{(L-R_1) + (L-R_2)}\\
+z_R &= \sqrt{z_0(R_1-z_0)}\\
+w_0 &= \sqrt{\frac{z_R \lambda}{\pi}}\\
+w(z) &= w_0\sqrt{1+\left(\frac{z-z_0}{z_R}\right)^2}\\
+w_{\text{mir}} &= w(0), w(L)\\
+V_{\text{mode}} &= \frac{1}{4} \pi w_0^2 L\\
+\end{align}
+
+Repeated in the case $R_1 = R_2$:
+\begin{align}\
+\delta &= 2R - L\\
+z_0 &= \frac{L}{2}\\
+z_R &= \frac{\sqrt{L\delta}}{2}\\
+w_0 &= \sqrt{\frac{\lambda}{2\pi}}(L\delta)^{\frac{1}{4}}\\
+w(z) &= w_0\sqrt{1+\left(\frac{z-z_0}{z_R}\right)^2}\\
+w_{\text{mir}} &= w_0\sqrt{1+\frac{L}{\delta}}\\
+V_{\text{mode}} &= \frac{\lambda}{8} L^{\frac{3}{2}}\sqrt{\delta}\\
+\end{align}
+
+
+Fabry-Perot Resonator
+
+\begin{align}
+g_{m,1} &= 1 - \frac{L}{R_1}\\
+g_{m,2} &= 1 - \frac{L}{R_2}\\
+f_{\text{FSR}} &= \frac{c}{2L}\\
+f_{\text{TMS}} &= f_{\text{FSR}} \left(1-\frac{\arccos{\sqrt{g_1g_2}}}{\pi}\right)\\
+\mathcal{F} &= \frac{2\pi}{T_1 + T_2 + L_1 + L_2}\\
+\Delta \nu &= \frac{f_{FSR}}{\mathcal{F}}\\
+\kappa &= 2\pi \times \Delta \nu = 2\pi \times \frac{f_{\text{FSR}}}{\mathcal{F}} = \frac{\pi c}{L\mathcal{F}}
+\end{align} 
+
+$\Delta\nu$ is the full width and half max (FWHM) for the cavity transmission profile.
+
+Cavity Angles
+
+\begin{align}
+\theta_{1W} &= \arctan\left(\frac{\lambda}{\pi w_0}\right)\\
+\theta_{3W} &= \arctan\left(\frac{3 \lambda}{\pi w_0}\right)\\
+\text{NA}_{1W} &= \sin(\theta_{1W})\\
+\text{NA}_{3W} &= \sin(\theta_{3W})\\
+\theta_{\text{mir}} &= \arctan\left(\frac{r_{\text{mir}}}{\frac{L_{\text{cav}}}{2}}\right)\\
+\theta_{\text{trans}} &= \frac{\pi}{2} - \theta_{\text{mir}}\\
+\text{NA}_{\text{mir}} &= \sin(\theta_{\text{mir}})\\
+\text{NA}_{\text{trans}} &= \sin(\theta_{\text{trans}})\\
+\theta_{\text{back}} &= \arctan\left(\frac{r_{\text{mir}}}{\frac{L_{\text{cav}}}{2} + L_{\text{mir}}} \right)\\
+\text{NA}_{\text{back}} &= \sin(\theta_{\text{back}})
+\end{align}
+
+Angular Tolerances. If there is a relative misalignment of the centers of the two mirrors by an amount $\Delta y_{\text{mis}}$ then the mode supported by the cavity will be tilted by $\Delta \theta_{\text{mis}}$. We set a tolerance which is to say that three mode waists should fall on both the input facet of the mirrors and the output facets of the mirrors. This is to say that
+
+\begin{align}
+\Delta\theta_{\text{mis}} + \theta_{3W} &< \text{min}(\theta_{\text{mir}}, \theta_{\text{back}})\\
+\Delta\theta_{\text{mis}}  &< \text{min}(\theta_{\text{mir}}, \theta_{\text{back}}) - \theta_{3W}\\
+\end{align}
+
+If the distance from concentric is given by $\delta$ then the misalignment angle is given by
+
+\begin{align}
+\Delta\theta_{\text{mis}} = \arctan\left(\frac{\Delta y_{\text{mis}}}{\delta}\right)
+\end{align}
+
+The positional misalignment allowable is then
+
+\begin{align}
+\Delta y_{mis} = \delta \tan(\Delta \theta_{mis})
+\end{align}
+
+If we consider an angular tip about the back one of the mirrors we get
+
+\begin{align}
+\Delta \theta_{tip} = \arctan\left(\frac{\Delta y_{mis}}{\frac{L}{2} - L_{\text{mir}}}\right)
+\end{align}
+
+For small misalignment tolerances we have
+
+\begin{align}
+\Delta y_{mis} \approx \delta \Delta\theta_{mis}
+\end{align}
+
+\begin{figure}[bt!] 
+\includegraphics[width=6.5in]{fig_cav_geom}
+\caption{}
+\end{figure}
+
+Rubidium $D_2$ transition properties
+
+\begin{align}
+\lambda &= \SI{780.241 209 686(13)}{nm}\\
+\omega_0 &= 2\pi \frac{c}{\lambda}\\
+\Gamma &= 2\pi \times \SI{6.066 6(18)}{MHz}\\
+d_{ge} = d_{\text{cycling}} &= \SI{2.534 44(52)d-29}{C\cdot m}\\
+d_{JJ} &= \SI{3.58424(74)d-29}{C \cdot m}
+\end{align}
+
+$d_{ge}$ is the transition element for the cycling transition and $d_{JJ}$ is the reduced matrix element for the $J=\frac{1}{2} \rightarrow J'=\frac{3}{2}$ $D_2$ transition.
+
+Cavity QED Parameters
+
+\begin{align}
+g_0 &= \sqrt{\frac{\omega_0 d_{ge}^2}{2\hbar \epsilon_0 V_{\text{mode}}}}\\
+C &= \frac{g_0^2}{\kappa \Gamma}\\
+\ep_{\text{det}} &= \frac{T_{\text{out}}}{T_{\text{Tot}} + L_{\text{Tot}}}
+\end{align}
+
+\begin{tabular}{|l|c|}
+\hline
+\multicolumn{2}{|l|}{\textbf{Design specifications}}
+\\\hline\hline
+Mirror ROC $(R_1, R_2)$ & 5 mm\\\hline
+Distance from concentric $(d)$ & \SI{500}{\um}\\\hline
+Cavity length $(L_{\text{cav}})$& 9.5 mm\\\hline
+Mode waist $(w_0)$ & \SI{16.4}{\um}\\\hline
+Rayleigh range $(z_R)$ & \SI{1.1}{\mm}\\\hline
+Free spectral range $(f_{\text{FSR}})$ & \SI{15.8}{GHz}\\\hline
+Transverse mode spacing $(f_{\text{TMS}})$ & \SI{2.27}{GHz}\\\hline
+Estimated mirror losses $(L_1 + L_2)$ & 190 ppm\\\hline
+Mirror transmission $(T_1, T_2)$ & 2, 250 ppm\\\hline
+Finesse $(\mathcal{F})$ & 14,300\\\hline
+Cavity outcoupling efficiency $(\ep_{C})$ & 57\%\\\hline
+Cavity decay ($\kappa$) & $2\pi\times \SI{1.1}{\MHz}$\\\hline
+Excited state decay ($\Gamma$) & $2\pi\times \SI{6.1}{\MHz}$\\\hline
+Vacuum Rabi coupling ($g$) & $2\pi\times \SI{3.2}{\MHz}$\\\hline
+Cooperativity $(C)$ & 6.2\\\hline
+\end{tabular}
+
+We can expand out the formula for $C$.
+
+\begin{align}
+C &= \frac{g_0^2}{\kappa \Gamma}\\
+g_0^2 &= \frac{\omega_0 d_{ge}^2}{2\hbar \ep_0 V_{\text{mode}}}\\
+V_{\text{mode}} &= \frac{\lambda}{8} L^{\frac{3}{2}}\sqrt{\delta}\\
+\kappa &= \frac{\pi c}{L\mathcal{F}}\\
+\Gamma &= \frac{\omega_0^3 d_{JJ}^2}{3 \pi \ep_0 \hbar c^3} \frac{2J_g + 1}{2J_e + 1} = \frac{\omega_0^3 d_{JJ}^2}{3 \pi \ep_0 \hbar c^3} g_{\Gamma}
+\end{align}
+
+Where $g_{\Gamma}$ is a degeneracy factor for the transition.
+
+Some appreciable algebra shows that this reduces to
+
+\begin{align}
+C = \left(\frac{d_{\text{cycling}}}{d_{JJ}}\right)^2 \frac{3}{g_{\Gamma}\pi^2} \frac{\lambda}{\sqrt{L\delta}} \mathcal{F}
+\end{align}
+
+Note that $d_{\text{cycling}} = d_{JJ}\sqrt{g_{\Gamma}}$ and $g_{\Gamma} = \frac{1}{2}$ so that
+
+\begin{align}
+C = \frac{3}{\pi^2} \frac{\lambda}{\sqrt{L\delta}} \mathcal{F}
+\end{align}
+
+Let's rewrite $L\delta$ in terms only of $g$ and $R$.
+
+\begin{align}
+g &= 1 - \frac{L}{R}\\
+L &= R(1-g)\\
+\delta &= 2R - L = 2R - R(1-g) = R(1+g)\\
+L\delta &= R^2(1-g)(1+g) = R^2(1-g^2)
+\end{align}
+
+So we see that
+
+\begin{align}
+C = \frac{3}{\pi^2} \frac{\lambda}{R} \frac{1}{\sqrt{1-g^2}} \mathcal{F}
+\end{align}
+
+This says that to achieve high cooperativity you want mirrors with a small radius of curvature in a cavity with high finesse (low loss mirrors, ideally with transmission higher than losses so detection efficiency is not adversely affected), and a near degenerate cavity: either $g \approx -1$ (near concentric) or $g\approx 1$ (near planar).
+
+\end{document}

@@ -1,0 +1,375 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{Wiener-Khintchine Theorem}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this document I will explain and prove the Einstein-Wiener-Khintchine theorem.
+
+
+\section{Two Dimensional Change of Variables}
+Function of two variables which only depends on the difference of those two variables.
+
+Consider
+
+\begin{align}
+f(t,s) = f(t-s,0)
+\end{align}
+
+Also consider that we are interested in the integral of this function over a 2-dimensional section of $\mathbb{R}^2$ from $a<t<b$ and $a<s<b$.
+
+\begin{align}
+\int_{t=a}^{b} \int_{s=a}^b f(t,s) ds dt
+\end{align}
+
+the fact that $f(t,s) = f(t-s,0)$ suggests we perform a coordinate transformation.
+
+\begin{align}
+u = t - s\\
+v = t + s
+\end{align}
+
+So that $f(t,s) = f(t-s,0) = f(u,0)$
+
+We note the Jacobian of this transformation
+
+\begin{align}
+J = 
+\begin{bmatrix}
+1 & -1\\
+1 & 1
+\end{bmatrix}\\
+\text{Det}(J) = |J| = 2\\
+dudv = |J| dsdt\\
+dtds = |J|^{-1} dudv
+\end{align}
+
+The trick now to convert the integral from a $ds dt$ integral into a $du dv$ integral is to determine the bounds of the integration.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{WK.png}
+\caption{Boundary of integration}
+\end{figure}
+
+Here is a cartoon showing the region of integration. The horizontal axis is $t$ and the vertical axis is $s$. The two red lines represent lines of constant $u$ with $u$ increasing from top left to bottom right. Lines of constant $v$ would be orthogonal to the lines of constant $u$ with $v$ increasing from bottom left to top right.
+
+By tilting our heads 45 degrees we see that, it makes sense to slice this integral into two parts. One where we integrate $u$ from $a-b<u<0$ where at each value of $u$ we integrate $v$ from $2a-u<v<2b+u$ and another one where we integrate $u$ from $0<u<b-a$ where at each value of $u$ we integrate $v$ from $2a+u<v<2b-u$.
+
+So we find
+
+\begin{align}
+\int_{t=a}^{b} \int_{s=a}^b f(t,s) ds dt &= \int_{u=a-b}^0 \int_{v=2a-u}^{2b+u} |J|^{-1} f(u,0) du dv + \int_{u=0}^{b-a} \int_{v = 2a+u}^{2b-u} |J|^{-1} f(u,0) du dv\\
+&= \int_{u=a-b}^0 2(b-a+u)|J|^{-1}f(u,0) du + \int_{u=0}^{b-a} 2(b-a-u)|J|^{-1}f(u,0) du\\
+&= \int_{u=a-b}^{b-a} 2|J|^{-1} (b-a - |u|)f(u,0) du\\
+& = \int_{u=a-b}^{b-a} (b-a-|u|)f(u,0) du
+\end{align}
+
+We see we have converted a two dimensional integral into a one-dimensional integral. This constitutes most of the work (and usefulness) of the Wiener-Khintchine theorem.
+
+\section{Power Spectral Density}
+
+The Wiener-Khintchine theorem relates the power spectral density of a signal $X(t)$ to the auto-correlation function of that signal. $X(t)$ is a random process meaning that for each moment of time $t$, $X(t)$ is a random variable with some known or unknown distribution. First we work to write down the definition of the power spectral density.
+
+The energy contained in a signal might be
+
+\begin{align}
+E = \int_{t=-\infty}^{+\infty} (X(t))^2 dt
+\end{align}
+
+For example, maybe $X(t)$ represents the current, $I(t)$ flowing through a resistor so that the total energy dissipated is related to the time integral of $P(t) = I(t)^2 R \propto (X(t))^2$. But for many signals such as $X(t) = \cos(\omega t)$ that integral does not converge. This motivates the following definitions.
+
+Let's consider instead a windowed function and calculate the energy dissipated in that window.
+
+\begin{align}
+X_{t_0}(t) =
+\begin{cases}
+X(t), & \text{for } |t|\le \frac{t_0}{2}\\
+0, & \text{for } |t|\ge \frac{t_0}{2}
+\end{cases}
+\end{align}
+
+So that the energy dissipated in a time window is
+
+\begin{align}
+E_{t_0} = \int_{t=-\frac{t_0}{2}}^{+\frac{t_0}{2}} (X(t))^2 dt = \int_{t=-\infty}^{+\infty} (X_{t_0}(t))^2 dt = \int_{f=-\infty}^{+\infty} |\tilde{X}_{t_0}(f)|^2 df
+\end{align}
+
+Where we have applied Plancherel's theorem to convert into frequency space. As usual we use the $(a,b) = (0,+2\pi)$ convention for the Fourier transform.
+
+\begin{align}
+\tilde{X}_{t_0}(f) = \int_{t=-\infty}^{+\infty} e^{i 2\pi f t} X_{t_0}(t) dt = \int_{t=-\frac{t_0}{2}}^{\frac{t_0}{2}} e^{i 2\pi f t} X_{t_0}(t) dt
+\end{align}
+
+These integrals are all infinite if the total energy in the signal is infinite, however the power in the signals may be finite even if the integrated power is infinite. To that end we write down the time averaged power.
+
+\begin{align}
+P_{t_0} = \frac{E_{t_0}}{t_0} = \frac{1}{t_0} \int_{f=-\infty}^{+\infty} |\tilde{X}_{t_0}(f)|^2 df = 
+\end{align}
+
+The integrand of the integral is related to the power content of the signal at a given frequency. However, this function is a bit distorted by the windowing function. For example, if the window is very short then $\tilde{X}_{t_0}(f)$ would have very little content at low frequency as the window acts as a high pass filter. To alleviate this, in the ideal case we would let $t_0$ go to infinity. In other words, the longer we integrate the spectrum the better we can determine its spectrum. We have
+
+\begin{align}
+P = \lim_{t_0\rightarrow \infty} P_{t_0} = \lim_{t_0\rightarrow \infty}\int_{f=-\infty}^{+\infty}  \frac{1}{t_0}  |\tilde{X}_{t_0}(f)|^2 df
+\end{align}
+
+Note that through all of this, most of the symbols are random variables so we must take the expectation value to get analytic formulas.
+
+\begin{align}
+\braket{P} = \int_{f=-\infty}^{+\infty} \lim_{t_0\rightarrow \infty}\left(  \frac{1}{t_0}  \braket{|\tilde{X}_{t_0}(f)|^2 }\right)df
+\end{align}
+
+We define the power spectral density
+
+\begin{align}
+S_{XX}(f) = \lim_{t_0\rightarrow \infty}\left( \frac{1}{t_0}  \braket{|\tilde{X}_{t_0}(f)|^2 }\right)
+\end{align}
+
+So that
+
+\begin{align}
+\braket{P} = \int_{f=-\infty}^{+\infty} S_{XX}(f) df
+\end{align}
+
+The total power in the signal is the integral of the power spectral density over all frequency. We can find the frequency in a given band by only integrating over that frequency band.
+
+We can analogously define the cross power spectral density which tells us  about the correlation between two signals within a frequency band.
+
+\begin{align}
+S_{XY}(f) = \lim_{t_0\rightarrow{\infty}}\left(\frac{1}{t_0}\braket{\tilde{X}_{t_0}(f)\tilde{Y}^*_{t_0}(f)}\right)
+\end{align}
+
+Clearly the power spectral density is the special case of the cross power spectral density when $Y=X$.
+
+\section{Wiener-Khintchine Theorem}
+
+We define the auto-correlation function of the signal $X(t)$
+
+\begin{align}
+R_{XX}(t,s) = \braket{X(t)X(s)}
+\end{align}
+
+and the correlation function of $X(t)$ and $Y(t)$ as
+
+\begin{align}
+R_{XY}(t,s) = \braket{X(t)Y^*(s)}
+\end{align}
+
+The Wiener-Khintchine theorem tell us that if $R_{XY}(t,s) = R_{XY}(t-s,0)$ (if this is the case we say $X(t)$ is a \textit{stationary} process) then the Fourier transform of $R_{XY}(\tau,0)$ is equal to the cross power spectral density
+
+\begin{align}
+S_{XY}(f) = \tilde{R}_{XY}(f)
+\end{align}
+
+Now to prove this.
+
+\begin{align}
+\braket{\tilde{X}_{t_0}(f)\tilde{Y}_{t_0}^*(f)} &= \left<\int_{t=-\frac{t_0}{2}}^{+\frac{t_0}{2}}\int_{s=-\frac{t_0}{2}}^{+\frac{t_0}{2}} X(t)Y^*(s) e^{i 2\pi f(t-s)} dt ds\right>\\
+&= \int_{t=-\frac{t_0}{2}}^{+\frac{t_0}{2}}\int_{s=-\frac{t_0}{2}}^{+\frac{t_0}{2}} R_{XY}(t,s) e^{i 2\pi f (t-s)} dt ds\\
+&= \int_{t=-\frac{t_0}{2}}^{+\frac{t_0}{2}}\int_{s=-\frac{t_0}{2}}^{+\frac{t_0}{2}} R_{XY}(t-s,0) e^{i 2\pi f (t-s)} dt ds
+\end{align}
+
+Note that both terms of the integrand only depend on $u=\tau=t-s$ which is exactly the condition necessary for the proof from above with $a=-\frac{t_0}{2}$ and $b=+\frac{t_0}{2}$. Putting it all together gives us
+
+\begin{align}
+\braket{\tilde{X}_{t_0}(f)\tilde{Y}_{t_0}^*(f)} = \int_{\tau=-t_0}^{+t_0}(t_0-|\tau|)R_{XY}(\tau,0) e^{i 2\pi f \tau} d\tau
+\end{align}
+
+To find the cross power spectral density we must divide by $t_0$ and take the limit as $t_0\rightarrow \infty$.
+
+\begin{align}
+S_{XY}(f) = \lim_{t_0\rightarrow \infty}\int_{\tau=-t_0}^{+t_0} \left(1-\frac{|\tau|}{t_0}\right) R_{XY}(\tau,0) e^{i 2\pi f t} d\tau
+\end{align}
+
+Note the shape of the two terms in the integrand within the bounds of the integral. The first term is proportional to 1 is constant throughout the integration region. The second term proportional to $|\tau|$ gets as large as 1 at the extreme ends of the integration region but decreases down to zero at the center near $\tau=0$. We note that as $t_0\rightarrow\infty$ this second term gets smaller and smaller in the region close to $\tau=0$. Note in addition that the correlation function drops off for some value of $\tau$ and becomes close to zero. So this means for $t_0$ very large the contribution of this second term gets smaller and smaller. This means that in the limit, we are justified in dropping the second term so that
+
+\begin{align}
+S_{XY}(f) &= \lim_{t_0\rightarrow \infty}\int_{\tau=-t_0}^{+t_0} R_{XY}(\tau,0) e^{i 2\pi f t} d\tau = \int_{\tau=--\infty}^{+\infty}  R_{XY}(\tau,0) e^{i 2\pi f t} d\tau = \tilde{R}_{XY}(f)
+\end{align}
+
+Where $\tilde{R}_{XY}(f) = \mathcal{FT}[R_{XY}(t,0)](f)$
+
+\begin{align}
+S_{XY}(f) &= \tilde{R}_{XY}(f)
+\end{align}
+
+There is also a nice relation where the Fourier transforms of the original processes can be used (with the Wiener-Khintchine theorem) to calculate the power spectral density.
+
+\begin{align}
+\tilde{R}_{XY}(f) = \int_{\tau=-\infty}^{+\infty}  \braket{X(\tau)Y^*(0)} e^{i 2\pi f t} d\tau
+\end{align}
+
+But we know 
+
+\begin{align}
+\int_{-\infty}^{+\infty} e^{i2\pi f \tau} X(\tau) = \tilde{X}(f)\\
+Y^*(0) = \int_{f=-\infty}^{+\infty} \tilde{Y}^*(f') df'
+\end{align}
+
+So
+
+\begin{align}
+\int_{\tau=--\infty}^{+\infty}  \braket{X(\tau)Y^*(0)} e^{i 2\pi f t} d\tau = \int_{f=-\infty}^{+\infty} \braket{\tilde{X}(f)\tilde{Y}^*(f')} df'
+\end{align}
+
+I'll summarize all of these results
+
+\begin{align}
+S_{XY}(f) &= \lim_{t_0\rightarrow \infty} \left( \frac{1}{t_0} \braket{\tilde{X}_{t_0}(f)\tilde{Y}_{t_0}^*(f)}\right)\\
+= \tilde{R}_{XY}(f) &= \int_{\tau=-\infty}^{+\infty} e^{i2\pi f \tau} \braket{X(\tau)Y^*(0)} d\tau\\
+&= \int_{f=-\infty}^{+\infty}\braket{\tilde{X}(f)\tilde{Y}^*(f')}df'
+\end{align}
+
+
+
+
+
+
+
+
+\begin{comment}
+\section{Causal Power Spectral Density}
+
+At the moment I am interested in the power spectral density considered only for positive time. This more closely resembles what we calculate in the experiment. That is, the experiment begins at a certain time and we integrate from that time on to calculate the power spectral density. We can run the integration time longer but we can't run it earlier in time. To that end I'm interested in a power spectral density which comes from
+
+\begin{align}
+\bar{X}_{t_0}(t) =
+\begin{cases}
+X(t), & \text{for } 0\le t\le t_0\\
+0, & \text{for } t<0 \text{ or }t > t_0
+\end{cases}
+\end{align}
+
+In fact, we should consider $X(t)$ itself to be zero or undefined for $t<0$.
+
+We then have
+
+\begin{align}
+\tilde{\bar{X}}_{t_0}(f) = \int_{t=-\infty}^{+\infty}  e^{i 2\pi f t} \bar{X}_{t_0}(t)dt = \int_{t=0}^{t_0} e^{i2\pi f t}\bar{X}_{t_0}(t)
+\end{align}
+
+And
+
+\begin{align}
+\bar{S}_{XX} = \lim_{t_0\rightarrow \infty} \left(\frac{1}{t_0} \braket{|\tilde{\bar{X}}_{t_0}(f)|^2 }\right)
+\end{align}
+
+We'll re-create the Wiener-Khintchine theorem for the causal power spectral density.
+
+First
+
+\begin{align}
+R(t,s) = \braket{X(t)X(s)}
+\end{align}
+
+We suppose this signal is a stationary process so that $R(t,s) = R(t-s,0)$. However, note that there is a little bit of a problem here. We know that this process is not in fact stationary. Consider $r,s>0$ with $s > t$. We then have $R(t,s)=\braket{X(t)X(s)}$ This is in general non-zero. However, now consider $R(t-s,0) = \braket{X(t-s)X(0)}$. Since $t-s<0$ we have that $R(t-s,0)=0$ or undefined since it involves $X(\tau)$ with $\tau<0$. We see then that in this case $R(t-s,0)\neq R(t,s)$ in general for this sort of signal. 
+
+However, let's return briefly to the autocorrelation of a process which is stationary for all time, positive and negative. In that case $R(t,s) = R(t-s,0)$ but we can also write $R(t,s) = R(t-s,0) = R(0,-(t-s))$. We now consider the case where $s>t$ again and we see that all terms are positive in the final expression. This means that even for our causal process we could have an autocorrelation function which satisfies
+
+\begin{align}
+R(t,s) = 
+\begin{cases}
+R(t-s,0), & \text{for } t>s\\
+R(0,-(t-s)), & \text{for } t<s\\
+\end{cases}
+\end{align}
+
+I'll point out one more thing about autocorrelation function which might explain a little bit about why I am taking these pains here. For a classical stationary process it is easy to prove the auto correlation function is an even function of the time difference $\tau =t-s$.
+
+\begin{align}
+R(\tau,0) = \braket{X(\tau)X(0)} = \braket{X(0)X(\tau)} = \braket{X(-\tau)X(0)} = R(-\tau,0)
+\end{align}
+
+However, this proof involved commuting $X(\tau)$ and $X(0)$. Classically this is not a problem. Given this feature of the classical auto correlation function It seems silly to worry about whether the time difference is positive or negative. However, quantum mechanically, we cannot commute these two variables in general  and thus we can actually have asymmetric auto-correlation functions for stationary processes, a distinctly quantum mechanical feature.
+
+With all of this in mind we define a negative time-extended autocorrelation function for a a causal process which can be described as stationary during positive times.
+
+\begin{align}
+\check{R}(\tau) = 
+\begin{cases}
+R(\tau,0), & \text{for } \tau>0\\
+R(0,-\tau), & \text{for } \tau<0\\
+\end{cases}
+\end{align}
+
+And we say a process is stationary if
+
+\begin{align}
+R(t,s) = \check{R}(t-s)
+\end{align}
+
+Let's work out the Wiener-Khintchine theorem for this sort of process proceeding exactly as before.
+
+\begin{align}
+\braket{|\tilde{X}_{t_0}(f)|^2} &= \left<\int_{t=0}^{+t_0}\int_{s=0}^{+t_0} X(t)X(s) e^{i 2\pi f(t-s)} dt ds\right>\\
+&= \int_{t=0}^{+t_0}\int_{s=0}^{+t_0} R(t,s) e^{i 2\pi f (t-s)} dt ds\\
+&= \int_{t=0}^{+t_0}\int_{s=0}^{+t_0} \check{R}(t-s) e^{i 2\pi f (t-s)} dt ds
+\end{align}
+
+Again this function satisfies the conditions necessary for the change of variables theorem above with $u=\tau=t-s$ and now with $a=0$ and $b=t_0$ so
+
+\begin{align}
+\braket{|\tilde{X}_{t_0}(f)|^2} = \int_{\tau=-t_0}^{t_0}(t_0-|\tau|)\check{R}(\tau) e^{i 2\pi f \tau} d\tau
+\end{align}
+
+We divide by $t_0$ and take the limit as $t_0$ goes to infinity to find power spectral density
+
+\begin{align}
+S_{XX}(f) = \lim_{t_0\rightarrow\infty} \int_{\tau=-t_0}^{t_0} \left(1-\frac{|\tau|}{t_0}\right)\check{R}(\tau)e^{i2\pi f\tau} d\tau = \int_{\tau=-\infty}^{+\infty}\check{R}(\tau) e^{i2\pi f\tau} d\tau = \tilde{\check{R}}(f)
+\end{align}
+
+\section{Ornstein-Uhlenbeck Process}
+
+We consider a one dimensional Ornstein-Uhlenbeck process.
+\begin{align}
+\dot{X}(t) = M X(t) + g(t)
+\end{align}
+
+Where $g(t)$ is a white noise drive satisfying $\braket{g(t_1)g(t_2)} = \eta\delta(t_1-t_2)$. It is not too difficult to show
+
+\begin{align}
+\braket{X(t)} &= e^{Mt}\braket{X(0)}\\
+\braket{X(t_1)X(t_2)} &= e^{Mt_1}\braket{X(0)X(0)} e^{Mt_2} + e^{Mt_1}\int_{t'=0}^{t_{min}} e^{-Mt'} \eta e^{-Mt'} dt' e^{Mt_2}
+\end{align}
+
+$t_{min} = \text{min}(t_1,t_2)$
+Note I've written the terms in an awkward way for easy comparison with the generalized case for when we have a multidimensional system and $X$ is a vector of random processes and $M$ is a system matrix.
+
+However, at this point I will perform the obvious manipulations and calculate the integral.
+
+\begin{align}
+\braket{X(t_1)X(t_2)} &= e^{M(t_1+t_2)}\braket{X(0)^2} + \eta e^{M(t_1+t_2)} \frac{1}{-M} \left(e^{-2t_{min}}-1\right)\\
+&= -\frac{\eta}{M}e^{M|t_1-t_2|} + e^{M(t_1+t_2)} \left(\braket{X(0)^2}+\frac{\eta}{M}\right)
+\end{align}
+
+We then consider the )causal) power spectral density of this signal.
+
+\begin{align}
+\bar{S}_{XX}(f) = \lim_{t_0 \rightarrow \infty}\frac{1}{t_0} \int_{t_1=0}^{t_0}\int_{t_2=0}^{t_0} e^{i 2\pi (t_1-t_2)f} \braket{X(t_1)X(t_2)} dt_1 dt_2
+\end{align}
+
+The first term in the two term correlation function only depends on $t-s$ and thus satisfies the criteria for the 
+\end{comment}
+
+\end{document}

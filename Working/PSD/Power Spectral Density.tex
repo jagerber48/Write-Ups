@@ -1,0 +1,921 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Power Spectral Density and Analysis}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+In this document I will define the power spectral density and explore this definition in both the time and frequency domain. I will also explore a theoretical model of a spectrum analyzer and show that such a device directly measures the power spectral density. I will also prove the Weiner-Khintchine theorem in this document and explore the concept of the cross spectral density.
+
+\section{Fourier Transform Preliminaries}
+
+We will take the following convention for the Fourier transform:
+
+\begin{align}
+\mathcal{FT}\left[X(t)\right](f) =& \tilde{X}(f) = \int_{t=-\infty}^{+\infty} X(t) e^{-i2\pi f t} dt = \int X(t)e^{-i2\pi ft} dt\\
+\mathcal{FT}^{-1}\left[\tilde{X}(f)\right](t) =& X(t) = \int_{f=-\infty}^{+\infty} \tilde{X}(f) e^{+i2\pi f t} df = \int \tilde{X}(f) e^{+i2\pi f t} df
+\end{align}
+
+Integrals without explicit bounds will be understood to be from $-\infty$ to $+\infty$.
+It is worth mentioning here some technical mathematical conditions for Fourier transforms to be well-behaved. 
+
+If $X(t)$ is absolutely integrable then $\tilde{X}(f)$ exists. 
+If $\tilde{X}(f)$ is also absolutely integrable then the above result, namely that the inverse Fourier transform of the Fourier transform of a function is equal to the original function also holds.
+Absolutely integrable means $\int |X(t)| dt = M < \infty$.
+
+Under the Fourier transform convention above Parseval's theorem is given by
+
+\begin{align}
+\int |X(t)|^2 dt = \int |\tilde{X}(f)|^2 df
+\end{align}
+
+And the convolution theorem can be stated as
+
+\begin{align}
+\mathcal{FT}\left[X(t)Y(t)\right](f) =& \left(\tilde{X} \ast \tilde{Y}\right)(f)\\
+\mathcal{FT}\left[(X\ast Y)(t)\right](f) =& \tilde{X}(f)\tilde{Y}(f)
+\end{align}
+
+With the inverse Fourier Transform statements as well:
+
+\begin{align}
+\mathcal{FT}^{-1}\left[(\tilde{X}\ast\tilde{Y})(f)\right](t) =& X(t)Y(t)\\
+\mathcal{FT}^{-1}\left[\tilde{X}(f)\tilde{Y}(f)\right](t) =& (X\ast Y)(t)
+\end{align}
+
+\section{Signal Power and Energy in Signal Processing}
+
+I want to explore the concepts of power in signals. 
+The definitions here are motivated by the concept of power in electrical circuits.
+Consider we have a signal $X(t)$ which is actually the voltage $V(t)$ across a resistor $R$.
+We know from circuit theory that, as a function of time, the power (energy per unit time) $P(t)$ dissipated in the resistor will be given by
+
+\begin{align}
+P(t) = I(t)V(t) = \frac{V^2(t)}{R} \propto X^2(t)
+\end{align}
+
+Because of this analogy we will generally refer to the quantity $X^2(t)$ as representing the instantaneous power in a signal $X(t)$. 
+We generalize for a complex signal by taking the absolute square:
+
+\begin{align}
+P_X(t) = |X(t)|^2
+\end{align}
+
+In addition to the signal power we also have the signal energy.
+Energy is the time integral of power so we write
+
+\begin{align}
+E_X(t_1, t_2) = \int_{t=t_1}^{t_2} P_X(t) dt = \int_{t=t_1}^{t_2} |X(t)|^2 dt
+\end{align}
+
+We will find it useful to define the total energy contained in a signal (integrated over all time)
+
+\begin{align}
+E_X = E_X(-\infty, +\infty) =& \int P_X(t) dt = \int |X(t)|^2 dt\\
+=& \int \tilde{P}_X(f)df = \int |\tilde{X}(f)|^2 df
+\end{align}
+
+Where we have used Parseval's theorem to equate the second and first line and introduced the spectral power
+
+\begin{align}
+\tilde{P}_X(f) = |\tilde{X}(f)|^2
+\end{align}
+
+by analogy with the temporal power
+Note that the total signal energy will diverge for signals of infinite length or bandwidth.
+These divergences will be explored in detail later.
+
+We now want to consider the idea of the average value of the power of a signal. 
+In the general cases we will consider here the signal $X(t)$ may be a random process.
+There will then be two ways we consider the signal to be averaged.
+We can first consider the time average in which we integrate the signal power over some amount of time and then divide by that length of time:
+
+\begin{align}
+\Braket{P_X}_T = \Braket{|X|^2}_T = \lim_{\Delta t \rightarrow \infty} \frac{E_X\left(-\frac{\Delta t}{2}, \frac{\Delta t}{2}\right)}{\Delta t}= \lim_{\Delta t \rightarrow \infty} \frac{1}{\Delta t}\int_{t=-\frac{\Delta t}{2}}^{\frac{\Delta t}{2}} |X(t)|^2 dt
+\end{align}
+ 
+Note that while the energy for an infinite duration signal might be infinite, it is possible for the average power to be finite. 
+We will see later that this is part of the motivation for the power spectral density.
+
+The other type of average power we can consider is the statistical ensemble average
+
+\begin{align}
+\Braket{|X(t)|^2}_E = \int_{x=-\infty}^{+\infty} f_{X(t)}(x) |x|^2 dx
+\end{align}
+
+Where
+
+\begin{align}
+f_{X(t)}(x) = P(X(t)=x)
+\end{align}
+
+is the probability density function for the random process $X(t)$ at time $t$.
+In this document any random signals $A(t)$ that we consider will be ergodic meaning that
+
+\begin{align}
+\Braket{A}_T = \Braket{A(t)}_E = \Braket{A}
+\end{align}
+
+That is, the temporal average is equal to the ensemble average.
+Note that non-constant deterministic signals are not ergodic.
+For deterministic signals we will always consider the time-average.
+The average power for a signal is then given by
+
+\begin{align}
+\braket{P_X} = \Braket{|X|^2}
+\end{align}
+
+we define the RMS signal level by
+
+\begin{align}
+X_{RMS} = \sqrt{\Braket{|X|^2}} = \sqrt{\Braket{P_X}}
+\end{align}
+
+\subsection{Signal Power and Energy Examples}
+
+We'll calculate the signal power and energy for a few typical signal
+
+
+\subsubsection{Pure complex tone}
+First consider the example of a deterministic single tone complex signal:
+
+\begin{align}
+X(t) =& X_0 e^{-i2\pi f t}\\
+P_X(t) = |X(t)|^2 =& |X_0|^2\\
+\Braket{P_X}  = \Braket{|X|^2}_T =& |X_0|^2\\
+X_{RMS} =& |X_0|\\
+E_X =& \int |X_0|^2 dt = \infty
+\end{align}
+
+We see that this signal has infinite energy which is to be expected given its infinite length and finite and constant power.
+Note that in this and the following example we use the time averaged power because the signals are deterministic and non-ergodic.
+
+
+\subsubsection{Pure sinusoidal tone}
+Next we consider the example of a deterministic real sinusoidal signal:
+
+\begin{align}
+X(t) = |X_0|\cos(2\pi f t + \phi) =& \frac{X_0}{2} e^{i2\pi f t} + \frac{X_0^*}{2} e^{-i2\pi ft}\\
+P_X(t) = |X(t)|^2 =& \frac{1}{4}\left(2|X_0|^2 + X_0^2e^{i2\pi 2f t} + X_0^{*2}e^{-i2\pi 2ft}\right)\\
+\Braket{P_X} = \Braket{|X|^2}_T =& \frac{|X_0|^2}{2}\\
+X_{RMS} =& \frac{|X_0|}{\sqrt{2}}\\
+E_X =& \infty
+\end{align}
+
+Here in the third line the two terms that go like $e^{\pm i 2\pi 2f t}$ are dropped because we assume that that temporal averaging implied by the brackets is averaging over a long enough time that the oscillation at frequency $2f$ is suppressed. 
+In particular this requires the averaging time $\Delta t$ to be greater than $\frac{1}{2f}$.
+
+There is another way to think about the power in a sinusoidal signal.
+We can work in the ``phasor'' representation where the real signal is represented by only its positive or negative rotating part. 
+
+We write
+
+\begin{align}
+X(t) = \frac{X_0}{2}e^{i2\pi ft} + \frac{X_0^*}{2}e^{-i2\pi f t} = X^{(+)}(t) + X^{(-)}(t)
+\end{align}
+
+We can then consider $X(t)$ to be represented by $X^{(-)}(t)$ noting that 
+
+\begin{align}
+X(t) = 2 \text{Re}\left(X^{(-)}(t)\right)
+\end{align}
+
+We then have
+
+\begin{align}
+X^{(-)}(t) =& \frac{X_0^*}{2}e^{i2\pi ft}\\
+P_{X^{(-)}}(t) =& |X^{(-)}(t)|^2 = |X^{(-)}(t)X^{(+)}(t)| = \frac{|X_0|^2}{4}\\
+\Braket{P_{X^{(-)}}} =& \Braket{|X^{(-)}|^2} = \Braket{|X^{(-)}X^{(+)}|} = \frac{|X_0|^2}{4}\\
+X^{(-)}_{RMS} =& \frac{|X_0|}{2}\\
+E_X =& \infty
+\end{align}
+
+We can compare these results with those for the sinusoidal $X(t)$:
+
+\begin{align}
+P_X =& \frac{|X_0|^2}{2} = 2P_{X^{(-)}}\\
+X_{RMS} =& \sqrt{2} X^{(-)}_{RMS}
+\end{align}
+
+This has the nice intuitive interpretation that half of the power of $X(t)$ is contained in the positive rotating component, $X^{(-)}(t)$ and the other half is contained in $X^{(+)}$.
+
+\subsubsection{White Noise}
+
+Next we consider white noise:
+
+\begin{align}
+\Braket{X(t_1)X^*(t_2)} = |X_0|^2 \delta(t_1-t_2)
+\end{align}
+
+Note that the previous two examples were examples of deterministic signals while we are now considering a random variable. 
+Now it is much more meaningful to talk about expectation values (statistics) of the signal rather than values at specific moments in time such as $X(t)$.
+
+We can calculate the power in the white noise signal.
+
+\begin{align}
+\braket{P_X(t)} = \Braket{|X(t)|^2} = |X_0|^2 \delta(0) = \infty\\
+\end{align}
+
+This is going to be problematic because it tells us that the average power is infinite so the RMS value will be infinite as well.
+Of course if a signal has infinite power at all moments in time it is going to have infinite total energy.
+
+We will see below that this sort of double infinity of the total energy arises for two reasons. 
+The first reason is that white noise consists of signal at all frequencies (infinite bandwidth) and the second reason is that (random) tone at this infinitude of frequencies lasts infinitely long in time.
+In what follows we will see that these infinities can be tamed in turn by low pass filtering the signal to eliminate the infinitude of frequencies to limit the infinite power and by time boxing the signal to limit the total energy.
+
+We will see much more detail about the previous paragraph below.
+For now, for demonstration purposes, lets simply consider how to calculate the power and energy in a low-pass filtered white noise.
+
+Filtering is the same as convolving with an impulse response function we let
+
+\begin{align}
+X_F(t) =& (X\ast F)(t) = \int X(t') F(t-t') dt'\\
+\tilde{X}_F(f) =&  \tilde{X}(f) \tilde{F}(f)
+\end{align}
+
+Where $F(t-t')$ is the impulse response function of the filter.
+$X_F(t)$ is then filtered white noise.
+We then have
+
+\begin{align}
+|X_F(t)|^2 =& \int_{t'=-\infty}^{+\infty} \int_{t'' = -\infty}^{+\infty} X(t')X^*(t'') F(t-t')F^*(t-t'') dt' dt''\\
+\Braket{P_{X_F}} = \Braket{|X_F(t)|^2} =& \int_{t'=-\infty}^{+\infty} \int_{t'' = -\infty}^{+\infty} \Braket{X(t')X^*(t'')} F(t-t')F^*(t-t'') dt' dt''\\
+=& \int_{t'=-\infty}^{+\infty} \int_{t'' = -\infty}^{+\infty} |X_0|^2\delta(t'-t'') F(t-t')F^*(t-t'') dt' dt''\\
+=& |X_0|^2\int_{t'=-\infty}^{+\infty} |F(t-t')|^2 dt'\\
+=& |X_0|^2\int_{t'=-\infty}^{+\infty} |F(t')|^2dt'
+\end{align}
+
+Where the final line follows by a change of variables.
+
+We see that the integral is the total area under the squared windowing impulse response function $|F(t)|^2$ so if this is finite (as it would be for a low pass filter, for example) then the total average power is also finite.
+Applying Parseval's theorem we have that
+
+\begin{align}
+E_F =& \int_{t=-\infty}^{+\infty} |F(t)|^2 dt = \int_{f=-\infty}^{+\infty} |\tilde{F}(f)|^2 df\\
+=& \int P_F(t) dt = \int \tilde{P}_F(f) df
+\end{align}
+
+In analogy with the power and energy in a signal we have defined the filer temporal and spectral power and energy as $P_F(t)$, $\tilde{P}_F(f)$ and $E_F$.
+
+We see that the power in the filtered white noise signal is equal to the variance of the white noise multiplied by the area under the squared magnitude of the filter impulse response or transfer function or the filter energy.
+As the filter energy increases so does the power in the filtered white noise.
+
+\begin{align}
+\Braket{P_{X_F}} = |X_0|^2 E_F
+\end{align}
+
+Authors often define a so called noise equivalent bandwidth $f_{BW}$
+
+\begin{align}
+f_{BW} = \frac{E_F}{|\tilde{F}_{max}|^2}
+\end{align}
+
+Where $|F_{max}|^2$ is the maximal value that $|\tilde{F}(f)|^2$ takes on.
+The idea is that the filter $\tilde{F}(f)$ can be approximated by a brick wall filter with pass-band gain of $|F_{max}|$ and width $f_{BW}$ which would have the same filter energy and thus the same effect on the power in white noise.
+
+If the filter has unity gain, $|\tilde{F}_{max}|^2 = 1$, then we can see that
+
+\begin{align}
+\int_{f=-\infty}^{+\infty}|\tilde{F}(f)|^2 df = E_F = f_{BW}
+\end{align}
+
+so that
+
+\begin{align}
+\Braket{P_X(t)} = |X_0|^2 f_{BW}
+\end{align}
+
+That is the power in the signal is the variance of the white noise multiplied by the bandwidth of the filter it has been passed through.
+
+\section{Square Law Detector}
+
+The idea of a spectrum analyzer, as we will see, is to measure the total power contained within a given frequency bandwidth for a signal of interest.
+To that end we need some sort of power detector.
+In real systems this is implemented as a square law detector.
+
+Of course we can understand that a square law detector measures the power in a signal because we see above that the power in a signal is directly defined as the square of the signal.
+
+A square law detector can be implemented as follows:
+
+\begin{itemize}
+\item{First the signal $X(t)$ is squared, $X(t)\rightarrow |X(t)|^2 = X(t)X^*(t)$. This can be accomplished by splitting the signal and mixing it with a conjugated version of itself. In the case of an electronic circuit this can be accomplished by passing the signal through a diode in a region in which the diode has a quadratic response behavior.}
+\item{If we are working with a real signal we need to filter out the fast oscillating frequency doubled components (we saw this in the example above with the sinusoidal signal) so we pass the signal through a low pass filter}
+\item{Finally we must detect the resultant signal. In electronics this is accomplished using an analog to digital converter. Note that an ADC works by averaging the signal for some acquisition integration time $t_{aq}$. In fact, it is sufficient to consider this integration time to be the implementation of the low pass filtering in the previous bullet point.}
+\end{itemize}
+
+A square law detector thus takes in a signal and outputs
+
+\begin{align}
+X(t) \rightarrow \frac{1}{t_{aq}}\int_{t=0}^{t_{aq}} |X(t)|^2 dt = \Braket{|X(t)|^2} = \Braket{P_X(t)}
+\end{align}
+
+\section{Motivation for Power Spectral Density}
+
+The power spectral density (PSD) is very similar to the Fourier transform of a signal.
+Two very natural questions then arise.
+1) How is the power spectral density different than the Fourier transform and 2) why do need to introduce the power spectral density when we have the Fourier transform already for signal analysis?
+
+We will answer these questions over the next few sections.
+Here I will try to give a high level overview of some of the issues.
+
+The PSD is principally of interest when considering the measurement of actual physical signals.
+One of the consequences of this is we will see that it is helpful to think very carefully about two distinguishing properties of physical signals compared to theoretical signals.
+
+\begin{enumerate}
+\item{Physical signals are always finite in time. At the most basic level this is because the memory of the recording device is finite. Mathematical signals can be infinite in time as we saw above with, for example, $X(t) = e^{i2\pi f_0 t}$. We saw above that one of the consequences of an infinite length signal is the Fourier transform is ill-behaved and will exhibit Dirac delta functions. Because of this, we will interpret mathematical Dirac deltas as being symptomatic of unphysical signals.}
+\item{Physical signals are limited in bandwidth. Every physical system has a high frequency cutoff. This is due to some temporal lag in the system which may come in the form of stray capacitances or propagation times. Mathematical signals can be infinite in bandwidth as we saw, for example with the white noise signal. This can be problematic because a signal with infinite bandwidth can carry infinite energy as we saw above which is also unphysical. Again this non-physicality manifested itself as the appearance of Dirac deltas in the formalism.}
+\end{enumerate}
+
+We will see below that the PSD is designed to be able to deftly handle these mathematical difficulties. 
+In some sense the PSD plays a nice intermediary between mathematical signals arising from mathematical models and actual physical signals measured in the laboratory. 
+
+\section{Infinite Time Signals}
+
+In this section we will explore how infinite time signals are handled mathematically and what the result of the measurement of a theoretically infinite length signal would look like.
+We'll only explore deterministic infinite time signals here as those will demonstrate the required features.
+
+\subsection{Pure tone}
+The prototypical infinite length signal is a pure tone:
+
+\begin{align}
+X(t) = X_0 e^{i2\pi f_0 t}
+\end{align}
+
+We can formally write down the Fourier transform of this function as
+
+\begin{align}
+\tilde{X}(f) = \int_{t=-\infty}^{+\infty} X_0 e^{i2\pi f_0t} e^{-i2\pi f t} dt = X_0 \int_{t=-\infty}^{+\infty} e^{-i 2\pi (f-f_0) t}dt = X_0 \delta(f-f_0)
+\end{align}
+
+We see that the Fourier transform is formally represented as a Dirac delta distribution, it is not a nicely behaved function.
+The reason for that is that the Fourier transform does not exist as a function because $|e^{i2\pi f_0t}|= 1$ is not absolutely integrable.
+We note that any finite signal is absolutely integrable so the lack of a well-behaved Fourier transform is symptomatic of a non-physical signal.
+
+The power in a pure tone signal is constant
+
+\begin{align}
+P_X(t) = X(t)X^*(t) = \Braket{P_X} = |X_0|^2
+\end{align}
+
+which leads to the energy being infinite:
+
+\begin{align}
+E_X = \int P_X(t) dt = |X_0|^2\int dt = |X_0|^2 \delta(0) \rightarrow \infty
+\end{align}
+
+Suppose, despite the pathologic nature above, we did have a physical system which created an effectively infinitely long pure tone.
+What would we get when we measure such a signal?
+Practically speaking, infinitely long simply means that the signal persists for much longer than our measurement time.
+The measured signal would be
+
+\begin{align}
+X_{\Delta t}(t) = W_{\Delta t}(t) X(t)
+\end{align}
+
+Here $W_{\Delta t}(t)$ is a window function which clips the extant of $X(t)$ to a limited range in time.
+The range is specified (at least roughly) by the parameter $\Delta t$.
+Mathematically we will only constrain $W_{\Delta t}(t)$ to be absolutely integrable. 
+If we also desire $W_{\Delta t}(t)$ to be causal we could require $W_{\Delta t}(t) = 0$ for $t < 0$.
+The prototypical window function we will have in mind is the box function
+
+\begin{align}
+W_{\Delta t}(t) = \theta\left(t-\frac{\Delta t}{2}\right)\theta\left(\frac{\Delta t}{2} - t\right) = 
+\begin{cases}
+1 \text{ for } -\frac{\Delta t}{2} \le t \le \frac{\Delta t}{2}\\
+0 \text{ for } t < -\frac{\Delta t}{2} \text{ and } \frac{\Delta t}{2} < t
+\end{cases}
+\end{align}
+
+Where $\theta(t)$ is the Heaviside theta function.
+We see that even if $X(t)$ is infinite in extant that $X_{\Delta t}(t)$ is finite.
+In particular we also see that the windowed pure tone has finite energy:
+
+\begin{align}
+E_{X_{\Delta t}} =& \int W_{\Delta t}(t)X(t) W_{\Delta t}^*(t) X^*(t) dt = \int |W_{\Delta t}(t)|^2|X(t)|^2 dt\\
+=& |X_0|^2\int |W_{\Delta t}(t)|^2 dt = |X_0|^2\int |\tilde{W}_{\Delta t}(f)|^2 df = |X_0|^2 E_{W_{\Delta t}}
+\end{align}
+
+Here we have defined $E_{W_{\Delta t}}$ the filter energy for the window function.
+We see that for a pure tone the energy in the windowed tone is given by the finite energy of the window function multiplied by the signal amplitude.
+ 
+The power in the windowed function is given by
+ 
+\begin{align}
+P_{X_{\Delta t}}(t) = X_{\Delta t}(t)X_{\Delta t}^*(t) = P_{X_{\Delta t}} = |W_{\Delta t}(t)|^2 |X_0|^2 = P_{W_{\Delta t}}(t) P_X(t)
+\end{align}
+ 
+We can now consider the Fourier transform of the windowed pure tone $X_{\Delta t}(t)$:
+
+\begin{align}
+\tilde{X}_{\Delta t}(f) =& X_0\int W_{\Delta t}e^{-i 2\pi (f-f_0) t} dt = X_0 \tilde{W}_{\Delta t}(f-f_0)\\
+\tilde{P}_{X_{\Delta t}}(f) =& |X_0|^2|\tilde{W}_{\Delta t}(f-f_0)|^2 = |X_0|^2 \tilde{P}_{W_{\Delta t}}(f-f_0)
+\end{align}
+
+Thus we see that the Fourier transform of the windowed function $X_{\Delta t}(t)$ has simply become the Fourier transform of the window function evaluated at $f-f_0$.
+What we see is that the Delta function has been replaced by the Fourier transform of the window function:
+
+\begin{align}
+\delta(f) \rightarrow \tilde{W}_{\Delta t}(f)
+\end{align}
+
+And we see that as $\Delta t \rightarrow \infty$ the Window function gets narrower and taller looking more and more like a Delta function.
+The key intuitive takeaway here is that finite representations of infinite length signals work by replacing Delta functions with the transform of the window function.
+Importantly we see that the result of the Fourier transform depends on the specific window function which is used.
+That is, if I measure for longer I can see a sharper spectral feature. 
+The delta function $\delta(f)$ has infinitesimal width in Fourier space whereas $\tilde{W}_{\Delta t}(t)$ has a finite width in Fourier space which is related to $\frac{1}{\Delta t}$.
+If the signal has features in Fourier space which are sharper in frequency than the Fourier transform of the window function then the window function will have the result of smearing out the feature.
+When this effect occurs we speak of a Fourier-limited signal.
+That is, a signal whose frequency resolution is limited by the total measurement time.
+
+
+Note that if $\tilde{W}_{\Delta t}(f)$ is chosen so that
+
+\begin{align}
+\int \tilde{W}_{\Delta t}(f) df = W_{\Delta t}(0) = 1 = \int \delta (f) df
+\end{align}
+
+then the analogy between $\tilde{W}_{\Delta t}(f)$ and $\delta(f)$ is even more complete.
+
+\subsection{Arbitrary Infinite Length Tone}
+Above we have considered a windowed version of a pure tone.
+We now consider a windowed version of an arbitrary signal $X(t)$.
+
+\begin{align}
+X_{\Delta t}(t) =& W_{\Delta t}(t) X(t)\\
+\tilde{X}_{\Delta t}(f) =& (\tilde{W}_{\Delta t} \ast \tilde{X})(f)
+\end{align}
+
+Where we have applied the convolution theorem.
+We see that that windowed Fourier transform is the convolution of the Fourier transforms of the original signal and the window transform.
+This is a more mathematically precise statement of the `smearing out' mentioned above.
+It is important to note here that we get a more faithful representation of the infinite length signal the longer the windowing function is.
+The resolution in frequency space is set by the length of the window, so, when possible, longer windows are desirable.
+
+Reiterating the key-takeaway from above: infinite length signals are pathological in that they involve Dirac delta functions.
+However, the windowed versions of these pathological functions which correspond more closely to physical finite length representations of these signals, do not have the same pathologies.
+The cost we pay for removing the pathology, however, is that certain details of the output signal now depend on the details of the chosen window function.
+
+As an example, if we chose $W_{\Delta t}(t)$ as above as a box function then
+
+\begin{align}
+\tilde{W}_{\Delta t}(f) =& \int_{t = -\frac{\Delta t}{2}}^{\frac{\Delta t}{2}} e^{-i2\pi ft}dt = \frac{e^{-i \pi f\Delta t} - e^{+i \pi f \Delta t}}{-i 2 \pi f} = \frac{\sin(\pi f \Delta t)}{\pi f} = \sinc(\pi f \Delta t) \Delta t \\
+\tilde{W}_{\Delta t}(0) =& \Delta t
+\end{align}
+
+In particular we see see that the peak height and width of the Fourier transform changes as a function of $\Delta t$.
+This means that if we were to measure a signal, then Fourier transform it, then look at the peak height to determine the signal amplitude we would have to be careful to include the window length $\Delta t$ in our calculation.
+
+Alternatively, we could choose a window function which is scaled by $\frac{1}{\Delta t}$ to ensure that the peak height of the Fourier transform of the window function is always equal to unity and thus independent of the window length. 
+The price, however, will be that the integral of the Fourier transform of the window function will no longer be unity so the analogy with a Dirac delta function breaks down.
+This type of reasoning will be helpful when we think about the definition of the power spectral density and how a spectrum analyzer works.
+
+\section{Random Signal}
+
+In the previous section we saw that the problem of infinite length signals producing unphysical Dirac delta functions in Fourier space was ameliorated (literally) by working with a windowed version of the infinite length signal.
+
+This seems to solve the problems of converting mathematical signals into physically measurable signals.
+What problems remain?
+
+The remaining problem lies in addressing random signals.
+Since random signal are random, we must measure them repeatedly to learn about their statistics.
+We typically measure the signal many times to process it, and average the results to learn about the signal source.
+
+In this section we consider a white noise signal $X(t)$ characterized by a zero average and white-noise two-time correlation function:
+
+\begin{align}
+\Braket{X(t)} =& 0\\
+\Braket{X(t_2)X^*(t_1)} =& |X_0|^2\delta(t_2-t_1)
+\end{align}
+
+The fact that $\Braket{X(t)}=0$ means that we learn nothing about the signal by simply measuring it and averaging.
+What if we Fourier transform the signal first?
+
+\begin{align}
+\Braket{\tilde{X}(f)} =& \int \Braket{X(t)} e^{-i2\pi ft}dt = 0
+\end{align}
+
+Again we learn nothing.
+In fact, since the signal mean is zero we won't be able to learn anything by looking at first order statistics.
+We must look at higher order statistics, the next one in line being the two-time or two-frequency correlations.
+
+We can consider the signal variance (which is equivalent to the average signal power):
+
+\begin{align}
+\Braket{P_X(t)} = \Braket{|X(t)|^2} = |X(t)|^2 dt = |X_0|^2 \delta(0) = \infty
+\end{align}
+
+We see that simply looking at the signal variance gives an infinite result because of the delta correlations at zero time-difference.
+
+What if we calculate the two-frequency correlation function of the Fourier transform:
+
+\begin{align}
+\Braket{\tilde{X}(f_1)\tilde{X}^*(f_2)} =& \int \int \Braket{X(t_1)X^*(t_2)} e^{-i2\pi f_1 t_1}e^{+i2\pi f_2 t_2} dt_1 dt_2\\
+=& |X_0|^2 \int e^{-i2\pi (f_1-f_2) t_1} dt_1 = |X_0|^2 \delta(f_1-f_2)
+\end{align}
+
+If we try to evaluate this at $f=f_1=f_2$ to learn about the frequency content of the signal at $f$ we again get an infinite value $\delta(0) = \infty$.
+
+In summary, every measure we might consider looking at for white noise when we consider the full infinite length and infinite bandwidth signal gives no useful information.
+Now, from our experience above, we saw that the problem of encountering Dirac deltas in Fourier space is related to the fact that the signal is infinite in time and that this particular problem is ameliorated by windowing down the signal.
+This motivates us to ask what happens if we time-window white noise.
+Intuitively we will understand that the windowed white noise still contains signal content at all frequencies, however, the variance at a given Fourier component should now be finite because the individual Fourier components are limited in time.
+Let us see how it works out.
+
+We consider
+
+\begin{align}
+X_{\Delta t}(t) = W_{\Delta t}(t)X(t)
+\end{align}
+
+We Fourier transform and calculate the two-frequency correlation function again:
+
+\begin{align}
+\Braket{\tilde{X}_{\Delta t}(f_1)\tilde{X}_{\Delta t}^*(f_2)} =& \int \int \Braket{X(t_1)X^*(t_2)}W_{\Delta t}(t_1)W^*_{\Delta t}(t_2) e^{-i2\pi f_1 t_1}e^{+i2\pi f_2 t_2} dt_1 dt_2\\
+=& |X_0|^2\int |W_{\Delta t}(t)|^2 e^{-i 2\pi (f_2-f_1) t} dt
+\end{align}
+
+If we pick $f=f_1=f_2$ we get
+
+\begin{align}
+\Braket{\tilde{P}_{X_{\Delta t}}(f)} = \Braket{|\tilde{X}_{\Delta t}(f)|^2} =& |X_0|^2\int |W_{\Delta t}(t)|^2 dt = |X_0|^2\int |\tilde{W}_{\Delta t}(f)|^2 df = |X_0|^2E_W
+\end{align}
+
+We see that the variance at a particular frequency of the windowed white noise is now given by the white noise variance multiplied by the filter energy.
+This is very similar to how the total energy in the filtered pure tone in the section above was made finite by windowing the signal.
+
+
+Looking at this signal we see that it is flat in frequency space (that is as a function of $f$), this motivates the name `white noise' for the delta correlated temporal noise explored here.
+We also see, as in the previous section, that the output signal depends on the particular details of the window chosen.
+
+For white noise we see that
+
+\begin{align}
+\Braket{\tilde{P}_X(f)} = |X_0|^2 \delta(0) = \infty
+\end{align}
+
+Which is infinite
+But that
+
+\begin{align}
+\Braket{\tilde{P}_{X_{\Delta t}}(f)} = |X_0|^2 E_W
+\end{align}
+
+is finite.
+Thus, by windowing the white-noise signal we come up with a finite power as a function of frequency.
+We can see we are very close to defining the power spectral density.
+
+\section{Power Spectral Density - Definition}
+
+In the previous two sections we explored shortcomings of the usual Fourier transform for analyzing infinite length pure tones and infinite length white noise.
+In both cases we saw that we could tame the pathological delta functions by time-windowing the input signal.
+This is a convenient mathematical solution because in practice all physical signal \textit{are} time windowed.
+With those explorations and manipulations in mind we are now ready to introduce the definition of the power spectral density.
+
+Suppose we have a time-window function $W_{\Delta t}(t)$.
+We have the windowed signal 
+
+\begin{align}
+X_{\Delta t}(t) = W_{\Delta t}(t) X(t)
+\end{align}
+
+I will summarize some of the key results from above.
+
+\begin{align}
+\int \tilde{W}_{\Delta t}(f) df =& W_{\Delta t}(0) \\
+\tilde{X}_{\Delta t}(f) =& (\tilde{W}_{\Delta t} \ast \tilde{X})(f)
+\end{align}
+
+If $X(t)$ is like a pure tone at frequency $f_0$ then
+
+\begin{align}
+X_{\Delta t}(t) =& W_{\Delta t}(t) X(t) = W_{\Delta t}X_0 e^{-i2\pi f_0 t}\\
+\tilde{X}_{\Delta t}(f) =& \tilde{W}_{\Delta t}(f-f_0)\\
+\tilde{X}_{\Delta t}(f_0) =& \tilde{W}_{\Delta t}(0) = \int W_{\Delta t}(t) dt\\
+P_{X_{\Delta t}}(t) =& P_{W_{\Delta t}}(t) P_X(t)\\
+\tilde{P}_{X_{\Delta t}}(f) =& |X_0|^2 \tilde{P}_{W_{\Delta t}}(f-f_0)\\
+E_{X_{\Delta t}} =& |X_0|^2 E_{W_{\Delta t}}
+\end{align}
+
+If $X(t)$ is like white noise then
+
+\begin{align}
+\Braket{X(t_1)X^*(t_2)} =& |X_0|^2\delta(t_1-t_2)\\
+\tilde{P}_{X_{\Delta t}}(f) =& |X_0|^2E_{W_{\Delta t}}
+\end{align}
+
+I would like to highlight the fact that for both a pure tone and a white noise signal that the spectral power in the filtered signal is finite.
+This is the central fact around which the power spectral density will be defined.
+
+We will call the power spectral density of a signal $X$ as $S_{XX}(f)$. 
+We would like the power spectral density to have the property, at least for finite power signals, that
+
+\begin{align}
+\Braket{P_X} = \int S_{XX}(f) df
+\end{align}
+
+This is in fact exactly what would one think of for a \textit{power spectral density}, it is the spectral density of the power in the signal.
+For the case of the finite signal pure tone we see
+
+\begin{align}
+\int P_{X_{\Delta t}}(f) df = |X_0|^2 E_{W_{\Delta t}} = E_{W_{\Delta t}} P_X
+\end{align}
+
+Thus, if we choose $W_{\Delta t}(t)$ such that $E_{W_{\Delta t}} = 1$ then we see that we are justified to call $P_{X_{\Delta t}}(f)$ the power spectral density
+
+\begin{align}
+S_{XX}(f) = P_{X_{\Delta t}}(f)
+\end{align}
+
+\section{Motivation for Power Spectral Density - Shortcoming of the usual Fourier Transform}
+
+Before introducing the power spectral density, let's first consider the question of why the simple Fourier transform with which are familiar is insufficient.
+The main utility of the power spectral density over the Fourier transform arises when we are considering signals which are 1) infinite and time and 2) random rather than deterministic.
+
+
+
+As we will see below, for deterministic signals there is a 
+
+Why is the Fourier transform insufficient for analysis of random signals?
+Consider a zero mean random process $X(t)$:
+
+\begin{align}
+\Braket{X(t)} = 0
+\end{align}
+
+We can define, as another random process, the Fourier transform of $X(t)$:
+
+\begin{align}
+\tilde{X}(f) = \int_{t=-\infty}^{+\infty} X(t) e^{-i2\pi f t} dt
+\end{align}
+
+Experimentally we could measure the random process many times to determine both the mean of the signal and the Fourier transform of the signal
+
+\begin{align}
+\Braket{\tilde{X}(f)} = \int_{t=-\infty}^{+\infty} \Braket{X(t)} e^{-i2\pi f t} dt = 0
+\end{align}
+
+We see that the mean of the Fourier transform of a zero-mean random process is itself zero mean. This means that we learn nothing about the signal by measuring the average Fourier transform of that signal.
+
+It is exactly this shortcoming of the Fourier transform of random processes that motivates us to look at the \textit{variance} or second moment of the Fourier transform of the random process.
+
+\begin{align}
+\Braket{\tilde{X}^*(f)\tilde{X}(f)} = \Braket{|\tilde{X}(f)|^2}
+\end{align}
+
+It should not be surprising that we turn to the variance to analyze a random process.
+In the study of random processes it is often higher order moments which carry interesting information about the process.
+For example, a noisier process will have a higher variance.
+
+The most obvious definition for the power spectral density would then be exactly what I have given above. 
+Simply the expectation value of the absolute square of the Fourier transform of the random process.
+However, we will see that this function is not well behaved for certain random processes.
+
+Let's consider white noise which satisfies
+
+\begin{align}
+\Braket{X(t_1)X^*(t_2)} = X_0^2\delta(t_1-t_2)
+\end{align}
+
+We can calculate the magnitude squared of the Fourier transform:
+
+\begin{align}
+\Braket{\tilde{X}^*(f)\tilde{X}(f)} =& \int_{t'=-\infty}^{+\infty} \int_{t'' = -\infty}^{+\infty} \Braket{X^*(t')X(t'')} e^{i2\pi f t'} e^{-i2\pi f t''} dt' dt''\\
+=& |X_0|^2 \int_{t'=-\infty}^{+\infty} dt' = \infty
+\end{align}
+
+Where we have integrated over $t''$ to eliminate the $\delta$ function arising from the white noise expectation value.
+
+We see that the usual Fourier transforms fails to be well defined and to give a very meaningful representation of white noise.
+
+Actually, this treatment is not 100\% fair.
+We can give a bit more info if we allow Dirac delta functions into our description.
+Consider instead the auto-correlation function of the Fourier transform (of which the variance above is a special case):
+
+\begin{align}
+\Braket{\tilde{X}^*(f_1)\tilde{X}(f_2)} =& |X_0|^2 \int \int \delta(t'-t'') e^{i2\pi f_1 t'}e^{-i2\pi f_2 t''} dt' dt''\\
+=& |X_0|^2 \int e^{-i 2\pi (f_2-f_1) t'}dt' = |X_0|^2\delta(f_2-f_1)\\
+\Braket{\tilde{X}^*(f)\tilde{X}(f)} =& |X_0|^2\delta(0) = \infty
+\end{align}
+
+We still get the infinity but we see that it is more like a Dirac delta evaluated at zero. 
+This is a slight improvement but we still have the problem that if we wanted to visualize $\Braket{\tilde{X}^*(f)\tilde{X}(f)}$ as a function of $f$ we would need to show a Dirac delta at every point in frequency space!
+
+The usual Fourier spectrum fails here because we are considering a signal which is infinitely long and which has support for all time.
+This is precisely the sort of function which breaks the conditions necessary for functions to be well-behaved in Fourier theory\footnote{One set of conditions on a function $X(t)$ for it to be ``well-behaved'' for Fourier theory is that $X(t)$ is continuous and absolutely integrable and $\tilde{X}(f)$ is also absolutely integrable. Absolutely integrable means $\int |X(t)| dt$ exists and is finite. Note that $X(t)$ being absolutely integrable implies $\tilde{X}(f)$ exists.}.
+
+In this work we are interested in applying Fourier theory to \textit{physical} signals which we can measure in the lab.
+There is already some precedent for dealing with such ill-behaved functions in signal processing.
+We consider the idea of a Fourier limited measurement of a pure tone.
+Consider
+
+\begin{align}
+X(t) = e^{i 2\pi f_0 t}
+\end{align}
+
+The Fourier transform is given by
+
+\begin{align}
+\tilde{X}(f) = \int_{t=-\infty}^{+\infty} e^{i 2\pi (f_0 - f)t} dt = \delta(f-f_0)
+\end{align}
+
+We can plainly see that
+
+\begin{align}
+\tilde{X}(f_0) = \delta(0) = \infty
+\end{align}
+
+This is a similar infinity as we saw above for the variance of the Fourier transform of white noise above.
+
+The question that we will then pose is how are these delta functions handled when real physical signals are measured, in particular, when it is impossible to measure something infinitely large.
+
+A major key to the answer will be the concept of time windowing the input function.
+For a real signal this happens naturally.
+The measurement device only measures for a certain finite amount of time.
+The amount of memory in the device recording the measurement is finite.
+Real signals are always finite in time.
+We can easily implement this in our theoretical description by defining
+
+\begin{align}
+X_{\Delta t}(t) = W_{\Delta t}(t) X(t)
+\end{align}
+
+Where $W_{\Delta t}(t)$ is a window function with nominal width $\Delta t$.
+Note that there is not a universal way to define the width of a function so $\Delta t$ is just some scaling factor which scales $W_{\Delta t}$ along its time axis.
+The meaning of $\Delta t$ should be clear from context for each window function under consideration. 
+In general $W_{\Delta t}(t)$ can be essentially any function but we will place a few constraints on it.
+
+First $W_{\Delta t}(t)$ should be absolutely integrable. 
+This ensures that $X_{\Delta t}(t)$ is absolutely integrable (and thus has a Fourier transform) even if $X(t)$ is constant or a pure tone.
+It may turn out to place more stringent constraints on how quickly $W_{\Delta t}(t)$ decays towards zero to be more certain that $\tilde{X}_{\Delta t}(t)$ exists in all cases we want and is also absolutely integrable we won't worry about those technical details here.
+This is in fact the only condition which we need to solve the problem of Dirac deltas above
+If we want $W_{\Delta t}(t)$ to be causal then we should have $W_{\Delta t}(t) = 0$ for $t < 0$ though this isn't strictly necessary for what follows.
+
+The simplest window function we can consider is box function:
+
+\begin{align}
+W_{\Delta t}(t) = \theta(t)\theta(\Delta t - t) = 
+\begin{cases}
+1 & \text{ for } 0 \le t \le \Delta t\\
+0 & \text{ for } t < 0 \text{ and } \Delta t < t
+\end{cases}
+\end{align}
+
+We can now consider the Fourier transform of the windowed pure tone:
+
+\begin{align}
+X(t) =& e^{i2\pi f_0 t}\\
+X_{\Delta t}(t) =& W_{\Delta t}(t) e^{i2\pi f_0t}\\
+\tilde{X}_{\Delta t}(f) =& \int e^{-i2\pi (f - f_0)t} W_{\Delta t}(t) dt = \tilde{W}_{\Delta t}(f-f_0)
+\end{align}
+
+Thus we see that where the Fourier transform of $X(t)$ was a shifted Dirac delta function, the Fourier transform of the windowed function $X_{\Delta t}(t)$ is a shifted version of the Fourier transform the window function.
+One of the defining features of the Dirac delta function is that when we perform an integral over it we get unity. If we choose $W_{\Delta t}(t)$ such that
+
+\begin{align}
+\int_{f=-\infty}^{+\infty}\tilde{W}_{\Delta t}(f) df = 1
+\end{align}
+
+Then we are justified in thinking of $\tilde{W}_{\Delta t}(f)$ as a finite-time version of the Dirac delta function.
+Indeed for standard $W_{\Delta t}(t)$ with width $\Delta t$ then the Fourier transform will approximately have width $\frac{1}{\Delta t}$ and height $\Delta t$ meaning that as $\Delta t$ increases $\tilde{W}_{\Delta t}(t)$ approaches a Dirac delta function.
+
+
+\section{old}
+
+
+In signal processing the power spectral density is often encountered. 
+I will present the definition without motivation and then loop back and explain what problems are solved by introducing the power spectral density and giving a step by step breakdown and analysis of the definition.
+
+The power spectral density of a (generally complex) signal $X(t)$ is defined as follows.
+First we define a window function
+
+\begin{align}
+w_{\Delta t} = \theta(t)\theta(\Delta t-t) = 
+\begin{cases}
+0 & \text{ for } t<0 \text{ and } t>\Delta t\\
+1 & \text{ for } 0 < t < \Delta t
+\end{cases}
+\end{align}
+
+We then define a windowed version of $X(t)$:
+
+\begin{align}
+X_{\Delta t}(t) = X(t) w(t)
+\end{align}
+
+With corresponding Fourier transform:
+
+\begin{align}
+\tilde{X}_{\Delta t}(f) = (\tilde{X}\ast \tilde{w})(f)
+\end{align}
+
+The power spectral density is then defined as
+
+\begin{align}
+S_{XX}(f) = \lim_{\Delta t \rightarrow \infty} \frac{1}{\Delta t} \Braket{|\tilde{X}_{\Delta t}(f)|^2}
+\end{align}
+
+For me, seeing this definition without motivation sparks many questions that I will list here:
+
+\begin{enumerate}
+\item{Why do we need to work with the power spectral density, with this somewhat complicated definition involving time windowed versions of the signal, when we already have the Fourier transform?}
+\item{Why do we need to time window the input signal?}
+\item{Why is there the scaling factor $\frac{1}{\Delta t}$ in the definition?}
+\item{What is the difference between the power spectral density and the magnitude of the Fourier transform? Do they sometimes agree? If so when and if not why?}
+\end{enumerate}
+
+We will now attempt to address all of these questions.
+We will also see that some of the answers are inter-related with each other.
+
+The short answer as to why we ever work with the power spectral density at all is because the power spectral density is defined and well-behaved for certain signals of interest whereas other spectral decompositions (such as the direct Fourier transform) are not.
+
+In this vein we will consider four types of signals. 
+
+\begin{enumerate}
+\item Deterministic Pure tones such as $X(t) = e^{i2\pi f_0 t}$.
+\item Zero-mean random processes. Of particular interest within this category will be stationary random processes and white noise.
+\item Finite length deterministic signal
+\end{enumerate}
+
+\subsection{Deterministic Pure Tones}
+
+We will first consider the 
+\section{Appendix: Alternate notation for complex representation of real signal}
+
+Above we worked the formulas for power and RMS signal levels of a sinusoidal signal $X(t)$ when $X(t)$ is expressed as
+
+\begin{align}
+X(t) = X^{(-)}(t) + X^{(+)}(t) = 2\text{Re}\left(X^{(-)}(t)\right)
+\end{align}
+
+This convention for breaking down $X(t)$ is nice because we can consider $X(t)$ to be the direct sum of two signals, both of which are either purely positive or negative frequency.
+
+There is an alternative convention that we will explore here:
+
+\begin{align}
+X(t) = \frac{1}{2} X^{(-)}(t) + \frac{1}{2}X^{(+)}(t) = \text{Re}\left(X^{(-)}(t)\right)
+\end{align}
+
+This convention has the advantage that $X(t)$ is directly the real part of $X^{(-)}(t)$.
+This is often then convention which is taught at an undergrad level. 
+In this section I will work out the same formulas as above but under this new convention.
+
+\begin{align}
+X(t) = X_0 \cos(2\pi f t) = \frac{X_0}{2} e^{-i 2\pi ft} + \frac{X_0}{2} e^{+i2\pi ft}
+\end{align}
+
+We see that 
+
+\begin{align}
+X^{(-)}(t) = X_0 e^{-i2\pi ft}
+\end{align}
+
+We then have that
+
+\begin{align}
+\Braket{P_{X^{(-)}}(t)} =& \Braket{X^{(-)}(t)X^{(+)}(t)} = X_0^2\\
+X^{(-)}_{RMS} = X_0
+\end{align}
+
+We then have that
+
+\begin{align}
+\Braket{P_X(t)} =& \frac{X_0^2}{2} = \frac{1}{2}\Braket{P_{X^{(-)}}(t)} = \frac{1}{2} \Braket{X^{(-)}(t)X^{(+)}(t)}\\
+\Braket{X_{RMS}} =& \frac{X}{\sqrt{2}} = \frac{X^{(-)}_{RMS}}{\sqrt{2}}
+\end{align}
+
+
+\end{document}

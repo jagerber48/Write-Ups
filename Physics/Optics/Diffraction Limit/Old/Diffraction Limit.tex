@@ -1,0 +1,657 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\bv}[1]{\mathbf{#1}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+
+\begin{document}
+\title{Diffraction Limit}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+I've been puzzled by the diffraction limit since I was an undergrad working on near-field microscopy. I think I've finally worked out all of my confusions so I'll report my findings here. It should be noted that this is almost a direct transcription of a few sections from Saleh and Teich ``Fundamentals of Photonics'' but it will be nice for me to work it out and re-write it in my own words.
+
+The key is to treat the propagation of light through free space and optical components as a linear system. That is, consider light of angular frequency $\omega$ with wavevector $k = \frac{\omega}{c} = \frac{2\pi}{\lambda}$. An optical field (neglecting polarization) can be described by its amplitude at all locations in space, $U(x,y,z)$. Now consider the amplitude on a single plane in space, for example $z=0$. We consider the amplitude of the field on this plane, $U(x,y,0) = f(x,y)$ to be the input to the linear system. Suppose the field has a non-zero component in the $+z$ direction, that is $k_z > 0$. We can then ask the question what will the field be at a given distance $d$ from the first plane. That is, what is $U(x,y,d) = g(x,y)$ contingent upon the intervening media and components. $g(x,y)$ will be the output of the linear system. The task then is to find the transfer functions and, equivalently, the impulse responses of the different possible systems.
+
+Note that I'll unapologetically make the paraxial, Fresnel, and Fraunhofer approximations repeatedly. Admittedly I don't think these approximations are valid for high $NA$ lenses (such as $NA > 0.7$ that we are considering for E6) but I figure I should at least understand the linear, paraxial version of the diffraction limit first before trying to tackle high $NA$. I believe the differences that arise in the high $NA$ case can be treated as aberrations relative to the low $NA$ case. The job of a good high $NA$ objective is to then correct for these and other resultant aberrations. 
+
+\section{Dielectric Slabs and Thin Lenses}
+\subsection{Flat Slab}
+
+Consider a dielectric slab of thickness $d$ and index of refraction $n$. Consider an incident beam at angle $\theta$ to the optical axis. This incident beam can be described as a plane wave with wavevector $\bv{k}_0 = k_x \hat{\bv{x}} + k_y \hat{\bv{y}} + k_z \hat{\bv{z}}$ with $|\bv{k}_0| = k_0$. Suppose $k_y=0$ so that $k_x = k \sin(\theta)$ and $k_z = k \cos(\theta)$.
+
+Inside the dielectric slab the beam will travel and angle $\theta_1$ according to Snell's law, $\sin(\theta) = n\sin(\theta_1)$ with wavevector magnitude $k_1 = nk_0$. The field at the other end $d$ can be described by
+
+\begin{align}
+U(x,y,d) = U(x,y,0) e^{-i \bv{k} \cdot \bv{d}} = U(x,y,0) \exp[-in k_0(d\cos(\theta_1)+x\sin(\theta_1))]
+\end{align}
+
+We'll consider $U(x,y,z)$ to be dimensionless. There will be coefficients describing amplitudes of certain waves that use the symbol $U$ with a subscript, these amplitudes will not necessarily be dimensionless depending on the context.
+We can write down the transmittance function (note that here I talk about the function which takes a harmonic (plane wave) real-space input into a harmonic real-space output so it wouldn't be correct to use either the term transfer function or impulse response) 
+
+\begin{align}
+t(x,y) = \exp[-in k_0(d\cos(\theta_1)+x\sin(\theta_1))]
+\end{align}
+
+and Taylor expand in $\theta_1$ making the paraxial approximation. Note in the paraxial approximation $\theta_1 \approx \frac{\theta}{n} \ll 1$.
+
+\begin{align}
+(d\cos(\theta_1)+x\sin(\theta_1)) \approx d + \frac{d}{2}\theta_1^2 + x\theta_1
+\end{align}
+
+The contribution of both of these terms to the total phase should be very small. That is
+
+\begin{align}
+\frac{nk_0d \theta^2}{2n} \ll 2\pi && k_0 x \theta \ll 2\pi
+\end{align}
+
+The first constraint constrains the thickness of the mirror relative to the wavelength and numerical aperture of the input beam and the second constrains how far off-axis we can consider beams. If we neglect these terms then we have the transmittance function:
+
+\begin{align}
+t(x,y) = \exp[-in k_0d]
+\end{align}
+
+\subsection{Slab of Varying Thickness}
+If the slab is of varying thickness then we treat consider the slab to have total thickness $d_0$ where $d_0$ is the maximum thickness at any point $(x,y)$. Then at each point the wave travels through a thickness $d(x,y)$ of dielectric and a thickness $d_0 - d(x,y)$ of air. Accordingly the transmittance function has two parts
+
+\begin{align}
+t(x,y) &= \exp[-in k_0d(x,y)]\exp[-i k_0 (d_0-d(x,y))]\\
+t(x,y) &= \exp[-ik_0d_0] \exp[-i (n-1)k_0 d(x,y)]\\
+t(x,y) &= t_0 \exp[-i (n-1)k_0 d(x,y)]
+\end{align}
+
+\begin{align}
+t_0 = \exp[-ik_0d_0]
+\end{align}
+\subsection{Plano-Convex Thin Lens}
+Consider a single plano-convex lens of total thickness $d_0$ and radius $R$. We work out the thickness at location $(x,y)$ (where $(0,0)$ is on the optical axis. Say the lens is convex on the left at touches $z=0$ and flat on the other side at $z=d_0$. A point $(x,y,z)$ on the surface of the curved surface satisfies
+
+\begin{align}
+x^2+y^2+(R-z)^2 = R^2
+\end{align}
+
+where the thickness along the line $(x,y)$ is given by
+
+\begin{align}
+d(x,y) = d_0 - z
+\end{align}
+
+Solving for $z$.
+
+\begin{align}
+z= R - \sqrt{R^2 - (x^2+y^2)} = R\left(1-\sqrt{1 - \frac{x^2+y^2}{R^2}}\right)
+\end{align}
+
+Taylor Expanding in $x,y \ll R$ amounts to the paraxial approximation.
+
+\begin{align}
+z \approx R \left(1 - (1 - \frac{x^2+y^2}{2R^2}\right) = \frac{x^2+y^2}{2R}
+\end{align}
+
+So we find
+
+\begin{align}
+d(x,y) \approx d_0 - \frac{x^2 + y^2}{2R}
+\end{align}
+
+The transmittance is then
+
+\begin{align}
+t(x,y) &= \exp[-ik_0d_0] \exp\left[-i(n-1)k_0\left(d_0 - \frac{x^2+y^2}{2R}\right)\right]\\
+&= \exp[-i n k_0 d_0] \exp\left[k_0\frac{(n-1)}{2R} (x^2+y^2)\right]
+\end{align}
+
+\subsubsection{Aside on Spherical and Paraboloidal Waves}
+
+Electromagnetic waves satisfy the Helmholtz equation
+
+\begin{align}
+(\nabla^2+|\bv{k}|^2)U(\bv{r}) = 0
+\end{align}
+
+Plane waves of the form $U_{\text{plane}}(\bv{r}) = \exp[-i \bv{k}\cdot\bv{r}]$ solve the Helmholtz equation (as can be verified using index notation, for example.) It is also true that spherical waves of the form
+
+\begin{align}
+U_{\text{sph}}(\bv{r}) = U_{0,\text{sph}}\frac{\exp[-i k r]}{r}
+\end{align}
+
+also satisfy the Helmholtz equation. Here $U_{0,\text{sph}}$ has dimensions of $[L]$. Here $k = |\bv{k}|$ and $r = |\bv{r}|$. We consider a spherical wave far away from it's source in $z$ but close to the $z$ axis. That is, $x,y \ll z$. note that $r = \sqrt{x^2+y^2+z^2} \approx z+\frac{x^2+y^2}{2z}$. This is a small angle paraxial approximation. We then approximate
+
+\begin{align}
+U_{\text{sph}}(\bv{r}) \approx U_{\text{para}}(\bv{r}) = \frac{U_{0,\text{sph}}}{z} \exp[-ikz] \exp\left[-ik\frac{x^2+y^2}{2z}\right]
+\end{align}
+
+We expand the phase to quadratic order but the amplitude to zeroth order since the waveshape is more sensitive to the phase. The equal phase surfaces of this function are parabolas so we consider a wave with this phase pattern to be a parabaloidal wave centered at the origin.
+
+Noting all of this we return to transmittance function for a thin plano-convex lens.
+
+\begin{align}
+t(x,y) &= \exp[-i n k_0 d_0] \exp\left[k_0\frac{(n-1)}{2R} (x^2+y^2)\right]
+\end{align}
+
+We recognize this as the phase pattern for a paraboloidal wave centered on the origin with $z = -\frac{R}{n-1}$. Since $z$ is negative it means that for a wave with $k_z>0$ (i.e. a right traveling wave) the wave fronts are converging down onto the origin. That is, it is a wave focusing down on the origin with the origin being distance $\frac{R}{n-1}$ to the right of the current point. In simple terms: the lens focuses an input plane wave to the point at $\frac{R}{n-1}$. We thus call this distances the focal length of the lens,
+
+\begin{align}
+f = \frac{R}{n-1}
+\end{align}
+
+so
+
+\begin{align}
+t(x,y) &= \exp[-i n k_0 d_0] \exp\left[ik_0\frac{x^2+y^2}{2f}\right] = t_n \exp\left[ik_0\frac{x^2+y^2}{2f}\right]\\
+&= t_n \exp\left[i\pi\frac{x^2+y^2}{\lambda f}\right]
+\end{align}
+
+\begin{align}
+t_n = \exp[-i n k_0 d_0]
+\end{align}
+
+\subsection{Double Convex Lens}
+Now we consider a double convex lens with first radii $R_1$ and second $R_2$. Note that the typical sign convention for the radii of curvature in such an optical system is that $R_1$ would be positive for a convex first surface and $R_2$ would be negative for a convex second surface. We need to determine the thickness of the lens. We can think of it as two plano-convex lenses with total thickness $d_0' = \frac{d_0}{2}$ and different radii of curvature. The thickness will then be 
+
+\begin{align}
+d(x,y) = d_0' - \frac{x^2+y^2}{2|R_1|} + d_0' - \frac{x^2+y^2}{2|R_2|}
+\end{align}
+
+Plugging this in as before for the transmittance we find
+
+\begin{align}
+t(x,y) &= \exp[-i n k_0 d_0] \exp\left[k_0 \frac{(n-1)}{2}\left(\frac{1}{|R_1|}+\frac{1}{|R_2|}\right) (x^2+y^2)\right]
+\end{align}
+
+This time we identify 
+
+\begin{align}
+\frac{1}{f} = (n-1) \left(\frac{1}{|R_1|} + \frac{1}{|R_2|}\right)
+\end{align}
+
+I've used absolute values so I don't have to worry about the sign convention. The correct convention is that $R_1$ is positive and $R_2$ is negative so
+
+\begin{align}
+\frac{1}{f} = (n-1) \left(\frac{1}{R_1} - \frac{1}{R_2}\right)
+\end{align}
+
+We again find the lens turns a plane wave into a paraboloidal wave focused on the focal point.
+
+\begin{align}
+t(x,y) &= \exp[-i n k_0 d_0] \exp\left[ik_0\frac{x^2+y^2}{2f}\right] = t_n \exp\left[ik_0\frac{x^2+y^2}{2f}\right]\\
+&= t_n \exp\left[i \pi \frac{x^2+y^2}{\lambda f}\right]
+\end{align}
+
+\section{Fourier Optics}
+Now we shift into Fourier Optics. In Fourier optics we consider $f(x,y) = U(x,y,0)$, the field amplitude on a given plane in space, to be the input to a linear system. The wave then propagates through free space and intervening optics to a new plane at $z=d$ and we can calculate the amplitude on this new plane, $g(x,y) = U(x,y,d)$, the output of the linear system. So the input in the field amplitude on one plane and the output is the field amplitude on the other plane. The linear system is whatever free space or optical elements intervene the space between the two planes. The goal is then to find the transfer function, and equivalently, the point spread functions for various optical elements. That is we are interested in what happens if the input is some pure spectral function, or if it is an impulse (delta) function.
+
+First we consider how $f(x,y)$ can be Fourier decomposed. We know, for a plane wave with wavevector $\bv{k}$, that
+
+\begin{align}
+U(x,y,z) = U_0 \exp[-i\bv{k}\cdot\bv{r}]
+\end{align}
+
+so that
+
+\begin{align}
+U(x,y,0) = U_0 \exp[-ik_z z]\exp[-i (k_x x + k_y y)]
+\end{align}
+
+$U_0$ is dimensionless here. We see that $k_x$ and $k_y$ indicate the spatial periodicity in $x$ and $y$. $k_x$ and $k_y$ are the equivalent of angular frequencies. We can define cyclic spatial frequencies $\nu_x = \frac{k_x}{2\pi}$ and $\nu_y = \frac{k_y}{2\pi}$ so that
+
+\begin{align}
+f(x,y) = U(x,y,0) = U_0 \exp[-ik_z z]\exp[-i 2\pi(\nu_x x + \nu_y y)]
+\end{align}
+
+It is clear then that for a plane wave with wavevector $\bv{k}$ that $f(x,y)$ is a function on the plane with spatial frequencies $\nu_x$ and $\nu_y$. Note that the plane wave travels in direction $\bv{k}$ which makes angles 
+\begin{align}
+\theta_x &= \arcsin\left(\frac{k_x}{k}\right) =  \arcsin(\nu_x \lambda) \approx \nu_x \lambda\\
+\theta_y &= \arcsin\left(\frac{k_y}{k}\right) =  \arcsin(\nu_y \lambda) \approx \nu_y \lambda\\
+\end{align}
+
+Where the approximation is again a small angle paraxial approximation.
+
+Let's have a comment on evanescent waves here since it is a bit important to the diffraction limit discussion. We have, for solutions to the Helmholtz equation, that
+
+\begin{align}
+k_x^2+k_y^2+k_z^2 = |\bv{k}|^2 = \frac{\omega}{c}
+\end{align}
+
+That is the components of the wavevector are constrained. For a plane wave all of the components of the wavevector are real which constrains $|k_x|,|k_y|,|k_z| \le |\bv{k}| = \frac{2\pi}{\lambda}$. Equivalently it constrains $|\nu_x|,|\nu_y| \le \frac{1}{\lambda}$. That is, in the case we are strictly dealing with plane waves it is impossible to have an input function $f(x,y)$ with spatial periodicity shorter than $\lambda$. Consider the following limits. In the case that the plane wave is parallel to the $z$ axis there is no periodicity in $x$ or $y$, the function is constant. However, as $\bv{k}$ is tilted upwards in say the $x$ direction we being to see phase lines on the $f(x,y)$ plane with low periodicity. As the angle becomes more extreme the lines get closer and closer together as $k_x\propto \nu_x$ increases. However, even in the limit that $\bv{k}$ is pointing very close or even in the $x$ direction (no more $z$ component), the spacing between the phase planes is never less than $\lambda$.
+
+However, in my mind, two related things are apparent. 1) If we allow the components of $\bv{k}$ to be imaginary we still get something which is a solution to the Helmholtz equation and 2) it is possible to conceive of functions $f(x,y)$ which vary faster than $\lambda$ so what happens if one of those fields is the input field? For example what if we have a point radiator which is much smaller than $\lambda$. This answer is of course that these things must happen at the same time. We suppose $k_x$ and $k_y$ are real since they represent frequencies of the Fourier transform of $f(x,y)$ so if one or both of them is greater than $|\bv{k}|$ (high spatial frequency) it indicates that $k_z$ must be imaginary. Furthermore, if $k_z$ is imaginary it means that as we move along in the $z$ direction away from $z=0$ the field amplitude is exponentially decaying. That is 1) we don't have a normal plane wave anymore and 2) the local high resolution information rapidly damps away spatially.
+
+The summary is that this formalism can handle input functions $f(x,y)$ with all spatial frequencies, but if those spatial frequencies are greater than $\frac{1}{\lambda}$ the fields involved will not be traveling waves but rather they will be decaying evanescent waves.
+
+We formalize this idea in the next section.
+
+\subsection{Transfer function of free space}
+
+We consider an input field $f(x,y)$ with spatial frequencies $\nu_x$ and $\nu_y$ at plane $z=0$. We want to calculate the field amplitude distance $d$ away, $g(x,y)$. The ratio of the output to the input as a function of $\nu_x$ and $\nu_y$ will be transfer function of free space It is not too difficult
+
+\begin{align}
+f(x,y) = U(x,y,0) = U_0 \exp[-i 2\pi (\nu_x x + \nu_y y)]
+\end{align}
+
+and
+
+\begin{align}
+g(x,y) = U(x,y,d) = U_0 \exp[-i k_z d]\exp[-i 2\pi (\nu_x x + \nu_y y)]
+\end{align}
+
+We then see that
+
+\begin{align}
+H(\nu_x,\nu_y) = \frac{g(x,y)}{f(x,y)} = \exp[-i k_z d]
+\end{align}
+
+We recall that $k_z = \sqrt{k^2 - k_x^2 - k_z^2} = 2\pi \sqrt{\frac{1}{\lambda^2} - \nu_x^2 - \nu_y^2}$ so that 
+
+\begin{align}
+H(\nu_x,\nu_y) = \exp\left[-i 2\pi \left(\frac{1}{\lambda^2} - \nu_x^2 - \nu_y^2\right)^{\frac{1}{2}} d\right]
+\end{align}
+
+We see that for $\nu_x^2+\nu_y^2<\frac{1}{\lambda^2}$ the output of the square root is a real number so the magnitude of the transfer function is unity. That is, no energy is lost to free space. However, when $|\nu_x|$ or $|\nu_y|$ becomes larger than $\frac{1}{\lambda}$ the argument of the square root goes negative which means the result is imaginary and thus the exponent is negative and real. This means the transfer function is a decaying exponential with distance. In addition to the amplitude we see that the transfer function also gives some phase shift depending on the relative angle of the wavevector, however, in the evanescent case the phase of the transfer function is zero.
+
+\subsection{Paraxial Approximation for transfer function}
+
+We're going to approximate the transfer function in the regime $\nu_x, \nu_y \ll \frac{1}{\lambda}$ by Taylor expanding the square root term. The total angle between the wavevector and optical axis can be written and approximated at $\theta^2 = \theta_x^2 + \theta_y^2 = \lambda^2(\nu_x^2+\nu_y^2) \ll 1$ so that
+
+\begin{align}
+\left(\frac{1}{\lambda^2} - \nu_x^2 - \nu_y^2\right)^{\frac{1}{2}} = \frac{1}{\lambda} \left(1 - \theta^2\right)^{\frac{1}{2}} \approx \frac{1}{\lambda}\left(1-\frac{\theta^2}{2}\right)
+\end{align}
+
+We plug this in to get
+
+\begin{align}
+H(\nu_x,\nu_y) &= \exp\left[-i 2\pi \frac{d}{\lambda}\right] \exp\left[i 2 \pi \frac{d}{\lambda} \frac{\theta^2}{2}\right]\\
+H(\nu_x,\nu_y) &= \exp\left[-ik d\right] \exp\left[ i \pi \lambda d (\nu_x^2+\nu_y^2)\right] = H_0 \exp\left[i \pi \lambda d (\nu_x^2+\nu_y^2)\right]
+\end{align}
+
+\begin{align}
+H_0 = \exp[-ikd]
+\end{align}
+
+The term we have neglected in the exponent is
+
+\begin{align}
+2\pi \frac{d}{\lambda}\frac{\theta^4}{8} = \pi \frac{\theta^4 d}{4 \lambda}
+\end{align}
+
+For the Taylor expansions to be valid it is necessary that $\theta \ll 1$ so that $\theta^4 \ll \theta^2$. However, that condition is not strong enough for the validity of this approximation. For example, even if $\theta \ll 1$ it could be possible that $\frac{d}{\lambda} \gg 1$ in such a way that $\pi \frac{\theta^4 d}{\lambda} > \pi$ in which the phase contribution from this term would not be negligible. Therefore, the necessary condition for this approximation is 
+
+\begin{align}
+\frac{\theta^4 d}{4 \lambda} \ll 1
+\end{align}
+
+Suppose we constrain analysis to a circle of radius $a$ in the output plane so that there is a maximum deflection from axial, $\theta_m \approx \frac{a}{d}$. then we have
+
+\begin{align}
+\frac{\theta^4 d}{4 \lambda} < \frac{\theta_m^4 d}{4 \lambda} = \frac{a^2 d \theta_m^2}{4 d^2 \lambda} = \frac{a^2}{d\lambda} \frac{\theta_m^2}{4} \ll 1
+\end{align}
+
+The first combination of constants is called the Fresnel number for the system. $N_F = \frac{a^2}{d\lambda}$. The Fresnel condition, necessary for this approximation to the free space transfer function, is that
+
+\begin{align}
+\frac{N_F \theta_m^2}{4} \ll 1
+\end{align}
+
+
+We can of course apply the superposition principle with the transfer function here. Consider
+
+\begin{align}
+f(x,y) = \int \int F(\nu_x,\nu_y) \exp[-i 2\pi (\nu_x x +\nu_y y)] d\nu_x d\nu_y
+\end{align}
+
+Where $F(\nu_x,\nu_y)$ is the Fourier transform of $f(x,y)$.
+
+\begin{align}
+F(\nu_x,\nu_y) = \int \int f(x,y) \exp[+i 2\pi (\nu_x x +\nu_y y)] dx dy
+\end{align}
+
+We then have that 
+
+\begin{align}
+g(x,y) = \int \int H(\nu_x, \nu_y)F(\nu_x,\nu_y) \exp[-i 2\pi (\nu_x x +\nu_y y)] d\nu_x d\nu_y
+\end{align}
+
+We multiply each harmonic component by its corresponding transfer function.
+
+\subsection{Impulse Response}
+The impulse response is not difficult to work out now that we know the transfer function. The impulse response is $g(x,y) = h(x,y)$ evaluated when $f(x,y) = \delta(x)\delta(y)$. Note that $f(x,y)$ has dimensions of $[L^{-2}]$ here. This is indicative of the fact that we must always integrate over the impulse response function to get a meaningful physical quantity. In that case we have that $F(\nu_x,\nu_y) = 1$. The Fourier transform is unity everywhere. We then see that 
+
+\begin{align}
+g(x,y) = \int \int H(\nu_x, \nu_y) \exp[-i 2\pi (\nu_x x +\nu_y y)] d\nu_x d\nu_y
+\end{align}
+
+This is the expression for the inverse Fourier transform of the transfer function. In the paraxial case we have 
+
+\begin{align}
+H(\nu_x,\nu_y) &=  H_0 \exp\left[ i \pi \lambda d (\nu_x^2+\nu_y^2)\right]
+\end{align}
+
+We need to take the Fourier transform of a Gaussian here. This can be done by hand or in Mathematica
+
+\begin{align}
+h(x,y) = \frac{i}{d\lambda} \exp[-ikd] \exp\left[-ik \frac{x^2+y^2}{2d}\right] = h_0 \exp\left[-ik \frac{x^2+y^2}{2d}\right]
+\end{align}
+
+\begin{align}
+h_0 = \frac{i}{d\lambda} \exp[-ikd]
+\end{align}
+
+Interestingly we see that this is the expression for a paraboloidal wave originating from the origin. That is to say: the delta impulse at the origin emits a paraboloidal wave. If multiple (or infinite) number of delta functions are present then the output will be the superposition of paraboloidal waves emitted from each point. This is a mathematical statement of Huygen's principle that each point in space acts as a source for a spherical wave.
+
+I'll point out that
+
+\begin{align}
+\mathcal{FT}^{-1}[H(\nu_x,\nu_y)](x,y) = h(x,y)
+\end{align}
+
+The impulse response function is the inverse Fourier transform of the transfer function. I note also that the impulse response function has dimensions of $[L^{-2}]$.
+
+\section{Free Space as Spatial Fourier Filter}
+
+The idea here is simpler than it sounds. Early in the Fourier Optics section we realized that different Fourier components, $\nu_x$, and $\nu_y$, in $f(x,y)$ arise because $U(x,y,z)$ is composed of a variety of plane waves traveling at different angles to the optical axis. The point then is that if you let these plane waves propagate for some distance $d$ the plane waves traveling at larger angles will end up further away from the optical axis than ones traveling at a smaller angle. So if you want to know the value of some Fourier component of $f(x,y)$ such as $F(\nu_x,\nu_y)$ at $z=0$ then you can look at the appropriate point in space at plane $z=d$ and readout $g(x,y)$ (for the right values of $(x,y)$) to determine the answer.
+
+In words: earlier we found $g(x,y)$ by taking the inverse fourier transform of the product of the transfer function with the Fourier transform of $f(x,y)$. According to the convolution theorem this is equivalent to taking the convolution of the impulse response function (inverse Fourier transform of transfer function) with the input function. That is
+
+\begin{align}
+g(x,y) &= \int \int f(x',y') h(x-x',y-y') dx'dy'\\
+&= h_0 \int \int f(x',y') \exp\left[-ik \frac{(x-x')^2+(y-y')^2}{2d}\right] dx' dy'\\
+&= h_0 \exp\left[-i\pi \frac{x^2+y^2}{\lambda d}\right]\\
+\times& \int \int f(x',y') \exp\left[-i2\pi \left(\frac{x}{\lambda d} x' + \frac{y}{\lambda d} y'\right)\right] \exp\left[-i \pi \frac{x'^2+y'^2}{\lambda d} \right] dx' dy'
+\end{align}
+
+I will rapidly make two assumptions. First I'll neglect terms like $\frac{x'^2}{\lambda d}$. This amounts to saying the input field is confined to a small region of radius $b$ and that $N'_F = \frac{b^2}{\lambda d} \ll1$, the input plane Fresnel number is very small.. I will also neglect terms like $\frac{x^2}{\lambda d}$ which says that we are only looking at points in a region of radius $a$ close to the optical axis in the output plane satisfying $N_F = \frac{a^2}{\lambda d} \ll1$, that the Fresnel number in the output plane is also very small. These two approximations constitute the Fraunhofer approximation which is more restrictive than the Fresnel approximation. Recall that the Fresnel approximation can be valid even if $N_F>1$ if is guaranteed that $\theta_m$ is very small. We then find, in the Fraunhofer approximation:
+
+\begin{align}
+g(x,y) = h_0\int \int f(x', y') \exp\left[ +i2\pi\left(\frac{x}{\lambda d}x' + \frac{y}{\lambda d} y'\right)\right] dx' dy'
+\end{align}
+
+We see that this is exactly the expression for
+
+\begin{align}
+g(x,y) =h_0 F\left(\frac{x}{\lambda d}, \frac{y}{\lambda d}\right)
+\end{align}
+
+That is, if we want to know $F(\nu_x,\nu_y)$, the Fourier component for spatial frequencies $\nu_x, \nu_y$ in the input plane, we can just look at the local field amplitude at the output plane $g(x,y)$ with $x = \nu_x \lambda d$ and $y = \nu_y \lambda d$. Note this makes a bit of sense because, for example, $\nu_x \lambda = \theta_x$ so, in a small angle approximation, we expect a ray starting at the origin to be at location $\theta_x d$ after the wave propagates distance $d$.
+
+\section{Lens as Fourier Transformer}
+
+Free space only performs a Fourier Transform if we are in the Fraunhofer regime which requires long propagation distances. If, in addition to free space propagation, the wave travels through a lens it is also possible to spatially multiplex the Fourier Components of the input wave. Loosely speaking the lens maps waves traveling at different angles into its input face into spots located at different positions on the focal plane, so by looking at the appropriate point in the focal plane one can determine the amplitude of the Fourier component at the input plane.
+
+We consider an input plane at $z=0$, a thin lens of focal length $f$ at $z=d$ with total thickness $d_0$ and the focal plane at location $z=d+d_0+f$. We'll work in the Fresnel approximation. We'll consider a field with one plane wave component at $(\nu_x,\nu_y)$. This means that $F(\tilde{\nu}_x,\tilde{\nu}_y) = F_0 \delta(\tilde{\nu}_x-\nu_x)\delta(\tilde{\nu}_y - \nu_y)$. $F_0$ is dimensionless. The field on the input plane is 
+
+\begin{align}
+f_0(x,y) = U(x,y,0) = F_0 \exp[-i2\pi(\nu_x x + \nu_y y)]
+\end{align}
+
+It propagates through free space so that the field at the input of the lens, $f_1(x,y) = U(x,y,d)$ is
+
+\begin{align}
+f_1(x,y) &= H(\nu_x, \nu_y) f_0(x,y)\\
+&=H_0 F_0 \exp[-i2\pi(\nu_x x + \nu_y y)] \exp[i\pi \lambda d(\nu_x^2+\nu_y^2)]
+\end{align}
+
+This field than propagates through the lens where it is modified by the transmittance function of the lens. $f_2(x,y) = U(x,y,d+d_0)$ where $d_0$ is the total thickness of the lens.
+
+\begin{align}
+f_2(x,y) &= t(x,y) f_1(x,y) = t_n \exp \left[i\pi \frac{x^2+y^2}{\lambda f}\right]\\
+&= H_0 t_n F_0 \exp \left[i\pi \frac{x^2+y^2}{\lambda f}\right] \exp[-i2\pi(\nu_x x + \nu_y y)] \exp[i\pi \lambda d(\nu_x^2+\nu_y^2)]
+\end{align}
+
+We work out
+
+\begin{align}
+\frac{1}{\lambda f} x^2 - 2\nu_x x &= \frac{1}{\lambda f}(x^2 - 2 \nu_x \lambda f x) = \frac{1}{\lambda f}(x^2 - 2 x_0 x)\\
+&= \frac{1}{\lambda f}((x-x_0)^2 - x_0^2) = \frac{1}{\lambda f}(x-x_0)^2 - \nu_x^2 \lambda f
+\end{align}
+
+\begin{align}
+x_0 = \nu_x \lambda f
+\end{align}
+
+Similarly for $y$. We rewrite
+
+\begin{align}
+f_2(x,y) &= H_0 t_n F_0 \exp\left[i\pi \lambda(d-f)(\nu_x^2+\nu_y^2)
+\right] \exp\left[i \pi\frac{(x-x_0)^2 + (y-y_0)^2}{\lambda f}\right]\\
+&= A(\nu_x, \nu_y) \exp\left[i \pi\frac{(x-x_0)^2 + (y-y_0)^2}{\lambda f}\right]
+\end{align}
+
+with
+
+\begin{align}
+A(\nu_x, \nu_y) = H_0 t_n F_0 \exp\left[i\pi \lambda(d-f)(\nu_x^2+\nu_y^2)
+\right] 
+\end{align}
+
+We recognize this as a paraboloidal wave focused on a point distance $f$ from the output of lens at points $x_0, y_0$, That is the point $(x_0, y_0, d+d_0+f)$.
+
+The last step is to determine the field at the output plane, $f_3(x,y) = g(x,y) = U(x,y,d+d_0+f)$ as a function of the output of the lens by convolving $f_2(x,y)$ with the impulse response function for free space after propagation distance $f$.
+
+\begin{align}
+g(x,y) &= h_0 \int \int f_2(x',y') \exp\left[-i\pi \frac{(x-x')^2+(y-y')^2}{\lambda f}\right]dx'dy'\\
+&= h_0 A(\nu_x, \nu_y) \int \int \exp\left[i \pi\frac{(x'-x_0)^2 + (y'-y_0)^2}{\lambda f}\right] \exp\left[-i\pi \frac{(x-x')^2+(y-y')^2}{\lambda f}\right] dx'dy'
+\end{align}
+
+We hone in on the phase factors:
+
+\begin{align}
+(x'-x_0)^2 - (x-x')^2 = x'^2 + x_0^2 -2x_0 x' - x^2 - x'^2 + 2x x' = x_0^2 - x^2 + 2(x-x_0)x'
+\end{align}
+
+\begin{align}
+g(x,y) = h_0 A(\nu_x,\nu_y) \int \int \exp\left[i\pi\frac{(x_0^2 - x^2) + (y_0^2 -y^2)}{\lambda f}\right] \exp\left[-i2\pi \frac{(x-x_0)x' + (y-y_0)y'}{\lambda f}\right] dx'dy'
+\end{align}
+
+we can change variables by $\frac{x'}{\lambda f} = \tilde{x}$ and likewise for $y$ to get
+
+\begin{align}
+g(x,y) =& h_0 (\lambda f)^2 A(\nu_x,\nu_y)\\
+&\times \exp\left[i\pi\frac{(x_0^2 - x^2) + (y_0^2 -y^2)}{\lambda f}\right] \int \int \exp\left[-i2\pi \left((x-x_0)\tilde{x} + (y-y_0)\tilde{y}\right)\right] d\tilde{x} d\tilde{y}
+\end{align}
+
+In the next step I will assume the integral is over all of $\tilde{x}$ and $\tilde{y}$ This is in fact an approximation that the lens has infinite diameter, i.e. that the lens does not clip the beam. In reality the lens has finite aperture and this will limit this integral which in fact results in the diffraction limit. However, in the case of low NA optics, or in the paraxial approximation, the function $f_2(x,y)$ is only limited to a small area anyways so approximating the integral as over all the real line doesn't change things very much. Later we will see how we can add in a mask function to get the diffraction limit.
+
+When we approximate this integral as being infinite we recognize it as the expression for $\delta(x-x_0)\delta(y-y_0)$. Since this delta function is non-zero for $x \neq x_0$ we can let $x=x_0$ and $y=y_0$ in the exponential outside the integral reducing it to unity. We find
+
+\begin{align}
+g(x,y) = h_0(\lambda f)^2 A(\nu_x,\nu_y) \delta(x-x_0)\delta(y-y_0)
+\end{align}
+
+So we see that an input wave with spatial frequencies $\nu_x$ and $\nu_y$ produces a spot in the output plane at location $(x_0,y_0) = (\lambda f \nu_x, \lambda f \nu_y)$
+
+This analysis was all performed for a single incident plane wave. If instead the input wave was a superposition of many waves:
+
+\begin{align}
+f_0(x,y) = \int \int F(\nu_x,\nu_y) \exp[-i2\pi(\nu_x x + \nu_y y)] d\nu_x d\nu_y
+\end{align}
+
+Then this $\nu_x, \nu_y$ integral would be wrapped around each step of the previous calculation. Note $\delta(x-x_0) = \delta(x - \lambda f \nu_x) = \frac{1}{\lambda f} \delta(\frac{x}{\lambda f} - \nu_x)$. When we plug in this transformation and perform the double integral we find
+
+\begin{align}
+g(x,y) &= h_0 A\left(\frac{x}{\lambda f}, \frac{y}{\lambda f}\right)\\
+&= h_0 H_0 t_n F\left(\frac{x}{\lambda f}, \frac{y}{\lambda f}\right) \exp\left[i\pi\frac{d-f}{\lambda f^2} (x^2+y^2)\right]\\
+&= h_l F\left(\frac{x}{\lambda f}, \frac{y}{\lambda f}\right) \exp\left[i\pi\frac{d-f}{\lambda f^2} (x^2+y^2)\right]
+\end{align}
+
+in this case
+
+\begin{align}
+h_l &= h_0 H_0 t_n = \frac{i}{f\lambda} \exp[-ikf]\exp[-ikd]\exp[-inkd_0]\\
+&= \frac{i}{\lambda f} \exp[-ik(d+nd_0 +f)
+\end{align}
+
+If the object is placed at focal distance then the phase factor vanishes.
+
+\begin{align}
+g(x,y) = h_l F\left(\frac{x}{\lambda f}, \frac{y}{\lambda f}\right)
+\end{align}
+
+Regardless of where the object is located if we take the square amplitude of the output wave we find the intensity at the output:
+
+\begin{align}
+I(x,y) = \frac{1}{(\lambda f)^2} \left| F\left(\frac{x}{\lambda f}, \frac{y}{\lambda f}\right)\right|^2
+\end{align}
+
+We see that we can look to locations in the output plane to determine Fourier components of the input plane.
+
+\section{Diffraction limit}
+
+The diffraction limit states that, in the far-field, the best resolution obtainable by an optical system is of order $\lambda$. There are one or two root causes for this fundamental limit, each of which has been referenced earlier in this write up. 
+
+1) The finite size of the imaging optic. The argument here is, roughly, that small features imply the presence of large transverse spatial frequencies, $\nu_x$ and $\nu_y$. 
+These correspond to waves traveling at large angles to the optical axis. 
+If the lens has finite aperture, then due to the distance between the lens and the objective, the finite aperture of the lens will act as a spatial filter which cuts out the high frequency components - the large angle waves `miss' the lens since they travel at too large of an angle to be collected. Thus, when we look in the Fourier plane we will not see the high frequency components, and if we add another lens to take the inverse Fourier transform of the Fourier plane, we will see a spatially low pass filtered version of the original image resulting in lower resolution.
+
+This argument is certainly the reason why the resolution of optical components in the paraxial or low-NA regime is limited. However, I have always been puzzled by two questions which I'll raise below. I think the above answer 1) does partially address the two questions a) and b) below but there is a little bit more to the diffraction limit story. 
+
+a) Why couldn't you make a bigger lens to capture higher spectral components and get better resolution? In fact, in this way, naively, you could imagine getting arbitrarily better spatial resolution with a larger lens.
+
+b) It is possible to write down the formula for a gaussian beam with a waist smaller than $\lambda$ and determine its shape. Isn't this a solution to the Helmholtz equation and shouldn't you be able to shape it with a lens? For example, at some distance (larger than the Rayleigh range) away from the focus of such a tightly focussed Gaussian beam we could calculate the curvature of the beam and the beam waist. It would not be difficult to then construct a lens that takes an input beam and creates a beam with the desired curvature and waist at the output. When this beam then propagates would it not then be focused to the desired spot size smaller than $\lambda$?
+
+I will actually answer b) first because a bit of digging revealed to me that the answer to this part is actually not so difficult or deep. The answer is that Gaussian beams are not necessarily solutions to the full Helmholtz equation. They are, rather solutions to the paraxial Helmholtz equation. Under certain approximation solutions to the paraxial Helmholtz equation will approximately solve the full Helmholtz equation and thus reflect possible real electromagnetic fields which satisfy Maxwell's equations. However, if those approximations break down then the solution to the paraxial approximation may not satisfy the Helmholtz equation at all. It turns out that for Gaussian beams these assumptions begin to break down precisely when $w_0 \lesssim \lambda$. Thus, if we were to perform the manipulations described above with a lens it is true the field would maybe look like a Gaussian beam initially, but, for reasons having to do with the answer to a) below, we will see that it will not focus down to a spot smaller than $\lambda$.
+
+The answer to question a) brings me to the second, and more fundamental - in my opinion, reason for the diffraction limit:
+
+2) The answer to a) for me is related to the transfer function of free space. It is true that increasing the size of the lens will allow you to capture high Fourier frequencies of the original signal and thus get better resolution. However, though you will always increase your resolution with a bigger lens, you will not be able to get arbitrarily good resolution, rather, you will asymptotically approach a maximal resolution. this limit is due to the cutoff of the transfer function of free space. That is, even waves traveling almost perpendicular to the optical axis only carry information of resolution $~\lambda$. That is, $\nu_x \approx \frac{1}{\lambda}$ but no larger. Higher resolution information is never carried into the far-field anyways so it doesn't matter how good or large of a lens you have, there is no way to capture that information. This is a fundamental realization for me because I was always confused as to if the diffraction limit was something technical about how we use lenses or something fundamental about light. It is clear to me now, that due to the transfer function of free space, it is certainly a fundamental property of light itself. Of course, if you can probe the large wavevector evanescent (near) field you can get higher resolution information.
+
+Let me quickly loop back to question b). There was a question as to what would happen if you used a lens to sharply bend an incident field in such a way as to create a Gaussian beam focused to a spot size smaller than $\lambda$. Let me flip this on its head for a second. Imagine you begin with a spot of your desired size. The question is then what would happen as you look at planes further and further away from this point. The answer is that you would need spatial frequencies larger than $\frac{1}{\lambda}$ to describe this initial state. Then, as you look at planes further from the starting point you would see the large wavevector information would evanescently decay away. My guess is that you would after some time see the same thing you would have seen if your spot had been the same size as $\lambda$ anyways. Back to the lens question. That is to say, when you focus your beam in the far field to try to get the really tight focal spot you won't succeed. You will be able to get transverse spatial frequencies very close to $\frac{1}{\lambda}$, but the propagating field will never have the very large wavevectors necessary to construct a very small spot. It can't due to the transfer function of free space.
+
+Ok, so given all of this I am now going to do some math to justify the statements made in 1). That is, I'll return to the low-NA, paraxial limit and derive the diffraction limit for those sorts of optics.
+
+\subsection{Diffraction Limit Math}
+
+I will consider two different situations. In the first situation I will consider using a lens to focus a plane wave to a small spot. In this case the size of the lens will determine how small of a spot can be created. In the second situation I will consider a lens being used to image a point emitter. Here we will see that the spot size of the image is again limited by the size of the imaging lens.
+
+\subsection{Focusing a Beam}
+Consider a plane wave incident on a lens with focal length $f$ and diameter $D$. Suppose the plane wave fills the entire lens. For us to be in the paraxial limit it is then necessary that $D \ll f$. This limit is also involved in the thin lens approximation. The incident field is $f_0(x,y) = F_0 \exp[-i 2\pi (\nu_x x+\nu_y y)]$, a Plane wave. However, when it passes through the aperture of the lens we multiply it by the aperture function, $p(x,y)$. In this case
+
+\begin{align}
+p(x,y) =
+\begin{cases}
+1 & \text{for } x^2+y^2 \le D^2\\
+0 & \text{fot } x^2+y^2 > D^2
+\end{cases}
+\end{align}
+
+so that $f_1(x,y) = p(x,y)F_0 \exp[-i 2\pi (\nu_x x+\nu_y y)$. To find the wave after the lens we apply the transmittance function of a lens:
+
+
+\begin{align}
+f_2(x,y) = t(x,y)f_1(x,y) = p(x,y)F_0 \exp[-i 2\pi (\nu_x x+\nu_y y) t_n \exp\left[i \pi \frac{x^2+y^2}{\lambda f}\right]
+\end{align}
+
+We then apply the free space propagation convolution formula to this wave. This was already worked out above. We can identify
+
+\begin{align}
+g(x,y) =& f_3(x,y) = h_0 t_n (\lambda f)^2 \exp\left[-i\pi\frac{(x_0^2-x^2)+(y_0^2-y^2)}{\lambda f}\right]\\
+&\times  \int \int p(\lambda f \tilde{x}, \lambda f \tilde{y}) \exp\left[-i2\pi((x-x_0) \tilde{x} + (y-y_0) \tilde{y})\right] d\tilde{x} d\tilde{y}
+\end{align}
+
+This integral is evaluated over all $\tilde{x}$ and $\tilde{y}$, recalling $\tilde{x} = \frac{x'}{\lambda f}$. As we saw earlier, if $p(x,y)$ was unity everywhere the integral would evaluate to a product of delta functions. However, in this case the aperture function limits the bounds of the integral. We switch into polar coordinates with $\tilde{r} = \sqrt{\tilde{x}^2 + \tilde{y}^2}$ and $\tilde{x} = \tilde{r}\cos(\theta)$ and $\tilde{y} = \tilde{r}\sin(\theta)$.
+
+\begin{align}
+g(x,y) &= h_0 t_n (\lambda f)^2 \exp\left[-i\pi\frac{(x_0^2-x^2)+(y_0^2-y^2)}{\lambda f}\right]\\
+&\times  \int_{\theta = -\pi}^{ \pi} \int_{\tilde{r} = 0}^{\frac{D}{2\lambda f}} \tilde{r} \exp\left[-i2\pi((x-x_0) \tilde{r}\cos(\theta) + (y-y_0) \tilde{r} \sin(\theta))\right] d\tilde{r} d\theta
+\end{align}
+
+We can also define $x-x_0 = r \cos(\phi)$ and $y-y_0 = r \sin(\phi)$ with $r = \sqrt{(x-x_0)^2+(y-y_0)^2}$.
+
+\begin{align}
+g(x,y) &= h_0 t_n (\lambda f)^2 \exp\left[-i\pi\frac{(x_0^2-x^2)+(y_0^2-y^2)}{\lambda f}\right]\\
+&\times  \int_{\theta = -\pi}^{ \pi} \int_{\tilde{r} = 0}^{\frac{D}{2\lambda f}} \tilde{r} \exp\left[-i2\pi(r \tilde{r}\cos(\theta)\cos(\phi) + r \tilde{r} \sin(\theta)\sin(\phi))\right] d\tilde{r} d\theta
+\end{align}
+
+Let $B(x,y) = h_0 t_n (\lambda f)^2 \exp\left[-i\pi\frac{(x_0^2-x^2)+(y_0^2-y^2)}{\lambda f}\right]$. Also note the trig identity $\cos(\theta-\phi) = \cos(\theta)\cos(\phi) + \sin(\theta)\sin(\phi)$ but also notice that the integrand is $2\pi$ periodic in $\theta$ and is being integrated over a single period. This means we can add an arbitrary constant to $\theta$. This allows us to remove the phase $\phi$.
+
+\begin{align}
+g(x,y) &= B(x,y) \int_{\theta = -\pi}^{ \pi} \int_{r = 0}^{\frac{D}{2\lambda f}} \tilde{r} \exp\left[-i2\pi r \tilde{r}\cos(\theta)\right] d\tilde{r} d\theta
+\end{align}
+
+First we perform the $\theta$ integral recalling the Bessel identity that
+
+\begin{align}
+\int_{\theta=-\pi}^{\pi} e^{i z \cos(\theta)} d\theta = 2\pi J_0(z)
+\end{align}
+
+We get (recalling $J_0(-2\pi r \tilde{r}) = J_0(2\pi r \tilde{r})$
+
+\begin{align}
+g(x,y) = B(x,y) 2\pi \int_{r=0}^{\frac{D}{2\lambda f}} \tilde{r} J_0(2\pi \tilde{r} \tilde{r}) d\tilde{r}
+\end{align}
+
+Perform the change of variables $z= 2\pi r \tilde{r}$ so that
+
+\begin{align}
+g(x,y) = B(x,y) \frac{1}{2\pi r^2} \int_{z=0}^{\frac{\pi r D}{\lambda f}} z J_0(z) dz
+\end{align}
+
+We whittle away at the integration by taking the series expansion of the integrand, noting that
+
+\begin{align}
+J_n(z) = \left(\frac{x}{2}\right)^n\sum_{k=0}^{\infty} \frac{(-1)^k\left(\frac{z}{2}\right)^{2k}}{k!(k+n)!}
+\end{align}
+
+In particular,
+
+\begin{align}
+zJ_0(z) = z \sum_{k=0}^{\infty} \frac{(-1)^k\left(\frac{z}{2}\right)^{2k}}{(k!)^2}
+\end{align}
+
+\begin{align}
+\int zJ_0(z) dz &= \sum_{k=0}^{\infty} \frac{(-1)^k}{2^{2k} (k!)^2}\int z^{2k+1} dz = \sum_{k=0}^{\infty} \frac{(-1)^k}{2^{2k}k!k!} \frac{1}{2k+2} z^{2k+2}\\
+&= z \frac{z}{2}\sum_{k=0}^{\infty} \frac{(-1)^k \left(\frac{z}{2}\right)^{2k}}{(k+1)!k!} = zJ_1(z)
+\end{align}
+
+So
+
+\begin{align}
+g(x,y) &= B(x,y) \frac{1}{2\pi r^2} \int_{z=0}^{\frac{\pi r D}{\lambda f}} z J_0(z) dz = B(x,y) \frac{1}{2\pi r^2} z J_1(z)\bigg|_{z=0}^{\frac{\pi r D}{\lambda f}}\\
+&= B(x,y) \frac{D J_1\left(\pi \frac{r D}{\lambda f}\right)}{2 r \lambda f}
+\end{align}
+
+\begin{align}
+g(x,y) &= \frac{i}{\lambda f} \exp[-i k f] \exp[-inkd_0] (\lambda f)^2 \exp\left[-i\pi\frac{(x_0^2-x^2)+(y_0^2-y^2)}{\lambda f}\right]\\
+&\times \frac{D}{2 \lambda f} \frac{1}{r} J_1\left(\pi \frac{rD}{\lambda f}\right)\\
+&= i\exp[-ikf]\exp[-inkd_0] \exp\left[-i\pi\frac{(x_0^2-x^2)+(y_0^2-y^2)}{\lambda f}\right] \frac{D}{2r}J_1\left(\pi \frac{rD}{\lambda f}\right)
+\end{align}
+
+Recalling that $r = \sqrt{(x-x_0)^2+(y-y_0)^2}$, the distance between the observation point $(x,y)$ and the point $(x_0,y_0) = (\nu_x \lambda f, \nu_y \lambda f)$, we can ask how close could we  put another spot (perhaps by shining in light at a different angle), while still being able to resolve the two spots. The Rayleigh criteria is that the center of the second spot should be at least as far as the first zero of the first spot. This means we need to know the distance between the maximum of $J_1(z)$ and its first zero. The maximum occurs at $z=0$. The first minimum occurs at $z=3.8317$. The radius corresponding to this location is
+
+\begin{align}
+\pi \frac{r D}{\lambda f} = 3.8317\\
+r = 1.22 \lambda \frac{f}{D}
+\end{align}
+
+If the lens has a low numerical aperture ($f \gg D$) then $\frac{D}{f} \approx \sin(\theta) = NA$ so
+
+\begin{align}
+r \approx 1.22 \frac{\lambda}{NA}
+\end{align}
+
+We have thus established, in the Fresnel approximation, the diffraction limit for focusing a plane wave using a lens.
+
+\subsection{Imaging a point source}
+
+The second scenario in which the diffraction limit arises is when a point source already exists in the focal plane of the lens and we are attempting to image the point source. 
+
+
+\end{document}

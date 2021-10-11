@@ -1,0 +1,146 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Spectrum Analyzer}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this write up I will prove that what is measured by a spectrum analyzer is the power spectral density.
+
+\section{main}
+
+We consider a complex signal $X(t)$.
+In general we will suppose that $X(t)$ is infinite in temporal extant, meaning that it contains infinite energy.
+Often $X(t)$ will have finite power at all times, however, I will point out that white noise, an important case for consideration, in fact has infinite power at all times.
+However, if the frequency bandwidth of white noise is limited by a bandpass or low pass filter then it is again a finite-power signal.
+
+We define a window function $W_0(t)$ which has the property that
+
+\begin{align}
+\int |W_1(t)|^2 dt = 1
+\end{align}
+
+From this we extend to a family of normalized window functions:
+
+\begin{align}
+W_{\Delta T}(t) = \frac{1}{\sqrt{\Delta T}} W_0\left(\frac{t}{\Delta t}\right)
+\end{align}
+
+With
+
+\begin{align}
+\int |W_{\Delta T}(t)|^2 dt = \int \frac{1}{\Delta T} \left|W_1\left(\frac{t}{\Delta T}\right)\right|^2 dt = \int |W_1(t')|^2 dt' = 1
+\end{align}
+
+by a change of variables.
+
+The prototypical window function will be the box window function:
+
+\begin{align}
+W^{\theta}_1(t) =& \theta\left(t-\frac{1}{2}\right)\theta\left(\frac{1}{2}-t\right)\\
+W^{\theta}_{\Delta T}(t) =& \frac{1}{\sqrt{\Delta T}}\theta\left(t-\frac{\Delta T}{2}\right)\theta\left(\frac{\Delta T}{2}-t\right)
+\end{align}
+
+We define the time windowed version of the signal $X(t)$ as
+
+\begin{align}
+X_{W_{\Delta T}}(t) = X(t)W_{\Delta T}(t)
+\end{align}
+
+The instantaneous power in a signal is simply defined as
+
+\begin{align}
+P_X(t) = |X(t)|^2
+\end{align}
+
+We define the time averaged power in a signal as
+
+\begin{align}
+\bar{P}_X(\Delta T) =& \frac{1}{\Delta T}\int_{t=-\frac{\Delta T}{2}}^{\frac{\Delta T}{2}} P_X(t) dt\\
+=& \frac{1}{\Delta T}\int_{t=-\frac{\Delta T}{2}}^{\frac{\Delta T}{2}} |X(t)|^2 dt\\
+=& \int |X_{W^{\theta}_{\Delta T}}(t)|^2 dt\\
+=& \int P_{X_{W^{\theta}_{\Delta T}}}(t) dt
+\end{align}
+
+We can generalize this by just letting
+
+\begin{align}
+\bar{P}_X(\Delta T) =& \int P_{X_{W_{\Delta T}}}(t) dt
+\end{align}
+
+The normalization condition on $W_{\Delta T}(t)$ ensures that this behaves like a weighted average of the power for any window function $W_{\Delta t}(t)$.
+
+We can think of $W_{\Delta T}(t)$ as a signal in which case we have
+
+\begin{align}
+P_{W_{\Delta T}}(t) = |W_{\Delta T}(t)|^2
+\end{align}
+
+We define the energy of a signal as
+
+\begin{align}
+E_X = \int P_X(t) dt = \int |X(t)|^2 dt
+\end{align}
+
+With this we can see
+
+\begin{align}
+E_{W_{\Delta T}} = \int |W_{\Delta T}(t)|^2 dt = 1
+\end{align}
+
+We can also see that
+
+\begin{align}
+\bar{P}_X(\Delta T) = E_{X_{W_{\Delta T}}}
+\end{align}
+
+We define the Fourier transform of a signal as
+
+\begin{align}
+\tilde{X}(f) = \int e^{-i2\pi f t} X(t) dt
+\end{align}
+
+The power spectral density is defined as 
+
+\begin{align}
+
+\end{align}
+
+
+
+\end{document}

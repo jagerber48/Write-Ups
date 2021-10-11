@@ -1,0 +1,325 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Optimal Matched Filtering}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I'll introduce the ordinary least squares (OLS) estimator and show that a matched linear filter provides the best ordinary least squares estimator.
+
+Another type of estimator is the best linear unbiased estimator (BLUE). In general the OLS estimator is not necessarily a BLUE. In the case of additive noise with zero mean (the type of noise we typically consider) the OLS provides an unbiased estimator, but there may be other estimators which have a lower variance than the OLS estimator.
+
+However, in the case that the noise is additive and 
+\begin{enumerate}
+\item The noise has zero mean
+\item Is uncorrelated at different times (Markovian)
+\item Homoscedastic (constant, finite, variance over time)	
+\end{enumerate}
+
+We can apply the Gauss Markov Theorem which states that, under these circumstances, the OLS estimator is a BLUE.
+
+In our application of matched filters we have wondered if we have chosen an optimal filter in taking the filter to be the system response function, especially in light of the fact that the noise in our signal contains a thermal component as well as a white component. Now, after a lot of numerical and statistical work than Jonathan has done, it is clear that under some circumstances the system response filter that we have chosen is not optimal.
+
+\section{Signal and Response Function}
+
+Consider the signal produced by a physical process
+
+\begin{align}
+S(t) = \sum_{i} r_i(t) X_i(0) + \epsilon(t)
+\end{align}
+
+The output of an optomechanical system would give such a signal. $r_i(t)$ represents the expected time evolution of the system given that it begins in initial state $X_i(0)$. $\epsilon(t)$ represents any noise which has been added to the signal either during the course of evolution of the physical system or during readout of the system state.
+
+For consistency with numerical simulations I've already made and generality I will let all variables be complex valued.
+
+It may be of scientific interest to determine the parameter $X_i(0)$. For example, the state $X_i(0)$ may reveal information about the physical dynamics prior to time $t=0$ which may be of interest. In some cases (such as E3 matched filtering) the system response function can be take as a known function which can be calculated after the measurement and calibration of separate system parameters (such as $\omega$ and $\Gamma$).
+
+$\epsilon(t)$ is of course unknown, but if the noise sources are well understood then we can take statistics of $\epsilon(t)$, such as $\Braket{\epsilon(t)}$ or $\Braket{\epsilon(t_1)\epsilon^*(t_2)}$ to be known. We will assume (consistent with the E3 physical system) that $\Braket{\epsilon(t)} = 0$.
+
+The task then is to use the above known information about $r(t)$ and $\epsilon(t)$, as well as the measured time trace, $S(t)$, to estimate the parameter of interest, $X_i(0)$. Let $\beta_i = X_i(0)$.
+
+\begin{align}
+S(t) = \sum_i r_i(t) \beta_i + \epsilon(t)
+\end{align}
+
+\section{Ordinary Least Squares Estimator}
+
+Suppose our guess for $\beta_i$ was $\check{b}_i$. the check over $\check{b}_i$ indicates that this is an estimate for a parameter of interest. In that case, given our knowledge of $r_i(t)$, our prediction for the signal time trace would be
+
+\begin{align}
+\check{S}(t) = \sum_i r_i(t) \check{b}_i
+\end{align}
+
+These would be a prediction, or estimate, of the signal trace given our guess of parameter $\beta_i$ to be $\check{b}_i$. The next question is then how to make the `best' choice of $\check{b}_i$. One such choice is we want to choose $\check{b}_i$ in such a way that our guess for the signal trace, $\check{S}(t)$, is as close to the measured signal, $S(t)$, as possible. Closeness can be defined as looking at the integral over time of the squared difference between the two signals. This measure of closeness is called the ordinary least squares cost function.
+
+\begin{align}
+\phi_{\text{OLS}} = \int \lvert S(t) - \check{S}(t) \rvert^2 dt
+\end{align}
+
+The goal is to choose $\check{b}_i$ that minimize this cost function, so we must take the derivative with respect to $\check{b}_i$ and set it equal to zero. Since the $\check{b}_i$ are complex we take derivatives with respect to the real and imaginary parts of $\check{b}_i$.
+
+\begin{align}
+\phi_{\text{OLS}} &= \int \left\lvert S(t) - \sum_i r_i(t) \check{b}_i \right \rvert^2 dt\\
+\frac{d\phi_{\text{OLS}}}{d\check{b}_i^{\text{Re}}} &= 2\int \text{Re}\left[\left(S(t) - \sum_j r_j(t) \check{b}_j\right) r^*_i(t) \right]dt =  0\\
+\frac{d\phi_{\text{OLS}}}{d\check{b}_i^{\text{Im}}} &= -2\int \text{Im}\left[\left(S(t) - \sum_j r_j(t) \check{b}_j\right) r^*_i(t) \right]dt =  0
+\end{align}
+
+The real and imaginary part of the quantity in brackets must be zero so we can solve
+
+\begin{align}
+\sum_j \left(\int r^*_i(t)r_j(t)dt \right) \check{b}_j &= \int S(t) r^*_i(t) dt\\
+= R_{ij} \check{b}_j &= \int S(t) r^*_i(t) dt\\
+\check{b}_k = \check{\beta}_k &= R_{ki}^{-1} \int S(t) r^*_i(t) dt
+\end{align}
+
+I have introduced $\check{\beta}_k$ to indicate the specific estimator given above which minimizes the ordinary least squares cost function.
+
+The expression for $\check{\beta}_k$ is the familiar matched filter expression we have worked with previously in E3. The integral is an integral of the signal against the system response function multiplied by a normalization or orthogonalization factor, $R_{ki}^{-1}$.
+
+\section{Mean Squared Error and Optimal Filter}
+
+Written in this form we can ask the question is $\check{\beta}_k$ and optimal estimator for $\beta_k$. By optimal we mean the following. First we can define the bias of an estimator as
+
+\begin{align}
+\text{Bias}(\check{\beta}_k, \beta_k) = \Braket{\check{\beta}_k} - \beta_k
+\end{align}
+
+This is to say, upon repeated trials, the mean of the estimator $\check{\beta}_k$ converges to the actual value of the parameter $\beta_k$. Note that here, for simplicity, I am assuming $\beta_k$ is a fixed parameter and not a random variable itself (in contrast to the case we consider experimentally in which $X_k(0) = \hat{X}_k(0)$ is a quantum random variable with a thermal distribution).
+
+We can also define the variance of the estimator as
+
+\begin{align}
+\text{Var}(\check{\beta}_k) = \Braket{\left\lvert \Braket{\check{\beta}_k} - \check{\beta}_k \right\rvert^2}
+\end{align}
+
+We can construct the mean squared error (MSE) cost function for an estimator (distinct from the OLS cost function)
+
+\begin{align}
+\phi_{\text{MSE}} = \Braket{\left\lvert \check{\beta}_k - \beta_k \right\rvert^2} = \text{Var}(\check{\beta}_k) + \text{Bias}(\check{\beta}_k,\beta_k)^2
+\end{align}
+
+Where the last equality follows from a few algebraic manipulations which are repeated on the Wikipedia page for mean squared error.
+
+In general it is desirable for an estimator to be unbiased and have as small of variance as possible. In fact, if a linear estimator is unbiased and has the minimum variance amongst unbiased linear estimators then we call it a best linear unbiased estimator (BLUE). 
+
+There may be circumstances when bias can be slightly increased for a great reduction in variance resulting in a lower mean squared error. There is also the possibility that a non-linear filter can produce a smaller mean-squared error than a linear filter. However, since we are working with additive noise with mean zero this means that 1) linear filters are unbiased and 2) we need not consider non-linear filters. 
+
+All of this indicates that for our problem, by optimal filter we mean a BLUE. That is an unbiased estimator with minimum estimator variance.
+
+
+\section{Gauss Markov Theorem and Whitening Transformation}
+
+I have shown above that the matched filter as defined above is the ordinary least squares estimator. The Guass-Markov theorem is a theorem from statistics that states that when the noise $\epsilon(t)$ entering the system is white noise (zero-mean, delta correlated for different times, and constant variance) the OLS estimator (the matched filter) is a BLUE. This tells us that if the noise is white noise then the matched filter gives us an `optimal' filter.
+
+However, in our system the noise entering the system is not purely white noise. It includes a thermal component as well. This means that the Guass-Markov theorem does not directly apply to our signal. However, it is possible to transform our signal into a form so that the Guass-Markov theorem does apply. Essentially we must transform our signal in such a way that the noise becomes white. We can then apply a matched filter to that signal to get an optimal estimator, $\check{\beta}_k$.
+
+Suppose the noise in the system satisfies
+
+\begin{align}
+\Braket{\epsilon(t)} &= 0\\
+\Braket{\epsilon(t_1)\epsilon^*(t_2)} &= \Omega(t_1-t_2)
+\end{align}
+
+Note that I have assumed the additive noise $\epsilon(t)$ is stationary noise. Also note that $\Omega(-t) = \Omega^*(t)$.
+Suppose we can find a function $\Omega^{-1}(t_1-t_2)$ with the property that
+
+\begin{align}
+\int \Omega^{-1}(t-t')\Omega(t') dt' = \delta(t)
+\end{align}
+
+Then, by the convolution theorem we know that
+
+\begin{align}
+\tilde{\Omega}^{-1}(f) \tilde{\Omega}(f) & = 1\\
+\tilde{\Omega}^{-1}(f) = \frac{1}{\tilde{\Omega}(f)}
+\end{align}
+
+Where $\tilde{\Omega}(f) = S_{\epsilon \epsilon}(f)$ is the power spectral density of the noise, by the Wiener-Khintchine theorem.
+
+Suppose further that we define $\Omega^{-\frac{1}{2}}(t)$ with the property that
+
+\begin{align}
+\int \Omega^{-\frac{1}{2}}(t-t') \Omega^{-\frac{1}{2}}(t') dt' = \Omega^{-1}(t)
+\end{align}
+
+$\Omega^{-\frac{1}{2}}(t)$ can be found by noting that
+
+\begin{align}
+\tilde{\Omega}^{-\frac{1}{2}}(f) = \sqrt{\tilde{\Omega}^{-1}(f)}
+\end{align}
+
+
+ We can then define
+
+\begin{align}
+\epsilon'(t) = \int \Omega^{-\frac{1}{2}}(t-t') \epsilon(t') dt'
+\end{align}
+
+Then a few lines of manipulation (or the application of the convolution theorem for power spectral densities) shows that
+
+\begin{align}
+\Braket{\epsilon'(t_1)\epsilon^{'*}(t_2)} = \delta(t_1-t_2)
+\end{align}
+
+We see then that convolution with the function $\Omega^{-\frac{1}{2}}(t)$ transforms the colored noise, $\epsilon(t)$ into white noise, $\epsilon(t')$. This is the whitening transformation. We can apply this whitening transformation to our signal $S(t)$ to get
+
+\begin{align}
+S'(t) &= \int \Omega^{-\frac{1}{2}}(t-t')S(t') dt'\\
+&= \sum_i \beta_i \int \Omega^{-\frac{1}{2}}(t-t')r_i(t') dt' + \epsilon'(t)\\
+&= \sum_i r'_i(t) \beta_i + \epsilon'(t)
+\end{align}
+
+Where I've defined the transformed response function, $r'(t) = \int \Omega^{-\frac{1}{2}}(t-t') r(t') dt'$. By the manipulations above we can generate the ordinary least squares estimator (matched filter estimator) for $\beta_i$
+
+\begin{align}
+\check{\beta}_k &= R^{-1}_{ki} \int S'(t) r^{'*}_i(t) dt\\
+R_{ij} &= \int r^{'*}_i(t) r'_j(t) dt
+\end{align}
+
+Let's look at
+
+\begin{align}
+\int S'(t) r^{'*}_i(t) dt &= \int \int \int \Omega^{-\frac{1}{2}}(t-t')\Omega^{-\frac{1}{2}*}(t-t'')S(t')r^*_i(t'') dt' dt'' dt\\
+&= \int \int \Omega^{-1*}(t'-t'') r^*_i(t'')S(t') dt' dt''\\
+&= \int S(t') \hat{r}^*_i(t') dt'
+\end{align}
+
+with
+
+\begin{align}
+\hat{r}_i(t) = \int \Omega^{-1}(t-t')r_i(t') dt'\\
+\hat{r}^*_i(t) = \int r_i^*(t') \Omega^{-1}(t'-t) dt'
+\end{align}
+
+Here $\hat{r}_i(t)$ is the optimal matched filter.
+It can also be worked out that
+
+\begin{align}
+R_{ij} = \int \int r^*_i(t') \Omega^{-1}(t'-t'') r_j(t'') dt' dt''
+\end{align}
+
+\section{Analytic Form For Matched Filter}
+
+We now seek to find an analytic form for the optimal matched filter $\hat{r}_i(t)$ in the presence of thermal and white noise. Our strategy will be to note that, again by the convolution theorem:
+
+\begin{align}
+\tilde{\hat{r}}_i(t) = \frac{\tilde{r}_i(f)}{S_{\epsilon \epsilon}(f)}
+\end{align}
+
+and then taking the inverse Fourier transform.
+
+ We must begin with a model for the system. Suppose
+
+\begin{align}
+\dot{a}(t) = \left(-i \omega_0 - \frac{\Gamma}{2}\right) a(t) + \sqrt{\Gamma}a_{\text{in}}(t)
+\end{align}
+
+Where $a_{\text{in}}(t)$ is white noise satisfying $\Braket{a_{\text{in}}(t_1)a^*_{\text{in}}(t_2)} = \delta(t_1-t_2)$. The solution to this differential equation is
+
+\begin{align}
+a(t) = a(0) r(t) + \sqrt{\Gamma} \int_{t'=0}^{\infty} r(t-t')a_{\text{in}}(t')dt'
+\end{align}
+
+with
+
+\begin{align}
+r(t) = e^{\left(-i \omega_0 - \frac{\Gamma}{2}\right) t} \theta(t)
+\end{align}
+
+with $\theta(t)$ the Heaviside theta function. We can then define our signal to be proportional to $a(t)$ plus added white shot noise.
+
+\begin{align}
+S(t) &= a(t) + A_{\text{SN}} \xi(t)\\
+&= a(t_0) r(t) + \sqrt{\Gamma} \int_{t'=t_0}^{\infty} r(t-t')a_{\text{in}}(t')dt' + A_{\text{SN}}\xi(t)\\
+&= \beta r(t) + \epsilon(t)
+\end{align}
+
+Where $a(0) = \beta$ is the parameter we are trying to estimate and
+
+\begin{align}
+\epsilon(t) = \sqrt{\Gamma} \int_{t'=t_0}^{\infty} r(t-t')a_{\text{in}}(t')dt' + A_{\text{SN}}\xi(t)
+\end{align}
+
+is the non-white additive noise. We must calculate the two-time correlation function of the noise.
+
+\begin{align}
+\Braket{\epsilon(t_1)\epsilon^*(t_2)} &= \Gamma \int_{t'=t_0}^{\infty}\int_{t''=t_0}^{\infty} r(t_1-t')r^*(t_2-t'')\Braket{a_{\text{in}}(t')a_{\text{in}}^*(t'')}dt'dt'' + A_{\text{SN}}^2 \Braket{\xi(t_1)\xi^*(t_2)}\\
+&= \Gamma \int_{t'=t_0}^{\infty} r(t_1-t')r^*(t_2-t') dt' + A_{\text{SN}}^2\delta(t_1-t_2)\\
+&= e^{-i\omega_0(t_1-t_2)}\left(e^{-\frac{\Gamma}{2}\lvert t_1 - t_2\rvert} - e^{-\frac{\Gamma}{2}(t_1+t_2-2t_0)} \right) + A_{\text{SN}}^2\delta(t_1-t_2)
+\end{align}
+
+The first term in parentheses is a stationary term. However the second term in parenthesis is a problematic non-stationary term. For the moment let us neglect this term and see what we can figure out. The justification of dropping this term will be presented/figured out/discussed later.
+
+\begin{align}
+\Braket{\epsilon(t_1)\epsilon^*(t_2)} &= \Omega(t_1,t_2) = \Omega(t_1-t_2) = e^{-i\omega_0(t_1-t_2)}e^{-\frac{\Gamma}{2}\lvert t_1 - t_2 \rvert} + A_{\text{SN}}^2\delta(t_1-t_2)\\
+\Omega(t) &= e^{-i\omega_0t}e^{-\frac{\Gamma}{2}\lvert t \rvert} + A_{\text{SN}}^2 \delta(t)
+\end{align}
+
+We Fourier Transform this to find
+
+\begin{align}
+S_{\epsilon \epsilon}(f) = \tilde{\Omega}(f) = \frac{\Gamma}{\left(\frac{\Gamma}{2}\right)^2 + (2\pi f - \omega_0)^2} + A_{\text{SN}}^2
+\end{align}
+
+We are almost ready to calculate the optimal matched filter. We first need the Fourier transform of $r(t)$.
+
+\begin{align}
+\tilde{r}(f) = \frac{1}{\frac{\Gamma}{2} - i(2\pi f - \omega_0)}
+\end{align}
+
+We can then calculate the Fourier Transform of the optimal matched filter
+
+\begin{align}
+\tilde{\hat{r}}(f) = \frac{\tilde{r}(f)}{S_{\epsilon \epsilon}(f)} &= \frac{\frac{1}{\frac{\Gamma}{2} - i(2\pi f-\omega_0)}}{A_{\text{SN}}^2 + \frac{\Gamma}{\left( \frac{\Gamma}{2}\right)^2 + (2 \pi f - \omega_0)^2}}\\
+&= \frac{\frac{1}{A_{\text{SN}}^2} \left(\frac{\Gamma}{2} + i (2\pi f - \omega_0) \right)}{\left(\left(\frac{\Gamma}{2}\right)^2 + \frac{\Gamma}{A_{\text{SN}}^2}\right) + (2\pi f - \omega_0)^2}
+\end{align}
+
+We can define
+
+\begin{align}
+\left(\frac{\Gamma'}{2}\right)^2 &= \left(\left(\frac{\Gamma}{2}\right)^2 + \frac{\Gamma}{A_{\text{SN}}^2} \right)\\
+\Gamma' &= \Gamma \sqrt{1+\frac{4}{A_{\text{SN}}^2 \Gamma}}
+\end{align}
+
+Resulting in
+
+\begin{align}
+\tilde{\hat{r}}(f) = \frac{\frac{1}{A_{\text{SN}}^2} \left(\frac{\Gamma}{2} + i (2\pi f - \omega_0) \right)}{\left(\frac{\Gamma'}{2}\right)^2 + (2\pi f - \omega_0)^2}
+\end{align}
+
+The inverse Fourier transform of this function (for $t>0$ is given by
+
+\begin{align}
+\hat{r}(t) = e^{\left(-i\omega_0-\frac{\Gamma'}{2}\right) t} \frac{\Gamma + \Gamma'}{2 \Gamma' A_{\text{SN}}^2}
+\end{align}
+
+We thus see that the optimal filter for this signal is a damped exponential which damps with modified damping rate, $\Gamma'$.
+
+\end{document}

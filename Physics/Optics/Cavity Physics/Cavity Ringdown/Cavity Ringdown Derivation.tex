@@ -1,0 +1,562 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{braket}
+\usepackage{siunitx}
+
+\newcommand{\ep}{\epsilon}
+
+\begin{document}
+\title{Cavity Ringdown Derivation}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this write up I will derive the formula for the transmitted and reflected fields coming from a dynamic detuned cavity. 
+For example, if the drive laser is at a fixed frequency and the cavity is rapidly swept across resonance.
+
+I will mainly be following:
+\begin{itemize}
+\item{M. Rakhmanov, A. Arodzero, ``Dyanmics of Fabry-Perot Resonators with Suspended Mirrors'' arXiv:physics/9809038 [physics.optics]}
+\item{M.J. Lawrence et. al. ``Dynamic Response of a Fabry-Perot interferometer'' \textit{Opt. Soc. Am. B.} \textbf{16} 4 (1999)}
+\item{M. J. Martin, ``Quantum Metrology and Many-Body Physics: Pushing the Frontier of the Optical Lattice Clock'', PhD Thesis, University of Colorado}
+\end{itemize}
+
+\section{Wave equation}
+
+We consider two mirrors, $a$ and $b$. We imagine `reference' planes at $x=0$ and $x=L_0$. 
+Mirror $a$ is displaced from the left reference plane by $x_a(t)$ and mirror $b$ is displaced from the right reference plane by $x_b(t)$.
+Mirror $a$ and $R_a = r_a^2$, $T_a=t_a^2$ and $L_a$ with $R_a+T_a+L_a = 1$.
+Likewise for mirror $b$. 
+In the high finesse limit we have $T, L \ll R$.
+
+The wave equation for plane waves propagating along the cavity axis (inside and outside of the cavity) is given by
+
+\begin{align}
+\frac{1}{c^2}\frac{d^2f}{dt^2} - \frac{d^2f}{dx^2} = 0
+\end{align}
+
+Right and left propagating solutions are given by
+
+\begin{align}
+f_R(x, t) &= A e^{-i(\omega t - kx)}\\
+f_L(x, t) &= A e^{-i(\omega t + kx)}\\
+\end{align}
+
+With the wavevector and oscillation frequency satisfying
+
+\begin{align}
+\frac{\omega}{k} = c
+\end{align}
+
+We can see that right and left propagating solutions satisfy
+
+\begin{align}
+f_R(x, t) &= f_R\left(x-y, t-\frac{y}{c}\right)\\
+f_L(x, t) &= f_L\left(x-y, t+\frac{y}{c}\right)
+\end{align}
+
+\section{Fields inside cavity}
+We define a number of fields inside and outside the cavity. Outside of the cavity there is one right-moving field impinging from the left which is the incident field, $f_{in}(x, t)$. 
+There is a reflected left moving field on the left side of the cavity as well, $f_{ref}(x, t)$.
+There is  right moving transmitted field on the right side of the cavity, $f_{tran}(x, t)$.
+Additionally there is a right moving field in the cavity, $f_1(x, t)$ and a left moving field in the cavity, $f_2(x, t)$.
+
+We will define a number of field amplitudes  which are equivalent to the fields evaluated at particular positions in the cavity and for which the fast rotating parts, $e^{-i\omega t}$, have been rotated out.
+
+\begin{align}
+E_{in}(t) &= f_{in}(0, t)e^{+i\omega t}\\
+E_{ref}(t) &= f_{ref}(0, t)e^{+i\omega t}\\
+E_1(t) &= f_1(0, t)e^{+i\omega t}\\
+E_1'(t) &= f_1(L_0, t)e^{+i\omega t}\\
+E_2(t) &= f_2(L_0, t)e^{+i\omega t}\\
+E_2'(t) &= f_2(0, t)e^{+i\omega t}\\
+E_{tran}(t) &= f_{tran}(t)e^{+i\omega t}
+\end{align}
+
+The fields are related to each other in various ways.
+We define the cavity round trip time:
+
+\begin{align}
+t_{RT} = \frac{2L_0}{c} = \frac{1}{\nu_{FSR}}
+\end{align}
+
+And work out
+
+\begin{align}
+E_1'(t) &= f_1(L_0, t)e^{+i\omega t}\\
+&= f_1\left(0, t-\frac{L_0}{c}\right) e^{+i\omega t}\\
+&= f_1\left(0, t-\frac{t_{RT}}{2}\right)e^{+i\omega t}\\
+&= E_1\left(t-\frac{t_{RT}}{2}\right) e^{-i\omega \left(t-\frac{t_{RT}}{2}\right)}e^{+i\omega t}\\
+&= E_1\left(t-\frac{t_{RT}}{2}\right) e^{+ikL_0}
+\end{align}
+
+Likewise for $E_2'(t)$.
+
+\begin{align}
+E_2'(t) &= f_2(0, t)e^{+i\omega t}\\
+&= f_2\left(L_0, t-\frac{t_{RT}}{2}\right) e^{+i\omega t}\\
+&= E_2\left(t-\frac{t_{RT}}{2}\right) e^{-i\omega\left(t-\frac{t_{RT}}{2}\right)}e^{+i\omega t}\\
+&= E_2\left(t-\frac{t_{RT}}{2}\right)e^{+ikL_0}
+\end{align}
+
+We can also nicely work out formulas for how the fields reflect internally. When the field reflects from a mirror (that doesn't have light coming from the other side) we have
+
+\begin{align}
+f_{ref}(x_{mir}, t) = -r f_{in}(x_{mir}, t)
+\end{align}
+
+$r = \sqrt{R} > 0$.
+The minus sign arises because of a sign change when light travels from a low index of refraction (air) into a high index of refraction (the mirror material).
+
+From this we have, for the right mirror:
+
+\begin{align}
+f_2(L_0 + x_b(t), t) &= -r_bf_1(L_0 + x_b(t), t)\\
+f_2\left(L_0, t + \frac{x_b(t)}{c}\right) &= -r_b f_1\left(L_0, t-\frac{x_b(t)}{c}\right)\\
+E_2\left(t+\frac{x_b(t)}{c}\right) e^{-i\omega\left(t+\frac{x_b(t)}{c}\right)} &= -r_b E_1'\left(t-\frac{x_b(t)}{c}\right) e^{-i\omega\left(t-\frac{x_b(t)}{c}\right)}\\
+E_2\left(t+\frac{x_b(t)}{c}\right) &
+= -r_b E_1'\left(t-\frac{x_b(t)}{c}\right)e^{+i2kx_b(t)}
+\end{align}
+
+We will coarse grain the dynamics on timescale longer than $t_{RT}$. 
+We will assume that $x_b(t) \ll L_0$ which means that the time $\frac{x_b(t)}{c} \ll t_{RT}$ so we will neglect this time difference, but keep the corresponding phase shift, in determining the amplitude of light upon reflection from the moving mirror.
+
+\begin{align}
+E_2(t) = -r_b E_1'(t)e^{+i2kx_b(t)}
+\end{align}
+
+We can do likewise for the left mirror but we have to bear in mind that in addition to the incident internal cavity field and the reflected internal cavity field there is also a incident field from outside the cavity.
+
+\begin{align}
+f_1(x_a(t), t) =& -r_a f_2(x_a(t), t) + t f_{in}(x_a(t), t)\\
+f_1\left(0, t-\frac{x_a(t)}{c}\right) =& -r_a f_2\left(0, t+\frac{x_a(t)}{c}\right)\\
+&+ t_a f_{in}\left(0, t-\frac{x_a(t)}{c}\right)\\
+E_1\left(t-\frac{x_a(t)}{c}\right) e^{-i\omega\left(t-\frac{x_a(t)}{c}\right)} =& -r_aE_2'\left(t+\frac{x_a(t)}{c}\right)e^{-i \omega\left(t+\frac{x_a(t)}{c}\right)}\\
+&+ t_a E_{in}\left(t-\frac{x_a(t)}{c}\right) e^{-i\omega\left(t-\frac{x_a(t)}{c}\right)}\\
+E_1\left(t-\frac{x_a(t)}{c}\right) =& -r_aE_2'\left(t+\frac{x_a(t)}{c}\right)e^{-i2kx_a(t)}\\
+&+ t_a E_{in}\left(t-\frac{x_a(t)}{c}\right)
+\end{align}
+
+And making the same approximation as before of estimating $\frac{x_a(t)}{c} \ll t_{RT}$ we have
+
+\begin{align}
+E_1(t) &= -r_a E_2'(t) e^{-i2kx_a(t)} + t_a E_{in}(t) 
+\end{align}
+
+
+
+\section{Fields outside the cavity}
+
+We can derive similar expressions for the fields outside the cavity.
+For the transmitted field we straightforwardly have
+
+\begin{align}
+f_{tran}(L_0+x_b(t), t) =& t_bf_1(L_0+x_b(t), t)\\
+f_{tran}\left(L_0, t-\frac{x_b(t)}{c}\right) =& t_b f_1\left(L_0, t-\frac{x_b(t)}{c}\right)\\
+E_{tran}\left(t-\frac{x_b(t)}{c}\right)e^{-i\omega\left(t-\frac{x_b(t)}{c}\right)} =& E_1'\left(t-\frac{x_b(t)}{c}\right)e^{-i\omega\left(t-\frac{x_b(t)}{c}\right)}\\
+E_{tran}(t) = tE_1'(t)
+\end{align}
+
+For the reflected field we have
+
+\begin{align}
+f_{ref}(x_a(t), t) =& r_a f_{in}(x_a(t), t) + t_a f_2(x_a(t), t)\\
+f_{ref}\left(0, t+\frac{x_a(t)}{c}\right) =& r_a f_{in}\left(0, t-\frac{x_a(t)}{c}\right) + t_a f_2\left(0, t+\frac{x_a(t)}{c}\right)\\
+E_{ref}\left(t+\frac{x_a(t)}{c}\right)e^{-i\omega\left(t+\frac{x_a(t)}{c}\right)} =& r_a E_{in}\left(t-\frac{x_a(t)}{c}\right)e^{-i\omega\left(t-\frac{x_a(t)}{c}\right)}\\
+&+t_aE_2'\left(t+\frac{x_a(t)}{c}\right)e^{-i\omega\left(t+\frac{x_a(t)}{c}\right)}\\
+E_{ref}\left(t+\frac{x_a(t)}{c}\right) =&r_aE_{in}\left(t-\frac{x_a}{c}\right)e^{+i2kx_a(t)} + t_aE_2'\left(t+\frac{x_a(t)}{c}\right)
+\end{align}
+
+Which we can approximate as
+
+\begin{align}
+E_{ref}(t) =&r_aE_{in}(t)e^{+i2kx_a(t)} + t_aE_2'(t)
+\end{align}
+
+\section{Self Consistent Solutions}
+
+Summarizing all of the above we have
+
+We summarize
+
+\begin{align}
+E_1'(t) &= E_1\left(t-\frac{t_{RT}}{2}\right)e^{+ikL_0}\\
+E_2'(t) &= E_2\left(t-\frac{t_{RT}}{2}\right)e^{+ikL_0}\\
+E_2(t) &= -r_b E_1'(t) e^{+i2kx_b(t)}\\
+E_1(t) &= -r_a E_2'(t)e^{-i2kx_a(t)} + t_aE_{in}(t)\\
+E_{tran}(t) &= t_bE_1'(t)\\
+E_{ref}(t) &= r_aE_{in}(t)e^{+i2kx_a(t)} + t_a E_2'(t)
+\end{align}
+
+We can manipulate these to try to get a self consistent equation for, $E_1(t)$, for example. We begin
+
+\begin{align}
+E_1(t) =& -r_aE_2'(t)e^{-i2kx_a(t)} + t_a E_{in}(t)\\
+=& -r_a E_2\left(t-\frac{t_{RT}}{2}\right)e^{+ikL_0}e^{-i2kx_a(t)} + t_ae_{in}(t)\\
+=& r_ar_bE_1'\left(t-\frac{t_{RT}}{2}\right)e^{+i2kx_b(t)}e^{+ikL_0}e^{-i2kx_a(t)} + t_aE_{in}(t)\\
+=& r_ar_bE_1\left(t-\frac{t_{RT}}{2}-\frac{t_{RT}}{2}\right) e^{+i2kL_0}e^{i2k(x_b(t)-x_a(t))} + t_aE_{in}(t)\\
+=& r_ar_bE_1(t-t_{RT})e^{+i2kL_0}e^{i2k\delta L(t)} + t_a E_{in}(t)
+\end{align}
+
+Where we have defined $\delta L(t) = x_b(t)-x_a(t)$.
+Let us suppose that $L_0$ is chosen such that it represents the length of a cavity resonant with light at frequency $\omega$.
+This occurs when
+
+\begin{align}
+L_0 = N \frac{\lambda}{2}
+\end{align}
+
+Where the wavelength is given by $\lambda = \frac{2\pi}{k}$ and $N$ is an integer so we can see that
+
+\begin{align}
+L_0 =& N \frac{\pi}{k}\\
+2kL_0 &= 2\pi N\\
+e^{i2kL_0} &= 1
+\end{align}
+
+so
+
+\begin{align}
+E_1(t) = r_ar_bE_1(t-t_{RT})e^{i2k\delta L(t)} + t_aE_{in}(t)
+\end{align}
+
+if we coarse-grain over time scales faster than $t_{RT}$ we can begin to form this into a differential equation for $E_1(t)$.
+
+\begin{align}
+\frac{E_1(t) - E_1(t-t_{RT})}{t_{RT}} &= \frac{1}{t_{RT}}\left(r_ar_b e^{i2k\delta L(t)} - 1\right)E_1(t-t_{RT}) + \frac{t_a}{t_{RT}}E_{in}(t)
+\end{align}
+
+Or, performing the coarse graining (and noting that to first order we can replace $E_1(t-t_{RT})$ with $E_1(t)$) we get
+
+\begin{align}
+\frac{dE_1(t)}{dt} = \left(\frac{r_ar_b}{t_{RT}}e^{i2k\delta L(t)} - \frac{1}{t_{RT}}\right)E_1(t) - \frac{t_a}{t_{RT}}E_{in}(t)
+\end{align}
+
+We will now make a few approximations. 
+First we will suppose that $\delta L(t)$ remains small (in particular that $k\delta L(t) \ll 1$ so that
+
+\begin{align}
+e^{i2k\delta L(t)} \approx 1 + i2k \delta L(t)
+\end{align}
+
+Next we will look at $r_ar_b$. 
+Recall that $r = \sqrt{R}$ and that $R=1-T-L$ and that $T, L \ll 1$. 
+We then work out
+
+\begin{align}
+r_ar_b =& \sqrt{R_a}\sqrt{R_b} = \sqrt{1-T_a-L_a}\sqrt{1-T_b-L_b}\\
+\approx& \left(1-\frac{1}{2}\left(T_a+L_a\right)\right)\left(1-\frac{1}{2}\left(T_b+L_b\right)\right)\\
+\approx& 1 - \frac{T_a+T_b+L_a+L_b}{2}
+\end{align}
+
+We define the cavity finesse, $\mathcal{F}$ as
+
+\begin{align}
+\mathcal{F} = \frac{2\pi}{T_a+T_b+L_a+L_b}
+\end{align}
+
+The justification for this definition is that for the case of a static cavity it simply relates the cavity linewidth, $\Delta\nu_{FWHM}$ to the cavity free spectral range, $\nu_{FSR}$.
+From this we see
+
+\begin{align}
+r_ar_b \approx 1-\frac{\pi}{\mathcal{F}}
+\end{align}
+
+We plug these two approximations into the differential equation for $E_1(t)$ above to find
+
+\begin{align}
+\frac{dE_1(t)}{dt} =& \frac{1}{t_{RT}}\left(\left(1-\frac{\pi}{\mathcal{F}}\right)\left(1+i2k\delta L(t)\right) - 1 \right)E_1(t) + \frac{t_a}{t_{RT}} E_{in}(t)\\
+\approx& \frac{1}{t_{RT}}\left(-\frac{\pi}{\mathcal{F}} + i2k\delta L(t)\right)E_1(t) + \frac{t_a}{t_{RT}} E_{in}(t)
+\end{align}
+
+We introduce a new timescale
+
+\begin{align}
+\tau_S = \frac{t_{RT}\mathcal{F}}{\pi}
+\end{align}
+
+We will see that this timescale is related to the cavity linewidth and decay time.
+We work on re-expressing the differential equation in terms of this new timescale.
+
+\begin{align}
+\frac{dE_1(t)}{dt} = -\frac{1}{\tau_S}\left(1 - i\frac{2\mathcal{F}k\delta L(t)}{\pi}\right)E_1(t) + \frac{\mathcal{F}t_a}{\pi\tau_S} E_{in}(t)
+\end{align}
+
+\subsection{Length to Frequency Detuning}
+It will be useful to re-express the length deviation $\delta L$ in terms of a detuning from `instantaneous cavity resonance'. 
+That is, we know that if $\delta L=0$ that the cavity is on resonance.
+We can ask the question if $\delta L$ is non-zero how much would the drive frequency need to change so that the cavity again came into resonance. 
+
+We proceed as follows.
+
+\begin{align}
+L =& L_0 + \delta L = \frac{N}{2}\lambda\\
+\lambda =& \lambda_0 + \delta \lambda\\
+\omega =& \omega_0 + \delta \omega\\
+\omega = ck = \frac{2\pi c}{\lambda}
+\end{align}
+
+We try to relate $\delta \omega$ to $\delta L$.
+
+\begin{align}
+\omega = \omega_0 + \delta \omega =& 2\pi c \frac{1}{\lambda_0 + \delta \lambda}
+\end{align}
+
+Assuming the deviation from resonance is small we expand
+
+\begin{align}
+\omega_0 + \delta \omega =&2\pi c \left(\frac{1}{\lambda_0} - \frac{1}{\lambda_0}\frac{\delta \lambda}{\lambda_0} \right)\\
+\delta \omega =& -\omega_0 \frac{\delta \lambda}{\lambda_0}
+\end{align}
+
+Note that because $L = \frac{N}{2}\lambda$ we have that
+
+\begin{align}
+\frac{\delta \lambda}{\lambda_0} = \frac{\delta L}{L_0}
+\end{align}
+
+So we get
+
+\begin{align}
+L_0 \delta \omega &= -\omega_0 \delta L\\
+L_0 \delta \omega &= -c k_0 \delta L\\
+\frac{L_0}{c} \delta \omega  &= -k_0 \delta L\\
+\frac{t_{RT}}{2}\delta \omega &= -k_0 \delta L
+\end{align}
+
+So we see that we can convert a length deviation into an instantaneous detuning deviation by
+
+\begin{align}
+2k_0 \delta L &= - \delta\omega t_{RT}
+\end{align}
+
+We return to the above differential equation
+
+\begin{align}
+\frac{dE_1(t)}{dt} = -\frac{1}{\tau_S}\left(1 - i\frac{2\mathcal{F}k\delta L(t)}{\pi}\right)E_1(t) + \frac{\mathcal{F}t_a}{\pi\tau_S} E_{in}(t)
+\end{align}
+
+and we work out
+
+\begin{align}
+\frac{dE_1(t)}{dt} \tau_S =&-\left(1 + i \frac{\mathcal{F}}{\pi} t_{RT} \delta\omega(t)\right)E_1(t) + \frac{\mathcal{F}t_a}{\pi}E_{in}(t)\\
+=& -(1 + i \tau_S \delta \omega(t))E_1(t) + \frac{\mathcal{F}t_a}{\pi}E_{in}(t)
+\end{align}
+
+Let us briefly consider the case when $\delta \omega(t)$ is constant in time with $\delta \omega(t) = \Delta$.
+We consider the steady state solutions when $\frac{dE_1(t)}{dt}=0$
+
+In that case we can see
+
+\begin{align}
+E_1 =& \frac{\mathcal{F}t_a}{\pi}E_{in} \frac{1}{1+i\tau_S\Delta}\\
+=& E_{in}\frac{\mathcal{F}t_a}{\pi} \frac{\frac{1}{\tau_S}}{\frac{1}{\tau_S} + i\Delta}\\
+=& E_{in}\frac{\mathcal{F}t_a}{\pi} \frac{\kappa_S}{\kappa_S+i\Delta}
+\end{align}
+
+We see here that $\kappa_S=\frac{1}{\tau_S}$ is the field linewidth.
+We can look at the field amplitude squared (which tells us about the intensity rather than field) and see
+
+\begin{align}
+|E_1|^2 = |E_{in}|^2 \left(\frac{\mathcal{F}t_a}{\pi}\right)^2 \frac{\kappa_S^2}{\kappa_S^2 + \Delta^2}
+\end{align}
+
+We see that when $\Delta = \kappa_S$ the intensity falls to half of its original value.
+This means that $\kappa_S$ is the intensity half width and half max. 
+We can define $\kappa = 2\kappa_S$ as the full width and half max.
+$\tau_S$ is the field decay rate and $\tau = \frac{1}{\kappa} = \frac{\tau_S}{2}$ is the intensity decay rate.
+
+We now consider the case when the frequency of the cavity is swept linearly in time so that
+
+\begin{align}
+\delta \omega(t) = \dot{\omega} t
+\end{align}
+
+We then get
+
+\begin{align}
+\frac{dE_1(t)}{dt} \tau_S =& -(1+i\tau_S \dot{\omega} t)E_1(t) + \frac{\mathcal{F}t_a}{\pi}E_{in}(t)
+\end{align}
+
+We can rescale time into units of $\tau_S$ by defining
+
+\begin{align}
+t' = \frac{t}{\tau_S}
+\end{align}
+
+and we now see
+
+\begin{align}
+\frac{dE_1(t')}{dt'} = -(1 + i\tau_S^2 \dot{\omega} t')E_1(t) + \frac{\mathcal{F}t_a}{\pi}E_{in}(t)
+\end{align}
+
+We rewrite
+
+\begin{align}
+\tilde{\nu} = \tau_S^2 \dot{\omega} = \frac{\dot{\omega}}{\frac{\kappa_S}{\tau_S}}
+\end{align}
+
+That is, $\tilde{\nu}$ express $\dot{\omega}$ in units of $\frac{\kappa_S}{\tau_S}$, that is frequency sweep per unit time in units of cavity linewidths per cavity lifetime.
+
+We can then write
+
+\begin{align}
+\frac{dE_1(t')}{dt'} = -(1+i\tilde{\nu}t')E_1(t') + \eta
+\end{align}
+
+Where I've defined
+
+\begin{align}
+\eta = \frac{\mathcal{F}t_a}{\pi}E_{in}(t)
+\end{align}
+
+We will assume that $E_{in}(t)$ is constant so that $\eta$ is constant.
+
+\section{Solution to the Differential Equation}
+
+We now work on the solution to the differential equation
+
+\begin{align}
+\frac{dE_1(t')}{dt'} = -(1+i\tilde{\nu}t')E_1(t') + \eta
+\end{align}
+
+Mathematica gives the solution to this differential equation as
+
+\begin{align}
+E_1(t) = e^{-t' -\frac{i}{2} t'^{2} \tilde{\nu}}\left(C - i \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}} \eta e^{\frac{i}{2\tilde{\nu}}} \text{Erfi}\left(\frac{\sqrt{-i} + \sqrt{i} t' \tilde{\nu}}{\sqrt{2\tilde{\nu}}}\right)\right)
+\end{align}
+
+Here
+
+\begin{align}
+\text{Erfi}(z) &= -i\text{Erf}(iz)\\
+\text{Erf}(z) &= \int_{z'=0}^z \frac{2}{\sqrt{\pi}} e^{-z'^2} dz'
+\end{align}
+
+Note that 
+
+\begin{align}
+\sqrt{-i} =& \sqrt{\frac{1}{i}} = \frac{1}{\sqrt{i}}\\
+i\sqrt{i} =& -\frac{\sqrt{i}}{i} = -\frac{1}{\sqrt{i}}
+\end{align}
+
+We note that we have to be careful when taking square roots of complex numbers.
+We can rewrite
+
+\begin{align}
+E_1(t) =& e^{-t' -\frac{i}{2} t'^{2} \tilde{\nu}}\left(C -  \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}} \eta e^{\frac{i}{2\tilde{\nu}}} \text{Erf}\left(i\frac{\frac{1}{\sqrt{i}} + \sqrt{i} t' \tilde{\nu}}{\sqrt{2\tilde{\nu}}}\right)\right)\\
+=& e^{-t' -\frac{i}{2} t'^{2} \tilde{\nu}}\left(C -  \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}} \eta e^{\frac{i}{2\tilde{\nu}}} \text{Erf}\left(i\sqrt{i}\frac{-i + t' \tilde{\nu}}{\sqrt{2\tilde{\nu}}}\right)\right)\\
+=& e^{-t' -\frac{i}{2} t'^{2} \tilde{\nu}}\left(C -  \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}} \eta e^{\frac{i}{2\tilde{\nu}}} \text{Erf}\left(-\frac{-i + t' \tilde{\nu}}{\sqrt{i}\sqrt{2\tilde{\nu}}}\right)\right)\\
+=& e^{-t' -\frac{i}{2} t'^{2} \tilde{\nu}}\left(C -  \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}} \eta e^{\frac{i}{2\tilde{\nu}}} \text{Erf}\left(\frac{i - t' \tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right)\right)\\
+\end{align}
+
+Mathematica tells me furthermore that
+
+\begin{align}
+\lim_{t\rightarrow -\infty} \text{Erf}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right) = 1
+\end{align}
+
+If we set the boundary condition that $\lim_{t\rightarrow -\infty} E_1(t) = 0$ we see that this sets
+
+\begin{align}
+C = \sqrt{\frac{i\pi}{2\tilde{\nu}}} \eta e^{\frac{i}{2\tilde{\nu}}}
+\end{align}
+
+So we have
+
+\begin{align}
+E_1(t) =& \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}}\eta e^{-t' -\frac{i}{2}t'^2\tilde{\nu} + \frac{i}{2\tilde{\nu}}}\left(1 - \text{Erf}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i\tilde{\nu}}}\right)\right)\\
+=& \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}}\eta e^{-t'-\frac{i}{2}t'^2\tilde{\nu} + \frac{i}{2\tilde{\nu}}} \text{Erfc}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right)
+\end{align}
+
+Where
+
+\begin{align}
+\text{Erfc}(z) = 1-\text{Erf}(z)
+\end{align}
+
+We can express the transmitted and reflected fields in terms of $E_1(t)$.
+We will here assume that it is second mirror which is moving and not the first. 
+
+\begin{align}
+E_{tran}(t) =& t_b E_1'(t) = t_b E_1\left(t-\frac{t_{RT}}{2}\right)e^{+ikL_0}\\
+\approx & t_bE_1(t) e^{+ikL_0}
+\end{align}
+
+\begin{align}
+E_{ref}(t) =& r_aE_{in}(t)e^{+i2kx_a(t)} + t_aE_2'(t)\\
+=& r_aE_{in}(t)e^{+i2kx_a(t)} + t_a e^{+i2kx_a(t)}\frac{1}{r_a}\left(t_aE_{in}(t) - E_1(t)\right)\\
+\approx & e^{+i2kx_a(t)}\left(E_{in}(t) - t_a E_1(t)\right)
+\end{align}
+
+We can look at the absolute value squared of each of these and we get
+
+\begin{align}
+|E_{tran}(t)|^2 =& T_b |E_1(t)|^2\\
+E_{ref}(t)|^2 =& |E_{in}(t) - t_aE_1(t)|^2
+\end{align}
+
+We can expand these expressions using what is given above
+
+\begin{align}
+|E_{tran}(t)|^2 =& \frac{\pi}{2|\tilde{\nu}|} T_b\eta^2 \left\lvert e^{-t' - \frac{i}{2}t'^2 \tilde{\nu} + \frac{i}{2\tilde{\nu}}} \text{Erfc}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right) \right\rvert^2\\
+|E_{ref}(t)|^2 =& \left\lvert E_{in}(t) -  \frac{\sqrt{i \pi}}{\sqrt{2\tilde{\nu}}}t_a\eta e^{-t'-\frac{i}{2}t'^2\tilde{\nu} + \frac{i}{2\tilde{\nu}}} \text{Erfc}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right)\right\rvert^2
+\end{align}
+
+We recall
+
+\begin{align}
+\eta = \frac{\mathcal{F}t_a}{\pi} E_{in}
+\end{align}
+
+We will assume that $E_{in}$ is real and positive so that $E_{in} = \sqrt{|E_{in}|^2}$
+
+We then define
+
+\begin{align}
+\beta_a =& \frac{t_a^2\mathcal{F}}{\pi} = \frac{T_A\mathcal{F}}{\pi}\\
+\beta_b =& \frac{t_at_b\mathcal{F}}{\pi} = \frac{\sqrt{T_aT_b}\mathcal{F}}{\pi}
+\end{align}
+
+If $T_a, T_b, L_a, L_b$ are all of similar scale then $\beta_{a,b}$ will be order unity.
+
+All of this allows us to write
+
+\begin{align}
+\frac{|E_{tran}(t)|^2}{|E_{in}|^2} =& \frac{\pi}{2|\tilde{\nu}|} \beta_a^2 \left\lvert  e^{-t' - \frac{i}{2}t'^2 \tilde{\nu} + \frac{i}{2\tilde{\nu}}} \text{Erfc}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right)\right\rvert^2\\
+\frac{|E_{ref}(t)|^2}{|E_{in}|^2} =& \left\lvert 1 - \frac{\sqrt{i\pi}}{\sqrt{2\tilde{\nu}}} \beta_a e^{-t' - \frac{i}{2}t'^2 \tilde{\nu} + \frac{i}{2\tilde{\nu}}} \text{Erfc}\left(\frac{i-t'\tilde{\nu}}{\sqrt{2i}\sqrt{\tilde{\nu}}}\right)\right\rvert^2
+\end{align}
+
+These expressions can be compared to those in the Martin PhD thesis.
+
+\begin{align}
+\frac{|E_{t}(t)|^2}{|E_i|^2} =& \frac{\beta^2}{\tilde{\nu}} \left\lvert \sqrt{\frac{\pi}{2}} e^{-t' + \frac{i}{2}\tilde{\nu}t'^2 - \frac{i}{2\tilde{\nu}}} + i\sqrt{2}D\left(\frac{i+t'\tilde{\nu}}{\sqrt{2i\tilde{\nu}}}\right)\right \rvert^2\\
+\frac{|E_r(t)|^2}{|E_i|^2} =& \left \lvert 1- \frac{\beta}{\sqrt{\tilde{\nu}}}\left(\sqrt{\frac{\pi}{2i}} e^{-t' + \frac{i}{2}\tilde{\nu}t'^2 - \frac{i}{2\tilde{\nu}}} + \sqrt{2i}D\left(\frac{i+t'\tilde{\nu}}{\sqrt{2i\tilde{\nu}}}\right)\right)\right\rvert^2
+\end{align}
+
+It should be noted that these expressions were derived from the differential equation
+
+\begin{align}
+\frac{dE}{dt'} = -(1-i\tilde{\nu}t')E + i \eta
+\end{align}
+
+Which differs from the one I have used above in that they have take $\eta\rightarrow i\eta$ and $\tilde{\nu}\rightarrow - \tilde{\nu}$.
+
+In any case, these are a few phase factors but we should expect results for intensities to be the same.
+Note, from the Martin expression for transmission (which should be positive) we can see that it has already been assumed that $\tilde{\nu} > 0$. 
+Thus, we may only expect agreement in the case when $\tilde{\nu} > 0$ and this is in fact what we observe.
+
+\begin{figure}[bt!] 
+\includegraphics[width=5in]{ringdownpos}
+\caption{Ringdown signal for $\tilde{\nu} = 3$. Dashed red line is the formula derived in this write up and dotted blue line is from the Martin thesis. Note exact agreement}
+\end{figure}
+\begin{figure}[bt!] 
+\includegraphics[width=5in]{ringdownneg}
+\caption{Ringdown signal for $\tilde{\nu} = -3$. Dashed red line is the formula derived in this write up and dotted blue line is from the Martin thesis. There is agreement for the transmitted field (if the absolute value is taken) but disagreement for the reflected field. The Martin expression exhibits a peak in the reflected power rather than a dip so it does not properly handle negative $\tilde{\nu}$.}
+\end{figure}
+
+\end{document}

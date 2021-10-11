@@ -1,0 +1,380 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Cavity QED Figures of Merit}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document I'll investigate a number of cavity QED test scenarios to try to extract figures of merit (e.g. cooperativity, $C$) to guide our design of the E6 cavity mirrors.
+
+I'll define the atomic transition linewidth (FWHM) $\Gamma$ and the cavity linewidth (FWHM) $\kappa$. I also define the atom-cavity Jaynes-Cummings interaction strength, $g$. The cooperativity is defined to be
+
+\begin{align}
+C = \frac{g^2}{\Gamma \kappa}
+\end{align}
+
+For now we will consider a one sided cavity with transmission $T$ and losses $L$ so that
+
+\begin{align}
+\mathcal{F} &= \frac{2\pi}{T+L}\\
+\kappa &= \frac{2\pi \nu}{\mathcal{F}} = \nu(T+L)
+\end{align}
+
+Where $\nu$ is the cavity free spectral range.
+
+There are a few quantities which are helpful to define
+
+\begin{align}
+\kappa_G &= \nu T\\
+\kappa_B &= \kappa_{min} = \nu L\\
+\eta &= \frac{\kappa_G}{\kappa_G+\kappa_B} = \frac{T}{T+L} = \frac{\frac{T}{L}}{1+\frac{T}{L}}\\
+\kappa &= \kappa_G + \kappa_B = \kappa_B\left(1+\frac{\kappa_G}{\kappa_B}\right) = \kappa_B \left(1+\frac{T}{L}\right)\\
+\end{align}
+
+$\kappa_G$ and $\kappa_B = \kappa_{min}$ are the good and bad cavity decay mechanisms. $\kappa_G$ is the rate at which photons leave the cavity towards the detector and $\kappa_B$ is the rate at which photons are lost due to absorption or scattering at the mirror surfaces. $\eta$ is the cavity detection efficiency. Taking the cavity losses as a given, the `most closed' cavity we could make would be one where we set cavity transmission to $T=0$. In that case we would have $\kappa = \kappa_B$ and could define
+
+\begin{align}
+C_{max} &= \frac{g^2}{\Gamma \kappa_B}\\
+C &= \frac{g^2}{\Gamma(\kappa_B+\kappa_G)} = C_{max} \frac{1}{1+\frac{\kappa_G}{\kappa_B}} = C_{max} \frac{1}{1+\frac{T}{L}}
+\end{align}
+
+The cavity detection efficiency is given by
+
+\begin{align}
+\eta = \frac{T}{T+L}	
+\end{align}
+
+A quick summary:
+
+\begin{align}
+\eta &= \frac{\kappa_G}{\kappa_G+\kappa_B} = \frac{\frac{T}{L}}{1+\frac{T}{L}}\\
+\kappa &= \kappa_B\left(1+\frac{\kappa_G}{\kappa_B}\right) = \kappa_B\left(1+\frac{T}{L}\right)\\
+C &= C_{max}\frac{1}{1+\frac{\kappa_G}{\kappa_B}} = C_{max}\frac{1}{1+\frac{T}{L}}
+\end{align}
+
+
+\section{Excited Atom Photon Extraction}
+
+In this section we consider the experiment of preparing a single atom in the cavity in the excited state and seeing whether the photon ends up emitted into free space (out the side of the cavity) or into the cavity mode.
+
+\subsection{Jaynes-Cummings Hamiltoniain and Purcell Effect}
+
+The Jaynes Cummings Hamiltonian is
+
+\begin{align}
+H_{JC} = \hbar \omega_c a^{\dag} a + \hbar \omega_a \ket{e}\bra{e} + \hbar g (a\sigma^+ + a^{\dag}\sigma^-)
+\end{align}
+
+We can transform this into a rotating frame utilizing the transformation induced by $-\omega_a(\ket{e}\bra{e}+a^{\dag}a)$. This yields (I think)
+
+\begin{align}
+H_{JC} = -\hbar \Delta a^{\dag} a + \hbar g (a\sigma^+ + a^{\dag}\sigma^-)
+\end{align}
+
+With $\Delta = \omega_c-\omega_a$.
+Note that $\ket{e}\bra{e}+a^{\dag}a$ commutes with the interacting part of this Hamiltonian.
+
+The equations of motion for $a$ and $\sigma^-$ can be found as
+
+\begin{align}
+\dot{a} &= +i\Delta a -ig \sigma^- - \frac{\kappa}{2}a\\
+\dot{\sigma}^- &= -iga - \frac{\Gamma}{2}\sigma^-
+\end{align}
+
+If we assume that $\kappa\gg \Gamma$ we can make an adiabatic elimination by setting $\dot{a}=0$ In which case we can find
+
+\begin{align}
+a &= \frac{ig}{i\Delta - \frac{\kappa}{2}} \sigma^-\\
+\dot{\sigma^-} &= \frac{g^2}{i\Delta - \frac{\kappa}{2}} - \frac{\Gamma}{2}\sigma^-\\
+\dot{\sigma}^- &= -i\Delta \frac{g^2}{\Delta^2 + \left(\frac{\kappa}{2}\right)^2}\sigma^- - \frac{\kappa}{2} \frac{g^2}{\Delta^2 + \left(\frac{\kappa}{2} \right)^2} \sigma^- - \frac{\Gamma}{2} \sigma^-\\
+\dot{\sigma}^- &= -i \Delta \frac{g^2}{\Delta^2 + \left(\frac{\kappa}{2}\right)^2} \sigma^- - \frac{\Gamma_P}{2}\sigma^-\\
+\Gamma_P &= \Gamma + \kappa \frac{g^2}{\Delta^2 + \left(\frac{\kappa}{2} \right)^2}
+\end{align}
+
+We see that $\sigma^-$ is damped at a modified rate given by $\Gamma_P$. In the case that the cavity is tuned to atomic resonance we see that 
+
+\begin{align}
+\Gamma_P = \Gamma + 4 \frac{g^2}{\kappa} = \left(1 + 4C\right) \Gamma
+\end{align}
+
+Note that above I have taken the atoms natural spontaneous emission rate to be unmodified by the presence of the cavity. However, if the cavity mode occupies an appreciable solid angle of the sphere encircling the atom then this means there are fewer ``free space'' modes for the atom to emit into. The angle enclosed by a Gaussian beam is given by
+
+\begin{align}
+\theta = \frac{\lambda}{\pi w_0}
+\end{align}
+
+So in the limit that $w_0 \rightarrow \lambda_0$ the cavity mode cuts out all free space emission so that free space emission. $\Gamma_{FS} \rightarrow 0$. We can write a bit more generally
+
+\begin{align}
+\Gamma_P &= \Gamma_{FS} + \kappa \frac{g^2}{\Delta^2 + \left(\frac{\kappa}{2}\right)^2} = \Gamma_{FS} + \frac{g^2}{\kappa} \frac{1}{\left(\frac{\Delta}{\kappa}\right)^2 + \frac{1}{4}}\\
+\Gamma_P &= \Gamma\left(\frac{\Gamma_{FS}}{\Gamma} + \frac{g^2}{\kappa \Gamma} \frac{1}{\left(\frac{\Delta}{\kappa} \right)^2 + \frac{1}{4}}\right) = \Gamma\left(\frac{\Gamma_{FS}}{\Gamma} + \frac{C}{\left(\frac{\Delta}{\kappa} \right)^2 + \frac{1}{4}}\right)
+\end{align}
+
+In this general form we can see that for $\Gamma_{FS} \approx \Gamma$ we get the expected Purcell enhancement on resonance: $\Gamma_P > \Gamma$. However, we can also see that for $\Gamma_{FS} < \Gamma$ and $\Delta \gg \kappa$ we can get $\Gamma_P < \Gamma$, a suppression of spontaneous emission.
+
+For $\Gamma_{FS} \approx \Gamma$ and $C\gg1$ we have
+
+\begin{align}
+\Gamma_P = 4 C \Gamma
+\end{align}
+
+for $\Gamma_{FS}\ll \Gamma$ and $\Delta \gg \kappa$ we have
+
+\begin{align}
+\Gamma_P = C \left(\frac{\kappa}{\Delta}\right)^2 \Gamma
+\end{align}
+
+\subsection{Large Line Width and Cavity Stimulated Emission}
+
+We leave behind the possibility of suppressed spontaneous emission because that requires extreme cavity geometries compared to those planned for E6. We will consider the problem of extracting an atomic excitation as a photon emitted from the cavity.
+
+Suppose an atom begins in the excited state. We know that this excitation will leave the system eventually. I will identify 3 loss channels. There is free space spontaneous emission, $\Gamma_{FS} = \Gamma$, cavity loss, $\kappa_B$ or cavity transmission towards the detector. We can write
+
+\begin{align}
+\kappa = \kappa_B+\kappa_G = \kappa \frac{L}{T+L} + \kappa \frac{T}{T+L}
+\end{align}
+
+Any time the atom is in the excited state it can either decay into free space at rate $\Gamma$, or into the cavity at rate $4C \Gamma$. Any time a photon is in the cavity it can decay either in the good or bad cavity decay channels.
+
+The probability of success is the probability that the atom decays into the cavity rather than free space multiplied by the probability that photon decays into a good rather than bad decay channel. I will call this probability the figure of merit, $\beta$.
+
+\begin{align}
+\beta = \frac{4C}{4C+1} \frac{\kappa_G}{\kappa_G+\kappa_B} = \frac{4C}{4C+1} \frac{T}{T+L}
+\end{align}
+
+Note that in the limit $\kappa \gg g$ (which is used in the adiabatic approximation above) the photon will decay from the cavity as soon as the atom decays, that is, we won't see many Rabi oscillations so we are safe to think of the decay as a two step process, first atomic decay, then cavity decay.
+
+Here I note that
+
+\begin{align}
+\frac{T}{T+L} = 1- \frac{L}{T+L} = 1-\frac{\kappa_{min}}{\kappa} = 1 - \frac{C}{C_{max}}
+\end{align}
+
+so
+
+\begin{align}
+\beta &= \frac{4C}{4C+1}\left(1-\frac{C}{C_{max}}\right)\\
+&= \frac{4}{C_{max}} \frac{C_{max} C - C^2}{4C+1}
+\end{align}
+
+We take a derivative to maximize $\beta$.
+
+\begin{align}
+\frac{d\beta}{dC} &= \frac{4}{C_{max}}\frac{(C_{max}-2C)(4C+1) - 4(C_{max}C-C^2)}{(4C+1)^2}\\
+&= \frac{4}{C_{max}} \frac{-4 C^2 - 2 C + C_{max}}{(4C+1)^2}
+\end{align}
+
+We want to solve for $\frac{d\beta}{dC} = 0$. This occurs when the numerator is $0$ so we get
+
+\begin{align}
+C_{opt} = \frac{1}{-8} \left(2 - \sqrt{4 + 16 C_{max}}\right) = \frac{1}{4}\left(\sqrt{4C_{max}+1} - 1 \right)
+\end{align}
+
+In the case that $C_{max} \gg 1$ we get
+
+\begin{align}
+C_{opt} = \frac{1}{2}\sqrt{C_{max}}
+\end{align}
+
+We could alternatively work this out in terms of $T$ rather than $C$. From above we can get the relation that
+
+\begin{align}
+C = C_{max} \frac{L}{T+L}
+\end{align}
+
+We then get
+
+\begin{align}
+\beta &= \frac{4C_{max}L}{4C_{max}L + T + L} \frac{T}{T+L}\\
+&= \frac{4C_{max}LT}{T^2 + (4C_{max} + 2)LT + (4C_{max}+1)L^2}
+\end{align}
+
+Taking the derivative
+
+\begin{align}
+\frac{d\beta}{dt} &= 4C_{max}L \frac{T^2 + (4C_{max}+2)LT + (4C_{max}+1)L^2 - T(2T+(4C_{max}+2)L)}{\left(T^2 + (4C_{max}+2)LT + L^2 \right)^2}\\
+&= 4C_{max}L \frac{-T^2 + (4C_{max}+1)L^2}{\left(T^2 + (4C_{max}+2)LT + L^2 \right)^2}
+\end{align}
+
+Setting this equal to $0$ we find
+
+\begin{align}
+T_{opt} = L \sqrt{4C_{max}+1}
+\end{align}
+
+In the limit of $C_{max} \gg 1$ we have
+
+\begin{align}
+T_{opt} = 2L \sqrt{C_{max}}
+\end{align}
+
+
+Note that 
+
+\begin{align}
+C(T_{opt}) &= \frac{g^2}{\kappa(T_{opt})\Gamma} = \frac{g^2}{\kappa_{min}\Gamma} \frac{\kappa_{min}}{\kappa(T_{opt})}\\
+&= C_{max} \frac{L}{T_{opt}+L} = C_{max} \frac{1}{\sqrt{4C_{max}+1} + 1}\\
+&= C_{max} \frac{\sqrt{4C_{max}+1}-1}{4C_{max}} = \frac{1}{4}\left(\sqrt{4C_{max}+1}-1 \right) = C_{opt}
+\end{align}
+
+So we see that both optimization methods lead to the same result for $C_{opt}$ as should be expected. 
+
+To summarize (assuming $C_{max} \gg \sqrt{C_{max}} \gg 1$)
+
+\begin{align}
+T_{opt} &= L \sqrt{4C_{max}+1} \approx 2L \sqrt{C_{max}}\\
+C_{opt} &= \frac{1}{4}\left(\sqrt{4C_{max}+1}-1\right) \approx \frac{1}{2}\sqrt{C_{max}}\\
+\kappa_{opt} &= \kappa_B\left(\sqrt{4C_{max}+1}+1\right) \approx 2\kappa_B\sqrt{C_{max}}\\
+\eta_{opt} &= \frac{\sqrt{4C_{max}+1}}{1+\sqrt{4C_{max}+1}} \approx 1
+\end{align}
+
+\section{Another Cleaner Derivation}
+
+Here's what I consider to be a cleaner derivation:
+
+\begin{align}
+\beta &= \frac{4C}{4C+1} \frac{\kappa_G}{\kappa_G+\kappa_B}\\
+\end{align}
+
+Note that
+
+\begin{align}
+C = \frac{g^2}{\kappa \Gamma} = \frac{g^2}{\Gamma (\kappa_G + \kappa_B)} = \frac{g^2}{\kappa_B \Gamma} \frac{1}{1+ \frac{\kappa_G}{\kappa_B}} = C_{max} \frac{1}{1+\frac{\kappa_G}{\kappa_B}}
+\end{align}
+
+Let $x = \frac{\kappa_G}{\kappa_B}$. Then we can rewrite
+
+\begin{align}
+\beta &= \frac{4C_{max}}{4C_{max} + (1+x)} \frac{x}{1+x}\\
+&= 4C_{max} \frac{x}{x^2 + (4C_{max}+1)x + 4C_{max}+1}
+\end{align}
+
+The numerator of the derivative of this will be
+
+\begin{align}
+x^2 + (4C_{max}+1)x + 4C_{max}+1 - x(2x + 4C_{max}+1) = -x^2 + 4C_{max}+1
+\end{align}
+
+setting this to zero gives
+
+\begin{align}
+x_{opt} = \sqrt{4C_{max}+1}
+\end{align}
+
+Noting that
+
+\begin{align}
+x = \frac{\kappa_G}{\kappa_B} = \frac{T}{L}
+\end{align}
+
+we get
+
+\begin{align}
+T_{opt} = L \sqrt{4C_{max}+1} \approx 2L \sqrt{C_{max}}
+\end{align}
+
+and noting $C = C_{max} \frac{1}{1+x}$
+
+\begin{align}
+C_{opt} = C_{max} \frac{1}{1+ \sqrt{4C_{max}+1}} = \frac{1}{4}\left(\sqrt{4C_{max} +1} -1 \right)\approx \frac{1}{2}\sqrt{C_{max}}
+\end{align}
+
+
+
+\section{Large Coupling}
+
+I'll note that all of the above involving the Purcell enhanced atomic decay was derived for $\kappa \gg g$ so that we could make the adiabatic approximation.
+
+In the opposite limit with $g \gg \kappa, \Gamma$ the physics changes. In this situation we will now see many Rabi oscillations. Essentially the atom will spend about as much time excited as it does non-excited. The question then is whether the system decays through spontaneous emission to free space while the atom is excited or if it decays out of the good cavity modes while the atom is de-excited. This is the probability that we see cavity decay as opposed to spontaneous emission multiplied by the probability that we see good cavity decay as opposed to bad. This is expressed as
+
+\begin{align}
+\beta &= \frac{\kappa}{\kappa+\Gamma} \frac{T}{T+L}\\
+&= \frac{\nu (T+L)}{\nu(T+L) + \Gamma} \frac{T}{T+L}\\
+\beta &= \frac{T}{T+L+\frac{\Gamma}{\nu}}
+\end{align}
+
+This expression for $\beta$ is monotonically increasing with $T$. This means that in this regime of $g \gg \kappa$, we want to increase $T$ as much as possible. However, if we keep increasing $T$ then eventually $\kappa$ will reach the size of $g$ and we will enter the other regime explored above.
+
+\section{Dispersive Optomechanical Readout}
+
+In this section I'll consider that task of optomechanically reading out the state of a mechanical oscillator. We will consider a mechanical oscillator coupled linearly to the field of an optical cavity. The light in the cavity then picks up a signature of the motion of the mechanical oscillator. Subsequently this light leaks out of the cavity.
+
+In the adiabatic ($\kappa \gg \omega_m$) limit the phase quadrature of light in the cavity is given by
+
+\begin{align}
+\hat{P}_c \sim \frac{G_a}{\kappa} \hat{X}_a 
+\end{align} 
+
+$G = \sqrt{\bar{n}}g_{OM}$ and $g_{OM} \sim \frac{g^2}{\Delta_{CA}}$ where $\Delta_{CA}$ is the detuning between the atomic resonance and the cavity frequency.
+	
+The detected photocurrent (when detecting the phase quadrature) goes like
+	
+\begin{align}
+i(t) &\sim \sqrt{\eta} \sqrt{\kappa} \hat{P}_C \sim \sqrt{\eta} \sqrt{\kappa} \frac{G}{\kappa} \hat{X}_a = \sqrt{\eta} \sqrt{\frac{G^2}{\kappa}}\hat{X}_a\\
+&= \sqrt{\eta} \sqrt{C_{OM}} \sqrt{\Gamma} \hat{X}_a
+\end{align}
+
+The variance of the signal part of the photocurrent will go like this squared.
+
+\begin{align}
+i(t)^2 \sim \eta C_{\text{OM}} \Gamma \hat{X}_a^2
+\end{align}
+
+While the shot noise portion is independent of all cavity parameters and detection efficiencies. The shot noise will scale like the total detection bandwidth.
+
+If we detect with a matched filter then the filter roughly has a bandwidth of $\Gamma$ so we see that the signal to noise goes like
+
+\begin{align}
+\eta C_{OM}
+\end{align}
+	
+In terms of $T$ this quantity goes like
+
+\begin{align}
+\beta = \frac{T}{T+L} \frac{1}{T+L} = \frac{T}{(T+L)^2}
+\end{align}
+
+The derivative gives us
+
+\begin{align}
+\frac{d\beta}{dt} &= \frac{(T+L)^2 - 2T(T+L)}{(T+L)^4}\\
+&= \frac{-T^2 + L^2}{(T+L)^4}
+\end{align}
+
+So we see that $\beta$ is maximized when
+
+\begin{align}
+T_{opt} = L
+\end{align}
+
+This is the critically coupled condition.
+
+	
+\end{document}

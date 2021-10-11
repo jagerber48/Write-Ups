@@ -1,0 +1,231 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+\begin{document}
+\title{Detection, Normal Ordering, and Vacuum Fluctuations}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Two Formulas for Photodetection?}
+
+I want to reconcile two ways I've been thinking about photodetection. On the one hand there is a treatment which emphasizes normal and time ordered expression. On the other hand there is a treatment which emphasizes vacuum fluctuations. For simple cases, I've finally been able to work out how these two views can be reconciled.
+
+For me, at present, this question concerns the question of what is the correct expression from the two-time correlation function of the photocurrent coming out of a photodetector: $\Braket{i(t_1)i(t_2)}$. Here $i(t)$ is the photocurrent which I think of as a \textit{classical} random process whose \textit{statistics} depend on \textit{statistics} of the incident photon flux described by the quantum operator $\hat{a}_{\text{out}}$. Two possibilities are presented. Here $\hat{n}_{\text{out}}(t) = \hat{a}_{\text{out}}^{\dag}(t) \hat{a}_{\text{out}}(t)$. Note I am making explicit the fact that the detected field is the output light which has leaked out of the cavity. This will be important later.
+
+The first (which I have been partial to) is the normal and time-ordered version
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = e^2 \Braket{:\hat{n}_{\text{out}}(t_1) \hat{n}_{\text{out}}(t_2):} + e^2 \delta(t_1-t_2)
+\end{align}
+
+The second leaves off the normal ordering and explicit mention of shot noise.
+
+\begin{align}
+\Braket{i(t_1)i(t_2)} = e^2 \Braket{\hat{n}_{\text{out}}(t_1) \hat{n}_{\text{out}}(t_2)}
+\end{align}
+
+\section{Are They Equal?}
+The question is then are these two expressions equal\footnote{The answer will be yes, to my surprise. But apparently it wasn't much of a surprise to people I spoke to about it!}? At first it was not obvious to me that they should be equal for the following reason. If the first expression is expanded out into bosonic operators instead of number operators it can be seen that $:\hat{n}_{\text{out}}(t_1)\hat{n}_{\text{out}}(t_2):$ is a manifestly Hermitian operator meaning that its expectation value is real. This means it is a possible candidate to set equal to the two-time correlation of the necessarily real photocurrent. The second expression, $\hat{n}_{\text{out}}(t_1)\hat{n}_{\text{out}}(t_2)$ is not manifestly Hermitian because, in general, the product of two Hermitian operators is not necessarily Hermitian. This had me worried that the latter expression was not a possible candidate because under ``generic'' circumstances we could expect it to have an imaginary part which could not be reflected in the real photocurrent.
+
+After a bit of expansion it is easy to see that the two expressions differ by a commutator
+
+\begin{align}
+:\hat{n}_{\text{out}}(t_1)\hat{n}_{\text{out}}(t_2): = \hat{n}_{\text{out}}(t_1)\hat{n}_{\text{out}}(t_2) + [a_{\text{out}}(t_1),\hat{a}^{\dag}_{\text{out}}(t_2)]
+\end{align}
+
+Naively (but correctly, as I have learned,) one would assume that for the free space field hitting the photodetector one would have $[\hat{a}(t_1),\hat{a}^{\dag}(t_2)] = \delta(t_1-t_2)$.
+
+Previously I wasn't convinced that this was the case because of the following logic. Consider the phase fluctuations of the \textit{intra}cavity field in an optomechanical system which I'll denote by $\hat{Q}$. We know that as time goes on in an optomechanical system the motion of the oscillator ($\hat{X}_m$) is imprinted onto the phase of the light so we have $\hat{Q}(t) \sim \hat{X}_m(t)$. Suppose the oscillator period is $T$. We can consider
+
+\begin{align}
+[\hat{Q}(0),\hat{Q}(T/4)] \sim [\hat{X}_m(0),\hat{X}_m(T/4)] = [\hat{X}_m(0),\hat{P}_m(0)] = 2i
+\end{align}
+
+So we see that the coupling of the light to the oscillator can modify the unequal time commutator of the light field.
+This logic is all correct and it is not too difficult to simulate (using the techniques in the matched filter paper for solving the resulting Langevin equations) and see that there is a time dependence of the intracavity field unequal time commutation relations. If this is done then you can see, for example, that the two time commutation relation $[\hat{Q}(0),\hat{Q}(t)]$ is equal to $2i$ at $t=0$ as required in the Heisenberg picture but then it exponentialy damps down at a rate given by $\kappa$. Then at larger times it oscillates about $0$ at the mechanical oscillation frequency and these oscillations damp away at the mechanical damping rate. The commutators basically pick up the character of the system. 
+
+The flaw in my logic was assuming that the non-trivial commutation relation for the intracavity field would also be reflected in the output field. I assumed the two commutation relations would be closely related because of the input output relation.
+
+\begin{align}
+\hat{a}_{\text{out}}(t) = \hat{a}_{\text{in}}(t) + \sqrt{2\kappa} \hat{a}
+\end{align}
+
+\begin{align}
+[\hat{a}_{\text{out}}(t_1),\hat{a}_{\text{out}}^{\dag}(t_2)] &= [\hat{a}_{\text{in}}(t_1),\hat{a}_{\text{in}}^{\dag}(t_2)] + 2\kappa [\hat{a}(t_1),\hat{a}^{\dag}(t_2)]\\
+&+ \sqrt{2\kappa}[\hat{a}_{\text{in}}(t_1),\hat{a}^{\dag}(t_2)] + \sqrt{2\kappa}[\hat{a}(t_1),\hat{a}_{\text{in}}^{\dag}(t_2)]
+\end{align}
+
+Even though I wasn't comfortable saying the output commutation relations gave a dirac delta, I was comfortable saying the input commutation relations were equal to a dirac delta. Thus, to say that the input and output commutation relations are the same was to say that the last three terms cancel. In fact, one of these terms is zero by causality. If we assume $t_2>t_1$ then the final term vanishes because the input field at $t_2$ has not had any effect on the intracavity field at earlier time $t_1$.
+
+So the claim the $[\hat{a}_{\text{out}}(t_1),\hat{a}_{\text{out}}^{\dag}(t_2)] = \delta(t_1-t_2)$ was equivalent to the claim, for $t_2>t_1$, that
+
+\begin{align}
+\sqrt{2\kappa}[\hat{a}(t_1),\hat{a}^{\dag}(t_2)] = -[\hat{a}_{\text{in}}(t_1),\hat{a}^{\dag}(t_2)]
+\end{align}
+
+I basically did not believe this was the case for the following reasons.
+
+1) In all of our thinking about the matched filters we learned that we can come up with an equation for $\bv{C}(t_1,t_2) = \Braket{\bv{Z}(t_1)\bv{Z}^T(t_2)}$, the two-time correlation matrix of all system operators which depends on $\bv{C}(0,0)$, the initial correlation matrix, plus an integrated noise matrix term which is a double integral over the system response functions and involves the noise covariance matrix. The real or symmetrized part of the the equation tells you about the anti-commutators of system variables and the imaginary  or anti-symmetrized part tells you about commutators of system variables. In the matched filter work we came up with a technique to extract the real part of $\bv{C}(0,0)$. We did this because in the negative mass oscillator work we were trying to prepare a state that had a specific covariance matrix so we were testing if we had prepared the state which we intended to prepare. By extension, I thought that the \textit{imaginary} part of $\bv{C}(0,0)$ was of interest. Perhaps we could prepare a state with an interesting imaginary part of the covariance matrix, $\bv{C}(0,0)$. If that was possible then the LHS of this equation would depend on that imaginary part which we could choose at will while the RHS would not depend on it, thus the two sides could always be made to be equal and in general would be unequal. What I forgot is that we CAN NOT choose the imaginary part of $\bv{C}(0,0)$ at will. This is a matrix of equal time commutation relations whose values are fixed to be the canonical commutation relations.
+
+2) In terms of the Langevin equation integrals we were performing these two expressions had very different forms. First off, the LHS has that factor of $\sqrt{2\kappa}$ whereas the RHS does not (however the units do still work out since $\hat{a}_{\text{in}}(t)$ has units of $s^{-\frac{1}{2}}$. Next, the LHS depends on the system response functions multiplied by $\bv{C}(0,0)$ whereas the RHS has no dependence on $\bv{C}(0,0)$. Finally, the LHS involves a double integral over the system response functions and the noise drives at two times whereas on the RHS there is just a single integral over the noise at two times. In short, since the LHS and RHS had very different forms in the formalism in which I was thinking about them I was surprised that they were equal. Of course, this is not a proof that they are not equal and since I had simulations for all of this I should be able to simulate them to compare them. Up until recently the thought had been in my mind that it shouldn't be difficult to clearly make this comparison and I had tried a couple of times and seen evidence that they were equal but I was sort of confused about what I was doing. However, now I clearly understand the picture and was able to make a direct comparison and saw that the two terms do in fact agree with each other.
+
+I've given the reasons above why I didn't believe the equality and why those reasons are incorrect. In the end what are the reasons I should have believed in the equality above?
+
+1)  The original paper on input-output there explicity says the commutation relations for the input and output fields are the same.
+
+2) The original paper actually also gives an expression for commutation relations between input fields and system operators which is the exact same as eqn. 8). 
+
+3) Multiple people I spoke to about this thought the commutation relation should be given by the dirac delta despite my suspicion that it should somehow rely on the dynamics going on inside the of the cavity. I specifically recall Dan mentioning that his guess is that there was some cancellation between the terms. At the time I was dubious about such a cancellation because of the reasons above but it turns out his guess was correct. Of course, even though people were telling me they thought the commutation relation was one thing I wouldn't be convinced until I was able to convince myself.
+
+4) I just finally came up with an understanding that finally convinces me rather than just ``so and so said so''. The input and output operators are defined like
+
+\begin{align}
+\hat{\xi}_{\text{\text{in/out}}}(t) = \frac{1}{\sqrt{2\pi}} \int d\omega e^{-i\omega (t-t_{\text{in/out}})} \hat{\xi}_{\omega}(t_{\text{in/out}})
+\end{align}
+
+Here $t_{\text{in/out}}$ is a time either earlier or later than any system dynamics we are considering. Previously I had not understood how we could know anything about the commutator for $\hat{\xi}_{\text{out}}(t)$ at some late time. I was also confused because I didn't understand that $\hat{\xi}_{\omega}(t_{\text{out}})$ is evaluated at a fixed time. I guess i thought the time was being integrated over. But now that I understand it is evaluated at fixed time I see clearly that when we calculate $[\hat{\xi}_{\text{out}}(t_1),\hat{\xi}_{\text{out}}^{\dag}(t_2)]$ we only need to know the \textit{equal time} commutation relations for $[\hat{\xi}_{\omega},\hat{\xi}_{\omega}^{\dag}]$ and we of course know those. This is the point which has always confused me. Consider me thoroughly convinced!
+
+
+\section{Kelley-Kleiner Formula}
+
+There is one more reason I was hesitant to use the expression above which lacked explicit normal ordering. Early on when I started thinking about all of this I sought a ``first principles'' derivation of the photocurrent formulas which would definitively clarify this question for me. I hit upon the Kelley-Kleiner photodetection probability formula as well as a reference by Carmichael which used the formula to derive something very similar to the correlation function I was interested in. This was already after having wondered about photodetection for a while.
+
+Because of this I took the normal-ordered expression to be the fundamental expression for the correlation function since it had a microscopic derivation. The question was then whether the non explicitly normal ordered expression could be derived from the normal ordered one. Since I didn't believe in the output commutation relation being a delta function I didn't believe the non-normal ordered form could always be derived from the normal ordered form. Now, of course, I understand that they are in fact always equivalent!
+
+In addition to this I spent a lot of time with the Kelley-Kleiner formula myself, learning how to derive it as well as using it to derive more expressions for photodetection applicable to the E3 detection/analysis chain. In short, I had invested a lot of time into it so I wasn't going to let it go until I had a very good reason to, and in the all the conversations I had had with people about it I never came across any really convincing reasons that I was wrong. And, in fact, I wasn't wrong. I believe all of the derivations I did were correct. The place I went wrong was in not being convinced my expressions were equivalent to those used by others.
+
+\section{Take Aways}
+
+I spent a very long time learning and thinking about and developing this normal/time ordered treatment of photodetection and trying to reconcile it with the ``usual'' treatment of photodetection. In the end it turns out that was I was just missing a small key detail. Does this mean that all of that time I spent thinking about this stuff was wasted? No. Of course not. I learned a great deal about photodetection and quantum optics and gained a lot of intuition. I also developed some formalism and ways of thinking about problems which are in some ways unique and which are certainly interesting to me and I think would be interesting to others. Let me mention a few of the take-aways or interesting points
+
+\subsection{Photodetection as a Quantum Poisson Process}
+
+Suppose there is a photodetector with a field with incident flux $\hat{n}(t)$. We can define the integrated photon flux over a time window from $t$ to $t+\Delta T$.
+
+\begin{align}
+\hat{\Omega}(t,t+\Delta t) = \epsilon_Q \int_{t'=t}^{t+\Delta t} \hat{n}(t') dt'
+\end{align}
+
+where $\epsilon_Q$ is the quantum efficiency. Intuitively $\hat{\Omega}$ is the expected (mean) number of photons we would detect in the given time window. This can't be true because $\hat{\Omega}$ is a quantum operator and the mean number of photons detected is a real number. However, it can be proven that the mean number of photons detected is the mean of the integrated flux operator.
+
+The Kelley-Kleiner formula tells us that the probability of detecting $m$ photons in the time window from $t$ to $t+\Delta T$ is given by
+
+\begin{align}
+P(m,t,t+\Delta T) = \Braket{:\frac{\hat{\Omega}(t,t+\Delta t)^m}{m!} e^{-\hat{\Omega}(t,t+\Delta T)} :}
+\end{align}
+
+Let's build up to this from the simplest to the most complex picture. In the case that the incident photon flux is a constant coherent field we can replace $\hat{n}(t)$ by $\bar{n}$. Then we get
+
+\begin{align}
+P(n,t,t+\Delta T) = \frac{(\epsilon_Q \bar{n} \Delta T)^m}{m!} e^{-\epsilon_Q \bar{n} \Delta T}
+\end{align}
+
+This is of course exactly the probability distribution of a homogeneous Poisson process with parameter $\lambda = \epsilon_Q \bar{n}$.
+
+The classical Poisson process can be generalized to the case when the Poisson parameter $\lambda$ varies as a function of time. This is called an inhomogeneous Poisson process. That is equivalent to letting $\bar{n}$ vary in time so that we replace $\hat{n}(t)$ with $\bar{n}(t)$. In that case we get
+
+\begin{align}
+P(m,t,t+\Delta T) = \frac{\Omega(t,t+\Delta t)^m}{m!} e^{-\Omega(t,t+\Delta T)}
+\end{align}
+
+We see that $\Omega(t)$ has had its hat removed for this expression. This is a classical inhomogeneous process.
+
+The question is how we go from this expression to the full Kelley-Kleiner formula including the normal ordering and expectation value. To answer this I spent a long time understanding the derivation in the original paper and repeating it myself in my Kelley-Kleiner write up/draft.
+
+The derivation of the Poisson process in time is typically done by splitting time into really small time bins such that either 0 or 1 event happens in each bin. The situation can then be thought of a Binomial or Bernoulli process which is easier to analyze. In the limit of small time windows we get the Poisson process when analyzed correctly.
+
+In the original Kelley-Kleiner paper the authors present a very generalized derivation of the Poisson process from a discretized Bernoulli process. The reason it must be so generalized, it turns out, is because, in contrast to the classical Poisson processes above, in the quantum case the probability of detection at later times is not necessarily independent of the probability of detection at earlier times. For example, consider the detection of a fock state with $n=1$. If we have a detection early on the probability of detection later must be 0. The different Bernoulli events are not \textit{independent}. For more details you can have a look at the original Kelley-Kleiner paper or the appendix in the write up I did.
+
+I would say the above is the main reason the Kelley-Kleiner formula is not exactly the same as the classical formula. Another point must be made however which is why the normal and time ordering operators appear. The reason is as follows. To derive the formula eventually probabilities of photodetections must be put into the equations. Where do these probabilities come from? Kelley and Kleiner use the Glauber theory of photodetection to determine the probability that photodetection events happen at various times.
+
+
+
+
+
+
+\pagebreak
+
+\subsection{1}
+
+Now $:\hat{X}(t_1)\hat{X}(t_2):$ with $t_2>t_1$.
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= :(\adag(t_1)+\ahat(t_1))(\adag(t_2)+\ahat(t_2)):\\
+&= \adag(t_1)\adag(t_2) + \ahat(t_2)\ahat(t_1) + \adag(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1)
+\end{align}
+
+\begin{align}
+\hat{X}(t_1)\hat{X}(t_2) = \adag(t_1)\adag(t_2) + \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2)
+\end{align}
+
+\begin{align}
+\ahat(t_2)\ahat(t_1) &= \ahat(t_1)\ahat(t_2) + \left[\ahat(t_2),\ahat(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \hat{X}(t_1)\hat{X}(t_2) + \left[\adag(t_2) + \ahat(t_2), \ahat(t_1)\right]\\
+&= \hat{X}(t_1)\hat{X}(t_2) + \frac{1}{2} \left[\hat{X}(t_2), \hat{X}(t_1) + i \hat{P}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_2),\hat{P}(t_1)\right]\right)
+\end{align}
+
+\pagebreak
+
+\subsection{1*}
+
+Now $:\hat{X}(t_1)\hat{X}(t_2):$ with $t_1>t_2$.
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= :(\adag(t_1)+\ahat(t_1))(\adag(t_2)+\ahat(t_2)):\\
+&= \adag(t_2)\adag(t_1) + \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) + \adag(t_2)\ahat(t_1)
+\end{align}
+
+\begin{align}
+\hat{X}(t_1)\hat{X}(t_2) = \adag(t_1)\adag(t_2) + \ahat(t_1)\ahat(t_2) + \adag(t_1)\ahat(t_2) + \ahat(t_1)\adag(t_2)
+\end{align}
+
+\begin{align}
+\adag(t_2)\adag(t_1) &= \adag(t_1)\adag(t_2) + \left[\adag(t_2),\adag(t_1)\right]\\
+\adag(t_2)\ahat(t_1) &= \ahat(t_1)\adag(t_2) + \left[\adag(t_2),\ahat(t_1)\right]
+\end{align}
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): &= \hat{X}(t_1)\hat{X}(t_2) + \left[\adag(t_2),\adag(t_1) + \ahat(t_1)\right]\\
+&= \hat{X}(t_1)\hat{X}(t_2) + \frac{1}{2} \left[\hat{X}(t_2)-i\hat{P}(t_2),\hat{X}(t_1)\right]\\
+&= \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_1),\hat{P}(t_2)\right]\right)
+\end{align}
+
+We summarize with
+
+\begin{align}
+:\hat{X}(t_1)\hat{X}(t_2): = \frac{1}{2}\left(\left\{\hat{X}(t_1),\hat{X}(t_2)\right\} + i \left[\hat{X}(t_{max}),\hat{P}(t_{min})\right]\right)
+\end{align}
+
+
+\pagebreak
+
+\end{document}

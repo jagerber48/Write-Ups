@@ -1,0 +1,197 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+
+\begin{document}
+\title{Two-Mode Squeezing from Parametric Amplification}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+In this document I will show how two-mode squeezing arises from the parametric amplifier Hamiltonian. It's a few pages long but all of the math is super straightforward since I've shown most of the steps, maybe even too many!
+
+The parametric amplifier Hamiltonian can be written as:
+
+\begin{equation}
+\hat{H} = \hbar \left(\chi^* \hat{c}^{\dag} \hat{d}^{\dag} + \chi \hat{c} \hat{d}\right)
+\end{equation}
+
+Here $\chi = |\chi| e^{i \phi_{\chi}}$ is the strength of the parametric amplifier. In our system it is related to the coupling spring (optical spring) between spin and mechanics. In a nonlinear crystal it is related to the $\chi^{(2)}$ or $\chi^{(3)}$ nonlinear susceptibility of the crystal and the phase and strength of the pump beam.
+Note that if, for exmaple, we perform the transformation $\hat{c^{'}} = \hat{c} e^{+i \phi_{\chi}}$ we obtain the Hamiltonian
+\begin{equation}
+\hat{H} = \hbar |\chi| \left( \hat{c^{'}}^{\dag} \hat{d}^{\dag} + \hat{c^{'}}\hat{d}\right)
+\end{equation}
+
+This is the Hamiltonian which is represented in my Bogoliubov transformation write up. 
+
+Alternatively if we perform the transformation $\hat{c^{''}} = +i\hat{c} e^{+i \phi_{\chi}}$ we obtain the Hamiltonian
+
+\begin{equation}
+\hat{H} = \hbar |\chi| i \left(\hat{c^{''}}^{\dag}\hat{d}^{\dag} - \hat{c^{''}}\hat{d}\right)
+\end{equation}
+
+This is how the Hamiltonian is represented in Walls and Milburn and in Gerry and Knight.
+
+Dropping the primes for ease of notation (and remembering the symbols have relative phase relationships between the different descriptions) we see there are at least three possible ways of writing down this Hamiltonian which amount to performing a phase rotation of the $\hat{c}$ subsystem relative to the $\hat{d}$ subsystem.
+
+\begin{align*}
+\hat{H} &= \hbar \left(\chi^* \hat{c}^{\dag}\hat{d}^{\dag} + \chi \hat{c} \hat{d}\right) \\
+\hat{H} &= \hbar |\chi| \left(\hat{c}^{\dag}\hat{d}^{\dag} + \hat{c} \hat{d}\right) \\
+\hat{H} &= \hbar |\chi| i \left(\hat{c}^{\dag}\hat{d}^{\dag} - \hat{c} \hat{d}\right) \\
+\end{align*}
+
+For full generality we will stick the first one so that we can see how this choice affects the final results. Note also, perhaps more simply, that the latter two Hamiltonians follow from imposing the choice that $\phi_{\chi}=0$ and $\phi_{\chi} = -\frac{\pi}{2}$ respectively.
+
+From the Hamiltonian we can work out the equations of motion for $\hat{c}$ and $\hat{d}^{\dag}$ in a Heisenberg picture using $\dot{\hat{c}} = -\frac{i}{\hbar} [\hat{c},\hat{H}]$ and the usual bosonic commutation relations.
+
+\begin{align*}
+\dot{\hat{c}}(t) &= -i \chi^* \hat{d}^{\dag}\\
+\dot{\hat{d}}^{\dag}(t) &= i \chi \hat{c}
+\end{align*}
+
+We'll define for brevity a complex number with unit amplitude: $w = e^{i\phi_{\chi}}$ so that $\chi = w|\chi|$. It is then a simple exercise to find the equation of motion for $\hat{c}(t)$ and $\hat{d}^{\dag}(t)$.
+
+\begin{align}
+\hat{c}(t) &= \hat{c}(0) \cosh\left(\left|\chi\right| t\right) - i w^* \hat{d}^{\dag}(0) \sinh\left(|\chi| t\right)\\
+\hat{d}^{\dag}(t) &= \hat{d}^{\dag}(0) \cosh\left(|\chi| t\right) +i w \hat{c}(0)\sinh \left(|\chi| t\right)
+\end{align}
+
+Where $\hat{c}(0)$ and $\hat{d}^{\dag}(0)$ are clearly the initial values for those operators. We drop hats for brevity and define
+\begin{align*}
+A &= c(0)\\
+B^{\dag} &= d^{\dag}(0)
+\end{align*}
+
+We also define the (real/hermitian) quadrature operators 
+\begin{equation}
+X_{\alpha}^{\phi} = \alpha e^{i \phi} + \alpha^{\dag} e^{-i \phi}
+\end{equation}
+
+where $\alpha$ can stand for $c$ or $d$. We see that if $\phi=0$ we recover the usual (under some conventions, see spin and mech writeup) dimensionless position operator and that if $\phi = \frac{\pi}{2}$ we obtain the negative of the usual dimensionless momentum operator.
+
+We are going to be interested in the following quantity
+\[
+V(\phi_c,\phi_d) = \frac{1}{2}\langle (X_c^{\phi_c} - X_d^{\phi_d})^2 \rangle
+\]
+
+This quantity is always non-negative and if it is 0 we can conclude that the two quadrature operators, $X_c^{\phi_c}$ an $X_d^{\phi_d}$ are perfectly correlated since knowledge of one gives perfect knowledge of the other. Also $(X_c^{\phi_c}-X_d^{\phi_d})^2$ is a hermitian operator and thus an observable as opposed to something like $X_c^{\phi_c} X_d^{\phi_d}$ which is in general non-hermitian. The $\frac{1}{2}$ is conventional following Walls and Millburn. It's presence will be understood later.
+
+The equations of motion for the quadrature operators:
+
+\begin{align*}
+X_c^{\phi_c}(t) &= e^{i\phi_c} c(0) \cosh(|\chi| t) - i w^* e^{i\phi_c} d^{\dag}(0) \sinh(|\chi|t) + e^{-i \phi_c} c^{\dag}(0) \cosh(|\chi| t) + i w e^{-i\phi_c} d(0) \sinh(|\chi| t)\\
+ &= \left(c(0)e^{i \phi_c} +c^{\dag}(0)e^{-i \phi_c}\right)\cosh(|\chi|t) + \left(d(0) e^{i (-\phi_c+\phi_{\chi} + \frac{\pi}{2})} + d^{\dag}(0) e^{-i(-\phi_c +\phi_{\chi} + \frac{\pi}{2})}\right)\sinh(|\chi|t)\\
+ &= X_c^{\phi_c}(0) \cosh(|\chi|t) + X_d^{-\phi_c + \phi_{\chi}+\frac{\pi}{2}}(0) \sinh(|\chi|t)
+\end{align*}
+
+For $d$
+
+\begin{align*}
+X_d^{\phi_d}(t) &= e^{i\phi_d}d(0)\cosh(|\chi|t) - i w^* e^{i\phi_d}c^{\dag}(0)\sinh(|\chi|t) + e^{-i \phi_d}d^{\dag}(0)\cosh(|\chi|t)+iw e^{-i\phi_d}c(0)\sinh(|\chi|t)\\
+&=\left(d(0)e^{i\phi_d}+d^{\dag}(0)e^{-i\phi_d}\right)\cosh(|\chi|t) + \left(c(0)e^{i(-\phi_d+\phi_{\chi}+\frac{\pi}{2})}+c^{\dag}(0)e^{-i(-\phi_d+\phi_{|chi}+\frac{\pi}{2})}\right)\sinh(|\chi|t)\\
+&=X_d^{\phi_d}\cosh(|\chi|t) +X_c^{-\phi_d+\phi_{\chi}+\frac{\pi}{2}}\sinh(|\chi|t)
+\end{align*}
+
+A couple more definitions.
+
+\begin{align*}
+X_{\alpha} &= X_{\alpha}^{0} = \alpha^{\dag} + \alpha\\
+P_{\alpha} &= X_{\alpha}^{-\frac{\pi}{2}} = i(\alpha^{\dag} - \alpha)
+\end{align*}
+
+So that
+
+\[
+X_{\alpha}^{\phi} = \cos(\phi) X_{\alpha} - \sin(\phi) P_{\alpha}
+\]
+
+To calculate the $V(\phi_c,\phi_d)$ we are going to need to calculate quantities like $\langle X_{c}^{\phi_c} X_{d}^{\phi_d}\rangle$ and $\langle X_{c}^{\phi_{c,1}} X_{c}^{\phi_{c,2}}\rangle$ which will depend on quantities like $\langle X_c X_d \rangle$ and $\langle X_c P_c \rangle$. To that end we need to work out what some of these expectation values will be. First I'll point out that these expectation values will always be applied to the operators at time $t=0$ since in the equations of motion we've reduced all the operator dependence to depend on the initial state. Second, I'll point out that at this point we need to assume some form for the initial state to go forward with the calculation. At least in what I've worked out so far you need to assume some form for the initial state otherwise you end up with a 16 or so term mess which I'm not sure how to simplify and I'm not sure if it's illuminating. So I will go ahead and assume that both bosonic modes start out in the vacuum state. I think the generalization to a thermal vacuum state (state centered in the center of phase space but with a larger variance than the zero point motion) is pretty obvious. It's not clear to me how difficult generalizations to coherent states and fock states would be.
+
+A few calculations then the result.
+Since the systems are unentangled initially there are no correlations between the two systems initially.
+
+\[ \braket{X_c^{\phi_c} X_d^{\phi_d}}=0 \]
+
+\[ \braket{X^2} = \braket{0|X^2|0}=\braket{0|(a^{\dag}+a)(a^{\dag}+a)|0} = 1\]
+\[\braket{P^2} = \braket{0|P^2|0} = \braket{0|-(a^{\dag}-a)(a^{\dag}-a)|0} = 1 \]
+
+\[\braket{XP} = \braket{0|XP|0} = \braket{0|i(a^{\dag}+a)(a^{\dag}-a)|0} = +i\]
+
+Since $(XP)^{\dag} = PX \neq XP$ we have $\braket{PX} = -i$. All of these $X$'s and $P$'s apply to the same bosonic system.
+
+\begin{align*}
+X^{\theta} X^{\phi} &= \left(\cos(\theta) X - \sin(\theta)P\right)\left(\cos(\phi)X - \sin(\phi) P\right)\\
+&= \cos(\theta)\cos(\phi)X^2 + \sin(\theta)\sin(\phi)P^2 - \cos(\theta)\sin(\phi) XP - \cos(\phi)\sin(\theta) PX
+\end{align*}
+
+Taking expectation values
+\begin{align*}
+\braket{X^{\theta}X^{\phi}} &= \cos(\theta)\cos(\phi) + \sin(\theta)\sin(\phi) + i \left(\cos(\phi) \sin(\theta)-\cos(\theta)\sin(\phi)\right)\\
+&= \cos(\theta-\phi) + i \sin(\theta-\phi) = e^{i(\theta-\phi)}
+\end{align*}
+
+Ok this could have been calculated easier (avoided the whole last page) by the following
+
+\[
+\braket{X^{\theta}X^{\phi}} = \braket{0|(a e^{i\theta} + a^{\dag} e^{-i \theta})(a e^{i \phi} + a^{\dag} e^{-i\phi})|0} = e^{i (\theta-\phi)}
+\]
+Since only the $a a^{\dag}$ term survives.
+Note that the few relations I'm about to use:
+\begin{align*}
+\braket{X_c^{\phi_c}X_d^{\phi_d}} &= 0 \\
+\braket{X_c^{\theta}X_c^{\phi}} = &\braket{X_d^{\theta}X_d^{\phi}} = e^{i(\theta-\phi)}
+\end{align*}
+Only apply if both systems are in the vacuum state I'm not yet sure how to extend the model beyond that case.
+
+We're now in a place to calculate
+\[
+V(\phi_c,\phi_d) = \frac{1}{2}\langle (X_c^{\phi_c} - X_d^{\phi_d})^2 \rangle
+\]
+
+\begin{equation*}
+X_c^{\phi_c} - X_d^{\phi_d} = X_c^{\phi_c}\cosh(|\chi|t) + X_d^{-\phi_c+\phi_{\chi}+\frac{\pi}{2}}\sinh(|\chi|t) - X_d^{\phi_d}\cosh(|\chi|t) - X_c^{-\phi_d+\phi_{\chi}+\frac{\pi}{2}}\sinh(|\chi|t)
+\end{equation*}
+Squaring and taking the expectation value (recalling the rules above for easy simplification).
+
+\begin{align*}
+&\langle (X_c^{\phi_c} - X_d^{\phi_d})^2 \rangle = \\
+&\cosh(|\chi|t)^2 + \sinh(|\chi|t)^2 + \cosh(|\chi|t)^2 + \sinh(|\chi|t)^2 \\
+&-2 \cosh(|\chi|t) \sinh(|\chi|t)\text{Re}\lbrace e^{i(\phi_c + \phi_d -\phi_{\chi} - \frac{\pi}{2})} + e^{i(\phi_d+\phi_c-\phi_{\chi}-\frac{\pi}{2})}\rbrace
+\end{align*}
+
+The first 4 terms are each term multiplied by itself. The first term in the Real part brackets comes from the two $c$ operators being multiplied in both possible orders and likewise for the second term which comes from the $d$ operators. The fact that we take both orders results in the fact of 2 and the Real part being taken. Note the two terms in the real part are the same. We find
+
+\begin{align*}
+&\langle (X_c^{\phi_c} - X_d^{\phi_d})^2 \rangle = \\
+&2\cosh(2|\chi|t) - 2 \sinh(2|\chi|t) \cos(\phi_c+\phi_d-\phi_{\chi}-\frac{\pi}{2})
+\end{align*}
+
+So we have the result that
+
+\[
+V(\phi_c,\phi_d) = \cosh(2|\chi|t) - \sinh(2|\chi|t)\cos(\phi_c+\phi_d - \phi_{\chi} - \frac{\pi}{2})
+\]
+
+We can see that this agrees with Gerry and Knight's result Eq. 5.58 (1st edition) since in their way of writing things $\chi = -i|\chi|$ (see above) so that $\phi_{\chi} = -\frac{\pi}{2}$ so the spurious phase factors disappear.
+
+And now for the key result of two mode squeezing. If $\phi_c+\phi_d-\phi_{\chi} - \frac{\pi}{2}=0+2 \pi n$ with $n$ an integer then we have
+
+\[V(\phi_c,\phi_d) = \cosh(2|\chi|t) - \sinh(2|\chi|t) = e^{-2|\chi|t}\]
+so that as time goes on the quadratures $X_c^{\phi_c}$ and $X_d^{\phi_d}$ become more and more correlated. These represent the squeezed quadratures. Whereas if $\phi_c+\phi_d-\phi_{\chi} - \frac{\pi}{2}=\pi+2 \pi n$ then we have 
+\[V(\phi_c,\phi_d) = \cosh(2|\chi|t) + \sinh(2|\chi|t) = e^{+2|\chi|t}\]
+
+So that as time goes on the two quadratures become less and less correlated. These represent the anti-squeezed quadratures.
+
+\end{document}

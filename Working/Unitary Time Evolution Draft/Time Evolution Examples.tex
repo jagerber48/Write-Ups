@@ -1,0 +1,540 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+
+\begin{document}
+\title{Time Evolution Example Problems}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In the `Time Evolution in Quantum Mechanics' write up I laid out a formalism to approach questions about the time evolution of quantum systems.
+The formalism presents a `picture/frame' independent representation of the Born rule as the fundamental postulate for the calculation of time evolution in quantum mechanics.
+It then goes on to present multiple mathematical approaches to calculating the Born rule expression including a Schrodinger, Heisenberg, and multiple interaction pictures.
+
+As a reminder the Born rule expression under consideration is something like
+
+\begin{align}
+\braket{A}_t = \bra{\psi_0}T^{\dag} A_0 T\ket{\psi_0}
+\end{align}
+
+Where $\ket{\psi_0}$ is the initial state, $A$ is the operator of interest, and $T$ is the time evolution operator.
+
+In this document I will present the application of each of these different pictures to different canonical quantum mechanical problems.
+
+In the first part of this document I will calculate the time evolution of a magnetic moment precessing in a magnetic field in the Schrodinger and then Heisenberg picture.
+In the second part I will calculate the dynamics of a coherently driven two level system in both the ket and operator interaction pictures.
+
+\section{Precision of a Magnetic Moment}
+
+The Hamiltonian for a magnetic moment in a magnetic field is given by
+
+\begin{align}
+H = -\bv{\mu}\cdot\bv{B}
+\end{align}
+
+The magnetic moment under consideration is often the magnetic moment arising from the intrinsic spin of a quantum mechanical particle.
+If the particle has total angular momentum $\bv{F}$ then the associated magnetic moment is given by
+
+\begin{align}
+\bv{\mu} = \gamma_{gy}\bv{F}
+\end{align}
+
+Where $\gamma_{gy}$ is the gyromagnetic ratio for the particle.
+The gyromagnetic ratio is given by
+
+\begin{align}
+\gamma_{gy} =& \gamma_c g_F\\
+\gamma_c =& -\frac{|e|}{2m_e} = -\SI{1.4}{\MHz \per G}
+\end{align}
+
+Here $\gamma_c$ is the classical gyromagnetic ratio which has a value of $-\SI{1.4}{\MHz \per G}$.
+From this we see
+
+\begin{align}
+H = -\gamma_{gy} \bv{B}\cdot\bv{F} = -g_F \gamma_C \bv{B}\cdot\bv{F}
+\end{align}
+
+We know from quantum mechanics that particle angular momentum comes in quantized units of $\hbar$. This motivates the definition of a dimensionless angular momentum
+
+\begin{align}
+\bv{f} = \frac{\bv{F}}{\hbar}
+\end{align}
+
+Here $\bv{F}$ has dimensions of angular momentum while $\bv{f}$ is dimensionless. 
+$\bv{F}$ can be thought of as physical angular momentum while $\bv{f}$ is a measure of number of quanta of angular momentum (in units of $\hbar$).
+From this we see
+
+\begin{align}
+\bv{\mu} =& \gamma_{gy}\hbar \bv{f}\\
+=& g_F \gamma_c \hbar\bv{f}\\
+=& -g_F \mu_B \bv{f}
+\end{align}
+
+Where I've defined the Bohr magneton $\mu_B$.
+
+\begin{align}
+\mu_B = -\gamma_c \hbar = +\frac{|e|\hbar}{2m_e}
+\end{align}
+
+\begin{align}
+H = g_F \mu_B\bv{B}\cdot\bv{f}
+\end{align}
+
+We then see (re-expressing the Hamiltonian in terms of frequency rather than energy by dividing by $\hbar$)
+
+\begin{align}
+\frac{H}{\hbar} =& -g_F \gamma_C \bv{B}\cdot \bv{f}\\
+=& -g_F \gamma_C \bv{B}\cdot \frac{\bv{F}}{\hbar}\\
+=& g_F \frac{\mu_B}{\hbar}\bv{B}\cdot\bv{f}
+\end{align}
+
+This motivates the definition of the Larmor frequency
+
+\begin{align}
+\omega_L = \gamma_{gy}|\bv{B}| = g_F \gamma_C |\bv{B}| = g_F \frac{\mu_B}{\hbar}|\bv{B}|
+\end{align}
+
+and magnetic field direction $\bv{\hat{n}}$ with $\bv{B} = |\bv{B}|\bv{\hat{n}}$ so that
+
+\begin{align}
+\frac{H}{\hbar} = -\omega_L \bv{\hat{n}}\cdot \bv{f}
+\end{align}
+
+All of this aside, going forward we will take our Hamiltonian
+
+\begin{align}
+H = -\gamma_{gy} \bv{B} \cdot \bv{F}
+\end{align}
+
+\section{Schrodinger Picture}
+
+As a reminder, in the Schrodinger picture approach the Born rule expression
+
+\begin{align}
+\Braket{A}_t = \bra{\psi_0}T^{\dag}AT\ket{\psi_0}
+\end{align}
+
+is calculated by determining 
+
+\begin{align}
+\ket{\psi^{(S)}(t)} = T\ket{\psi_0}
+\end{align}
+
+And this can be done by solving the differential Schrodinger equation
+
+\begin{align}
+\frac{d\ket{\psi^{(S)}(t)}}{dt} = -\frac{i}{\hbar}H^{(S)}\ket{\psi^{(S)}(t)}
+\end{align}
+
+Where $H^{(S)} = i\frac{dT}{dt} T^{\dag}$ is the Hamiltonian which is the Hermitian Schrodinger generator of Unitary time evolution $T$.
+
+In the unitary time-evolution write up I introduce the vector of kets
+
+\begin{align}
+\bv{q} = \begin{bmatrix}\ket{q_1}, \ldots,  \ket{q_N}\end{bmatrix}
+\end{align}
+
+Where the ${\ket{q_i}}$ from an orthonormal `computation' basis.
+Orthonormality of the $\{\ket{q_i}\}$ is expressed by
+
+\begin{align}
+\bv{q}^{\dag}\bv{q} = 
+\begin{bmatrix}
+\braket{q_1|q_1} && \cdots && \braket{q_1|q_N}\\
+\vdots && \ddots && \vdots \\
+\braket{q_N|q_1} && \cdots && \braket{q_N|q_N}
+\end{bmatrix} = \bv{1}
+\end{align}
+
+Where $\bv{1}$ is an $N\times N$ diagonal matrix.
+Completeness of the $\{\ket{q_i}\}$ is expressed by
+
+\begin{align}
+\bv{q}\bv{q}^{\dag} = \sum_i \ket{q_i}\bra{q_i} = \bv{1}
+\end{align}
+
+Where here $\bv{1}$ is the identity operator on the Hilbert space.
+
+Given this new notation we can introduce a pure-scalar vector
+
+\begin{align}
+\bv{c} =& \bv{q}^{\dag}\ket{\psi}\\
+\begin{bmatrix}
+c_1\\ \vdots\\ c_n
+\end{bmatrix} =& 
+\begin{bmatrix}
+\braket{q_1|\psi}\\ \vdots \\ \braket{q_N|\psi} 
+\end{bmatrix}
+\end{align}
+
+so that
+
+\begin{align}
+\ket{\psi} = \bv{q}\bv{c}
+\end{align}
+
+From this we see that knowledge of $\bv{c}$ and $\bv{q}$ constitutes full knowledge of the state $\ket{\psi}$.
+Similarly, for any operator $O$ we can introduce a pure-scalar matrix by
+
+\begin{align}
+\bv{o} =& \bv{q}^{\dag}O\bv{q}\\
+=& \begin{bmatrix}
+\bra{q_1}O\ket{q_1} && \cdots && \bra{q_1}O\ket{q_N}\\
+\vdots && \ddots && \vdots \\
+\bra{q_N}O\ket{q_1} && \cdots && \bra{q_N}O\ket{q_N}
+\end{bmatrix}
+\end{align}
+
+so that
+
+\begin{align}
+O = \bv{q}\bv{o}\bv{q}^{\dag}
+\end{align}
+
+We can then re-write the Schrodinger differential equation.
+
+\begin{align}
+\frac{d\ket{\psi^{(S)}}(t)}{dt} =& -\frac{i}{\hbar}H^{(S)}\ket{\psi^{(S)}(t)}\\
+\bv{q}\frac{d\bv{c}(t)}{dt} =& -\frac{i}{\hbar}\bv{q}\bv{h}\bv{q}^{\dag}\bv{q}\bv{c}(t)
+\end{align}
+
+From which we can see (by acting $q^{\dag}$ on the left) that
+
+\begin{align}
+\dot{\bv{c}}(t) = -\frac{i}{\hbar}\bv{h}\bv{c}(t)
+\end{align}
+
+This differential equation is solved by
+
+\begin{align}
+c(t) = e^{-i\frac{\bv{h}}{\hbar}t}\bv{c}(0)
+\end{align}
+
+Note that the above manipulations rely on $\bv{h}$ being independent of time.
+In general the matrix exponential $e^{-i\frac{\bv{h}}{\hbar}t}$ can be calculated directly from the definition of the matrix exponentially, however, this problem is typically approached by diagonalizing the Hamiltonian as follows
+
+\begin{align}
+\bv{h} = \bv{P}\bv{D}\bv{P}^{\dag}
+\end{align}
+
+Here $\bv{D}$ is a diagonal matrix consisting of the eigenvalues of $\bv{h}$ and $\bv{P}$ is a unitary matrix with columns of the corresponding eigenvectors of $\bv{h}$.
+$\bv{P}$ is unitary because $\bv{h}$ is Hermitian.
+
+We can then write
+
+\begin{align}
+\bv{c}(t) = \bv{P}e^{-i \frac{\bv{D}}{\bv{h}}t}\bv{P}^{\dag}\bv{c}(0)
+\end{align}
+
+This can be re-written as
+
+\begin{align}
+\bv{P}^{\dag}\dot{\bv{c}}(t) =& e^{-i\frac{\bv{D}}{\hbar}t}\bv{P}^{\dag}\bv{c}(0)\\
+\tilde{\bv{c}}(t) =& e^{-i\bv{\omega} t}\tilde{\bv{c}}(0)
+\end{align}
+
+Here $\tilde{\bv{c}}(t) = \bv{P}^{\dag}\bv{c}(t)$ is transformed representation of the state, now represented in the basis corresponding to the eigen-states of the Hamiltonian as opposed to the original computation basis.
+$\bv{\omega} = \frac{\bv{D}}{\hbar}$ is a diagonal matrix of the Bohr frequencies for the system.
+
+This is a quite compact solution to the problem which demonstrates that any problem can be quickly solved in the Schrodinger picture if a computation basis is known (that is if we can pick out a particular basis which we can use to decompose both the initial state the Hamiltonian) and the Hamiltonian can be diagonalized.
+
+To that end I will demonstrate the solution to the above magnetic field problem by diagonalizing the Hamiltonian.
+I will consider a spin-$\frac{1}{2}$ particle.
+The Hamiltonian is
+
+\begin{align}
+H^{(S)} = -\gamma_{gy}\bv{B}\cdot\bv{F}^{(S)}
+\end{align}
+
+This can be written as
+
+\begin{align}
+H^{(S)} = -\gamma_{gy}\left(B_x F_x^{(S)} + B_y F_y^{(S)} + B_z F_z^{(S)}\right)
+\end{align}
+
+We can further note that
+
+\begin{align}
+\bv{F} = \hbar \bv{f} = \frac{\hbar}{2}\bv{\sigma}
+\end{align}
+
+Where $\bv{\sigma}$ are the (possibly high spin) pauli matrices.
+
+For a spin half particle there are two basis states, $\ket{-\frac{1}{2}} = \ket{g}$ and $\ket{+\frac{1}{2}} = \ket{e}$.
+We have
+
+\begin{align}
+\sigma_x =& \ket{g}\bra{e} + \ket{e}\bra{g} \rightarrow \begin{bmatrix}
+0 & 1\\ 1 & 0
+\end{bmatrix}\nonumber\\
+\sigma_y =& i(\ket{g}\bra{e} - \ket{e}\bra{g} \rightarrow \begin{bmatrix}
+0 & -i\\ i & 0
+\end{bmatrix}\nonumber\\
+\sigma_z =& \ket{g}\bra{g} - \ket{e}\bra{e} \rightarrow \begin{bmatrix}
+1 & 0\\ 0 & -1
+\end{bmatrix}
+\end{align}
+
+From this we can see that in matrix form we have
+
+\begin{align}
+\bv{h} = \bv{q}^{\dag}H\bv{q} = -\frac{\gamma_{gy}\hbar}{2}\begin{bmatrix}
+B_z && B_x-iB_y\\
+B_x+iB_y && -B_z
+\end{bmatrix}
+\end{align}
+
+In my $2\times2$ matrix diagonalization write up I demonstrate how such a matrix can be diagonalized.
+Consider an arbitrary Hermitian $2\times 2$ matrix
+
+\begin{align}
+\bv{h} = \begin{bmatrix}
+a && c\\
+c^* && b
+\end{bmatrix}
+\end{align}
+
+with $a$ and $b$ real numbers and complex $c = |c|e^{i\phi_c}$.
+The result is that the eigenvalues and eigenvectors are given by
+
+\begin{align}
+D_+ &= \frac{a+b}{2} + \frac{1}{2}\sqrt{(b-a)^2 + 4|c|^2} \nonumber\\
+D_- &= \frac{a+b}{2} - \frac{1}{2}\sqrt{(b-a)^2 + 4|c|^2}
+\end{align}
+
+\begin{align}
+\bv{v}_+ &= 
+\frac{1}{\sqrt{2}}\begin{bmatrix}
+\sqrt{1-\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}\\e^{-i\phi_c}\sqrt{1+\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}
+\end{bmatrix} \nonumber\\
+\bv{v}_- &= 
+\frac{1}{\sqrt{2}}\begin{bmatrix}
+-\sqrt{1+\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}\\e^{-i\phi_c}\sqrt{1-\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}
+\end{bmatrix}
+\end{align}
+
+We consider diagonalizing the matrix 
+
+\begin{align}
+\bv{b} = \begin{bmatrix}
+B_z && B_x-iB_y\\
+B_x+iB_y && -B_z
+\end{bmatrix}
+\end{align}
+
+noting that $\bv{h} = -\frac{\gamma_{gy}\hbar}{2} \bv{b}$.
+
+\begin{align}
+a =& B_z \nonumber\\
+b =& -B_z \nonumber\\
+c =& B_x-iB_y \nonumber\\
+|c| =& \sqrt{B_x^2 + B_y^2} \nonumber\\
+\phi_c =& \arctan\left(-\frac{B_y}{B_x}\right)
+\end{align}
+
+and we get
+
+\begin{align}
+d_{\pm} = \pm \sqrt{B_x^2 + B_y^2+B_z^2} = \pm|B|
+\end{align}
+
+\begin{align}
+\bv{v}_+ =& \frac{1}{\sqrt{2}}\begin{bmatrix}
+\sqrt{1+\frac{B_z}{|B|}}\\
+e^{-i\phi_c}\sqrt{1-\frac{B_z}{|B|}}
+\end{bmatrix}\nonumber\\
+\bv{v}_- =& \frac{1}{\sqrt{2}}\begin{bmatrix}
+-\sqrt{1-\frac{B_z}{|B|}}\\
+e^{-i\phi_c}\sqrt{1+\frac{B_z}{|B|}}
+\end{bmatrix}\nonumber\\
+\end{align}
+
+We then have
+
+\begin{align}
+\bv{D} =& -\frac{\gamma_{gy}\hbar}{2}\begin{bmatrix}
+d_+ && 0\\
+0 && d_-
+\end{bmatrix} \nonumber\\
+\bv{P} =& \begin{bmatrix}
+\bv{v}_+ && \bv{v_-}
+\end{bmatrix}
+\end{align}
+
+We can calculate the dynamical matrix using Mathematica or by hand and we find
+
+\begin{align}
+\bv{P}e^{-i\frac{\bv{D}}{\hbar}t}\bv{P}^{\dag} = \begin{bmatrix}
+\cos\left(\frac{\omega_L}{2} t\right) + i\frac{B_z}{|B|}\sin\left(\frac{\omega_L}{2}t\right) && i\frac{B_{\perp}}{|B|}\sin\left(\frac{\omega_L}{2} t\right)\\
+i\frac{B_{\perp}^*}{|B|}\sin\left(\frac{\omega_L}{2} t\right) && \cos\left(\frac{\omega_L}{2}t\right) -i\frac{B_z}{|B|}\sin\left(\frac{\omega_L}{2}t\right)
+\end{bmatrix}
+\end{align}
+
+Here I've defined $B_{\perp} = B_x - i B_y$.
+We then see that the problem is solved because we can calculate
+
+\begin{align}
+\bv{c}(t) = \begin{bmatrix}c_+(t)\\c_-(t)\end{bmatrix} = 
+\bv{P}e^{-i\frac{\bv{D}}{\hbar} t}\bv{P}^{\dag}\begin{bmatrix}c_+(0)\\c_-(0)\end{bmatrix}
+\end{align}
+
+So we have
+
+\begin{align}
+c_+(t) = & \left(\cos\left(\frac{\omega_L}{2} t\right) + i\frac{B_z}{|B|}\sin\left(\frac{\omega_L}{2}t\right)\right)c_+(0) + \left(i\frac{B_{\perp}}{|B|}\sin\left(\frac{\omega_L}{2} t\right)\right)c_-(0) \nonumber\\
+c_-(t) = & \left(\cos\left(\frac{\omega_L}{2} t\right) - i\frac{B_z}{|B|}\sin\left(\frac{\omega_L}{2}t\right)\right)c_-(0) + \left(i\frac{B_{\perp}^*}{|B|}\sin\left(\frac{\omega_L}{2} t\right)\right)c_+(0)
+\end{align}
+
+This solves the problem of a spin-$\frac{1}{2}$ particle precessing in a magnetic field in the Schrodinger picture.
+
+\section{Heisenberg Picture}
+
+We now solve the same problem in the Heisenberg picture.
+
+As a reminder, in the Heisenberg picture approach the Born rule expression
+
+\begin{align}
+\braket{A}_t = \bra{\psi_0}T^{\dag}AT\ket{\psi_0}
+\end{align}
+
+is calculated by determining 
+
+\begin{align}
+A^{(H)}(t) = T^{\dag}AT
+\end{align}
+
+By solving the Heisenberg equations of motion arising from
+
+\begin{align}
+\frac{dO^{(H)}}{dt} = -\frac{i}{\hbar}\left[O^{(H)}, H^{(H)}\right]
+\end{align}
+
+Here $H^{(H)} = iT^{\dag}\frac{dT}{dt}$ is the Heisenberg generator of the unitary time evolution $T$.
+
+We write the Hamiltonian as
+
+\begin{align}
+H^{(H)} = -\gamma_{gy} \bv{B}\cdot \bv{F}^{(H)} = -\gamma_{gy} B_j F_j^{(H)}
+\end{align}
+
+Where I've used Einstein summation convention.
+All operators here are in the Heisenberg picture, I've dropped the superscript for brevity.
+
+
+We recall that
+
+\begin{align}
+[F_i, F_j] = i \hbar \ep_{ijk} F_k
+\end{align}
+
+We can then work out the Heisenberg equation of motion by
+
+\begin{align}
+\dot{F}_i^{(H)} = -\frac{i}{\hbar} \left(-\gamma_{gy}\right) B_j [F_i^{(H)}, F_j^{(H)}] = -\gamma_{gy} B_j \ep_{ijk} F_k^{(H)}
+\end{align}
+
+This can be written in vector form as
+
+\begin{align}
+\dot{\bv{F}}^{(H)} = -\gamma_{gy} \bv{B}\times \bv{F}^{(H)}
+\end{align}
+
+Alternatively this can be written as a linear differential equation:
+
+\begin{align}
+\dot{\bv{F}}^{(H)} = 
+\begin{bmatrix}
+\dot{F}_x^{(H)} \\ \dot{F}_y^{(H)} \\ \dot{F}_z^{(H)}
+\end{bmatrix}
+= 
+-\gamma_{gy}
+\begin{bmatrix}
+0 && -B_z && B_y\\
+B_z && 0 && -B_x\\
+-B_y && B_x && 0
+\end{bmatrix}
+\begin{bmatrix}
+F_x^{(H)} \\ F_y^{(H)} \\ F_z^{(H)}
+\end{bmatrix}
+= -\gamma_{gy} \bv{N} \bv{F}^{(H)}
+\end{align}
+
+The solution to this differential equation is 
+
+\begin{align}
+\bv{F}^{(H)}(t) = e^{-i\bv{N} t} \bv{F}^{(H)}(0)
+\end{align}
+
+Born rule expressions can be calculated by
+
+\begin{align}
+\braket{\bv{F}}_t = \braket{\bv{F}^{(H)}} = e^{-i\bv{N} t} \braket{\bv{F}^{(H)}}_0
+\end{align}
+
+We can also write
+
+\begin{align}
+\frac{d}{dt}\braket{\bv{F}}_t =& -\gamma_{gy}\bv{B} \times \braket{\bv{F}}_t\\
+\frac{d}{dt}\braket{\bv{F}^{(H)}(t)} =& -\gamma_{gy}\bv{B} \times \braket{\bv{F}^{(H)}(t)}
+\end{align}
+
+\section{Ket Interaction Picture}
+
+We now move on to demonstrating the solution to quantum problems involving the ket and operator interaction pictures.
+
+We consider the problem described by Hamiltonian
+
+\begin{align}
+H =& \hbar \omega_0 \ket{e}\bra{e} + \hbar\frac{\Omega}{2} e^{-i\omega t}\ket{e}\bra{g} + \hbar \frac{\Omega^*}{2}e^{+i\omega t}\ket{g}\bra{e}\\
+=& \hbar \omega_0 \Pi_e + \hbar \frac{\Omega}{2}e^{-i\omega t}\sigma^+ + \hbar \frac{\Omega^*}{2}e^{+i\omega t}\sigma^-
+\end{align}
+
+This Hamiltonian arises, for example, in the case of a two level atom driven by a sinusoidally varying dipole field after making a rotating wave approximation. 
+The goal of working in the various interaction pictures will be to transform the Hamiltonian into a new form which is time-independent. 
+That is, we would like to get rid of the $e^{\pm i\omega t}$ factors.
+
+Our intuition will be guided by the fact that we know such a two level system would evolve as $e^{\pm i \omega t}$ if there were no coupling $\Omega$ and the free Hamiltonian was $\hbar \omega \Pi_e$.
+
+The Ket interaction picture arises from factoring the time evolution operator $T$ as 
+
+\begin{align}
+T = X\tilde{Y}
+\end{align}
+
+Where $X$ is a simple solved time-evolution and $\tilde{Y}$ is more complex, but hopefully simpler than $T$.
+In this case $X$ will be related to the free Hamiltonian $H_0=
+
+\end{document}

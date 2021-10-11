@@ -1,0 +1,124 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[pdftex]{graphicx}
+\usepackage{siunitx}
+\usepackage{braket}
+\usepackage{multirow}
+\usepackage{empheq}
+
+\usepackage[
+sorting=none,
+style=numeric
+]{biblatex}
+\addbibresource{refs.bib}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\ul}[1]{\underline{#1}}
+	
+
+\begin{document}
+\title{What type of account should I send savings to for retirement? An algebra based approach.}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this write-up I'll go through some algebra showing the returns for investing a fixed amount of money into either a pre or post tax tax-advantaged retirement account or a non-tax-advantaged post tax account.
+
+I will make a number of assumptions throughout which will Sarah will help point out.
+
+\section{Setup}
+
+I will assume a simple model for someone's financial life. 
+The initial time of investment will be called $t_0$ and I will assume that in that year the person pays an income tax rate of $T_0$. 
+In this year the person invests a certain amount into a particular account or combination of accounts.
+Due to investment returns the amount in the retirement account increases by a factor of $G$.
+Finally, at time $t_f$ the person withdraws the entire amount from the investment account.
+I assume that at this time the person pays an income tax rate of $T_f$ and that the capital gains tax rate it $T_{CG}$.
+
+\section{Pre-tax tax-advantaged}
+
+Examples of a pre-tax tax-advantaged accounts are traditional 401k or traditional IRA.
+A pre-tax tax-advantaged account is assumed to work as follows. A person earns a certain amount of income $I$ from their employer. 
+
+They then, before paying any tax on this, contribute the whole amount $I$ to a pre-tax tax-advantages retirement account.
+This grows by a factor of $G$.
+Then at time $t_f$ they withdraw the entire amount and pay income tax at rate $T_f$ on it.
+
+\begin{align}
+&I\\
+&GI\\
+&G(1-T_f)I
+\end{align}
+
+\section{Post-tax tax-advantaged}
+
+Examples of post-tax tax-advantaged accounts are Roth 401k or Roth IRA.
+
+In a post-tax tax-advantaged account a person earns a certain amount of income $I$ from their employer.
+They then promptly pay income tax at rate $T_0$ and invest the remaining amount.
+This amount grows by a factor of $G$.
+Then at time $t_f$ they withdraw the entire amount without paying any taxes.
+
+\begin{align}
+&I\\
+&(1-T_0)I\\
+&G(1-T_0)I
+\end{align}
+
+\section{Post-tax non-tax advantaged}
+
+Many types of accounts are non-tax advantaged.
+
+In a non tax-advantaged post-tax account a person earns income $I$.
+They then pay income taxes at rate $T_0$ and invest the remaining amount.
+The amount grows by a factor of $G$.
+Then at time $t_f$ they withdraw the entire amount. 
+They do not pay taxes on the initial premium investment. 
+They pay capital gains tax on all of the earnings.
+
+\begin{align}
+&I\\
+&(1-T_0)I\\
+&G(1-T_0)I\\ 
+= &(G-1)(1-T_0)I + (1-T_0)I\\
+&(G-1)(1-T_0)(1-T_{CG})I + (1-T_0)I\\
+= &((G-1)(1-T_0)(1-T_{CG}) + (1-T_0))I
+\end{align}
+
+We'll make two simplifications to this formula. We first assume that $(G-1)(1-T_{CG}) \gg 1$.
+This is equivalent to the assumptions that $G\\g1$ since $1-T_{CG} \approx 1$.
+This allows us to both ignore the second term (basically the premium is negligible compared to the earnings) and it allows us to replace $G-1$ by $G$.
+
+\begin{align}
+G(1-T_0)(1-T_{CG})I = G(1 - T_0 - T_{CG} - T_0T_{CG})I
+\end{align}
+
+Next we assume that $T_0T_{CG} \ll T_0, T_{CG}$ which is equivalent to $T_0, T_{CG} \ll 1$ so we can ignore the cross term above.
+
+We then have
+
+\begin{align}
+G(1-T_0- T_{CG})I
+\end{align}
+
+\section{Summary}
+
+\begin{align}
+\text{Pre-tax tax-advantaged: }& G(1-T_F)\\
+\text{Post-tax tax-advantaged: }& G(1-T_0)\\
+\text{Post-tax non-advantaged: }& G(1-T_0-T_{CG})
+\end{align}
+
+We see that post-tax tax-advantaged always provides higher gains than post-tax non tax advantaged.
+
+We see that if $T_0<T_F$ that post-tax tax-advantaged gives higher returns then pre-tax tax advantaged and vice-versa if $T_F<T_0$.
+
+Pre-tax tax-advantaged is better that post-tax non-advantaged if $T_F<T_0+T_{CG}$ and vice-versa if $T0 + T_{CG} < T_F$.
+
+\section{Assumptions/ignored things}
+\end{document}

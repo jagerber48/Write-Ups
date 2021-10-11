@@ -1,0 +1,209 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{biblatex}
+\usepackage{bbm}
+\usepackage[hidelinks]{hyperref}
+\usepackage{braket}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\usepackage{siunitx}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\ketbra}[2]{\Ket{#1}\!\Bra{#2}}
+
+\bibliography{refs}
+
+\begin{document}
+\title{Spectrum Analyzer Conversions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+A spectrum analyzer works as follows. 
+I will consider a ``complex'' spectrum analyzer at first because it is mathematically simpler. We have a signal $S(t)$. 
+which enters the device. 
+It is then downconverted by mixing with a local oscillator at frequency $f_{LO}$. 
+It then passes through a high quality bandpass filter called the IF filter centered at frequency $f_{IF}$ and with bandwidth $\Delta f_{IF}$. 
+For example, if the signal was a tone at \SI{1}{\MHz}, the IF was centered at \SI{100}{\kHz} and the LO was set to \SI{900}{\kHz} then the signal would pass through the filter.
+
+After passing through the IF filter we must now detect the signal in the power. In practice this is done by squaring the signal (in theory this could be done by operating in the non-linear region of the diode, in practice it can be done with more careful envelope detection electronics) and then measuring the voltage.
+In fact, the signal is integrated for some time before readout and the average output is recorded.
+This is how an ADC works, for example.
+You charge up a capacitor for some time and then readout the resultant voltage and divide by the charging time (you shouldn't saturate the capacitor!)
+This averaging time acts as a low pass filter to the signal.
+In fact, you may place an actual low pass filter before the averaging takes place so that you control any distortion that happens to your signal rather than let it be controlled by the gating.
+This filter is called the video filter and has bandwidth $\Delta f_{video}$.
+It is so called because the bandwidth of the video filter tells you how fast you can update the reading of the spectrum analyzer on the video screen.
+Here we will just assume the gate implements the filtering.
+
+\section{Preliminary}
+
+A few things to recall.
+
+I'll define the Fourier transform as
+
+\begin{align}
+FT[A](f) = \tilde{A}(f) =& \int e^{-i2\pi ft}A(t)dt\\
+A(t) =& \int e^{+i2\pi ft}\tilde{A} df
+\end{align}
+
+The convolution theorem:
+
+\begin{align}
+(A \ast B)(t)  =& \int A(t-t')B(t') dt'\\
+FT\left[A \ast B\right](f) =& \tilde{A}(f)\times \tilde{B}(f)
+\end{align}
+
+Parseval's theorem:
+
+\begin{align}
+\int |A(t)|^2 dt = \int |\tilde{A}(f)|^2 df = \Delta f_A
+\end{align}
+
+Where I've defined the noise-equivalent-bandwidth $\Delta f_A$.
+
+We can chain these two theorems together:
+
+\begin{align}
+\int |(\tilde{A} \ast \tilde{B})(f)|^2 df = \int |A(t) \times B(t)|^2 dt
+\end{align}
+
+Suppose $\tilde{A}(f)$ is centered at $f_A$ and spectrally much narrow than $\tilde{B}(f)$.
+In that case we can replace
+
+\begin{align}
+\tilde{A}(f) \times \tilde{B}(f) \rightarrow \tilde{A}(f) \times \tilde{B}(f_0)
+\end{align}
+
+Suppose $\tilde{A}(f)$ is spectrally narrow compared to $\tilde{B}$.
+Then we have the following result
+
+\begin{align}
+\int |\tilde{A}(f) \times \tilde{B}(f)|^2
+\end{align}
+
+
+\section{Main}
+
+We can express this mathematically.
+
+\begin{align}
+S(t) \rightarrow S_{down}(t) \rightarrow& \left(F_{IF} \ast S_{down}\right)(t) \rightarrow \left|\left(F_{IF} \ast S_{down}\right)(t)\right|^2\\
+\rightarrow& \frac{1}{T_{gate}} \int_{t = 0}^{T_{gate}} \left|\left(F_{IF} \ast S_{down}\right)(t)\right|^2  dt \\
+\rightarrow& \int_{t=-\infty}^{+\infty} W'(t)\left|\left(F_{IF}\ast S_{down}\right)(t)\right|^2 dt
+\end{align}
+
+Here $F_{IF}$ is the impulse response function for the filter (in time rather than frequency space) and $W'(t)$ is a gating function which takes into account the averaging.
+If we introduce $|W(t)|^2 = W'(t)$ we can rewrite this as
+
+\begin{align}
+C = \int_{t=-\infty}^{+\infty} \left|W(t) \times \left(F_{IF} \ast S_{down}\right)(t)\right|^2 dt
+\end{align}
+
+Actually for this very simple gate function we have $W(t) = W'(t)$.
+However, we might be interested in a treatment for general gate function or video filters.
+In these more general cases we demand that $W(t)$ is square integrable to unity: $\int |W(t)|^2 dt = 1$.
+Again for the simple filter we chose we also have that $\int W(t) dt=1$ but we will avoid using that feature because it might not hold in the more general case.
+Said differently, the noise equivalent bandwidth of the video filter should be unity (see below for a discussion of the noise equivalent bandwidth).
+
+Here $C$ is the output of the whole process, it is the spectrum analyzer reading.
+This can be rewritten using Parseval's theorem as
+
+\begin{align}
+C= \int_{f=-\infty}^{+\infty} \left|\left(\tilde{W} \ast \left(\tilde{F}_{IF} \times \tilde{S}_{down}\right)\right)(f)\right|^2 df
+\end{align}
+
+We can now work on simplifying this expressions. We first consider the case when $S_{down}$ is spectrally broad. 
+For example white noise.
+In this case we have that the filter is much narrow than the signal so it picks out an individual component:
+
+\begin{align}
+\tilde{F}_{IF}(f) \times \tilde{S}_{down}(f)\rightarrow \tilde{S}_{down}(f_{IF})\tilde{F}_{IF}(f) \rightarrow \tilde{S}(f_{LO} + f_{IF}) \tilde{F}_{IF}(f) = \tilde{S}(f_{SA})\tilde{F}_{IF}(f)
+\end{align}
+
+Where I've defined the analysis frequency $f_{SA} = f_{LO} + f_{IF}$.
+Where I've noted that because of the downconversion in frequency space we have
+
+\begin{align}
+\tilde{S}_{down}(f) = \tilde{S}(f+f_{LO})
+\end{align}
+
+With this we can rewrite the above as
+
+\begin{align}
+C = |\tilde{S}(f_{SA})|^2 \int_{f=-\infty}^{+\infty} \left|\left(\tilde{W} \ast \tilde{F}_{IF}\right)(f)\right|^2 df
+\end{align}
+
+Now, we typically choose the window function so that it is much more spectrally narrow than the IF filter.
+That is to say, the video filter should have a smaller bandwidth than the IF filter: $\Delta f_{video} \ll \Delta f_{IF}$.
+We can re-express this using Parseval's theorem:
+
+\begin{align}
+C =& \left|\tilde{S}(f_{SA})\right|^2 \int_{t=-\infty}^{+\infty} \left|W(t) \times F_{IF}(t)\right|^2 dt = \left|\tilde{S}(f_{SA})\right|^2 \int_{t=-\infty}^{+\infty} |W(t)|^2 |F_{IF}(t)|^2 dt
+\end{align}
+
+If $\Delta f_{video} \ll \Delta f_{IF}$ then in time the filter impulse response function is much shorter than the gate function so we can replace
+
+
+Recall that $\int |W(t)|^2 dt = 1$ so we can treat $|W(t)|^2$ like $\delta(t)$
+
+\begin{align}
+C(f_{SA}) =& \left|\tilde{S}(f_{SA})\right|^2 \int_{f=-\infty}^{+\infty} \left|\tilde{F}_{IF}(f)\right|^2 df\\
+=& \left|\tilde{S}(f_{SA})\right|^2 \Delta f_{IF}
+\end{align}
+
+Here I've defined the noise equivalent bandwidth
+
+\begin{align}
+\Delta f_{IF} = \Delta f_{IF, NEB} = \int_{f=-\infty}^{+\infty} \left|\tilde{F}_{IF}(f)\right|^2 df
+\end{align}
+
+The idea is, whatever the actual shape of the IF filter, if you replaced it with a brickwall filter of bandwidth $\Delta f_{IF,NEB}$ then you would get the same spectrum analyzer reading.
+
+Note that for a broadband signal we see that the spectrum analyzer reading is proportional to the filter bandwidth. 
+This is related to the idea that if you have a broadband noisy signal the RMS voltage you measure for that signal will increase if you measure with a larger bandwidth.
+
+I now want to consider what happens in the case that the signal is spectrally narrow.
+We return to
+
+\begin{align}
+C= \int_{f=-\infty}^{+\infty} \left|\left(\tilde{W} \ast \left(\tilde{F}_{IF} \times \tilde{S}_{down}\right)\right)(f)\right|^2 df
+\end{align}
+
+In this case it is now the signal that acts like a Dirac delta
+
+\begin{align}
+\tilde{S}(f) \sim& S_0 \delta(f-f_S)\\
+\tilde{S}_{down}(f) \sim& S_0 \delta(f+f_{LO}-f_S)
+\end{align}
+
+So that
+
+\begin{align}
+\tilde{F}_{IF}(f)\tilde{S}_{down}(f) \rightarrow \tilde{F}_{IF}(f_S - f_{LO})\tilde{S}_{down}(f)
+\end{align}
+
+Note that we can define
+
+\begin{align}
+\tilde{F}_{IF}^0(f) = \tilde{F}_{IF}(f+f_{IF})
+\end{align}
+
+Where $\tilde{F}_{IF}^0(f)$ captures the shape of the filter, centered now at zero frequency rather thatn $f_{IF}$.
+We then have
+
+\begin{align}
+\tilde{F}_{IF}(f)\tilde{S}_{down}(f) \rightarrow S_0\tilde{F}_{IF}^0(f - f_{LO} - f_{IF}) = S_0 \tilde{F}_{IF}^0(f_S-f_{SA})
+\end{align}
+
+\end{document}

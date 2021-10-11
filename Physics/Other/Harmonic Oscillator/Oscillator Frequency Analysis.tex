@@ -1,0 +1,457 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Forced Driven Oscillator}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+Here I will summarize my findings on harmonic oscillators with a driven base. This has applications for vibration isolation.
+
+\section{Damped Harmonic Oscillator - Laplace Transform}
+I'll first consider the impulse response function for an undriven damped harmonic oscillator. The differential equations of motion describing this system are:
+
+\begin{align}
+m \ddot{x}_1(t) = -k x_1(t) -c \dot{x}_1(t) + F(t)\\
+m\ddot{x}_1(t) + c \dot{x}_1(t) + k x_1(t) = F(t)
+\end{align}
+
+Recall that
+
+\begin{align}
+\mathcal{L}[\dot{x}](s) &= s \mathcal{L}[x(t)](s)\\
+\dot{x}(t) &\rightarrow s x(s)
+\end{align}
+
+In the second line I have dropped the Laplace Transform notation and it is simply understood that the variable on the right hand side is the Laplace Transform. I have assumed zero initial conditions for the $x$. Transforming the above differential equation we find
+
+\begin{align}
+s^2 m x_1(s) + s c x_1(s) + k x_1(s) = F_0(s)
+\end{align}
+
+We can divide through by $m$
+
+\begin{align}
+\left(s^2 + s \frac{c}{m} + \frac{k}{m}\right)x_1(s) = \frac{F_0(s)}{m}
+\end{align}
+
+The roots of the polynomial on the LHS are given by
+
+\begin{align}
+s = -\frac{c}{2m} \pm \sqrt{\left(\frac{c}{2m}\right)^2 - \frac{k}{m}}
+\end{align}
+
+In the case the $c=0$ and we have an undamped oscillator we see that the roots are given by
+
+\begin{align}
+s = \pm i \sqrt{\frac{k}{m}} = \pm i \omega_0
+\end{align}
+
+defining the undriven resonance frequency. We can express the damped roots in ``units of'' the bare resonance frequency by:
+
+\begin{align}
+s = \omega_0\left(-\frac{c}{2\sqrt{k m}} \pm \sqrt{\left(\frac{c}{2\sqrt{km}} \right)^2 - 1} \right)
+\end{align}
+
+Noting that $\frac{c}{m} \frac{1}{\sqrt{\frac{k}{m}}} = \frac{c}{2\sqrt{km}}$. We see that for small $c$ (small damping) the roots have an imaginary part (corresponding oscillator motion) whereas for large $c$ the roots become purely real. This indicates a transition from underdamped to over-damped behavior of the oscillator. This transition occurs at the critical damping rate
+
+\begin{align}
+c_c = 2\sqrt{km}
+\end{align}
+
+We can define the ratio of the damping rate to critical damping rate as
+
+\begin{align}
+\zeta = \frac{c}{c_c} = \frac{c}{2\sqrt{km}}
+\end{align}
+
+so that
+
+\begin{align}
+s = p_{\pm} = \omega_0\left(-\zeta \pm \sqrt{\zeta^2 -1} \right)
+\end{align}
+
+Note that we have
+
+\begin{align}
+\frac{k}{m} &= \omega_0^2\\
+\frac{c}{m} &= 2 \zeta \omega_0
+\end{align}
+
+We can then write
+
+\begin{align}
+x_1(s) = \frac{\frac{F_0(s)}{m}}{(s-p_-)(s-p_+)}
+\end{align}
+
+The poles of the system, $p_{\pm}$ give a lot of information about how the system response to a driving force.
+
+\section{Driven Base}
+
+Suppose the system is driven by shaking the base on which the oscillator sits. The base position is given by $x_0(t)$. The differential equation can be rewritten as
+
+\begin{align}
+m \ddot{x}(t) = -c(\dot{x}_1(t) - \dot{x}_0(t)) - k(x_1(t)-x_0(t))\\
+m\ddot{x}(t) + c\dot{x}_1(t) + kx_1(t) = c \dot{x}_0(t) + k x_0(t)
+\end{align} 
+
+This is the same as the above formula with
+
+\begin{align}
+F_0(t) = c \dot{x}_0(t) + k x_0(t)
+\end{align}
+
+The Laplace transform of this is given by
+
+\begin{align}
+F_0(s) = (sc + k)x_0(s)
+\end{align}
+
+So we find
+
+\begin{align}
+x_1(s) = \frac{\frac{(sc + k)x_0}{m}}{(s-p_-)(s-p_+)}
+\end{align}
+
+We can define the position transmissibility function (motion induced divided by motion driving) by
+
+\begin{align}
+\frac{x_1(s)}{x_0(s)} &= \frac{s \frac{c}{m} + \frac{k}{m}}{(s-p_-)(s-p_+)}\\
+&= \frac{s2\zeta \omega_0 + \omega_0^2}{(s-p_-)(s-p_+)}\\
+&= 2 \zeta \omega_0 \frac{\left((s - \left(-\frac{\omega_0}{2 \zeta}\right)\right)}{(s-p_-)(s-p_+)}\\
+&= 2\zeta \omega_0 \frac{s-z_0}{(s-p_-)(s-p_+)}
+\end{align}
+
+so we see that the driven base system has one zero and two poles.
+
+\begin{align}
+z_0 &= -\frac{\omega_0}{2\zeta}\\
+p_- &= \omega_0(-\zeta - \sqrt{\zeta^2 -1})\\
+p_+ &= \omega_0(-\zeta + \sqrt{\zeta^2-1})
+\end{align}
+
+The transfer function can be determined by
+
+\begin{align}
+H(\omega) = \frac{x_1(i\omega)}{x_0(i\omega)}
+\end{align}
+
+Note that this convention takes $\omega \rightarrow -\omega$ compared \textit{my} usual convention for the Fourier transform (with $(a,b) = (0,+2\pi)$). This arises because of the conflicting definition of the Laplace transform and my preferred convention for the Fourier transform. The conflict arises out the question of whether to call $e^{-i\omega t}$ a positive or negative frequency. According to my convention it is positive frequency (this is to make $e^{i(kx-\omega t)}$ natural to describe a right traveling wave) while it is negative frequency according to the typical Laplace transform definition. The Fourier transform convention commensurate with the Laplace transform definition would be $(a,b) = (1,-1)$. With this convention we have $\mathcal{FT}[f(t)](\omega) = \mathcal{L}[f(t)](i\omega)$
+
+\section{Magnitude Contribution of Poles and Zeros}
+
+The contribution of any pole or zero at location $s_0$ to the squared magnitude of the transfer function will be given by
+
+\begin{align}
+|i\omega - s_0|^2 &= (i\omega - \text{Re}(s_0) - i \text{Im}(s_0))(-i\omega - \text{Re}(s_0) + i \text{Im}(s_0))\\
+&= \text{Re}(s_0)^2 + (\omega - \text{Im}(s_0))^2\\
+&= \text{Re}(s_0)^2 + \Delta_0^2
+\end{align}
+
+Here I've defined the detuning between the frequency and the pole $\Delta_0=\omega - \text{Im}(s_0)$.
+This means that every pole or zero has two behaviors with respect to its effect on the magnitude of the transfer function.
+
+\begin{align}
+|i \omega - s_0|^2 = 
+\begin{cases}
+\text{Re}(s_0)^2 \text{ for } \Delta_0 \ll |\text{Re}(s_0)|\\
+\Delta_0^2 \text{ for } \Delta_0 \gg |\text{Re}(s_0)|
+\end{cases}
+\end{align}
+
+For small detunings (compared to the real part of the pole or zero) the effect on the magnitude is constant and related to the magnitude of the real part of the pole (how far the pole is from the imaginary axis). For large detunings the effect on the magnitude is quadratic in the detuning.
+For zeros this term appears in the numerator while for poles this term appears in the denominator. This means that poles realize a maximum when the detuning is close to zero and then roll off at -20 dB/decade at large detuning while zeros realize a minimum at zero detuning and see magnitude increase at +20 dB/decade at large detunings..
+
+Similarly the contribution of each pole to the phase of the transfer function is given by
+
+\begin{align}
+\text{Arg}(i\omega - s_0) &= \text{arctan}\left(\frac{\omega - \text{Im}(s_0)}{\text{Re}(s_0)} \right) = \text{arctan}\left(\frac{\Delta_0}{\text{Re}(s_0)} \right)\\
+&= 
+\begin{cases}
+-\frac{\pi}{2} &\text{ for } -\Delta_0 \gg |\text{Re}(s_0)|\\
+0 &\text{ for } |\Delta_0| \ll |\text{Re}(s_0)|\\
+\frac{\pi}{2} &\text{ for } \Delta_0 \gg |\text{Re}(s_0)|
+\end{cases}
+\end{align}
+
+Note that zeros increase the phase of the transfer function by this amount while poles decrease the phase by this amount.
+
+\section{High Quality Oscillator}
+
+We first consider a high quality oscillator. In this case $\zeta \ll 1$. This means
+
+\begin{align}
+p_{\pm} \approx \omega_0(-\zeta \pm i)
+\end{align}
+
+For $\omega>0$ there are four important regions. 
+
+\subsection{Low Frequency}
+The first region is $0<\omega \ll \omega_0$. In this region the frequency is ``close to'' the zero in the sense that $\omega \ll |\text{Re}(z_0)| = \frac{\omega_0}{2\zeta}$ since $\zeta \ll 1$. $\omega$ is also ``far from'' the two poles. This means we can approximate
+
+\begin{align}
+|i\omega-z_0|^2 &= \Big\lvert i\omega + \frac{\omega_0}{2\zeta}\Big\rvert^2 \approx \left(\frac{\omega_0}{2\zeta} \right)^2\\
+|i\omega-p_{\pm}|^2 &= \lvert i\omega + \omega_0\zeta \mp i\omega_0\rvert^2 \approx \omega_0^2
+\end{align}
+
+so
+
+\begin{align}
+|H(\omega)|^2 \approx (2 \zeta \omega_0)^2 \frac{\left(\frac{\omega_0}{2\zeta} \right)^2}{\omega_0^2\omega_0^2} = 1
+\end{align}
+
+In the regime that $\omega_0 \ll \omega$ what is going on is that both poles contribute roughly equally to the transfer function and, close to $\omega = 0$, the symmetric contribution of these two poles is roughly flat.
+
+\subsection{Near Resonance}
+Near resonance we have $\omega \approx \omega_0$. We are still ``close to'' the zero and ``far from'' the $p_-$ pole. For the $p_-$ pole we have
+
+\begin{align}
+\Delta_- &= \omega - (-\omega_0) = \omega_0 + \Delta - ( -\omega_0) = 2\omega_0 + \Delta\\
+\Delta_- &\approx 2\omega_0
+\end{align}
+
+Where the last approximation is valid for $\Delta = \omega-\omega_0 \ll \omega_0$. We can then write down the effect of this pole and the zero on the magnitude of the transfer function.
+
+\begin{align}
+|i\omega-z_0|^2 &= \Big\lvert i\omega + \frac{\omega_0}{2\zeta}\Big\rvert^2 \approx \left(\frac{\omega_0}{2\zeta} \right)^2\\
+|i\omega-p_-|^2 &= \lvert i\omega + \omega_0\zeta + i\omega_0\rvert^2 \approx (2\omega_0)^2
+\end{align}
+
+The $p_+$ term can be approximated as
+
+\begin{align}
+|i\omega - p_+|^2 = \lvert i(\omega-\omega_0) + \omega_0 \zeta \rvert^2 = \Delta^2 + \omega_0^2 \zeta^2
+\end{align}
+
+The transfer function near resonance can then be approximated as
+
+\begin{align}
+|H(\omega)|^2 &\approx (2\zeta \omega_0)^2 \left(\frac{\omega_0}{2\zeta} \right)^2 \frac{1}{(2\omega_0)^2} \frac{1}{\Delta^2 + \omega_0^2 \zeta^2}\\
+&= \frac{\left(\frac{\omega_0}{2} \right)^2}{\Delta^2 + \omega_0^2\zeta^2}
+\end{align}
+
+From this we can see that the half width at half max is $\omega_0 \zeta$ so the full width at half max is $\Gamma = \omega_0 2 \zeta$. We can then rewrite
+
+\begin{align}
+|H(\omega)|^2 \approx \frac{\left(\frac{\omega_0}{2} \right)^2}{\Delta^2 + \left(\frac{\Gamma}{2} \right)^2}
+\end{align}
+
+We see that
+
+\begin{align}
+|H(\omega_0)|^2 = \left(\frac{\omega}{\Gamma}\right)^2
+\end{align}
+
+The ratio of the resonance frequency to the linewidth is the quality factor
+
+\begin{align}
+\frac{\omega_0}{\Gamma} = \frac{1}{2\zeta} = Q
+\end{align}
+
+We can then rewrite
+
+\begin{align}
+|H(\omega)|^2 \approx \frac{\left(\frac{\omega_0}{2}\right)^2}{\Delta^2 + \left(\frac{1}{2} \frac{\omega_0}{Q} \right)^2}
+\end{align}
+
+So we see that the full width at full max $\Gamma = \frac{\omega_0}{Q}$ and
+
+\begin{align}
+|H(\omega_0)|^2 \approx Q^2
+\end{align}
+
+The larger the quality factor the higher the function peaks.
+
+\subsection{Above Resonance}
+
+There is another regime in which $\omega > \omega_0$ but we are still ``close to'' the zero of the transfer function. This means $\omega_0 \ll \omega \ll \frac{\omega_0}{2\zeta} = Q \omega_0$. Here we have
+
+\begin{align}
+|i\omega-z_0|^2 &= \Big\lvert i\omega + \frac{\omega_0}{2\zeta}\Big\rvert^2 \approx \left(\frac{\omega_0}{2\zeta} \right)^2\\
+|i\omega-p_{\pm}|^2 &= \lvert i\omega + \omega_0\zeta \mp i\omega_0\rvert^2 \approx \omega^2
+\end{align}
+
+The total transfer function is then
+
+\begin{align}
+|H(\omega)|^2 = (2\zeta \omega_0)^2 \frac{\left(\frac{\omega_0}{2\zeta} \right)^2}{\omega^4} = \left(\frac{\omega_0}{\omega} \right)^4
+\end{align}
+
+In this part of the transfer function the amplitude is dropping sharply at a rate of -40 dB per decade. This is due to the the -20 dB/decade contribution of each of the two poles. Since $\omega \ll Q \omega_0$ still the zero does not yet appreciably contribute.
+
+\subsection{Far Above Resonance}
+
+The final region is far above resonance. In this region $\omega \gg \frac{\omega_0}{2\zeta} = Q\omega_0$. Here we are far from all poles and zeros. We get
+
+\begin{align}
+|i\omega-z_0|^2 &= \Big\lvert i\omega + \frac{\omega_0}{2\zeta}\Big\rvert^2 \approx \omega^2\\
+|i\omega-p_{\pm}|^2 &= \lvert i\omega + \omega_0\zeta \mp i\omega_0\rvert^2 \approx \omega^2
+\end{align}
+
+Resulting in
+
+\begin{align}
+|H(\omega)|^2 = (2\zeta \omega_0)^2 \frac{\omega^2}{\omega^4} = (2\zeta)^2 \left(\frac{\omega_0}{\omega} \right)^2 = \frac{1}{Q^2} \left(\frac{\omega_0}{\omega} \right)^2
+\end{align}
+
+We see here that now the signal only drops off at -20 dB/decade. This is because the zero cancel out some of the suppression coming from the two poles out at high frequency.
+
+\subsection{High Q summary}
+
+Here is the summary of the transfer function for high Q.
+
+\begin{align}
+\zeta &\ll 1 \leftrightarrow Q \gg 1
+\end{align}
+
+\begin{align}
+|H(\omega)|^2 =
+\begin{cases}
+1 \text{ for } \omega \ll \omega_0\\
+\frac{\left(\frac{\omega}{2} \right)^2}{(\omega-\omega_0)^2 + \left(\frac{1}{2} \frac{\omega_0}{Q}\right)^2} \text{ for } \omega - \omega_0 \ll \omega_0\\
+\left(\frac{\omega_0}{\omega} \right)^4 \text{ for } \omega_0 \ll \omega \ll Q \omega_0\\
+\frac{1}{Q^2}\left(\frac{\omega_0}{\omega} \right)^2 \text{ for } Q \omega_0 \ll \omega
+\end{cases}
+\end{align}
+
+We can also work out the phase shift for these different regions. 
+
+\begin{align}
+\text{Arg}(H(\omega)) =
+\begin{cases}
+0 \text{ for } \omega \ll \omega_0\\
+-\pi \text{ for } \omega_0 \ll \omega \ll Q \omega_0\\
+-\frac{\pi}{2} \text{ for } Q \omega_0 \ll \omega
+\end{cases}
+\end{align}
+
+The phase shift is $0$ for $\omega \ll \omega_0$ since we are symmetrically situated in the center of all of the poles and zeros. As $\omega$ moves past the $p_+$ pole it rapidly collects a phase shift of $-\pi$ (in a frequency span of $\Gamma = \frac{\omega_0}{Q}$ but then as $\omega$ finally becomes far from the zero the phase steps back by $\frac{\pi}{2}$ where it remains.
+
+\section{Low Quality Oscillator}
+
+The dynamics are different for a low quality oscillator with $\zeta \gg 1$. In this case (Taylor expanding)
+
+\begin{align}
+p_{\pm} &= \omega_0(-\zeta \pm \sqrt{\zeta^2-1}) = \omega_0\zeta\left(1 \pm \sqrt{1-\frac{1}{\zeta^2}}\right)\\
+& \approx \omega_0 \zeta\left(-1 \pm \left(1 - \frac{1}{2\zeta^2}\right) \right)
+\end{align}
+
+Breaking this out and approximating $\zeta \gg 1$ we get
+
+\begin{align}
+p_- \approx -\omega_0 2\zeta\\
+p_+ \approx -\frac{\omega_0}{2\zeta}\\
+z_0 = -\frac{\omega_0}{2\zeta}
+\end{align}
+
+Notice that $p_+$ is located at approximately the same location as $z_0$ on the real axis. This means that on the imaginary axis their respective contributions to the transfer function will cancel out to have a vanishing effect. In this regime the 2-pole, 1-zero system is effectively a single pole system with a pole at $p_-$. We can ignore th effect of $p_+$ and $z_0$.
+
+The effective magnitude the transfer function is then
+
+\begin{align}
+|i\omega + \omega_0 2 \zeta|^2 = \omega^2 + (2\zeta \omega_0)^2 = \omega^2 + \left(\frac{\omega_0}{Q}\right)^2 
+\end{align}
+
+\begin{align}
+|H(\omega)|^2 &= (2\zeta \omega_0)^2 \frac{1}{\omega^2 + (\omega_0 2 \zeta)^2}\\
+&= \frac{1}{1 + \left(\frac{\omega}{\omega_0 2 \zeta}\right)^2}
+\end{align}
+
+This is the transfer function for a low pass filter with cutoff frequency $2\zeta \omega_0$. Recall that $2\zeta \gg 1$ so as the damping is increased the cutoff is pushed higher and higher meaning the filter is in some sense less and less effective.
+
+\subsection{Below Cutoff}
+
+Below the cutoff frequency, $\omega \ll \omega_0 2 \zeta$ we have
+
+\begin{align}
+|i\omega + \omega_02\zeta|^2 \approx (2\zeta \omega_0)^2
+\end{align}
+
+so
+
+\begin{align}
+|H(\omega)|^2 = \frac{(2\zeta\omega_0)^2}{(2\zeta \omega_0)^2} = 1
+\end{align}
+
+Here
+
+\begin{align}
+\text{Arg}(H(\omega)) \approx 0
+\end{align}
+
+\subsection{Above Cutoff}
+
+Above cutoff with $\omega \gg \omega_0 2 \zeta$ we have
+
+\begin{align}
+|i\omega + \omega_0 2 \zeta|^2 \approx \omega^2
+\end{align}
+
+so
+
+\begin{align}
+|H(\omega)|^2 = \frac{2\zeta \omega_0)^2}{\omega^2} = \frac{1}{Q^2}\left(\frac{\omega_0}{\omega} \right)^2
+\end{align}
+
+This is the same expression as for the high $Q$ oscillator far above resonance frequency. This makes sense because all of the poles and zeros are `seen from a distance' in this frequency range. However, in this case $Q\ll1$ so the transfer function is much larger out at these high frequencies in this case.
+
+We also have, due to the effect of the single pole:
+
+\begin{align}
+\text{Arg}(H(\omega)) \approx -\frac{\pi}{2}
+\end{align}
+
+\subsection{Low Quality Summary}
+
+\begin{align}
+\zeta &\gg 1 \leftrightarrow Q \ll 1
+\end{align}
+
+\begin{align}
+|H(\omega)|^2 =
+\begin{cases}
+1 \text{ for } \omega \ll 2\zeta\omega_0\\
+\frac{1}{Q^2}\left(\frac{\omega_0}{\omega} \right)^2 \text{ for } 2\zeta \omega_0 \ll \omega
+\end{cases}
+\end{align}
+
+We can also work out the phase shift for these different regions. 
+
+\begin{align}
+\text{Arg}(H(\omega)) =
+\begin{cases}
+0 \text{ for } \omega \ll 2\zeta \omega_0\\
+-\frac{\pi}{2} \text{ for } 2\zeta \omega_0 \ll \omega
+\end{cases}
+\end{align}
+
+\end{document}

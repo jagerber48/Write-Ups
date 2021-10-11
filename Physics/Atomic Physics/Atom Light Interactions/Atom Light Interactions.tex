@@ -1,0 +1,589 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{Atom Light Interactions}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+I'll try to summarize some of the key definitions in atom light interactions to try to disentangle various conventions and definitional dependencies or motivations. I'll mostly be following Steck ``Quantum and Atom Optics'' and Steck's $^{87}\text{Rb}$ $D$-line data document.
+
+I've been curious about the treatment of multi-level atoms. I have been confused about them and it has been confusing for me learning about them. It is always difficult for me to know how things are defined. It seems that much of the notation is bootstrapped up as ``effective'' versions of relevant concepts from the simpler either single particle or at times even classical picture. The way Steck approaches it he defines the same variable many times but ``finds out'' that it equals the same thing every time. 
+
+Essentially this is related to the fact that for a given optical transition for $\ket{g}$ to $\ket{e}$ there is always ONE somewhat phenomenological parameter which must go into the equations. Since I am a fan of microscopic/first principles approaches to topics I think the most fundamental version of this phenomenological parameter is to call it the transition matrix element, $\bra{g} \hat{\epsilon}\cdot \bv{d} \ket{e} = d_{ge}$. This can also be thought of as the atom's effective dipole moment. In the two-state picture you can derive a number of other quantities from this. These include the spontaneous decay rate, $\Gamma$ (which is of course related to the excited state lifetime, $\tau$), the scattering cross section $\sigma_0$, the saturation intensity $I_{\text{sat}}$, the Einstein $A$ and $B$ coefficients and the oscillator strength $f$. All of these different characterizations of this same phenomenological parameter are useful in their own time and place and were introduced at some time for a well-motivated reason. I'll try to capture some of that here.
+
+To me most of these quantities don't make sense because I try to think about them from first principles. That is fine for a theoretical perspective, however, experimentally all of the other parameters are much more accessible in their own right one way or another.
+
+\section{Scattering Cross Section}
+
+I'll begin with the optical scattering cross section. The cross section can be defined in an intuitive way. Imagine I have a beam with an area of $A$. If I then put something in that blocks (scatters light out of) the central quarter of the beam, $\frac{A}{4}$, I have cut that much area out of the beam. The cross section of the obstacle is $\frac{A}{4}$. However, when sending light through atoms, you aren't just ``blocking'' the beam. However, you are cutting a fraction of the light out, so in a sense it is like blocking the beam. This is the analogy which is made to define the cross section. The defining formula could be
+
+\begin{align}
+\sigma &= \left(1-\frac{P_\text{final}}{P_\text{initial}}\right) A\\
+P_{\text{final}} - P_{\text{initial}} &= \Delta P = - P_{\text{initial}} \frac{\sigma}{A} = -\sigma I_{\text{initial}}
+\end{align}
+
+Recalling that $P = I*A$. So it is clear that the lost power is equal to the initial power times the ratio of the scattering cross section to the total beam area. Said another way, the power scattered out of the beam is the intensity times the cross section.
+
+The task then is to calculate the final power when a beam transmits through a cloud of atoms, supposing the area of the beam is at least as large as the physical cross section (not necessarily the same as the scattering cross section) of the cloud of atoms.
+It will be assumed that each atom will absorb photons at a certain rate $\Gamma_{\text{sc}}$ which will be set by a number of intrinsic properties of the atom as well as the properties of the probing beam which will be discussed shortly. The scattered power is then given by $\hbar \omega \Gamma_{\text{sc}}$. We can then write down recalling ($P=IA$)
+
+\begin{align}
+P_{\text{final}} - P_{\text{initial}} &= - P_{\text{sc}} =  -\hbar \omega \Gamma_{\text{sc}} N\\
+\end{align}
+
+We are interested in the scattering rate as in intrinsic property of the atom. This means we are interested in the contribution of each atom to the total scattering rate described in the equation above. To get at this we divide by $N$.
+
+\begin{align}
+\frac{\Delta P}{N} &= -\hbar \omega \Gamma_{\text{sc}}	\\
+&= -\frac{\hbar \omega \Gamma_{\text{sc}}}{I_{\text{initial}}}I_{\text{initial}}\\
+&= \sigma I_{\text{initial}}
+\end{align}
+
+From this we can identify the scattering cross section as
+
+\begin{align}
+\sigma = \frac{\hbar \omega \Gamma_{\text{sc}}}{I_{\text{initial}}}
+\end{align}
+
+Notice that in this form the scattering length is in general intensity dependent. This makes sense as the interaction between the light and atoms depends on the local strength of the electric field at a particular atom. We will see that in some cases the scattering rate is also intensity dependent in which case the intensity dependence of the scattering cross section can disappear. This is an experimentally important regime.
+
+In the optically opaque regime (diffuse cloud) one can calculate how much power will be scattered out of an optical beam if one knows the cross section of the atoms, the atom number, and the area of the beam. What is more interesting is to consider how the local intensity, rather than total power, of a beam is affected as it passes through a cloud of atoms. We assume the area of the atomic cloud matches the area of the beam $\Delta A_{\text{atoms}} = \Delta A$ and that the cloud has a length $\Delta z$. This volume is chosen so that the atomic density is roughly constant through the volume.In that case we can manipulate the equations above to yield
+
+\begin{align}
+I_{\text{final}}(x,y,z) - I_{\text{initial}}(x,y,z) = \Delta I(x,y,z) &= - n(x,y,z) \Delta A \Delta z \sigma \frac{1}{\Delta A} I_{\text{initial}}(x,y,z)\\
+\frac{\Delta I(x,y,z)}{\Delta z} = -n(x,y,z) \sigma I_{\text{initial}}(x,y,z)
+\end{align}
+
+Written in generality in differential form, including the local intensity dependence of the scattering cross section we get the Beer-Lambert law
+
+\begin{align}
+\frac{dI(x,y,z)}{dz} = -n(x,y,z) \sigma(I(x,y,z)) I(x,y,z)
+\end{align}
+
+This formula can be integrated if the dependence of the scattering length is known. If $\sigma(I(x,y,z)) = \sigma$ is constant throughout the cloud then we can easily integrate this formula across a cloud of length $L$ to find
+
+\begin{align}
+I(x,y,L) &= I(x,y,0)e^{-\sigma\int_{z=0}^L n(x,y,z) dz} = I(x,y,0) e^{-\sigma \tilde{n}(x,y)}\\
+\tilde{n} &= \int_{z=0}^L n(x,y,z) dz
+\end{align}
+
+Where $\tilde{n}$ is the integrated column density which is equal to $n(x,y) L$ if $n(x,y,z)$ is constant as a function of $z$. We will see later that if $I \ll I_{\text{sat}}$ then $\sigma$ is constant. Also, if the cloud is not optically dense then $I(x,y,z)$ does not vary by much so $\sigma$ will also be roughly constant. In both of these cases we can write
+
+\begin{align}
+\frac{I(x,y,L)}{I(x,y,0} = e^{-\alpha(x,y)}
+\end{align}
+
+Where $\alpha = \sigma \tilde{n}(x,y)$ is the optical depth of the cloud. $\alpha = \sigma n(x,y) L$ for constant density cloud. Late we can put in the form for $\sigma(I)$ to determine the transmission through an atomic cloud in the case that the intensity and/or scattering length vary appreciably throughout the cloud. See Ed's Edcam manual for a good treatment of this problem.
+
+\section{Two-Level Atom and Optical Bloch Equations}
+
+The cross section tells us something very macroscopic about the transition between atoms and light. The cross section could be measured in a cuvette in my high school chemistry lab.
+We will now approach the problem of light-atom interactions from the opposite tack. We will write down a microscopic theory for the interaction between the atom and light and try to derive the cross section from it.
+We will start off with the toy model of a two-level atom interacting with an optical field. We can get a lot of traction on this problem. The problem must then be generalized to a multi-state system. I will allow Steck to do most of the heavy lifting there and simply draw from his results. The reason it is worth spending time on the two-level system is because we will, when possible, shoe horn our descriptions of multi-level atoms into two-level system type terminology. We must of course be careful when doing this, but often it will work out.
+
+In my Rabi Problem write up I diligently treat the Rabi problem. Here I will give a brief summary. We consider the Hamiltonian
+
+\begin{align}
+H = \hbar \omega_0 \ket{e}\bra{e} - \bv{E}(\bv{r}_0)\cdot \bv{d}
+\end{align}
+
+Where $\omega_0$ is the atomic transition frequency, $\ket{e}\bra{e}$ is the excited state population for the two-level atom and $\bv{E}$ is the electric field and $\bv{d}$ is the atomic dipole moment. We are making the two-level atom approximation by only including state $\ket{g}$ and $\bra{g}$ in the analysis. This is justified under certain circumstances in which other levels are excluded from the problem by large detunings or selection rules. We are also making the dipole approximation in only consider the value of the electric field at the location of the atom, $\bv{r}_0$. This amounts to making the electric dipole approximation for the field.
+
+In the Rabi problem write up I show how the electric field can be expanded as
+
+\begin{align}
+\bv{E} &= \bv{\epsilon}_x E_x \cos(\omega t) + \bv{\epsilon}_y E_y \cos(\omega t + \phi)\\
+&=\bv{E}^+ + \bv{E}^-\\
+\bv{E}^+ &= \frac{1}{2} E_0 e^{-i\omega t}\bv{\epsilon}
+\end{align}
+
+Here $\bv{E}^+$ and $\bv{E}^-=\bv{E}^{+*}$ are respectively the positive and negative rotating parts of the monochromatic electric field. $\bv{\epsilon}$ is the complex polarization Jones vector and $E_0 = |\bv{E}|$ is the magnitude (peak to peak amplitude) of the electric field. Note that $\bv{E}^{\pm} \propto \frac{E_0}{2}$. This reflects the fact that half of the magnitude appears in the positive rotating terms and half appears in the negative rotating terms. 
+
+In that write up I also show how the dipole operator can be expanded as
+
+\begin{align}
+\bv{d} &= \bv{d}_{ge} \sigma^- + \bv{d}_{ge}^* \sigma^+\\
+\bv{d}_{ge} &= \bra{g}\bv{d}\ket{e} = -e\bra{g}\bv{r}\ket{e}
+\end{align}
+
+From this we can rewrite the dipole Hamiltonian. In doing so we will define the Rabi frequency as
+
+\begin{align}
+\hbar \Omega = -E_0 \epsilon \cdot\bv{d}_{ge}^*
+\end{align}
+
+We can then make the rotating wave approximation to eliminate fast rotating terms and also move into a rotating frame to obtain a time-independent Hamiltonian. In the rotating frame we find the Hamiltonian is given by (all operators are now in the rotating frame picture)
+
+\begin{align}
+H_{rot} = -\hbar \Delta \ket{e}\bra{e} + \frac{1}{2}\left(\Omega \sigma^+ + \Omega^* \sigma^- \right)
+\end{align}
+
+Here $\Delta = \omega -\omega_0$ is the detuning between the drive laser and the atomic transition frequency. In what follows we will ignore the complex nature of $\Omega$ and take $|\Omega| = \Omega$. For a single monochromatic beam and a single two-level atom this can always be accomplished without loss of generality by performing a unitary transformation.
+
+We can rewrite this Hamiltonian and define the Bloch vector and determine the temporal dynamics of the Bloch vector. We can also add in phenomenological damping. When all of this is done we can calculate the steady state value for the Bloch vector. The important result for this document is that the steady state excited population is given by
+
+\begin{align}
+\rho_{ee} = \langle \ket{e}\bra{e} \rangle = \frac{1}{2} \frac{\frac{2\Omega^2}{\Gamma^2}}{1 + \left( \frac{2 \Delta}{\Gamma}\right)^2 + \frac{2\Omega^2}{\Gamma^2}}
+\end{align}
+
+and that the steady state energy shift is given by
+
+\begin{align}
+\Braket{H_{rot}} = \hbar \Delta \rho_{ee} = \frac{\hbar \Delta}{2} \frac{\frac{2\Omega^2}{\Gamma^2}}{1 + \left( \frac{2 \Delta}{\Gamma}\right)^2 + \frac{2\Omega^2}{\Gamma^2}}
+\end{align}
+
+\section{Resonance Fluorescence Manipulations}
+
+Here I will summarize useful expressions for calculating properties of light driven atoms in the lab.
+
+The main parameter from which all other parameters are derived is the transition dipole moment. In the simple two-level system Rabi model this shows up as
+
+\begin{align}
+d_{\text{Rabi}} = \bra{g}\bv{\epsilon}\cdot \bv{d}^*\ket{e}
+\end{align}
+
+In a fuller treatment of a multi-level atom, for certain types of drives (see Steck Sec 7.7.6.1), an analogous term arises as
+
+\begin{align}
+d_{\text{Multi}} = \frac{{\langle J_g}||\bv{d}||J_e\rangle }{\sqrt{3}}
+\end{align}
+
+This is the Wigner-Eckart matrix element. It has this special notation because it has no dependence on the particular $m_J$ levels of the ground or excited manifold.
+
+The factor of 3 arises because of some kind of orientational averaging occuring in one model and not occurring in the other. If we identify these different form for the dipole moment we have
+
+\begin{align}
+d_{\text{eff}} \leftrightarrow \bra{g}\bv{\epsilon}\cdot \bv{d}^*\ket{e} \leftrightarrow \frac{\langle J_g||\bv{d}|| J_e\rangle}{\sqrt{3}}
+\end{align}
+
+This identification allow us to write expressions more compactly and also allows us to port our intuition for multi-level transitions over to multi-level transitions in certain circumstances.
+
+The other quantities we come across will depend on this effective dipole element. We summarize these now.
+
+The Rabi frequency
+
+\begin{align}
+\Omega = -\frac{d_{\text{eff}}E_0}{\hbar}
+\end{align}
+
+Note that I assume $\Omega$ is real here.
+
+The scattering rate (Steck sec. 7.3.7.4)
+
+\begin{align}
+\Gamma = \frac{\omega^3}{3\pi \epsilon_0 \hbar c^3} \frac{2J_g+1}{2J_e+1} |\langle J_g||\bv{d}|| J_e\rangle|^2 = \frac{\omega^3 d_{\text{eff}}^2}{\pi\epsilon_0 \hbar c^3}\frac{2J_g+1}{2J_e+1}
+\end{align}
+
+The factors of $2J_i+1$ are degeneracy factors relating to the number of accessible decay pathways for the different energy levels.
+The excited state population for the optical Bloch equations can be written as (Steck sec. 5.5.1)
+
+\begin{align}
+\rho_{ee} = \frac{1}{2} \frac{2 \frac{\Omega^2}{\Gamma^2}}{1 + \left(2\frac{\Delta}{\Gamma} \right)^2 + 2 \frac{\Omega^2}{\Gamma^2}}
+\end{align}
+
+The total scattering rate is given by
+
+\begin{align}
+\Gamma_{\text{sc}} = \Gamma \rho_{ee}
+\end{align}
+
+In the limit that $\Delta \ll \Gamma$ or $\Delta =0$ and $\Omega \gg \Gamma$ we have
+
+\begin{align}
+\rho_{ee} =& \frac{1}{2}\\
+\Gamma_{\text{sc}} =& \frac{\Gamma}{2}
+\end{align}
+
+We see that if we drive the system hard (large $\Omega$) then we reach a steady state where half the population is in the excited and the decay rate is given by half of the decay rate if the atom were in the excited state.
+
+We encountered here the limit that $2 \frac{\Omega^2}{\Gamma^2} \gg 1$. We know that $\Omega^2$ is related to $|E_0|^2$. For a single laser beam running one direction we know that $|E_0|^2$ is proportional intensity of the beam at the location of the atom. That is to say, if the intensity is large (compared to something) then we enter the limit where we are ``saturating'' the transition. To that end we introduce
+
+\begin{align}
+\frac{I}{I_{\text{sat}}} = 2\frac{\Omega^2}{\Gamma^2}
+\end{align}
+
+We can unravel this definition. First recall that for light in free space we have $I = \frac{1}{2} \epsilon_0 c |E_0|^2$. Next recall that $\Omega^2 = \frac{d_{\text{eff}}^2 |E_0|^2}{\hbar^2}$. Putting this together we get
+
+\begin{align}
+I_{\text{sat}} = \frac{c \epsilon_0 \hbar^2 \Gamma^2}{4 d_{\text{eff}}^2} = \frac{\hbar \omega^3 \Gamma}{4\pi c^2} \frac{2J_g+1}{2J_e+1}
+\end{align}
+
+In the first equality I plugged in the formula for $I$ and $\Omega$ and in the second equality I plugged in the formula for $\Gamma$ to eliminate the explicit dependence of $d_{\text{eff}}$. It is not clear if any of these forms are especially intuitively illuminating. 
+
+Note that if the electric field at the atom is generated by more than one laser beam then it is not clear to me how to unambiguously relate $|E_0|^2$ with something we call the intensity, $I$ at the location of the atom. For example, if the atom is in a lattice then the electric field at the atom is generated because of the intensity in the two counter-propagating laser beams. If these powers are balanced then it is clear that there is some quantity $I = I_1 = I_2$ which we can relate with $|E_0|^2$ but there is a factor of 2 concern regarding whether $I$ or $2I$ should appear due to the added intensity of both beams. To that end I think it is best to work with $\Omega$ and leave $I$ out of the story if the field at the atoms is generated by multiple laser beams.
+
+The problem with this approach is that we like to compare the properties of the light we are sending in to the saturation intensity. To that end, I propose that it may be more natural to define a saturation field amplitude as
+
+\begin{align}
+\frac{|E_0|^2}{E_{\text{sat}}^2} = 2\frac{\Omega^2}{\Gamma^2}
+\end{align}
+
+From which we can see
+
+\begin{align}
+E_{\text{sat}}^2 = \frac{1}{2} \frac{\hbar^2 \Gamma^2}{d_{\text{eff}^2}} = \frac{\hbar \omega^3 \Gamma}{2 \pi \epsilon_0 c^3} \frac{2J_g+1}{2J_e+1} =  \frac{2I_{\text{sat}}}{\epsilon_0 c}
+\end{align}
+
+However, this quantity is non-standard so I won't subsequently refer to it.
+
+We can rewrite the excited state population:
+
+\begin{align}
+\rho_{ee} = \frac{1}{2} \frac{\frac{I}{I_{\text{sat}}}}{1 + \left(2 \frac{\Delta}{\Gamma} \right)^2 + \frac{I}{I_{\text{sat}}}}
+\end{align}
+
+We then have
+
+\begin{align}
+\Gamma_{\text{sc}} = \frac{\Gamma}{2} \frac{\frac{I}{I_{\text{sat}}}}{1 + \left(2 \frac{\Delta}{\Gamma} \right)^2 + \frac{I}{I_{\text{sat}}}}
+\end{align}
+
+We can plug this into the formula for the scattering cross section above given as $\sigma = \frac{\hbar \omega \Gamma_{\text{sc}}}{I}$ to find
+
+\begin{align}
+\sigma = \frac{\frac{\hbar \omega \Gamma}{2 I_{\text{sat}}}}{1 + \left(2 \frac{\Delta}{\Gamma} \right)^2 + \frac{I}{I_{\text{sat}}}} = \frac{\sigma_0}{1 + \left(2 \frac{\Delta}{\Gamma} \right)^2 + \frac{I}{I_{\text{sat}}}}
+\end{align}
+
+Defining 
+
+\begin{align}
+\sigma_0 = \frac{\hbar \omega \Gamma}{2I_{\text{sat}}} = \frac{2 \pi c^2}{\omega^2} \frac{2J_e+1}{2J_g+1} = \frac{\lambda^2}{2\pi} \frac{2J_e+1}{2J_g+1} 
+\end{align}
+
+We note that $\sigma \rightarrow \sigma_0$ in the low detuning, high intensity (saturated) limit. The first equality comes from replacing $I_{\text{sat}}$ using the formula which does not include $d_{\text{eff}}$. The second formula just replaces $\omega = \frac{2\pi c}{\lambda}$. Note that if the degeneracy of the ground and excited states are equal we have the nice relation that
+
+\begin{align}
+\sigma_0 = \frac{\lambda^2}{2\pi}
+\end{align}
+
+This tells us that, to the light, the atoms are ``as big as'' an optical wavelength. This is the resonant cross section for light. Note that this definition is discrepant by a factor of 3 from some other possible definitions for $\sigma_0$. This is the same factor of 3 which comes from orientational averaging above.
+
+\subsection{Oscillator Strength}
+
+We can see from above that all of the important arise from the dipole transition element for the transition. Following Dan's atomic physics lecture notes, we can think of a variety of ways to estimate this parameter.
+
+The dipole we are considering is the dipole created by the electron and the proton. The dipole moment which is created is going to be related to the charge involved, $e$, and the separation between the electron and proton. 
+
+\begin{align}
+d_{\text{eff}} = |\bra{g} \bv{d} \ket{e}| =  e|\bra{g} \bv{r} \ket{e}|
+\end{align}
+
+Note the unfortunate collision of notation where I am using $e$ to mean both the electron charge as well as the excited state. We'll live with it.
+
+The crudest approximation we can make is that the electron and the proton are separated by about the size of an atom, the Bohr radius. That is, we approximate $|\bra{g} \bv{r} \ket{e}|=a_0$. In that case we would get
+
+\begin{align}
+d_{\text{Bohr}} \approx e a_0 = 8.48 \times 10^{-30} \text{Cm}
+\end{align}
+
+We could introduce a quantity to measure how ``wrong'' this formula is by
+
+\begin{align}
+f_{\text{Bohr}} = \left(\frac{d_{\text{eff}}}{d_{\text{Bohr}}}\right)^2 = \left(\frac{|\bra{g} \bv{r} \ket{e}|}{a_0}\right)^2
+\end{align} 
+
+In principle predictions of this model could be corrected by multiplying appearances of $d_{\text{Bohr}}$ by this fudge factor $f_{\text{Bohr}}$.
+
+The next approximation we can make is due to the Lorentz model where we treat the atom as a classical damped harmonic oscillator in which the electron is bound harmonically to the proton. In that picture one can derive a form for the resonant cross section (Steck 1.2.1) given by
+
+\begin{align}
+\sigma_{\text{classical}} = \frac{e^2}{m\epsilon_0 c \Gamma}
+\end{align}
+
+In this model $\Gamma$ is inserted phenomenologically. We quantify how ``wrong'' this is by comparing to the quantum expression for the resonant cross section, $\sigma_0$ given above. We introduce a factor called the oscillator strength to quantify how incorrect we are by
+
+\begin{align}
+f_{\text{Lorentz}} = \frac{\sigma_0}{\sigma_{\text{classical}}} = \frac{\lambda^2 m \epsilon_0 c \Gamma}{2 \pi e^2} = \frac{2\pi m \epsilon_0 c^3 \Gamma}{e^2 \omega^2} = 
+\end{align}
+
+If we plug in the quantum formula for $\Gamma$ written above we see
+
+\begin{align}
+f_{\text{Lorentz}} = \frac{2 m \omega}{e^2 \hbar} d_{\text{eff}}^2 = \left(\frac{d_{\text{eff}}}{d_{\text{Lorentz}}} \right)^2
+\end{align}
+
+Where we see the estimated transition dipole element for the Lorentz model is given by
+
+\begin{align}
+d_{\text{Loretz}} = e \sqrt{\frac{\hbar}{2m\omega}}
+\end{align}
+
+We recognize the length factor as the harmonic oscillator length. This is somehow unsurprising because the Lorentz model assumed a harmonic oscillator. This indicates that we could have derived this estimation another way. We could have supposed that instead, the atom was modeled as a 1D quantum harmonic oscillator and the transition being driven is from the ground state $\ket{0}$ to the first excited state $\ket{1}$. In that case we have
+
+\begin{align}
+\bra{g} |\bv{r}| \ket{e} = \bra{0} \hat{X} \ket{1} = X_{\text{SHO}} = \sqrt{\frac{\hbar}{2 m\omega}}
+\end{align}
+
+We then see that the fudge factor for the quantum harmonic oscillator is given by
+
+\begin{align}
+f_{\text{qSHO}} = \left(\frac{d_{\text{eff}}}{\frac{e^2\hbar}{2m\omega}} \right)^2 = f_{\text{Lorentz}}
+\end{align}
+
+We call this fudge factor, given explicitly by
+
+\begin{align}
+f = f_{\text{Lorentz}} = f_{\text{qSHO}} = \frac{2 m \omega}{e^2 \hbar} |\bra{g} \bv{d} \ket{e}|
+\end{align}
+
+The transition strength or oscillator strength for transition. Note that since the oscillator strength is directly related to the transition dipole element it specifies the relevant phenomenological properties of the transition as well as the dipole element or the spontaneous emission rate, for example.
+
+Note that if there is a single ground state coupled to multiple excited states $\{\ket{j}\}$ (all close to each other in frequency compared to, say, the transition frequency) we can define an oscillator strength for each of these transitions as $f_{0,j}$. The Thomas-Reiche-Kuhn sum rule tells us that
+
+\begin{align}
+\sum_{j} f_{0,j} = 1
+\end{align}
+
+This tells us that if the oscillator strength for a particular transition in the excited state manifold is very strong, that is $f_{0,i} \approx 1$ then the oscillator strength for the other oscillators must be weak. In some sense the transition is ``shared'' between all of the close lying energy levels.
+
+\section{Stark Shift and Optical Trapping}
+
+Above I gave the formula that
+
+\begin{align}
+\Braket{H_{rot}} = \hbar \Delta \rho_{ee} = \frac{\hbar \Delta}{2} \frac{\frac{2\Omega^2}{\Gamma^2}}{1 + \left( \frac{2 \Delta}{\Gamma}\right)^2 + \frac{2\Omega^2}{\Gamma^2}}
+\end{align}
+
+In the case that the atom resides in a spatially varying electric field $\Omega$ will take on position dependence. If that atom moves slowly (on timescales compared to the electronic timescales such as $\Gamma$) through the spatially varying electric field then at each position it can re-equilibrate to the local conditions. In this case $\Braket{H_{rot}}$ serves as a spatial potential field through which the atom moves.
+
+In the far detuned limit, $\Delta \gg \Omega, \Delta$ we have
+
+\begin{align}
+V_{\text{Stark}} = \Braket{H_{rot}} = \frac{\hbar \Omega^2}{4\Delta}
+\end{align}
+
+Recall that $\Omega$ depends on the intensity of the laser beam. If we are interested in expressing the light shift in terms of the intensity of light then it makes the most sense to compare the intensity of light to the saturation intensity for the transition in question.
+
+\begin{align}
+\Omega^2 = \frac{1}{2} \frac{I}{I_{\text{sat}}}
+\end{align}
+
+So
+
+\begin{align}
+V_{\text{Stark}} = \frac{\hbar}{8} \frac{\Gamma^2}{\Delta} \frac{I}{I_{\text{sat}}}
+\end{align}
+
+For the case of $^{87}\text{Rb}$ we are often dealing with light which is far detuned from both the $D_1$ and $D_2$ optical transitions. In this case we must include the shifts from each line. We also allow the intensity and thus Rabi frequency to be spatially varying. This spatially dependent energy shift creates a potential landscape which can put forces on the atom and, in the right circumstances, trap it. 
+
+\begin{align}
+V_{\text{Stark}}(\bv{r}) &= \frac{\hbar}{4} \left(\frac{\Omega(\bv{r})^2}{\Delta}\Big|_{D_1} + \frac{\Omega(\bv{r})^2}{\Delta}\Big|_{D_2} \right)\\
+&= \frac{\hbar}{8} \left(\frac{\Gamma^2}{\Delta I_{\text{sat}}} \Big|_{D_1} + \frac{\Gamma^2}{\Delta I_{\text{sat}}} \Big|_{D_2} \right) I(\bv{r})
+\end{align}
+
+Recalling that $\Omega$, $\Gamma$, $\Delta$, and $I_{\text{sat}}$ can all differ between the $D_1$ and $D_2$ lines. Note that these expressions differ from those used in, for example, Thierry's thesis by some factors of $\frac{1}{3}$ and $2$. The factor of $3$ is the same factor having to do with orientational averaging. The factor of $2$ has to do with the differing level degeneracies between the $D_2$ and ground state. Steck includes these factors in the expressions for $I_{\text{sat}}$ while Thierry apparently does not. I believe it is consistent to use the formula I have given when using Steck's quoted value for $I_{\text{sat}}$ for isotropic light polarization.
+
+The trap depth, $V_0$, is given by the difference between the deepest (or highest) point of the potential and the potential at infinity (namely 0). This means we see that
+
+\begin{align}
+V_0 &= \frac{\hbar}{4} \left(\frac{\Omega_0^2}{\Delta}\Big|_{D_1} + \frac{\Omega_0^2}{\Delta}\Big|_{D_2} \right)\\
+&= \frac{\hbar}{8} \left(\frac{\Gamma^2}{\Delta I_{\text{sat}}} \Big|_{D_1} + \frac{\Gamma^2}{\Delta I_{\text{sat}}} \Big|_{D_2} \right) I_0
+\end{align}
+
+Where $\Omega_0$ is the Rabi frequency at the point of highest intensity and $I_0$ is the maximum intensity. We can write the Rabi frequency or trapping intensity as
+
+\begin{align}
+\Omega(\bv{r}) & = \Omega_0 f(\bv{r})\\
+I(\bv{r}) &= I_0 f(\bv{r})\\
+\end{align}
+
+Where $f(\bv{r})$ is a spatial mode function so that
+
+\begin{align}
+V_{\text{Stark}}(\bv{r}) = V_{\text{ODT}}(\bv{r}) = V_0 f(\bv{r})
+\end{align}
+
+Atoms with energy less than $V_0$ will remain in the trap while atoms with energy greater than $V_0$ will escape from the trap. If the atoms are described by a temperature $T$ then many of the atoms will have an energy less that $kT$, thus, it is useful to compare $kT$ to $V_0$. Since we are atomic physicists we like to express everything in terms of frequency so we introduce the trap depth in units of frequency as 
+
+\begin{align}
+\omega_{\text{ODT}} = \frac{V_0}{\hbar}\\
+\hbar \omega_{\text{ODT}} = V_0
+\end{align}
+
+It is helpful to recall how to translate a trap depth in units of energy or frequency into a trap depth in units of temperature. We note that a trap with trap depth $\omega$ will be good at trapping atoms of temperature $T$
+
+\begin{align}
+\hbar \omega = h f &> kT\\
+f &> \frac{k}{h} T \approx T \times 20 \frac{\text{kHz}}{\mu\text{K}} \\
+T &< \frac{h}{k} f \approx f \times 50 \frac{\mu\text{K}}{\text{MHz}}
+\end{align}
+
+For example, a gas at a temperature of $T =20 \mu\text{K}$ will be trapped well in a trap with a depth of $f = 400 \text{ kHz}$
+
+\subsection{Trap Frequency}
+
+If we trap atoms in a laser beam with a red detuned trap beam then the atoms will be attracted to the center of the lasers waist as that is the point with highest intensity. It makes sense to Taylor expand about this point. In the limit that the trap is deep and the atoms are cold this trap can be approximated as a 3D harmonic trap. By performing the Taylor expansion the trapping frequencies can be calculated. We first work out the trap frequencies for a running wave Gaussian beam and then for a retro reflected Gaussian beam standing wave lattice. 
+
+\subsubsection{Running Wave}
+For a running wave Gaussian beam we have
+
+\begin{align}
+f(\bv{r}) &=  f(r,z) = \left(\frac{w_0}{w(z)}\right)^2 \exp\left(-2\frac{r^2}{w(z)^2}\right)\\
+w(z) &= w_0\sqrt{1+\left(\frac{z}{z_R}\right)^2}\\
+z_R & = \frac{\pi w_0^2}{\lambda}
+\end{align} 
+
+with $r^2 = x^2+ y^2$, $w_0$ the mode waist, $z_R$ the Rayleigh range and $\lambda$ the wavelength of light.
+
+We can Taylor expand this to find
+
+\begin{align}
+f(r,z) \approx 1 - \frac{2}{w_0^2}r^2 - \frac{1}{z_R^2} z^2
+\end{align}
+
+We can plug this into the formula for the overall trap potential to find
+
+\begin{align}
+V_{\text{ODT}}(r,z) &= V_0 - \frac{2V_0}{w_0^2}r^2 - \frac{1}{z_R^2} V_0 z^2\\
+&= V_0 - \frac{1}{2} m \omega_r^2 r^2 - \frac{1}{2} m \omega_z^2 z^2
+\end{align}
+
+Identifying the radial and axial trap frequencies we see
+
+\begin{align}
+\omega_r &= \sqrt{\frac{4V_0}{mw_0^2}}\\
+\omega_z &= \sqrt{\frac{2V_0}{mz_R^2}}
+\end{align}
+
+\subsubsection{Standing Wave}
+For a standing wave the spatial mode pattern is given by
+
+\begin{align}
+f_{\text{SW}}(r,z) &= \left(\frac{w_0}{w(z)}\right)^2\exp\left(-2\frac{r^2}{w(z)^2}\right)\cos^2\left(k z\right)
+\end{align}
+
+This can be Taylor expanded as
+
+\begin{align}
+f_{\text{SW}}(r,z) \approx 1 - \frac{2}{w_0^2} r^2 - \left(2k^2 + \frac{1}{z_R^2} \right)z^2 \approx1 - \frac{2}{w_0^2} r^2 - k^2z^2 
+\end{align}
+
+Where the latter approximation holds for typical optical dipole traps with waists much larger than $1 \mu\text{m}$.
+
+We have
+
+\begin{align}
+V_{\text{ODT}}(r,z) &= V_0 - \frac{2V_0}{w_0^2}r^2 - k^2 V_0 z^2\\
+&= V_0 - \frac{1}{2} m \omega_r^2 r^2 - \frac{1}{2} m \omega_z^2 z^2
+\end{align}
+
+As before we identify
+
+\begin{align}
+\omega_r &= \sqrt{\frac{4V_0}{mw_0^2}}\\
+\omega_z &= \sqrt{\frac{2V_0k^2}{m}}
+\end{align}
+
+We see that the axial trap frequency is greatly increased due to the periodic confinement.
+
+
+\section{Taylor Expansion of Gaussian Beam}
+We work on Taylor expanding $f(r,z)$ to second order.
+
+\begin{align}
+f(\bv{r}) &=  f(r,z) = \left(\frac{w_0}{w(z)}\right)^2 \exp\left(-2\frac{r^2}{w(z)^2}\right)\\
+w(z) &= w_0\sqrt{1+\left(\frac{z}{z_R}\right)^2}\\
+z_R & = \frac{\pi w_0^2}{\lambda}
+\end{align} 
+
+Note that the first time in $f(r,z)$ has no $r$ dependence. Also note that, on the axis of $r=0$, the second term is constant so that the derivative with respect to $z$ will be zero at the location we are Taylor expanding.
+
+First we work out the $r$ derivatives:
+
+\begin{align}
+\frac{df(r,z)}{dr} &= -\frac{2}{w(z)^2} 2r f(r,z)\\
+\frac{df(r,z)}{dr} \Big|_{(r,z) = (0,0)} &= 0\\
+\end{align}
+
+\begin{align}
+\frac{d^2f(r,z)}{dr^2} &= -\frac{2}{w(z)^2}2 f(z,r) + \left(-\frac{2}{w(z)^2} 2r\right)^2f(r,z)\\
+\frac{d^2f(r,z)}{dr^2} \Big|_{(r,z)=(0,0)} &= -\frac{4}{w_0^2}
+\end{align}
+
+Then we work out $z$ derivatives of $w(z)$,
+
+\begin{align}
+w(z) &= w_0 \sqrt{1+\frac{z^2}{z_R^2}}\\
+\frac{dw(z)}{dz} &= w_0 \frac{1}{z_R^2} 2z \left(\frac{1}{2}\right)\left(1+\frac{z^2}{z_R^2} \right)^{-\frac{1}{2}}\\
+\frac{dw(z)}{dz}\Big|_{(r,z)=(0,0)} &= 0\\
+\frac{d^2w(z)}{dz^2} &= \frac{w_0}{z_R^2} \left(1+\frac{z^2}{z_R^2} \right)^{-\frac{1}{2}} + \frac{w_0}{z_R^2} z \frac{1}{z_R^2} 2z \frac{-1}{2} \left(1+ \frac{z^2}{z_R^2} \right)^{-\frac{3}{2}}\\
+\frac{d^2w(z)}{dz^2}\Big|_{(r,z) = (0,0)} &= \frac{w_0}{z_R^2}
+\end{align}
+
+Now we work out $z$ derivatives of the axial envelope:
+
+\begin{align}
+\frac{d}{dz} \left(\frac{w_0}{w(z)} \right)^2 &= \frac{d}{dz} w_0^2 w(z)^{-2} = -2w_0^2 w(z)^{-3} \frac{dw(z)}{dz}\\
+\frac{d}{dz}\left(\frac{w_0}{w(z)} \right)^2\Big|_{(r,z) = (0,0)} &= 0
+\end{align}
+
+\begin{align}
+\frac{d^2}{dz^2} \left(\frac{w_0}{w(z)} \right)^2 &= -2w_0^2\left(-3 w(z)^{-4} \left(\frac{dw(z)}{dz} \right)^2 + w(z)^{-3} \frac{d^2w(z)}{dz^2} \right)\\
+\frac{d^2}{dz^2} \left(\frac{w_0}{w(z)} \right)^2\Big|_{(r,z) = (0,0)} &= -2w_0^2 w_0^{-3} \frac{d^2w(z)}{dz^2}\Big|_{(r,z)=(0,0)}
+\end{align}
+
+So
+
+\begin{align}
+\frac{d^2}{dz^2} \left(\frac{w_0}{w(z)} \right)^2\Big|_{(r,z) = (0,0)} &= -2\frac{1}{z_R^2}
+\end{align}
+
+We can put this together to get
+
+\begin{align}
+f(r,z) \approx 1 - \frac{2}{w_0^2} r^2 - \frac{1}{z_R^2} z^2
+\end{align}
+
+For a standing wave Gaussian beam we have 
+
+\begin{align}
+f_{\text{SW}}(r,z) = f(r,z)\cos^2(k z)= f(r,z)\frac{1}{2}(1+\cos(2kz))
+\end{align}
+
+Where $k = \frac{2\pi}{\lambda}$. Note that
+
+\begin{align}
+\frac{1}{2}(1+\cos(2kz)) \approx \frac{1}{2}(1+ 1 - \frac{(2k)^2}{2} z^2) = 1-k^2z^2
+\end{align}
+
+We can multiply this by the Taylor expansion of $f(r,z)$ to find
+
+\begin{align}
+f_{SW}(r,z) = 1 - \frac{2}{w_0^2} r^2 - \left(\frac{1}{z_R^2} + k^2\right)z^2
+\end{align}
+
+Note that for most optical dipole traps we have $\frac{1}{k} \approx 10^{-6} \text{ m}$ while $z_R \approx 10^{-4} \text{ m}$ so $2k^2 \gg \frac{1}{z_R^2}$ so we can ignore this term (This is neglecting the harmonic trap confinement) and approximate
+
+\begin{align}
+f_{SW}(r,z) = 1 - \frac{2}{w_0^2} r^2 - k^2z^2
+\end{align}
+
+\end{document}

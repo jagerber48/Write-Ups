@@ -1,0 +1,441 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage[utf8]{inputenc}
+\bibliographystyle{plain}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\textbf{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\highlightr}[1]{%
+  \colorbox{red!50}{$\displaystyle#1$}}
+\newcommand{\highlightb}[1]{%
+  \colorbox{blue!50}{$\displaystyle#1$}}
+
+\begin{document}
+\title{A Normal Ordering Mystery Solved}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Early on in the matched filter work we noticed something suspicious. We were writing down analytic expressions for the two-time correlation functions of our measured signal. We were measuring the phase quadrature of the light coming out of the cavity using a heterodyne detection. The light phase quadrature in the cavity collected phase shifts which were proportional to the position of the harmonic oscillators inside of the cavity.
+
+Because the harmonic oscillators are harmonic oscillators the position of the oscillator, $X_M(0)$ at one time is related to the initial position but the position of the oscillator a quarter period later is related to the initial momentum, $P_M(0)$. of the oscillator.
+
+Thus, as a function a function of time the measured signal is something like
+
+\begin{align}
+S(t) \sim X_M(0)\cos(\omega_M t) + P_M(0)\sin(\omega_M t)
+\end{align}
+
+Consider $t_1 = 0$ and $t_2 = \frac{\pi}{2} \frac{1}{\omega_M} = \frac{T_M}{4}$.
+
+\begin{align}
+\Braket{S(t_1)S(t_2)} \sim \Braket{X_M(0)P_M(0)}
+\end{align}
+
+Suppose the oscillator is in a vacuum state. Then
+
+\begin{align}
+\Braket{X_M(0)P_M(0)} &\sim i\Braket{(a^{\dag}_M+a_M)(a^{\dag}_M-a_M)}\\
+&= i \Bra{0}a_M^{\dag}a_M^{\dag} - a_M a_M - a_M^{\dag} a_M - a_M a_M^{\dag}\ket{0}\\
+&= i(0 - 0 - 0 - 1) = -i
+\end{align}
+
+This means that
+
+\begin{align}
+\Braket{S(t_1)S(t_2)} \sim -i
+\end{align}
+
+When I first saw this I thought it was \textit{very} bad and I still think it's very bad. $S(t)$ is supposed to somehow be our classical measured signal. However, our measured signal cannot be imaginary! In particular out photodetector converts an incident intensity into a current which is turned into a voltage which is converted into a digital number by an ADC which is then saved on the hard drive and represented as a REAL number stored in a raw data file.
+
+If our theory is predicting that that two-time correlation function for our signal contains an imaginary number then we must have the wrong theory!
+
+Note that the reason the imaginary number arose is because $X$ and $P$ do not in general commute. This is a general feature that will arise any time we consider second or higher order correlation functions between Hermitian observables. In fact there is an important general rule to point out. For two Hermitian operators $A$ and $B$ we always have
+
+\begin{align}
+AB &= \frac{1}{2}\{A,B\} + \frac{1}{2}[A,B]\\
+\end{align}
+
+The reader can confirm for themselves that $\{A,B\}$ is Hermitian so that $\Braket{\{A,B\}}$ is real and $[A,B]$ is anti-Hermitian so that $\Braket{[A,B]}$ is imaginary. There will thus be a close relationship between imaginary things popping up the presence of non-commuting operators.
+
+The mystery then is how do we either 1) make these imaginary parts go away (or see that they all cancel out or something) or 2) come up with a better theory which precludes them from ever arising?
+
+I twisted my mind into more circles than I can count trying to figure this out but I think I finally nailed it.
+
+\section{Measured Photodetection Signal}
+
+I mentioned above that to extract signals we were looking at the phase quadrature of the light coming out of the cavity. The traditional formula I came across for how to calculated the measured signal was essentially:
+
+\begin{align}
+S_1(t) = \hat{P}_S(t) + \hat{\xi}_{SN}(t)
+\end{align}
+
+Here $\hat{P}_S(t)$ is the phase or Q-quadrature of the light coming out of the cavity and $\hat{\xi}_{SN}(t)$ is a quantum noise operator which satisfies something like
+
+\begin{align}
+\Braket{\hat{\xi}_{SN}(t_1)\hat{\xi}_{SN}(t_2)} = N_1 \delta(t_1-t_2)
+\end{align}
+
+Where $N_1$ is some appropriate normalization factor capturing the magnitude of the noise as compared to the signal, $\hat{P}_S(t)$. Note that here I've chosen some particular scaling for $S_1(t)$ but we can always rescale both the signal and the noise by some constant.
+
+This formula for $S_1(t)$ was then always manipulated to calculate various statistics such as the signal mean or the power spectral density of a quadrature or something. Before this mystery came up I sort of thought there was probably more to the story than just this formula but I didn't know enough about quantum noise or stochastic processes to trust my judgment. In any case, it has always seemed like at least for the case of measuring the mean value of signals there should be no problems.
+
+However, in E3 when we began seriously considering two-time correlation functions and this problem of imaginary parts starting showing up I became immediately suspicious of this simple formula for the measured signal. I became suspicious of it for two reasons. 
+
+The first reason is what was essentially outlined above. If our expression for our measured signal, $S_1(t)$ is a Hermitian quantum operator as it is above then such an expression will be subject to the constraint above which says that in general the product of an operator at one time with itself at another time is not necessarily Hermitian and thus its expectation values are not necessarily real.
+
+The second reason I was suspicious of the above formula was because nowhere had a I seen a satisfactory \textit{derivation} of it. Rather, it was simply stated as obvious or claimed to be derived elsewhere in the literature. I could not find clear derivations of the relationship between the measured photocurrent and the particular field incident on the photodetector.
+
+\section{The Kelley-Kleiner Formula}
+
+These two points led me on a wild chase trying to figure out the answer to this puzzle. I will spare the details of the hunt I undertook. I will simply state that I knew from previous contact with quantum optics type stuff that this mysterious operation called ``normal ordering'' was important in photodetection but I didn't quite know why. It seemed like it was some sort of mathematical trick, not a fundamental principle. In any case, in time I realized the normal ordering comes from Glauber's treatment of photodetection and after reading some work from Howard Carmichael I found myself studying the Kelley-Kleiner photon counting formula. The Kelley-Kleiner formula give a relationship between the probability for a photodetector (or more generally an array of photodetectors) to detect $m$ photons in a given (small) time window in terms of a normal-ordered expression involving the incident photon flux number operators.
+
+To this end this photon counting formula provided me the microscopic derivation for the photocurrent of a detector which I needed. I was able to extend this formula to the case of a balanced photodetector in my Kelley-Kleiner write up which includes references for the works mentioned above.
+
+Unfortunately, the Kelley-Kleiner formula which I came to so love seems to be an arcane relic of quantum optics which theorists don't seem to bring up often enough for experimentalists or anyone I spoke with to know about. This was very problematic because I simply did not understand the other approaches to photodetection which did not involve the Kelley-Kleiner formula. It seemed possible to me that the 'usual' formula for photodetection I've given above could be \textit{derived} from the Kelley-Kleiner formula but I wasn't entirely sure how.
+
+Let me explain in a bit more detail and then a bit more and hopefully it will be clear what I'm trying to say.
+
+In the above formula I have claimed
+
+\begin{align}
+S_1(t) = \hat{S}_1(t) = \hat{P}(t) + \hat{\xi}_{SN}(t)
+\end{align}
+
+I will call this the `usual' formula for photodetection. As indicated by $\hat{S}_1(t)$ we can see that the signal is represented by a quantum operator here. This must be the case because $\hat{P}(t)$ which appears on the RHS is a quantum operator so $S_1(t)$ on the LHS must also be a quantum operator.
+
+However, I was uneasy about the signal being represented as a quantum operator precisely for the reasons laid out above. If the signal is a quantum operator then its two time correlation function may be imaginary and this is not acceptable!
+
+This is one of the benefits of the Kelley-Kleiner approach. In that approach the measured photocurrent, $i(t)$ is thought of as a sort of classical random variable. It is classical in the sense that $i(t)$ should commute with itself at different times so that there is none of this imaginary business. However, the fact that it is a random variable means we can't really provide an expression of the form $i(t) = \ldots$ unless whatever appears on the RHS is also a classical random variable.
+
+However, what we \textit{can} hope to calculate is formulas of the form $\Braket{i(t)} = \ldots$ or $\Braket{i(t_1)i(t_2)} = \ldots$. These are precisely the types of formulas which I derive for the case of balanced photodetection. In particular, in my normal ordered heterodyne write up I work on the result of applying signal processing to the measured photocurrent to determine the predicted mean and two-time correlation function for a demodulated quadrature.
+
+For the Q-quadrature detection the formula for the mean signal comes out in the form of something like
+
+\begin{align}
+\Braket{S_2(t)} &= \Braket{:P_S(t):}\\
+\Braket{S_2(t_1)S_2(t_2)} &= \Braket{:P_S(t_1)P_S(t_2):} + N_2 \delta(t_1 -t_2)
+\end{align}
+
+$N_2$ is again some normalization constant to get the signal to noise right.
+
+Note that this doesn't look too far off from what would have been predicted by the `usual' formula.
+
+\begin{align}
+\Braket{S_1(t)} &= \Braket{P_S(t)}\\
+\Braket{S_1(t_1)S_1(t_2)} &= \Braket{P_S(t_1)P_S(t_2)} + N_1 \delta(t_1 -t_2)
+\end{align}
+
+The only difference is that 1) in $S_2$ the expressions are apparently `normal ordered' as indicated by the $:\hspace{5 pt}:$ while in $S_1$ there is no explicit normal ordering and 2) $N_1$ may not be equal to $N_2$\footnote{In fact one of my main issues with understanding where the `usual' photodetection formula comes from was that I didn't know a reliable way to calculate $N_1$. Especially in the presence of tricky things like detection inefficiencies and the possibility of squeezed light. While I couldn't figure this out for the `usual' formula, I was able to figure it out for the Kelley-Kleiner type formula which I will explain below. This added more credence to the Kelley-Kleiner approach for me.}.
+
+In fact the two are closely related, and I will show that they can in fact be easily related later on. I will point out now that, using the commutation relation that $[a_S(t_1),a_S^{\dag}(t_2)] = \delta(t_1-t_2)$ we can relate the two expression by noticing that
+
+\begin{align}
+\label{NormtoNonNorm}
+:P_S(t_1)P_S(t_2): = P_S(t_1)P_S(t_2) - \delta(t_1-t_2)
+\end{align}
+
+However, during the time I was really digging into this stuff I didn't believe that $[a_S(t_1),a_S^{\dag}(t_2)] = \delta(t_1-t_2)$ was valid for the output light field of our cavity systems. The reason I didn't believe this was because the light field is related to the intracavity field by the input output relation $P_S = P_{out} = \sqrt{2\kappa}P_{cav} + P_{in}$  and I could directly calculate that the intracavity field $P_{cav}$ had non-delta function commutation relation. So if the output field is related to something which has non-delta function commutation relation it wasn't clear to me that the output field should have delta commutation relations. 
+
+In fact, it turns out, as I later learned, that the output field DOES have delta function commutation relations. In one sense someone in the field might think this was obvious. In fact, it is clear why it is so from looking at the original reference on input output relations to see why this is so. However, since I had to learn the input output relations on my own in a strange order, it was not obvious to me. From the way I was looking at things it would have required a very strange cancellation of a few terms for the output fields to be delta function correlated. 
+
+The equality shown in Eq. \ref{NormtoNonNorm}) is in fact what this document is meant to be about. I will expand out the terms in a number of different ways and show the strange cancellation I am talking about.  
+
+However, for now I am going to delve into a long tirade about normal ordering and why I'm so excited about it. To understand why I am spending so much time on normal ordering it helps to suspend disbelief and step into my shoes when I was first teaching myself about all of this. This means two things. It first means you must pretend that the Kelley-Kleiner formulas for photodetection is the `correct' microscopic derivation of photocurrent statistics and any formula that looks like the `usual' formula should somehow be derived from the Kelley-Kleiner results as an `effective' model. The second thing you must pretend is that we don't know the commutation relation $[a_S(t_1),a_S^{\dag}(t_2)] = \delta(t_1-t_2)$ because if we did we probably wouldn't explore the routes I ended up exploring.
+
+\section{Normal Ordering}
+
+\subsection{Definition and Confusions}
+
+I am very excited about normal ordering. I want to explain why in this section. But first, I need to be clear about what I mean by normal ordering. First off, I have been using `normal ordering' as short-hand for `normal and time ordering'. It is somewhat important that both are implied. `normal and time ordering' is what is implied by the $:\hspace{5 pt}:$ notation.
+
+When I apply normal ordering to an expression it means that I have written down a particular expression, but it should be interpreted as actually being a different expression where the operators have been put into normal and time order.
+
+What do I mean by normal and time order? Here is the recipe for how to take an expression and normal and time order it. First express all operators in terms of the creation and annihilation operators for the incident field. For example $X_S = a^{\dag}_S + a_S$ and $P_S = i(a^{\dag}_S - a_S)$. Next, reorder the expression on a term by term basis so that within each term three conditions are satisfied. 1) All of the creation operators are to the left of all of the annihilation operators and 2) Within the creation operators the time arguments of the operators are increasing from left to right and 3) within the annihilation operators the time arguments of the operators are decreasing from left to right. For example suppose $t_2>t_1$:
+
+\begin{align}
+:P_S(t_1)P_S(t_2): &= :i(a^{\dag}_S(t_1) - a_S(t_1))i(a^{\dag}_S(t_2) - a_S(t_2)):\\
+&= :- \left(a^{\dag}_S(t_1)a^{\dag}_S(t_2) + \highlightr{a_S(t_1) a_S(t_2)} - a^{\dag}_S(t_1)a_S(t_2) - \highlightr{a_S(t_1)a^{\dag}_S(t_2)} \right):\\
+&= -a^{\dag}_S(t_1)a^{\dag}_S(t_2) - \highlightb{a_S(t_2)a_S(t_1)} + a_S^{\dag}(t_1)a_S(t_2) + \highlightb{a_S^{\dag}(t_2)a_S(t_1)}
+\end{align}
+
+The terms highlighted red were initially not in normal order. In the next line they are brought into normal order and highlighted blue. The non-highlighted times were already in normal order.
+
+There are at least two ways you can confuse yourself with normal ordering. First, just because $X=Y$ doesn't mean $:X: = :Y:$. For example, let $X = aa^{\dag}-a^{\dag}a$ and let $Y=1$. Suppose $a$ is a usual bosonic operator with $[a,a^{\dag}]=1$ \footnote{note that this is not the case for $a_S$. $a_S$ represents a free-space traveling mode so $[a_S(t_1),a_S^{\dag}(t_2)] = \delta(t_1-t_2)$}. Clearly $X=[a,a^{\dag}]=1=Y$. However,
+
+\begin{align}
+:X: &= :aa^{\dag} - a^{\dag}a: = a^{\dag}a - a^{\dag}a = 0\\
+:Y: &= :1: = 1\\
+:X: &\neq :Y:
+\end{align}
+
+I think the above is generally problematic when a commutation relation must be explicitly evaluated to prove the equality.
+
+Another point of care that must be taken is one must specify which operators are to be normal ordered. Let $a=c+d^{\dag}$. I leave it as an exercise for the reader to consider the operator $aa^{\dag}$. One could imagine normal ordering it in two ways. Would could directly normally order the $aa^{\dag}$ expression or one could expand the expression into $c$'s and $d$'s. If one also expands the expression for $a^{\dag}a$ then I claim that one will find inconsistent answer whether one normal orders the $a$'s or the $c$'s and $d$'s.
+
+Because of this one must specify to which set of operators normal ordering applies. In all of this work the normal ordering operators are meant to apply to the creation and annihilation operators for the signal field coming out of the cavity before it is mixed together with the local oscillator for heterodyne detection.
+
+Now I can explain two reasons why I am excited about normal ordering and why I think others should be excited about it too.
+
+\subsection{Manifest Hermiticity}
+
+The first reason is that certain expressions, when normal and time ordering is applied to them, are \textit{manifestly} Hermitian.  For example consider $n(t) = a^{\dag}(t)a(t)$. The operator $n(t_1)n(t_2)$ is not necessarily Hermitian as explained above. The product of two Hermitian operators is not necessarily Hermitian. However,
+
+\begin{align}
+:n(t_1)n(t_2): &= :a^{\dag}(t_1)a(t_1)a^{\dag}(t_2)a(t_2):\\
+&= a^{\dag}(t_1)a^{\dag}(t_2)a(t_2)a(t_1)\\
+&= \left(a(t_2)a(t_1)\right)^{\dag} a(t_2) a(t_1)\\
+&= A^{\dag}A
+\end{align} 
+
+Any operator of the form $A^{\dag}A$ is obviously Hermitian. The important thing is that any operator in this form necessary has a real expectation value. This is good because it means these sorts of expressions are good candidates to be related to `classical' measurement outcomes. This is in contrast to quantum operators which may end up giving resultant imaginary parts!
+
+It turns out that other types of normal and time ordered expressions are also necessarily Hermitian. Here I will work out the normal and time ordered versions of a general product of two quadrature operators.
+
+Consider a general quadrature operator:
+
+\begin{align}
+X^{\phi} &= a^{\dag}e^{-i\phi} + ae^{i\phi}\\
+P^{\phi} &= X^{\phi-\frac{\pi}{2}} = i(a^{\dag}e^{-i\phi} - ae^{i\phi})
+\end{align}
+
+We can see that $X = X^0$ and $P = X^{-\frac{\pi}{2}} = P^0$ for example. Consider now the normal and time ordered product $:X^{\phi_1}(t_1)X^{\phi_2}(t_2):$.
+
+First we calculate for $t_2>t_1$
+
+\begin{align}
+&:\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2):\\
+=&:\left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right) :\\
+=&:\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}(t_2)}e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} :\\
+=&\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + \highlightb{\hat{a}(t_2)\hat{a}(t_1)}e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightb{\hat{a}^{\dag}(t_2)\hat{a}(t_1)}e^{i\phi_1}e^{-i\phi_2} \\
+=&\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)e^{-i\phi_1}e^{-i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}(t_2)}e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} \\
+&+ [\hat{a}(t_2),\hat{a}(t_1)] e^{i\phi_1}e^{i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right)\\
+&+ [\hat{a}(t_2),\hat{a}(t_1)] e^{i\phi_1}e^{i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) + \left[X^{\phi_2}(t_2),\frac{1}{2}\left(X^{\phi_1}(t_1)+iX^{\phi_1-\frac{\pi}{2}}(t_1) \right)\right]\\
+=& \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) - \frac{1}{2}\left[X^{\phi_1}(t_1),\hat{X}^{\phi_2}(t_2) \right] - \frac{i}{2}\left[X^{\phi_1-\frac{\pi}{2}}(t_1),X^{\phi_2}(t_2)\right]\\
+&= \frac{1}{2}\left\{\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2)\right\} - \frac{i}{2}\left[X^{\phi_1-\frac{\pi}{2}}(t_1),X^{\phi_2}(t_2)\right]
+\end{align}
+
+Then for $t_1>t_2$:
+
+\begin{align}
+&:\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2):\\
+=&:\left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right) :\\
+=&:\highlightr{\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)}e^{-i\phi_1}e^{-i\phi_2} + \hat{a}(t_1)\hat{a}(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} :\\
+=&\highlightb{\hat{a}^{\dag}(t_2)\hat{a}^{\dag}(t_1)}e^{-i\phi_1}e^{-i\phi_2} + \hat{a}(t_1)\hat{a}(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightb{\hat{a}^{\dag}(t_2)\hat{a}(t_1)}e^{i\phi_1}e^{-i\phi_2} \\
+=&\highlightr{\hat{a}^{\dag}(t_1)\hat{a}^{\dag}(t_2)}e^{-i\phi_1}e^{-i\phi_2} + \hat{a}(t_1)\hat{a}(t_2)e^{i\phi_1}e^{i\phi_2}\\
+&+ \hat{a}^{\dag}(t_1)\hat{a}(t_2)e^{-i\phi_1}e^{i\phi_2} + \highlightr{\hat{a}(t_1)\hat{a}^{\dag}(t_2)}e^{i\phi_1}e^{-i\phi_2} \\
+&+ [\hat{a}^{\dag}(t_2),\hat{a}^{\dag}(t_1)] e^{-i\phi_1}e^{-i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \left(\hat{a}^{\dag}(t_1)e^{-i\phi_1} + \hat{a}(t_1)e^{i \phi_1} \right)\left(\hat{a}^{\dag}(t_2)e^{-i\phi_2} + \hat{a}(t_2)e^{i \phi_2} \right)\\
+&+ [\hat{a}^{\dag}(t_2),\hat{a}^{\dag}(t_1)] e^{-i\phi_1}e^{-i\phi_2} + [\hat{a}^{\dag}(t_2),\hat{a}(t_1)]e^{i\phi_1}e^{-i\phi_2}\\
+=& \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) + \frac{1}{2}\left[X^{\phi_2}(t_2)-iX^{\phi_2-\frac{\pi}{2}}(t_2),X^{\phi_1}(t_1)\right]\\
+=&  \hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2) - \frac{1}{2}\left[X^{\phi_1}(t_1),X^{\phi_2}(t_2)\right] + \frac{i}{2}\left[X^{\phi_1}(t_1),X^{\phi_2-\frac{\pi}{2}}\right]\\
+=& \frac{1}{2}\left\{\hat{X}^{\phi_1}(t_1)\hat{X}^{\phi_2}(t_2)\right\} + \frac{i}{2}\left[X^{\phi_1}(t_1),X^{\phi_2-\frac{\pi}{2}}\right]
+\end{align}
+
+These two expressions can be combined as
+
+\begin{align}
+:X^{\phi_1}(t_1)X^{\phi_2}(t_2): &= \frac{1}{2}\left\{X^{\phi_1}(t_1),X^{\phi_2}(t_2) \right\}  + \frac{i}{2}\left[X^{\phi_{max}}(t_{max}),X^{\phi_{min}-\frac{\pi}{2}}(t_{min}) \right]\\
+&= \frac{1}{2}\left\{X^{\phi_1}(t_1),X^{\phi_2}(t_2) \right\}  + \frac{i}{2}\left[X^{\phi_{max}}(t_{max}),P^{\phi_{min}}(t_{min}) \right]
+\end{align}
+
+Because anti-commutators of Hermitian operators are necessarily Hermitian and commutators of Hermitian operators are necessarily anti-Hermitian we can see that this entire expression is again necessarily Hermitian! This means that this expression is again a good candidate for something to be related to classical measured quantities.
+
+\subsection{Calculation Expediency}
+
+The second reason I am excited about normal ordering is that it can simplify certain calculations. However, I do find this to be a little bit of dicey statement. I've heard normal ordering described being \textit{only} a mathematical tool that makes calculations easier. I disagree with this for two reasons. First, in the Kelley-Kleiner and Glauber theory of photodetection it is very natural to express the outputs of the theory in terms of normal ordered operators. Second, as I have explained above, certain expressions are manifestly Hermitian if they are normal ordered. In fact, the reason normal ordering shows up so naturally in those theories is very closely related to the manifest Hermiticity of normal ordered expression. 
+
+The output of those theories are expressions for certain probabilities. Probabilities must be real numbers calculated from the Born rule. The Born rule calculation for absorption of two photons looks something like
+
+\begin{align}
+|\braket{\psi_F|\psi_F}|^2 &= \left(\bra{\psi_0}a^{\dag}(t_1)a^{\dag}(t_2) \right)\left(a(t_2)a(t_1)\ket{\psi_0}\right)\\
+&= \Braket{a^{\dag}(t_1)a^{\dag}(t_2)a(t_2)a(t_1)}\\
+&= \Braket{:n(t_1)n(t_2):}
+\end{align}
+
+Here $\ket{\psi_F}$ is some final state after absorbing photons and $\ket{\psi_0}$ is some initial state. We see that the manifest Hermiticity of $:n(t_1)n(t_2):$ ensures that the resultant expression is a real number which can be interpreted as a probability.
+
+So now that I've given at least a little bit of an argument for why normal ordering is more that \textit{just} a calculational tool, I want to explain how it in fact does help with calculations.
+
+The point is that if we are given the choice of having an expression given to us as a normal ordered expression or a non-normal ordered expression I argue we would prefer to have it given to us as a normal ordered expression because of the following. Consider that the light field is in a coherent state $\ket{\alpha}$. We know that $a\ket{\alpha} = \alpha\ket{\alpha}$.
+
+Given this we can immediately notice that
+
+\begin{align}
+\Braket{:\hat{n}\hat{n}:} = |\alpha|^4
+\end{align}
+
+Alternatively, by implementing commutation relations, we could have been given the original expression in terms of $\hat{n}\hat{n}$ without normal ordering (there would be additional terms) but then we would have been trying to calculate
+
+\begin{align}
+\bra{\alpha}\hat{n}\hat{n}\ket{\alpha} = \bra{\alpha}\hat{a}^{\dag}\hat{a}\hat{a}^{\dag}\hat{a}\ket{\alpha}
+\end{align}
+
+The problem here is that I do not know how to calculate $a^{\dag}\ket{\alpha}$. So to calculate this expression I would have to implement the commutation relations myself to `bring the expression into normal order' and then do the calculation as above.
+
+This point here is a bit subtle and maybe confusing. My main point is that, for calculational purposes, we should be excited if we are simply given an expression which is explicitly normal ordered because then subsequent calculations will be easier.
+
+This is in the end an argument for why we should be excited about the Kelley-Kleiner theory which automatically outputs expressions which are already in terms of normal ordered combinations of photon field operators.
+
+We will see that this feature is especially helpful when considering the effect of `vacuum fluctuations' on the photodetection process. In particular, if our noisy input fields are all in the vacuum state (as opposed to coherent or thermal states) then the normal ordering kills all affects of these vacuum fluctuations. This is because the normal ordered expectation value of a vacuum field is always zero. Alternatively, if we take an approach in which the photocurrent does not explicitly depend on normal ordered variables then we will to be very careful to take account of all of the vacuum fields that enter our signal as it makes its way towards the detector. More on this later.
+
+\section{Multiple Expressions for the Two-Time Correlation Function}
+
+In this section I will give many equivalent expressions for the two-time correlation function of the measured phase quadrature of light. We will be concerned with products like $P_S(t_1)P_S(t_2)$. We could also worry about products including $X_S(t_1)$ but we will not worry about that here for simplicity. 
+
+First if we now allow ourselves to use the commutation relations that $[a_S(t_1),a_S(t_2)] = [a_S^{\dag}(t_1),a_S^{\dag}(t_2)] = 0$ and $[a_S(t_1),a_S^{\dag}(t_2)] = \delta(t_1-t_2)$ then we can look a the intermediate steps of the derivation above for $:X^{\phi_1}(t_1)X^{\phi_2}(t_2):$  to see that
+
+\begin{align}
+:P_S(t_1)P_S(t_2): = P_S(t_1)P_S(t_2) - \delta(t_1-t_2)
+\end{align}
+
+However, if we don't use that commutation relation then we can still expand
+
+\begin{align}
+:P_S(t_1)P_S(t_2): = \frac{1}{2}\{P_S(t_1),P_S(t_2)\} - \frac{i}{2}[P_S(t_{max}),X_S(t_{min}) ]
+\end{align}
+
+The reason for introducing both these formulas is the relate the normal ordered expression to non-normal ordered expressions. The reason we would want this is because $P_S(t)$ will be given by the input-output relation
+
+\begin{align}
+P_S(t) = \sqrt{2\kappa} P_{cav}(t) + P_{in}(t)
+\end{align}
+
+which relates $P_S(t)$ to the input fluctuation $P_{in}(t)$ as well as to $P_{cav}(t)$. $P_{cav}(t)$ and its statistics can be calculated, but the output of that calculation will be for non-normal ordered statistics. This is why it is helpful to express $:P_S(t_1)P_S(t_2):$ in terms of non-normal ordered quantities.
+
+Also note that it is not too difficult to prove from the commutation relations for $a_S(t)$ and $a_S^{\dag}(t)$ that 
+
+\begin{align}
+P_S(t_1)P_S(t_2) = \frac{1}{2}\{P_S(t_1),P_S(t_2) \}
+\end{align}
+
+We thus have
+
+\begin{align}
+&\Braket{:P_S(t_1)P_S(t_2) :}\\
+&=\Braket{P_S(t_1)P_S(t_2)} - \delta(t_1-t_2)\\
+&=\frac{1}{2} \Braket{\{P_S(t_1),P_S(t_2)\}} - \delta(t_1-t_2)
+\end{align}
+
+Either of these three expressions could be used going forward to calculate the measured signal. Imagine you are seeing these formulas put up as candidates for the measured photo detection signal but you do NOT know the commutation relation for $a_S(t)$. In particular, you don't know that at different times the different $a_S(t)$ always commute with each other. I would argue that in this case you would prefer either first expression or the last expression because it can be seen that those expressions are necessarily Hermitian. The second expression, I argue, has the weakness that you can't tell obviously that it is Hermitian. In fact, one might see this as the explanation of the mystery of why those pesky $i$'s arose in the first place!
+
+To further evaluate the merit of the different functions lets expand them out in terms of the input output relations so that we start to related the measured signal to what is going on inside the cavity.
+
+\begin{align}
+&\Braket{:P_S(t_1)P_S(t_2):} = \\
+&= \Big\langle :2\kappa P_{cav}(t_1)P_{cav}(t_2) + P_{in}(t_1)P_{in}(t_2)\\
+&+\sqrt{2\kappa}(P_{cav}(t_1) P_{in}(t_2) + P_{in}(t_1)P_{cav}(t_2)) :\Big \rangle\\
+&= \Big \langle2\kappa P_{cav}(t_1)P_{cav}(t_2) + P_{in}(t_1)P_{in}(t_2) \\
+&+ \sqrt{2\kappa}(P_{cav}(t_1) P_{in}(t_2) + P_{in}(t_1)P_{cav}(t_2))\Big \rangle  - \delta(t_1-t_2)\\
+&= \Big\langle 2\kappa \{P_{cav}(t_1),P_{cav}(t_2)\}  + \{P_{in}(t_1),P_{in}(t_2)\}\\
+&+ \sqrt{2\kappa}(\{P_{cav}(t_1), P_{in}(t_2)\} + \{P_{in}(t_1),P_{cav}(t_2)\})\Big\rangle - \delta(t_1-t_2)
+\end{align}
+
+The key observation I would like to point out here is that, because of the calculation expediency of normal ordering, in the first expression (the normal ordered expansion) we can drop the last there terms! This is because, if we assume $P_{in}$ is a vacuum state then all of the expectation values for these terms will go to zero. This means we are left with
+
+\begin{align}
+\Braket{:P_S(t_1)P_S(t_2):} &= 2\kappa\Braket{:P_{cav}(t_1)P_{cav}(t_2):}\\
+&= \kappa \Braket{\{P_{cav}(t_1),P_{cav}(t_2)\}} - i \kappa\Braket{[P_{cav}(t_{max}),X_{cav}(t_{min})]}
+\end{align}
+
+This is somewhat incredible! We have related the measured signal to a non-normal ordered combination of intracavity operators which can, without too much difficulty, be straightforwardly calculated. We also didn't have to bother worrying about vacuum fluctuations and their non-zero commutation relations. It was all already taken care of by the normal ordering.
+
+The second expression which came from expanding $\Braket{P_S(t_1)P_S(t_2)}$ is the most highly problematic for me. While it is correct it has become even more difficult to see that it is in fact a Hermitian expression. It is clear that the $P_{in}(t_1)P_{in}(t_2)$ term will have something to do with a delta function so this is ok and it may cancel out the delta function outside. However, we are left with three terms (one with $2\kappa$ and two with $\sqrt{2\kappa}$) none of which are Hermitian. Without knowing the $a_S(t)$ commutation relation I didn't see any possible way or reason why these three terms should conspire to make sure there is no imaginary part appearing. Of course, it turns out that these terms do conspire to cancel out any imaginary part. One way to think about it is that the fluctuations which enter the cavity reflect off of the cavity mirror and show up in the output. These fluctuations also drive the system in the cavity. So when the light coming out of the cavity interferes with the light reflected off of the cavity all of the effects that might have given an imaginary part cancel out. While I follow this argument I find it to be pretty inelegant and to carry a lot of conceptual baggage as compared to the normal ordered formula.
+
+The third expression is ok because at least each of the terms in manifestly Hermitian. The downside of this expression compared to the normal ordered expression is that if you want to calculate the measured field you do have to be very careful about making sure to include the back reflected input field, $P_{in}(t)$ interfering with the output cavity field $P_{cav}$ to make sure you get the correct answer. That is, $\{P_{cav}(t_1),P_{in}(t_2)\}$ is not necessarily zero so you must take it into account. Again, I see this as conceptual and calculational baggage as compared to the normal ordered case.
+
+\section{Mystery Solved}
+
+So we see here finally the resolution to the mystery of what happens with those $i$'s that were appearing when we were doing the matched filter theory. The answer is that 
+
+1) you can avoid ever having to worry about anything imaginary appearing if you use the normal ordered formula The disadvantages here are that a) people are not familiar with this formula so they don't know what you're talking about and b) It now looks like your detector is sensitive to the commutator of intracavity variables. I find point b) to actually be an interesting way to think about added quantum noise. It shows clearly which terms would go away if the system was purely classical.
+
+2) You can use the 'usual' formula and simply calculate things like $\Braket{P(t_1)P(t_2)}$ and you will find that during intermediate steps in the calculation $i$'s will appear but if you press on and you're careful to include the retroreflected input field terms you will see magic cancellation of all imaginary terms in the theory. This is what we were originally doing when we saw the $i$'s appear.
+
+3) You can use the 'usual' formula but note that whenever calculating tow time correlation functions of your signal you can replace $\Braket{P_S(t_1)P_S(t_2)} = \frac{1}{2}\Braket{\{P_S(t_1),P_S(t_2)\}}$ which is necessarily real. You get around the problem of $i$'s appearing intermediately but you do still have to take care to include the back-reflected light in your calculation. This is the approach taken in the E3 negative mass paper as well as the current draft of the matched filter paper.
+
+\section{Putting in Constants}
+
+Above I have left out all constants in $S_1$ and $S_2$ for clarity. Here I would like to put in some of those constants to illustrate a point.
+
+From my Kelley-Kleiner formula write up one can see that the two-time correlation function for a Q-quadrature homodyne measurement could be given as
+
+\begin{align}
+\Braket{S_2(t_1)S_2(t_2)} = e^2 |\alpha|^2\left(\epsilon_Q^2\epsilon_{MM}\Braket{:P_S(t_1)P_S(t_2):}+ \epsilon_Q\delta(t_1-t_2)\right) 
+\end{align}
+
+Here finite quantum efficiency as well as finite mode-matching efficiency have been included. $e$ is the electron charge (used to relate photons to a photocurrent) and $\alpha$ is the amplitude of the local oscillator field.
+Using the known commutation relation we could re-express this without the normal ordering as
+
+\begin{align}
+\Braket{S_2(t_1)S_2(t_2)} &=  e^2|\alpha|^2\left(\epsilon_Q^2\epsilon_{MM}P_S(t_1)P_S(t_2) + \epsilon_Q(1-\epsilon_Q \epsilon_{MM})\delta(t_1-t_2)\right)\\
+&= e^2|\alpha|^2\left(\epsilon_Q^2\epsilon_{MM}\frac{1}{2}\left\{P_S(t_1)P_S(t_2)\right\}+ \epsilon_Q(1-\epsilon_Q \epsilon_{MM})\delta(t_1-t_2)\right)
+\end{align}
+
+Note that these same statistics could be realized if we defined a quantum operator
+
+\begin{align}
+\hat{S}_1(t) = e|\alpha|\epsilon_Q\sqrt{\epsilon_{MM}}P_S(t) + e|\alpha| \sqrt{\epsilon_Q(1-\epsilon_Q\epsilon_{MM})}\xi(t)
+\end{align}
+
+With $\Braket{\xi(t_1)\xi(t_2)} = \delta(t_1-t_2)$. In fact, I would consider this calculation to be my satisfactory `derivation' of the `usual' formula for photodetection. The expressions for $S_2$ were derived from the Kelley-Kleiner theory while the expression for $S_1$ is an `effective' theory for photodetection which gives the same results as the Kelley-Kleiner one.
+
+The funny thing I would like to point out here is that the shot noise level depends on the mode-matching efficiency. There is also this slightly awkward feature that the second term for $S_1(t)$ doesn't actually carry the full $\delta(t_1-t_2)$ shot noise dependence! That is, when we calculate $\Braket{S_1(t_1)S_1(t_2)}$ the $P_S(t)$ terms will carry some of their own noise which must be taken into account as well to get the correct answer! That is, $P_S(t) = \sqrt{2\kappa}P_{cav}(t) + P_{in}(t)$. Where $P_{in}(t)$ will give rise to other dirac delta functions and we must of course recall that $P_{in}(t)$ can beat with the cavity field $P_{cav}(t)$.
+
+There is at least one special case where these issues can be glossed over, and this is specifically the case which we have treated in the matched filter work. If we are using the cavity to do an optomechanical detection of an oscillator in the unresolved sideband regime and measuring on resonance we can perform an adiabatic elimination with the result that
+
+\begin{align}
+P_{cav}(t) = 2 \frac{g}{\kappa}X_M(t) - \sqrt{\frac{2}{\kappa}} P_{in}(t)
+\end{align}
+
+Here $g$ the optomechanical coupling constant and $X_M(t)$ is the position of the mechanical oscillator. We then have
+
+\begin{align}
+P_S(t) &= 2\sqrt{2} \frac{g}{\sqrt{\kappa}} X_M(t) -\sqrt{2\kappa}\sqrt{\frac{2}{\kappa}}P_{in}(t) + P_{in}(t)\\
+&= 2 \sqrt{2} \frac{g}{\sqrt{\kappa}}X_M(t) - P_{in}(t)
+\end{align}
+
+Note that we have to pay careful attention to the sign of $P_{in}(t)$ as it appears in the equation for the intracavity field and as it appears in the input-output relation. Also note that in this optomechanics situation $X_M(t)$ is only driven by amplitude fluctuations when we are driving on resonance so it has no dependence on $P_{in}(t)$. This means we do not have to worry about any cross terms involving $X_M(t)$ and $P_{in}(t)$. They will evaluate to zero under expectation value. This means we can calculate
+
+\begin{align}
+\Braket{S_1(t_1)S_1(t_2)} &= e^2|\alpha|^2\left(\epsilon_Q^2 \epsilon_{MM} 8\frac{g^2}{\kappa}\Braket{X_M(t_1)X_M(t_2)} + \epsilon_Q^2\sqrt{\epsilon_{MM}} \delta(t_1-t_2) +  \epsilon_Q(1-\epsilon_Q\epsilon_{MM})\delta(t_1-t_2) \right)\\
+&= e^2|\alpha|^2\left(\epsilon_Q^2 \epsilon_{MM} 8\frac{g^2}{\kappa}\Braket{X_M(t_1)X_M(t_2)} +  \epsilon_Q\delta(t_1-t_2) \right)\\
+\end{align}
+
+So this is funny. First we see that after plugging in the formula for $P_{Cav}$ we have seen that the $\epsilon_{MM}$ dependence has disappeared from the noise term so that is good. Unfortunately the two-time correlation function now depends on $\Braket{X_M(t_1)X_M(t_2)}$ which I \textit{know} is not Hermitian for all times. This is a problem. My guess is that in making the adiabatic approximation something went slightly wrong that made it so the anti-hermitian part of the different terms didn't cancel out exactly. My guess however is that this imaginary part should be in some sense `small'. However, in any case, I argue it is pretty bad if the signal is only `approximately' real. One easy to bluntly gloss over this issue is to plug the formula for $P_S(t)$ into the formula which initially uses $\{P_S(t_1),P_S(t_2)\}$. In that case we would get
+
+\begin{align}
+\Braket{S_1(t_1)S_1(t_2)} = e^2|\alpha|^2\left(\epsilon_Q^2 \epsilon_{MM} 4\frac{g^2}{\kappa}\Braket{\left\{X_M(t_1),X_M(t_2)\right\}} +  \epsilon_Q\delta(t_1-t_2) \right)\\ 
+\end{align}
+
+This is nice because it is now manifestly real.
+
+
+\end{document}

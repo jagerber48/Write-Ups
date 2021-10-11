@@ -1,0 +1,412 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{tcolorbox}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+
+\newcommand{\ddt}[1]{\frac{d #1}{dt}}
+\newcommand{\ppt}[1]{\frac{\partial #1}{\partial t}}
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+
+
+\begin{document}
+\title{$2\times2$ Diagonalization}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this write up I diagonalize a general $2\times2$ Hermitian matrix. This is the exact problem which must be solved when attempting to solve the driven two-level system problem using Schrodinger-like (ket-centric) techniques (as opposed to Heisenberg-like or operator-centric techniques). 
+
+\section{Setup and Transformations}
+Consider the arbitrary $2\times 2$ Hermitian matrix described by
+
+\begin{align}
+\bv{H} = 
+\begin{bmatrix}
+a && c\\
+c^* && b
+\end{bmatrix}
+\end{align}
+
+With $a$ and $b$ real. Consider the matrix
+
+\begin{align}
+\bv{L} &= 
+\begin{bmatrix}
+1 && 0\\
+0 && l
+\end{bmatrix}\\
+\end{align}
+
+with $|l| = 1$ making $\bv{L}$ unitary:
+
+\begin{align}
+\bv{L}^{\dag} \bv{L} &=
+\begin{bmatrix}
+1 && 0\\
+0 && l^*
+\end{bmatrix}
+\begin{bmatrix}
+1 && 0\\
+0 && l
+\end{bmatrix}
+= 
+\bv{1}\\
+\bv{L} \bv{L}^{\dag} &=
+\begin{bmatrix}
+1 && 0\\
+0 && l
+\end{bmatrix}
+\begin{bmatrix}
+1 && 0\\
+0 && l^*
+\end{bmatrix}
+= 
+\bv{1}
+\end{align}
+
+\begin{align}
+\bv{L}^{\dag} \bv{H} \bv{L} &= 
+\begin{bmatrix}
+a && lc\\
+l^*c^* && b |l|^2
+\end{bmatrix}
+\end{align}
+
+If we chose $l = \frac{|c|}{c} = e^{-i\phi_c}$ then we get
+
+\begin{align}
+\bv{L}^{\dag}\bv{H} \bv{L} = 
+\begin{bmatrix}
+a && |c|\\
+|c| && b
+\end{bmatrix}
+\end{align}
+
+We can write
+
+\begin{align}
+\bv{H}' = \bv{L}^{\dag}\bv{H}\bv{L} - b\bv{1} =
+\begin{bmatrix}
+a-b && |c|\\
+|c| && 0
+\end{bmatrix}
+\end{align}
+
+For comparison with a driven two level system let $\Delta = b-a$ and $\frac{\Omega}{2} = |c|$. Then we have have
+
+\begin{align}
+\bv{H}' = \bv{L}^{\dag}\bv{H}\bv{L} - b\bv{1} =
+\begin{bmatrix}
+-\Delta && \frac{\Omega}{2}\\
+\frac{\Omega}{2} && 0
+\end{bmatrix}
+\end{align}
+
+So we see that
+
+\begin{align}
+\bv{H} = \bv{L}\bv{H}'\bv{L}^{\dag} + b\bv{1}
+\end{align}
+
+Suppose we solve $\bv{H'}$ by finding its eigenvalues and eigenvectors, $\bv{v}_{1,2}$ and $\lambda_{1,2}$. We can see that $\bv{L}\bv{v}_{1,2}$ are then eigenvectors of $\bv{H}$.
+
+\begin{align}
+\bv{H}\bv{L}\bv{v}_{1,2} &= \bv{L}\bv{H}'\bv{L}^{\dag}\bv{L}\bv{v}_{1,2} + b\bv{1}\bv{L}\bv{v}_{1,2}\\
+&= \lambda_{1,2} \bv{L} \bv{v}_{1,2} + b \bv{L}\bv{v}_{1,2} = (\lambda_{1,2} + b) \bv{L}\bv{v}_{1,2}
+\end{align}
+
+\section{Diagonalization}
+
+So the task is to diagonalize $\bv{H'}$. Note that $\bv{H}'$ is a real symmetric matrix. The spectral theorem tells us that real-symmetric matrices are diagonalizable by an orthogonal transformation (proven elsewhere).
+
+\begin{align}
+\bv{D} = \bv{P}^{-1} \bv{H}' \bv{P}
+\end{align}
+
+With $\bv{D}$ diagonal and $\bv{P}$ orthogonal. Note that if $\bv{H}'$ is only hermitian (and not symmetric) then the transformation is only unitary and not orthogonal. Any (non-zero) orthogonal transformation for $2\times2$ matrices can be written as a rotation matrix. This simple form for the transformation is the motivation for the above manipulations with $\bv{L}$.
+
+\begin{align}
+\bv{P} =
+\begin{bmatrix}
+\cos(\theta) && -\sin(\theta)\\
+\sin(\theta) && \cos(\theta)
+\end{bmatrix}
+\end{align}
+
+We must find the $\theta$ that diagonalizes $\bv{H}'$.
+
+\begin{align}
+\bv{D} &= 
+\begin{bmatrix}
+\cos(\theta) && \sin(\theta)\\
+-\sin(\theta) && \cos(\theta)
+\end{bmatrix}
+\begin{bmatrix}
+-\Delta && \frac{\Omega}{2}\\
+\frac{\Omega}{2} && 0
+\end{bmatrix}
+\begin{bmatrix}
+\cos(\theta) && -\sin(\theta)\\
+\sin(\theta) && \cos(\theta)
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+\cos(\theta) && \sin(\theta)\\
+-\sin(\theta) && \cos(\theta)
+\end{bmatrix}
+\begin{bmatrix}
+-\Delta \cos(\theta) + \frac{\Omega}{2}\sin(\theta)&&\Delta \sin(\theta) + \frac{\Omega}{2} \cos(\theta)\\
+\frac{\Omega}{2}\cos(\theta) && -\frac{\Omega}{2}\sin(\theta)
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+\cos(\theta)(-\Delta \cos(\theta) +\Omega \sin(\theta)) && \Delta \cos(\theta)\sin(\theta) + \frac{\Omega}{2}(\cos^2(\theta) - \sin^2(\theta))\\
+\Delta \cos(\theta)\sin(\theta) + \frac{\Omega}{2} (\cos^2(\theta)-\sin^2(\theta)) && \sin(\theta)(-\Delta \sin(\theta)-\Omega\cos(\theta))\\
+\end{bmatrix}\\
+&=
+\begin{bmatrix}
+\lambda_1 && 0\\
+0 && \lambda_2
+\end{bmatrix}
+\end{align}
+
+We now plug in the constraints demanded by the final equality to begin to constrain $\theta$.
+First the two off diagonals are equal and we see
+
+\begin{align}
+\Delta \cos(\theta)\sin(\theta) + \frac{\Omega}{2}(\cos^2(\theta) - \sin^2(\theta)) &= \frac{1}{2}(\Delta\sin(2\theta) + \Omega \cos(2\theta))=0\\
+\tan(2\theta) &= -\frac{\Omega}{\Delta}
+\end{align}
+
+Things are always tricky when we deal with implicitly defined angles using trig functions due to the non-uniqueness of inverting trig functions. In general we might suppose that $\theta$ could range from $0$ to $2\pi$. In that case since $\tan$ has a $\pi$ periodicity this means there would be 4 possible values for $\theta$. This is in fact overly permissive. This is because $P(\theta + \pi) = -P(\theta)$. This means if $P(\theta)$ diagonalizes $\bv{H}'$ then $P(\theta+\pi)$ will also diagonalize $\bv{H}'$ and result in the same diagonal matrix. The only difference is the eigenvectors will each be flipped by one factor or $-1$, but this is not significant. To that end we can restrict attention to $0<\theta<\pi$.
+
+In this case, given the above constraint on $\tan(2\theta)$, there are still 2 possible values for $\theta$. The formulas for $\lambda_{1,2}$ will help narrow down the choice for $\theta$.
+
+\begin{align}
+\lambda_1 &= -\Delta \cos^2(\theta) + \Omega \cos(\theta)\sin(\theta)\\
+\lambda_2 &= -\Delta \sin^2(\theta) - \Omega \cos(\theta)\sin(\theta)
+\end{align}
+
+We can add these two formulas to find
+
+\begin{align}
+\lambda_1 + \lambda_2 &= -\Delta
+\end{align}
+
+This doesn't help constrain $\theta$ but it will help us find $\lambda_1$ and $\lambda_2$ later. We can also subtract to find
+
+\begin{align}
+\lambda_1 - \lambda_2 &= -\Delta \cos(2\theta) + \Omega \sin(2\theta)\\
+&= \sin(2\theta)\left(\Omega -\Delta \frac{1}{\tan(2\theta)} \right) = \sin(2\theta) \left(\Omega + \frac{\Delta^2}{\Omega} \right)\\
+\sin(2\theta) &= (\lambda_1 - \lambda_2) \frac{\Omega}{\Omega^2 + \Delta^2}\\
+&= \cos(2\theta)\left(-\Delta + \Omega \tan(2\theta)\right) = \cos(2\theta)\left(-\Delta -\frac{\Omega^2}{\Delta} \right)\\
+\cos(2\theta) &= (\lambda_1-\lambda_2)\frac{-\Delta}{\Omega^2+\Delta^2}
+\end{align}
+
+We work out
+
+\begin{align}
+\cos^2(2\theta) + \sin^2(2\theta) &= 1 = (\lambda_1 - \lambda_2)^2 \frac{1}{\Omega^2 + \Delta^2}\\
+(\lambda_1 - \lambda_2)^2 &= \Omega^2 + \Delta^2\\
+\lambda_1 - \lambda_2 &= \pm \sqrt{\Omega^2 + \Delta^2} = \pm \tilde{\Omega}\\
+\lambda_1 - \lambda_2 &= +\tilde{\Omega}
+\end{align}
+
+In the last line we choose to take the positive root of the equation. This amounts to choosing $\lambda_1 > \lambda_2$. This is of course an arbitrary choice but it will have effects on which quadrant $\theta$ ends up in.
+We can now summarize
+
+\begin{align}
+\tan(2\theta) &= -\frac{\Omega}{\Delta} = -\frac{1}{\tilde{\Delta}}\\
+\sin(2\theta) &= \frac{\Omega}{\tilde{\Omega}} = \frac{\Omega}{\sqrt{\Omega^2+\Delta^2}} = \frac{1}{\sqrt{1+\tilde{\Delta}^2}}\\
+\cos(2\theta) &= -\frac{\Delta}{\tilde{\Omega}} = \frac{-\Delta}{\sqrt{\Omega^2+\Delta^2}} = \frac{-\tilde{\Delta}}{\sqrt{1+\tilde{\Delta}^2}}
+\end{align}
+
+Here I've defined the dimensionless $\tilde{\Delta}=\frac{\Delta}{\Omega}$. 
+
+\section{Quadrants for $\theta$}
+We now consider the possible values for $\theta$. We see that $\sin(2\theta)$ is always positive. This means that
+
+\begin{align}
+&0<2\theta<\pi\\
+\rightarrow &0<\theta<\frac{\pi}{2}
+\end{align}
+
+This, in combination with $\tan(2\theta) = -\frac{1}{\tilde{\Delta}}$ already restricts the value of $\theta$ entirely as we can notice by realizing $\tan(2\theta)$ is invertible within the domain $0<\theta<\frac{\pi}{2}$. See the figures below. For further reference we will explicitly consider how $\theta$ is constrained by all of these equations.
+
+We see that $\cos(2\theta)$ can be positive or negative depending on the sign of $\Delta$.
+
+For $\tilde{\Delta}<0$ means $\cos(2\theta)>0$ implying
+
+\begin{align}
+&0<2\theta<\frac{\pi}{2} \text{ or } \frac{3\pi}{2} < 2\theta < 2\pi \\
+\rightarrow &0<\theta<\frac{\pi}{4} \text{ or } \frac{3\pi}{4} < \theta<\pi 
+\end{align}
+
+Also $\tilde{\Delta}<0$ means that $\tan(2\theta)>0$ which implies that
+
+\begin{align}
+&0<2\theta <\frac{\pi}{2} \text{ or } \pi<2\theta<\frac{3\pi}{2}\\
+\rightarrow &0<\theta<\frac{\pi}{4} \text{ or } \frac{\pi}{2}<\theta<\frac{3\pi}{4}
+\end{align}
+
+The only range of angles consistent with all three of these constraints is $0<\theta<\frac{\pi}{4}$.
+
+Now the case for $\tilde{\Delta}>0$ we have $\cos(2\theta)<0$ implying
+
+\begin{align}
+&\frac{\pi}{2} < 2\theta < \frac{3\pi}{2}\\
+\rightarrow &\frac{\pi}{4} < \theta < \frac{3\pi}{4}
+\end{align}
+
+and for $\tilde{\Delta}>0$ we have $\tan(2\theta) <0$ implying
+
+\begin{align}
+&\frac{\pi}{2}<2\theta<\pi \text{ or } \frac{3\pi}{2}<2\theta<2\pi\\
+\rightarrow &\frac{\pi}{4}<\theta<\frac{\pi}{2} \text{ or } \frac{3\pi}{4}<\theta<\pi
+\end{align}
+
+The only constraint amongst these consistent with the constraint of $\sin(2\theta)$ is that $\frac{\pi}{4}<\theta<\frac{\pi}{2}$.
+
+Note that all of the above assumes $\Delta \neq 0$ and $\Omega \neq 0$. If we have $\Delta = \Omega = 0$ then $\bv{H}'=0$ and its only eigenvalue is $0$ and all vectors are eigenvectors. If $\Omega =0$ then $\bv{H}'$ is already diagonal so we take $\theta=0$ so that $\bv{P} = \bv{1}$. If $\Delta =0$ then we can look at the above formulas to see $\sin(2\theta) = 1$ and $\cos(2\theta) = 0$. This is consistent with $\theta = \frac{\pi}{4}$.
+
+We summarize
+
+\begin{align}
+\tan(2\theta) &= -\frac{\Omega}{\Delta} = -\frac{1}{\tilde{\Delta}}\\
+\sin(2\theta) &= \frac{\Omega}{\tilde{\Omega}} = \frac{\Omega}{\sqrt{\Omega^2+\Delta^2}} = \frac{1}{\sqrt{1+\tilde{\Delta}^2}}\\
+\cos(2\theta) &= -\frac{\Delta}{\tilde{\Omega}} = -\frac{\Delta}{\sqrt{\Omega^2+\Delta^2}} = -\frac{\tilde{\Delta}}{\sqrt{1+\tilde{\Delta}^2}}
+\end{align}
+
+\begin{align}
+\sin(\theta) &= \frac{1}{\sqrt{2}} \sqrt{1-\cos(2\theta)} = \frac{1}{\sqrt{2}} \sqrt{1+\frac{\Delta}{\tilde{\Omega}}} = \frac{1}{\sqrt{2}}\sqrt{1+\tilde{\Delta}}\\
+\cos(\theta) &= \frac{1}{\sqrt{2}} \sqrt{1+\cos(2\theta)} = \frac{1}{\sqrt{2}} \sqrt{1-\frac{\Delta}{\tilde{\Omega}}} = \frac{1}{\sqrt{2}}\sqrt{1-\tilde{\Delta}}\\
+\end{align}
+
+\begin{align}
+&\theta = 0 \text{ for } \Omega = 0\\
+&0<\theta<\frac{\pi}{4} \text{ for } \Delta<0\\
+&\theta = \frac{\pi}{4} \text{ for } \Delta =0\\
+&\frac{\pi}{4}<\theta<\frac{\pi}{2} \text{ for } \Delta>0
+\end{align}
+
+This is nicely illustrated by the following figures. These figures show the different functions as colored lines. The vertical lines are the constraints. Here $\theta$ is plotted from $0$ to $2\pi$. We see that each line intersects its constraint 4 times but there are only 2 values of $\theta$ where all three lines intersect their constraints simultaneously. As mentioned, one of these always occurs in the region $0<\theta<\frac{\pi}{2}$ and the other occurs at the same value offset by $+\pi$. Notice that $\theta$ is uniquely determined by the constraints that $0<\theta<\frac{\pi}{2}$ and $\tan(2\theta) = -\frac{\Omega}{\Delta}$.
+
+\newpage
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{thetaplot1.png}
+\caption{$\tilde{\Delta}=+0.5$}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{thetaplot2.png}
+\caption{$\tilde{\Delta}=-0.5$. As $\tilde{\Delta}$ is tuned the vertical gray line travels from $\theta = 0$ for $\tilde{\Delta}\rightarrow-\infty$ through the asymptote at $\theta = \frac{\pi}{4}$ for $\tilde{\Delta}=0$ down to $\theta=\frac{\pi}{2}$ for $\tilde{\Delta}\rightarrow +\infty$.}
+\end{figure}
+
+
+\newpage
+\section{Eigenvalues and Eigenvectors}
+
+Above we found
+
+\begin{align}
+\lambda_1 + \lambda_2 &= -\Delta\\
+\lambda_1 - \lambda_2 &= \tilde{\Omega}
+\end{align}
+
+We can solve this easily for $\lambda_{1,2}$ to see
+
+\begin{align}
+\lambda_1 &= -\frac{\Delta}{2} + \frac{\tilde{\Omega}}{2}\\
+\lambda_2 &= -\frac{\Delta}{2} - \frac{\tilde{\Omega}}{2}
+\end{align}
+
+The eigenvectors are given by
+
+\begin{align}
+\bv{v}_+ &= 
+\begin{bmatrix}
+\cos(\theta)\\ \sin(\theta)
+\end{bmatrix}\\
+\bv{v}_- &= 
+\begin{bmatrix}
+-\sin(\theta)\\ \cos(\theta)
+\end{bmatrix}
+\end{align}
+
+With
+
+\begin{align}
+\sin(\theta) &= \frac{1}{\sqrt{2}} \sqrt{1+\tilde{\Delta}}\\
+\cos(\theta) &= \frac{1}{\sqrt{2}} \sqrt{1-\tilde{\Delta}}
+\end{align}
+
+With
+
+\begin{align}
+\tilde{\Omega} &= +\sqrt{\Omega^2+\Delta^2}\\
+\tilde{\Delta} &= \frac{\Delta}{\tilde{\Omega}}
+\end{align}
+
+\section{Translating Back}
+
+We can translate this back to eigenvalues and eigenvectors for $\bv{H}$ by noting the eigenvalues $\tilde{\lambda}_{1,2}$ and eigenvectors $\tilde{\bv{v}}_{1,2}$ for $\bv{H}$ are given by
+
+\begin{align}
+\tilde{\lambda}_{1,2} = \lambda_{1,2} + b\\
+\tilde{\bv{v}}_{1,2} = \bv{L}\bv{v}_{1,2}
+\end{align}
+
+as shown above. We recall that $\Delta = b-a$, $\Omega = 2|c|$ and $l = e^{-i\phi_c}$. Writing this all out we find
+
+\begin{align}
+\tilde{\lambda}_1 &= \frac{a+b}{2} + \frac{1}{2}\sqrt{(b-a)^2 + 4|c|^2}\\
+\tilde{\lambda}_1 &= \frac{a+b}{2} - \frac{1}{2}\sqrt{(b-a)^2 + 4|c|^2}\\
+\end{align}
+
+\begin{align}
+\tilde{\bv{v}}_1 &= 
+\begin{bmatrix}
+\cos(\theta)\\e^{-i\phi_c}\sin(\theta)
+\end{bmatrix}
+=
+\frac{1}{\sqrt{2}}\begin{bmatrix}
+\sqrt{1-\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}\\e^{-i\phi_c}\sqrt{1+\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}
+\end{bmatrix}\\
+\tilde{\bv{v}}_2 &= 
+\begin{bmatrix}
+-\sin(\theta)\\e^{-i\phi_c}\cos(\theta)
+\end{bmatrix}
+=
+\frac{1}{\sqrt{2}}\begin{bmatrix}
+-\sqrt{1+\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}\\e^{-i\phi_c}\sqrt{1-\frac{b-a}{\sqrt{(b-a)^2+4|c|^2}}}
+\end{bmatrix}\\
+\end{align}
+
+This solves the problem of diagonalizing $\bv{H}$.
+
+\end{document}

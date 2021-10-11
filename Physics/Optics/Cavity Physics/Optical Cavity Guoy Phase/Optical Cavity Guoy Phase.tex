@@ -1,0 +1,422 @@
+\documentclass[12pt]{article}
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{siunitx}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{booktabs}
+\usepackage{empheq}
+\usepackage{biblatex}
+
+\newcommand{\ep}{\epsilon}
+\newcommand{\sinc}{\text{sinc}}
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\ahat}{\hat{a}}
+\newcommand{\adag}{\ahat^{\dag}}
+\newcommand{\braketacomm}[1]{\left\langle\left\{#1\right\} \right\rangle}
+\newcommand{\braketcomm}[1]{\left\langle\left[#1\right] \right\rangle}
+\newcommand{\slfrac}[2]{\left.#1\middle/#2\right.}
+
+\bibliography{refs}
+
+\begin{document}
+\title{Optical Cavity Guoy Phase}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+
+
+
+\section{Introduction}
+
+The main purpose of this document is to derive the form for the Guoy phase collected by an optical beam traveling a round trip through an optical cavity formed by two curved mirrors.
+Note that the results stated here are mostly summarized in \cite{Siegman1986} Chapter 19.
+Here I go into slightly more details and flesh out some of the tricky algebraic steps. 
+
+
+\section{Rayleigh range and cavity center}
+
+Consider a cavity made of two mirrors with radii of curvature $R_1$ and $R_2$. The distance between the mirrors is $L$. I take this to mean the distance from the center of one mirror to the center of the other mirror. 
+
+The condition for a mode to be supported by two mirrors is that the gradient of the phase (the local wavevector) of the mode is perpendicular to the mirror surface, i.e. the mirror is a surface of constant phase. 
+This is equivalent to saying the radius of curvature at the mirror is equal to the radius of curvature of the mirror. 
+This condition must hold for both mirrors.
+
+For a Gaussian mode we have for the radius of curvature as a function of $z$ along the beam:
+
+\begin{align}
+R(z) = (z-z_0)\left(1+\left( \frac{z_R}{z-z_0}\right)^2\right)
+\end{align}
+
+$z_0$ is the location of the waist of the Gaussian mode and $z_R$ is the Rayleigh range.
+We will take $z_0=0$ meaning we must solve for the location of the cavity mirror.
+We have
+
+\begin{align}
+L = z_2 - z_1
+\end{align}
+If a spatial mode is to be supported by the cavity then we have:
+
+
+\begin{align}
+R(z_1) &=  -R_1 = z_1\left(1+\frac{z_R^2}{z_1^2}\right)\\
+R(z_2) &= R_2 = z_2\left(1+\frac{z_R^2}{z_2^2}\right)
+\end{align}
+
+We manipulate these equations
+
+\begin{align}
+z_1^2 + z_R^2 =& -R_1z_1\\
+z_2^2 + z_R^2 =& R_2 z_2\\
+\end{align}
+
+Further manipulation
+
+\begin{align}
+z_2^2 - z_1^2 =& R_2z_2 + R_1 z_1\\
+(z_2 - z_1)(z_2 + z_1) =& R_2 z_2 + R_1 z_1\\
+L(L+2z_1) =& R_2(L+z_1) + R_1 z_1\\
+z_1 =& L\frac{(L-R_2)}{R_1+R_2 - 2L}\\
+z_2 =& L+z_1 = L \frac{R_1 - L}{R_1 + R_2 - 2L}
+\end{align}
+
+we define the cavity degeneracy parameters:
+
+\begin{align}
+g_i =& 1-\frac{L}{R_i}\\
+R_i =& \frac{L}{1-g_i}
+\end{align}
+
+Plugging this in above we find
+
+\begin{align}
+z_1 =& L \frac{L\left(1-\frac{1}{1-g_2}\right)}{L\left(\frac{1}{1-g_1} + \frac{1}{1-g_2} - 2\right)}\\
+z_1 =& L \frac{(1-g_1)(1-g_2) - (1-g_1)}{((1-g_2) + (1-g_1) - 2(1-g_1)(1-g_2)}\\
+z_1 =& L \frac{-g_2(1-g_1)}{g_1 + g_2 - 2g_1g_2}\\
+\end{align}
+
+and
+
+\begin{align}
+z_2 = L+z_1 =& L\frac{g_1 + g_2 - 2g_1g_2 - g_2 + g_1 g_2}{g_1+g_2 - 2g_1 g_2}\\
+z_2 =& L\frac{g_1 - g_1g_2}{g_1+g_2 - 2g_1 g_2} = L\frac{g_1(1-g_2)}{g_1+g_2-2g_1g_2}
+\end{align}
+
+We can solve for $z_R$
+
+\begin{align}
+z_R^2 + z_1^2 =& -R_1z_1\\
+z_R^2 =& -z_1(R_1+z_1)=-L^2 \frac{z_1}{L}\left(\frac{R_1}{L} + \frac{z_1}{L}\right)\\
+=& -L^2 \frac{-g_2(1-g_1)}{g_1+g_2 - 2g_1g_2}\left(\frac{1}{1-g_1} +\frac{-g_2(1-g_1)}{g_1+g_2-2g_1 g_2}\right)\\
+=& L^2\left(\frac{g_2}{g_1+g_2-2g_1g_2} - \frac{g_2^2(1-g_1)^2}{(g_1+g_2-2g_1g_2)^2}\right)\\
+=& L^2 \frac{g_1g_2 + g_2^2 -2g_1g_2^2 -g_2^2 +2g_1g_2^2-g_1^2g_2^2}{(g_1+g_2-2g_1g_2)^2}\\
+=& L^2 \frac{g_1g_2 - g_1^2g_2^2}{(g_1+g_2-2g_1g_2)^2}\\
+=& L^2 \frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}
+\end{align}
+
+We then get
+
+\begin{align}
+z_R = L\sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}}
+\end{align}
+
+The beam waist is then calculated as
+
+\begin{align}
+w_0^2 =& \frac{\lambda}{\pi}z_R = \frac{\lambda L}{\pi}\sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}}\\
+w_0 =& \sqrt{\frac{\lambda L}{\pi}}\left(\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}\right)^{\slfrac{1}{4}}
+\end{align}
+
+At this point we can also write down the beam divergence angle which is related to the $NA$ of the beam:
+
+\begin{align}
+\tan(\theta) = \frac{\lambda}{\pi w_0} = \sqrt{\frac{\lambda}{\pi L}}\left(\frac{(g_1+g_2 - 2g_1 g_2)^2}{g_1g_2(1-g_1g_2)}\right)^{\slfrac{1}{4}}
+\end{align}
+
+We can also calculate the size of the beam on each mirror using
+
+\begin{align}
+w(z) = w_0 \sqrt{1+\left(\frac{z}{z_R}\right)^2}
+\end{align}
+
+Working this out we get
+
+\begin{align}
+w_1^2=w(z_1)^2 =& \frac{\lambda L}{\pi} \sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}}\left(1+\frac{g_2^2(1-g_1)^2}{g_1g_2(1-g_1g_2)}\right)\\
+=& \frac{\lambda L}{\pi} \sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}} \frac{g_1g_2 - g_1^2 g_2^2 + g_2^2 + g_1^2g_2^2 - 2 g_1 g_2^2}{g_1g_2(1-g_1g_2)}\\
+=& \frac{\lambda L}{\pi} \frac{1}{g_1 + g_2 - 2g_1 g_2} \frac{g_2(g_1+g_2 - 2g_1g_2)}{\sqrt{g_1 g_2(1-g_1g_2)}}\\
+=& \frac{\lambda L}{\pi} \sqrt{\frac{g_2}{g_1(1-g_1g_2)}}
+\end{align}
+
+\begin{align}
+w_2^2 = w(z_2)^2 =& \frac{\lambda L}{\pi} \sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}}\left(1+\frac{g_1^2(1-g_2)^2}{g_1g_2(1-g_1g_2)}\right)\\
+=& \frac{\lambda L}{\pi} \sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}} \frac{g_1g_2 - g_1^2 g_2^2 + g_1^2 + g_1^2g_2^2 - 2 g_1^2 g_2}{g_1g_2(1-g_1g_2)}\\
+=& \frac{\lambda L}{\pi} \frac{1}{g_1 + g_2 - 2g_1 g_2} \frac{g_1(g_1+g_2 - 2g_1g_2)}{\sqrt{g_1 g_2(1-g_1g_2)}}\\
+=& \frac{\lambda L}{\pi} \sqrt{\frac{g_1}{g_2(1-g_1g_2)}}
+\end{align}
+
+We summarize the results up to now
+
+\begin{align}
+R(z_1) =& -R_1\\
+R(z_2) =& R_2\\
+L =& z_2-z_1\\
+g_i =& 1-\frac{L}{R_i}\\
+R_i =& \frac{L}{1-g_i}\\
+z_1 =& L \frac{-g_2(1-g_1)}{g_1+g_2 - 2 g_1 g_2}\\
+z_2 =& L \frac{g_1(1-g_2)}{g_1+g_2-2g_1g_2}\\
+z_R =& L \sqrt{\frac{g_1 g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}}\\
+w_0^2 =& \frac{\lambda L}{\pi}\sqrt{\frac{g_1g_2(1-g_1g_2)}{(g_1+g_2-2g_1g_2)^2}}\\
+w_1^2 =& \frac{\lambda L}{\pi} \sqrt{\frac{g_2}{g_1(1-g_1g_2)}}\\
+w_2^2 =& \frac{\lambda L}{\pi} \sqrt{\frac{g_1}{g_2(1-g_1g_2)}}\\
+\tan(\theta) =& \sqrt{\frac{\lambda}{\pi L}}\left(\frac{(g_1+g_2 - 2g_1 g_2)^2}{g_1g_2(1-g_1g_2)}\right)^{\slfrac{1}{4}}
+\end{align}
+
+We now specialize to the case that $R_1 = R_2$, $g_1 = g_2$.
+We'll find it useful to express
+
+\begin{align}
+1-g =& \frac{L}{R}\\
+1+g =& 2-\frac{L}{R} = \frac{1}{R}(2R-L) = \frac{\delta}{R}
+\end{align}
+
+Where we have defined the distance to concentric $\delta = 2R-L$.
+We summarize the above relations:
+
+\begin{align}
+z_1 =& -\frac{L}{2}\\
+z_2 =& \frac{L}{2}\\
+z_R =& L\sqrt{\frac{1+g}{4(1-g)}} = R\sqrt{\frac{1}{4}(1-g^2)} = \frac{1}{2}\sqrt{L\delta}\\
+w_0^2 =& \frac{\lambda L}{\pi} \sqrt{\frac{1+g}{4(1-g)}} = \frac{\lambda R}{\pi} \sqrt{\frac{1}{4}(1-g^2)} = \frac{\lambda}{2\pi} \sqrt{L\delta}\\
+w_1^2 = w_2^2 =& \frac{\lambda L}{\pi} \sqrt{\frac{1}{1-g^2}} = \frac{\lambda R}{\pi} = \sqrt{\frac{1-g}{1+g}} = \frac{\lambda}{\pi} \sqrt{\frac{R^2 L}{\delta}}\\
+\tan(\theta) =& \sqrt{\frac{\lambda}{\pi L}}\left(\frac{4(1-g)}{1+g}\right)^{\slfrac{1}{4}} = \sqrt{\frac{\lambda}{\pi R}}\left(\frac{4}{1-g^2}\right)^{\slfrac{1}{4}} = \left(\frac{4\lambda^2}{\pi^2 L\delta}\right)^{\slfrac{1}{4}}
+\end{align}
+
+For basically all cases of interest we have that $\theta \ll 1$ so
+
+\begin{align}
+NA = \sin(\theta) \approx \tan(\theta) \approx \theta
+\end{align}
+
+\section{Cavity Guoy Phase}
+
+In this section we will calculate the round trip Guoy phase in a cavity. The Guoy phase for a high order mode is given by
+
+\begin{align}
+\psi_{nm}(z) = (n+m+1)\arctan\left(\frac{z}{z_R}\right)
+\end{align}
+
+The differential phase traversing from left to right and back is given by
+
+\begin{align}
+\phi_G =& 2(n+m+1)\left(\arctan\left(\frac{z_2}{z_R}\right) - \arctan\left(\frac{z_1}{z_R}\right)\right)\\
+\end{align}
+
+We apply the identity
+
+\begin{align}
+\arctan(a) - \arctan(b) = \arctan\left(\frac{a-b}{1+ab}\right)
+\end{align}
+
+to get
+
+\begin{align}
+\phi_G = 2(n+m+1)\arctan\left(\frac{\frac{z_2-z_1}{z_R}}{1+\frac{z_1 z_2}{z_R^2}}\right) = 2(n+m+1)\arctan\left(\frac{z_R}{z_R^2 + z_1z_2}\right)
+\end{align}
+
+We now plug in the expressions for $z_1, z_2$ and $z_R$ but first for convenience we define
+
+\begin{align}
+\chi = g_1 + g_2 - 2g_1g_2
+\end{align}
+
+It will be useful to know the sign of $\chi$ depending on the signs of $g_1, g_2$.
+First we know that $0<g_1g_2<1$ for stability which implies $\text{sign}(g_1) = \text{sign}(g_2)$. 
+We can define $f=g_1g_2$ and we then have
+
+\begin{align}
+\chi = g_1 + \frac{1}{g_1} f - 2f
+\end{align}
+
+This function is continuous except for at $g_1=0$.
+Let's see if it ever crosses zero.
+to do this we multiply by $g_1$ and solve
+
+\begin{align}
+g_1^2 -2f g_1 + f =0
+\end{align}
+
+The solutions of this are given by
+
+\begin{align}
+g_1 = f \pm \sqrt{f(f-1)}
+\end{align}
+
+but note that $f(f-1)$ is negative since $0<f<1$.
+This means the solution has no real roots.
+That means there are no values for which $\chi=0$, thus there are no continuous zero crossings.
+We should check if the sign switches across the discontinuity at $g_1=0$.
+We plug in $g_1=\frac{1}{2}, f=\frac{1}{2}$
+
+\begin{align}
+\chi \rightarrow \frac{1}{2} + 1 - 1 = \frac{1}{2}>0
+\end{align}
+
+and $g_1 = -\frac{1}{2}, f=\frac{1}{2}$
+
+\begin{align}
+\chi \rightarrow -\frac{1}{2} - 1 - 1 = -\frac{5}{2}<0
+\end{align}
+
+So we see that $\chi$ has the same sign as $g_1$ and $g_2$.
+
+With this definition of $\chi$ we can express $z_1, z_2$ and $z_R$ to simplify the $\arctan$ above.
+
+\begin{align}
+z_1 =& L \frac{-g_2(1-g_1)}{\chi}\\
+z_2 =& L \frac{g_1(1-g_2)}{\chi}\\
+z_R =& L\frac{\sqrt{g_1g_2(1-g_1g_2)}}{|\chi|}
+\end{align}
+
+Note that we put in $|\chi|$.
+This is because the expression was $\sqrt{\chi^2} = |\chi|$.
+We must take care in case $\chi<0$.
+Note however that $g_1g_2 >0$ so $g_1g_2 = \sqrt{(g_1g_2)^2}$.
+
+We then manipulate the argument of $\arctan$:
+
+\begin{align}
+\frac{z_R}{z_R^2 + z_1z_2} =& \frac{\frac{\sqrt{g_1 g_2(1-g_1g_2)}}{|\chi|}}{\frac{g_1g_2(1-g_1g_2)}{\chi^2} - \frac{g_1g_2(1-g_1)(1-g_2)}{\chi^2}}\\
+=& \frac{\sqrt{1-g_1g_2}}{\sqrt{g_1g_2}} \frac{|\chi|}{(1-g_1g_2) - (1 - g_1 - g_2 + g_1 g_2)}\\
+=& \frac{\sqrt{1-g_1g_2}}{\sqrt{g_1g_2}} \frac{|\chi|}{g_1 + g_2 - 2 g_1g_2}\\
+=& \frac{\sqrt{1-g_1g_2}}{\sqrt{g_1g_2}} \frac{|\chi|}{\chi}\\
+=& \frac{\sqrt{1-g_1g_2}}{\sqrt{g_1g_2}} \text{sign}(\chi)\\
+=& \pm \frac{\sqrt{1-g_1g_2}}{\sqrt{g_1g_2}} 
+\end{align}
+
+Where it is understood that the $+$ sign is taken when $g_1,g_2>0$ and the $-$ is taken when $g_1,g_2<0$.
+
+So we get that
+
+\begin{align}
+\phi_G = 2(n+m+1)\arctan\left(\pm \frac{\sqrt{1-g_1g_2}}{\sqrt{g_1g_2}}\right)
+\end{align}
+
+We use the identity
+
+\begin{align}
+\arccos(a) = \arctan\left(\frac{\sqrt{1-a^2}}{a}\right)
+\end{align}
+
+to finally show
+
+\begin{align}
+\phi_G = 2(n+m+1)\arccos\left(\pm\sqrt{g_1g_2}\right)
+\end{align}
+
+If $g_1=g_2$ then $\sqrt{g_1g_2} = \sqrt{g^2}=|g|$.
+We then have
+
+\begin{align}
+\phi_G = 2(n+m+1)\arccos(\pm |g|) = 2(n+m+1)\arccos(g)
+\end{align}
+
+Recall that the $\pm$ stands for $\text{sign}(\chi)$ and $\text{sign}(\chi) = \text{sign}(g)$ so $\pm |g| = g$.
+
+\section{Cavity Resonance Frequencies}
+
+We can now calculate the cavity resonance frequencies. 
+On axis the phase of a Hermite-Gaussian mode is given by
+
+\begin{align}
+-kz + (n+m+1)\psi(z)
+\end{align}
+
+The phase difference between the left and right mirrors (and back) is
+
+\begin{align}
+&2\left[\left(-kz_2 + (n+m+1)\psi(z_2) \right) - \left(-kz_1 + (n+m+1)\psi(z_1)\right)\right]\\
+=& -2 kL + 2(n + m + 1)\arccos(\pm\sqrt{g_1g_2})
+\end{align}
+
+The phase condition for cavity resonance is that this quantity is an integer, $q$, multiple of $2\pi$.
+
+\begin{align}
+-2 kL + 2(n+m+1)\arccos(\pm\sqrt{g_1g_2}) = -2\pi q
+\end{align}
+
+we write
+
+\begin{align}
+kL = \frac{2\pi f L}{c} = \pi f \frac{2L}{c} = \pi \frac{f}{f_{FSR}}
+\end{align}
+
+to get
+
+\begin{align}
+-2\pi \frac{f}{f_{FSR}} + 2(n+m+1)\arccos(\pm\sqrt{g_1g_2}) = -2\pi q
+\end{align}
+
+solving for $f$ we find the resonances:
+
+\begin{align}
+f = q f_{FSR} + f_{FSR}(n+m+1)\frac{\arccos(\pm\sqrt{g_1g_2})}{\pi}
+\end{align}
+
+For a symmetric cavity with $g_1=g_2$ we get
+
+\begin{align}
+f = q f_{FSR} + f_{FSR}(n+m+1)\frac{\arccos(g)}{\pi}
+\end{align}
+
+We see that in addition to the fundamental modes spaced by $f_{FSR}$ there are additional transverse modes supported at slightly different frequencies.
+The spacing between the modes of higher frequencies is given by
+
+\begin{align}
+f_{TMS} = f_{FSR} \frac{\arccos(g)}{\pi}
+\end{align}
+
+We consider three parameter regimes for $g$.
+\subsubsection*{Near Planar}
+If $g$ is close to 1 then $\arccos(g)$ is close to zero meaning the transverse mode spacing is small compared to the free spectral range.
+In this case the higher order modes appear as families of modes with frequencies slightly \textit{higher} than the fundamental modes.
+
+\subsubsection*{Confocal}
+If $g=0$ then $\arccos(g)=\frac{\pi}{2}$ so that $f_{TMS} = \frac{1}{2}f_{FSR}$.
+This means that higher order modes of longitudinal mode number $n$ overlap with fundamental modes of modes with higher longitudinal modes.
+That is, $f_{n,2,0}$ or $f_{n,1,1}$ overlap with $f_{n+1,0,0}$ and $f_{n,0,4}$ overlaps with $f_{n+1,0,0}$.
+The odd modes fall in between the fundamental modes.
+In a confocal cavity the resonances are all massively degenerate with interesting geometrical implications for the modes supported by the cavity.
+For example if a beam is put into a cavity the even or odd part will be filtered out of it depending on whether the frequency is overlapped with the even or odd families.
+
+\subsubsection*{Near Concentric}
+if $g$ approaches -1 then $\arccos(g)$ approaches $\pi$.
+This means that $f_{TMS}$ approaches $f_{FSR}$.
+This means that the higher order modes of one longitudinal modes approach from below the fundamental modes of neighboring longitudinal modes.
+For example $f_{n,1,0}$ approaches $f_{n+1,0,0}$ and $f_{n,2,0}$ approaches $f_{n+2,0,0}$.
+Close to concentric the modes all bunch up around the fundamental modes but now, instead of looking at the spacing between the transverse modes and the original longitudinal mode it becomes interesting to look at the distance between the transverse modes and the modes to which they are approaching.
+
+For this reason we redefine
+
+\begin{align}
+f_{TMS}^{concentric} = f_{FSR} - f_{TMS} = f_{FSR}\left(1-\frac{\arccos(g)}{\pi}\right)
+\end{align}
+
+Note that for $g=0$ we have $\arccos(g)=\frac{\pi}{2}$.
+This means $f_{TMS}=\frac{1}{2} f_{FSR}$.
+This means, for example, that $f_{n,2,0}$ overlaps in frequency with $f_{n+1,0,0}$ and $f_{n,4,0}$ overlaps with $f_{n+2,0,0}$.
+
+\printbibliography
+
+\end{document}
