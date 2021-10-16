@@ -25,6 +25,7 @@
 \newcommand{\bv}[1]{\boldsymbol{#1}}
 \newcommand{\mc}[1]{\mathcal{#1}}
 \newcommand{\bc}[1]{\bv{\mc{#1}}}
+\newcommand{\qq}[1]{``#1''}
 
 \begin{document}
 \title{Logic Notes}
@@ -112,13 +113,106 @@ I hope that in this revisit I'll be able to overcome this difficulty.
 \newpage
 \section{Introduction}
 
-In this work I hope to give a thorough treatment of the basics of formal logic with the goal of proving that extensions by definition to a formal theory are conservative extensions.
-To build to this result I will outline my version of the lexicon and syntax for the language of first order logic (\textbf{LFOL}).
-The conventions chosen in my definitions for \textbf{LFOL} are chosen with the goal of easing the proof about definition by extension to follow.
-For example, to minimize metalogical inductive cases, I restrict to using a small subset of connectives, rather than the full inuitive set sometimes chosen.
+\subsection{Formal Logic and Language}
+All of traditional mathematics can be expressed in terms of mathematical set theory. 
+Set theory itself is expressed in terms of a formal logic called first-order logic \textbf{FOL} which is expressed in the language of first-order logic \textbf{LFOL} .
+The \textbf{LFOL} is a written formal language which means that it is composed of a clearly and well-defined set of symbols which constitutes the alphabet of that language and clear rules of syntax which identify `appropriate' ways in which the symbols can be combined to form well-formed formulas, or Wffs.
+In addition to \textbf{LFOL}, \textbf{FOL} includes a deductive calculus based on inference rules which allows us to derive new Wffs from old Wffs in a way which will be made clear below.
+\textbf{FOL} is fully captured by the language in which it is expressed, \textbf{LFOL}, and the inference rules which allow for deduction within the logic.
 
-After this I delve into proof theory by defining the concept of a proof theoretic, or syntactic natural deduction framework and the corresponding rules of deduction.
-As first demonstrations of this framework I will recover the omitted connectives by defining these connectives to be abbreviations of more complex statements written in LFOL as defined above and providing proofs of the corresponding rules of inference from the set of base inference rules.
+A formal theory within a formal logic begins with a set of axioms which are a subset of the Wffs of the language. 
+It is then possible, using the inference rules, to derive new formulas from these axioms using the inference rules.
+The main question we ask about a formal theory is which Wffs can be proven from the given axioms?
+
+\subsection{Syntax and Semantics}
+There are two important topics in formal logic: syntax and semantics.
+Syntax pertains to the formal rules listed above such as which symbols are in the alphabet, how can they be combined to form Wffs, and what are the inference rules which allows us to manipulate Wffs to derive new ones.
+Semantics is the task of assigning meaning to Wffs.
+In its simplest form semantics is the assigning of a truth value to Wffs.
+
+Let's consider an example.
+Suppose we would like to formalize the statement: If $x$ is an integer and $x$ is odd then $x \div 2$ is an integer.
+
+$$
+((\forall x)((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N}))
+$$
+
+The smallest element in our formal language is the \textit{term}.
+A term is one of three things (1) a concrete object such as the number \qq{2}, (2) a variable into which concrete objects can be `plugged in' such as \qq{x}, or (3) an $n$-ary function of other terms such as \qq{$\div$}.
+In fact, below we will express a concrete object as a 0-ary function.
+The terms in the above expression are:
+
+\begin{align}
+& x \\
+& \mathbb{N} \\
+& x \\
+& \div x 2 \\
+& x \\
+& 2 \\
+& \mathbb{N}
+\end{align}
+
+Here I have listed every term as it appears from left to right.
+We can see that some terms appear multiple times in the formula.
+The only variable which appears is \qq{$x$}.
+We see \qq{2} and \qq{$\mathbb{N}$} appearing as 0-ary functions.
+We see \qq{$\div$} appearing as a 2-ary function with arguments \qq{$x$} and \qq{2} which are a variable and 0-ary function respectively.
+Note that in our formal language we always use prefix notation for functions and predicates so we symbolize \qq{$\div x2$} rather than \qq{$x \div 2$} as we would see in typical infix notation.
+
+The next larger element in our formal language is the \textit{atomic formula}.
+An atomic formula is the combination of an $n$-ary predicate symbol and $n$ terms.
+We have 2 predicate symbols in the above formula: \qq{$\in$} is a 2-ary predicate and \qq{$O$} is a 1-ary predicate symbol.
+The atomic formulas are then
+
+\begin{align}
+\mc{A} \equiv& \in x \mathbb{N}\\
+\mc{B} \equiv& Ox\\
+\mc{C} \equiv& \in \div x2 \mathbb{N}
+\end{align}
+
+Here $\mc{A}$, $\mc{B}$, and $\mc{C}$ are metalanguage symbols which stand for the corresponding Wffs on the right hand sides of the $\equiv$ symbol.
+
+Finally, the next larger object in our language is the Wff.
+Atomic formulas themselves are already Wffs, but we can form larger more complex Wffs by stringing together smaller Wffs with connectives such as \qq{$\land$} and \qq{$\implies$} or quantifying with $(\forall x)$.
+We see sub-Wffs above:
+
+\begin{align}
+& ((\forall x)((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N})) \\
+& ((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N}) \\
+& (\in x \mathbb{N} \land Ox)\\
+& \in x \mathbb{N}\\
+& Ox \\
+&  \in \div x 2 \mathbb{N}
+\end{align}
+
+The above discussion has been a purely syntactic analysis of the given Wff.
+That is, we broke down the Wff into smaller parts of the formal language.
+We will see below that this Wff is, in fact, a Wff according to the formal rules of syntax.
+
+Semantics comes in when we give an \textit{interpretation} to the various expressions above.
+For example, when we \textit{interpret} the symbol \qq{2} as the number 2, the expression \qq{$x \div 2$} as the division of the variable $x$ by the number 2, or predicate \qq{$Ox$} to mean that the variable $x$ is odd, we are imposing semantics onto the expression.
+We also are making a semantic interpretation any time we impose or deduce a truth value for a given Wff.
+For example, on all of the usual interpretations, we would assign a value of false to the Wff above because the odd integers are in fact, not divisible by 2.
+
+In this document I would like to follow a game formalist approach to formal logic.
+This is an approach which holds that it is possible to describe set theory, and by extension, all of mathematics using on the syntactic methods.
+Or, at the very least, it asks the question how far one can get using such an approach.
+To that end, I would like it to be clear that all definitions and arguments which should be self-contained within purely syntactic analyses.
+At a few times I may make reference to semantic ideas, but this is only to motivate the definition.
+If one wishes to always drop the semantics from the narrative entirely then we may have some unmotivated definitions, but there is nothing in the rules against unmotivated definitions.
+
+\subsection{Outline}
+
+The goal of this work is to prove that extensions by definition to a formal theory are conservative extensions.
+
+I will begin with a thorough outlining of \textbf{LFOL}, starting with the alphabet, and then moving onto syntax.
+In addition some useful metalanguage concepts such as term substitution will be defined.
+The conventions chosen in my definitions for \textbf{LFOL} are chosen with the goal of easing the proof about definition by extension to follow.
+For example, to minimize metalogical inductive cases, I restrict to using a small subset of connectives, rather than the full intuitive set sometimes chosen.
+
+After \textbf{LFOL} is laid out we move into proof theory.
+We being by describing sequents and follow with the concept of a formal proof and our corresponding rules of inference.
+We then derive a number of derived inference rules, including inference rules for the abbreviated symbols which were not included natively in the language.
 
 Next I will define a logical theory based on a set of axioms.
 At this point I will then define a conservative extension to a theory, and an extension by definition to a theory.
@@ -127,20 +221,11 @@ We either define new predicate symbols, or new function symbols.
 In the remainder of this document I will prove that these two forms of extensions by definition to a logical theory are in fact conservative extensions.
 These proofs will utilize metalogical induction.
 
-Note that it is my goal in this document to give a purely syntactic approach to formal logic.
-That is, I am specifically trying to avoid any reference to semantics, or reasoning about or based on the truth value of any logical statements or Wffs. 
-This is because I would like this document to be in line with and in support of a game formalist philosophy of mathematics.
-That is, mathematics can be thought of entirely as a symbol game.
-That said, thinking about formal logic in terms of semantics can help logicians and mathematics intuitively understand the symbol patterns and consequences. 
-Many of the definitions that follow are motivated by considering the consequences of the definitions in case that the logical statements did in fact have semantic meaning.
-In some cases, then, I will have some short discussions of the semantics of some Wff or deduction, but these cases should be understood  as aids to the readers intuition, rather than fundamental to the proof theory itself. 
-That is, definitions that follow will in some cases be intuitively motivated by semantics, but the definitions themselves in no way rely on semantics.
-
 \newpage
 \section{The Language of First Order Logic (LFOL)}
 
-At the basis of a formal language is a sets of symbols which can be concatenated together to form strings.
-If a string follow certain allowed construction rules, specified by the syntax of the language, then the string is said to be a well-formed formula, or Wff.
+At the basis of a formal language is a set of symbols which can be concatenated together to form strings.
+If a string follows certain allowed construction rules, specified by the syntax of the language, then the string is said to be a well-formed formula, or Wff.
 
 There are multiple classes of symbol objects, each of which plays a different role in the syntax of the language. 
 We first distinguish between logical and non-logical symbols. 
@@ -151,7 +236,10 @@ The non-logical symbols include the predicate and function symbols.
 The symbols included in the non-logical symbols may vary from one application of the formal language to the next.
 
 
-\subsection*{The Lexicon of LFOL:}
+\subsection{The Lexicon of LFOL:}
+
+\hrulefill
+
 \subsubsection*{Logical Symbols:}
 \begin{itemize}
 \item{\textbf{Variables:} Variable symbols such as $x_1, x_2, \ldots, v_1, v_2, \ldots$. We will try to use lower case letters from near the end of the alphabet for variables. The set of all variables is denoted $\textbf{Var}$.}
@@ -162,6 +250,8 @@ The symbols included in the non-logical symbols may vary from one application of
 
 The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \sqcup \textbf{Lop} \sqcup \textbf{Quant} \sqcup \textbf{Punct}$.
 
+\hrulefill
+
 \subsubsection*{Non-Logical Symbols:}
 \begin{itemize}
 \item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
@@ -169,6 +259,8 @@ The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint
 \end{itemize}
 
 The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoin union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$.
+
+\hrulefill
 
 The set of all symbols in the language is denoted $\textbf{Symb}$ and is the disjoint union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \sqcup \textbf{NonLogSymb}$.
 
@@ -178,35 +270,34 @@ I have chosen to use a restricted set of logical operators in the theory to the 
 This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs. 
 However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as abbreviations and metalogically derive the appropriate corresponding rules of inference.
 
-\subsection*{The Syntax of LFOL}
+\subsection{The Syntax of LFOL}
 
 Strings in the language are strings of symbols of the language. For example ``$x_1 \lnot Q \curlywedge ($'' is a string in the language. We can think of a string as an ordered tuple of elements from $\textbf{Symb}$. The set of all strings is denoted by $\textbf{Str}$.
 We consider the symbols in $\textbf{Symb}$ to be length 1 strings so that $\textbf{Symb} \subset \textbf{Str}$.
-
-Below we will see rules for constructing `sensible' strings or `well-formed-formulas' (Wffs) in the language. Note that for the metalogic proofs it may be useful to write down something like $\mc{A} \equiv (\lnot(B\implies C))$ to indicate that the metalanguage symbol $\mc{A}$ represents the same string as $(\lnot(B \implies C))$.
+Below we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
 
 String $\mc{B}$ appears in string $\mc{A}$, or is a substring of string $\mc{A}$, iff there are (possibly empty) strings $\mc{C}$ and $\mc{D}$ such that $\mc{B}\equiv \mc{C}\mc{B}\mc{D}$.
 
-\newpage
-We build up the defining characteristics of Wffs by defining the smallest meaningful strings that can be formed in the language.
-These are the terms which represent either objects of study (constants or functions of constants) or variables into which we can plug in objects of study.
-
-
 \hrulefill
+
 \subsubsection*{Terms}
+
+The smallest syntactic elements of \textbf{LFOL} are the terms defined as follows.
+
 $t \in \textbf{Term}$ iff $t \in \textbf{Str}$ and satisfies one of
 \begin{itemize}
 \item{\textbf{Variables:} $t \in \textbf{Var}$.}
 \item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\vec{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
 \end{itemize}
 
-\hrulefill
+Semantically, if we think of the formal language as expressing meaning, then terms are the objects about which the formal language is communicating information. 0-ary functions represent constants or concrete objects while variables represent place-holders into which other terms can be `plugged in'.
+If a term is closed (meaning that no variables appear in the term as will be defined more precisely below) then the term represents another concrete object.
 
-In the language if we `plug in' terms into a predicate we get a statement about those terms.
-We call this statement an atomic formula.
+\hrulefill 
 
-\hrulefill
 \subsubsection*{Atomic Formulas}
+
+The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defined as follows.
 
 $\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
 
@@ -214,14 +305,17 @@ $\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
 \item{\textbf{Atoms:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\vec{t})$. In our notation $\curlywedge$ is an atomic formula.}
 \end{itemize}
 
+Semantically an atomic formula expresses a statement about the `objects of study', that is the terms, which have been plugged into it.
+Semantically terms do not have truth value, rather, they are objects about which boolean claims can be made.
+Semantically, closed atomic formulas can be thought of as having truth values.
+
 \hrulefill
 
-Finally, these statements about objects of the language, atomic formulas, can be combined into more complex statements using the logical symbols.
-The ways in which atomic formulas can be combined form the formation rules for Wffs.
-
-\hrulefill
 \subsubsection*{Well-Formed Formulas}
-We denote the set of all Wffs as $\textbf{Wff}$.
+
+The final layer of syntax is the Wff.
+Wffs combine multiple atomic formulas into more complex expressions using the logical operators.
+
 $\mc{A} \in \textbf{Wff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
 
 \begin{itemize}
@@ -230,6 +324,8 @@ $\mc{A} \in \textbf{Wff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
 \item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{Wff}$.}
 \item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{Wff}$, and $\mc{B}$ contains $x$ as a substring but does not contain $(\forall x)$ as a substring. We say $\mc{B}$ and all substrings of $\mc{B}$ are in the scope of $(\forall x)$} 
 \end{itemize}
+
+Semantically, like atomic formulas, Wffs express, now more complex, statements about terms.
 
 \hrulefill
 
@@ -246,49 +342,35 @@ It is possible to develop formal logic in ways to allow redundant and double qua
 However, in the interest of preserving `naturalness' of the language, we restrict to avoid them.
 This may have the consequence of making some metalogical proofs and definitions more complicated.
 
-Terms are the smallest meaningful elements of the language.
-A term is thought of either as a concrete object, for example if it only contains functions\footnote{recall that constants are 0-ary functions}, or as a placeholder into which objects can be plugged in if it involves variables.
-In a semantic sense, terms cannot take on truth values.
-Rather, they are objects about which truth statements could be constructed.
-Examples of terms include $0$, $x$, $f(3)$ and $g(y)$.
+\hrulefill
 
-Atomic formulas consist of terms plugged into $n$-ary predicates.
-We think of atomic formulas as expressions about objects (the terms) which can take on truth values.
-If the terms of the predicate are all functions (including constants) then atomic formula is the type of object which may have a truth value\footnote{Naively I would say that an atomic formula with functions in its arguments \textit{does} have a truth value. However, we can have an incomplete theory which complicates this subject. Note that I am mostly interested in the syntax of logic, rather than the semantics. I'm not especially worried about which objects can be true or false etc. I am merely illustrating these topics here about Wffs to give the reader a better intuition for these objects.}. 
-Examples of atomic formulas include $f(x) < 3$ or $3 < f(5)$.
-
-Wffs are similar to atomic formulas in that we think of them as statements about objects.
-Wffs can simply include more complex logical combinations of atomic formulas.
-
-Terms are understood to be the smallest meaningful elements of the language. 
-A term should be thought of as an ``object'' that can be ``plugged in'' to other expressions, in particular into predicates.
-Note that LFOL can operate without the inclusion of any functions.
+\subsubsection*{Logical Abbreviations}
 
 We introduce a number of logical abbreviations to allow us to express the usual full range of logical connectives.
 
-\hrulefill
+For Wffs $\mc{A}$ and $\mc{B}$
 \begin{itemize}
-\item{\textbf{Conjunction:} We let $(\mc{A}\land \mc{B})$ abbreviate $(\lnot(\mc{A}\implies(\lnot\mc{B})))$}
-\item{\textbf{Disjunction:} We let $(\mc{A} \lor \mc{B})$ abbreviate $((\lnot\mc{A}) \implies \mc{B})$}
-\item{\textbf{Equivalence:} We let $(\mc{A} \iff \mc{B})$ abbreviate $((\mc{A} \implies \mc{B}) \land (\mc{B} \implies \mc{A}))$}
-\item{\textbf{Existential Quantification:} We let $((\exists x)\mc{A})$ abbreviate $(\lnot((\forall x)(\lnot \mc{A})))$.}
+\item{\textbf{Conjunction}: We let $(\mc{A} \land \mc{B})$ abbreviate $(\lnot(\mc{A} \implies (\lnot \mc{B})))$}
+\item{\textbf{Disjunction}: We let $(\mc{A} \lor \mc{B})$ abbreviate $((\lnot \mc{A}) \implies \mc{B})$}
+\item{\textbf{Equivalence}: We let $(\mc{A} \iff \mc{B})$ abbreviate $((\mc{A} \implies \mc{B}) \land (\mc{B} \implies \mc{A}))$}
+\item{\textbf{Existential Quantification}: We let $((\exists x) \mc{A})$ abbreviate $(\lnot((\forall x)(\lnot \mc{A})))$. .}
 \end{itemize}
-\hrulefill
 
 We also introduce abbreviations for removing parentheses. 
 This abbreviation language is copied directly from Tourlakis.
 
-\hrulefill
 \begin{itemize}
 \item{\textbf{Parentheses:} ``To minimize the use of brackets in the metanotation we adopt standard \textit{priorities} of connectives: $\forall, \exists,$ and $\lnot$ have the highest, and then we have (in decreasing order of priority) $\land, \lor, \implies, \iff$, and we agree not to use outermost brackets. all \textit{associativities} are \textit{right} - that is if we write $\mc{A} \implies \mc{B} \implies \mc{C}$, then it is a (sloppy) counterpart for $(\mc{A} \implies ( \mc{B} \implies \mc{C}))$.''}
 \end{itemize}
 \hrulefill
 
-\subsection*{Variable/Term Manipulation}
+\subsection{Metalanguage Variable/Term Manipulation}
+
+\hrulefill
+
 \subsubsection*{Free Variables}
 We define inductively the set of free variables in a term or Wff $\mc{A}$.
 
-\hrulefill
 \begin{itemize}
 \item{if $\mc{A}\equiv x$ is a variable then $FV(x) = \{x\}$.}
 \item{if $\mc{A} \equiv ft_1\ldots t_n$ then $FV(ft_1\ldots t_n) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
@@ -297,9 +379,10 @@ We define inductively the set of free variables in a term or Wff $\mc{A}$.
 \item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
 \item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ if $\mc{A}$ is a Wff.}
 \end{itemize}
-\hrulefill
 
-We say than an instance of a variable $x$ within a Wff $\mc{A}$ is bound if it appears in the scope of a quantifier $(\forall x)$, otherwise the instance is a free variable and we can see that it is appears in $FV(\mc{A})$.
+
+
+We say than an instance of a variable $x$ within a Wff $\mc{A}$ is bound if it appears in the scope of a quantifier $(\forall x)$, otherwise the instance is free and we can see that it is appears in $FV(\mc{A})$.
 
 Note that a variable can appear both free and bound in a Wff.
 For example, $x$ appears both free and bound in the Wff $(Px \land ((\forall x)Qxy))$.
@@ -307,31 +390,41 @@ While this is valid, it would be less confusing if we instead had $(Px \land ((\
 These two expression can be shown to be logically equivalent using the inference rules which will follow.
 
 If a Wff contains any free variables then we say that it is \textit{open}.
-Otherwise we say the \textit{Wff} is closed.
+Otherwise we say the Wff is closed.
 A closed Wff has had functions or constants plugged in for all variables.
-Intuitively this means it is a candidate expression for having a truth value. 
-An open Wff still has free variables so we cannot say whether the expression is true or not.
-For example, $3=5$ is a closed Wff and we would say it is false.
-$x=5$ is an open expression, we don't know if it is true or false until we `plug something in' for $x$.
-if $\mc{A}$ has $FV(\mc{A}) = \{x_1, \ldots, x_n\}$ then we say that
+
+In terms of semantics, it is always possible to assign a truth value to a closed Wff.
+Open Wffs however are trickier.
+For example, while it is clear that the sentence `$3=5$' can have a truth value, the sentence `$x=5$' cannot have a truth value because the truth value depends on what value is plugged in for $x$.
+
+if $\mc{A}$ has $FV(\mc{A}) = \{x_1, \ldots, x_n\}$ then we define 
 $$
-\bar{\mc{A}} \equiv ((\forall x_1)(\ldots((\forall x_n)(\mc{A}))))
+\bar{\mc{A}} \equiv ((\forall x_1)(\ldots((\forall x_n)\mc{A})))
 $$
-is the closure of $\mc{A}$.
+as the closure of $\mc{A}$.
 $FV(\bar{\mc{A}}) \equiv \emptyset$ so $\bar{\mc{A}}$ is closed.
+
+\hrulefill
 
 \subsubsection*{Term Replacement}
 
 It will be very important to carefully define term replacement. 
 
-\hrulefill
+First term replacement within a term.
+
+
+Suppose $s, t\in \textbf{Term}$ and $x\in \textbf{Var}$.
 \begin{itemize}
-\item{If $\mc{A}\equiv y$ is a variable then $y[t/x] \equiv t$ if $y\equiv x$, otherwise $y[t/x]\equiv y$ if $y\not\equiv x$.}
-\item{If $\mc{A}\equiv fs_1\ldots s_n$ is an $n$-ary function then $fs_1\ldots s_n[t/x] \equiv f s_1[t/x]\ldots s_n[t/x]$. Note that this implies $f[t/x]\equiv f$ for a 0-ary function.}
-\item{If $\mc{A}\equiv Ps_1\ldots s_n$ is an $n$-ary predicate then $Ps_1\ldots s_n[t/x] \equiv P s_1[t/x]\ldots s_n[t/x]$. Note that this implies $P[t/x]\equiv P$ for a 0-ary predicate such as $\curlywedge$.}
-\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}[t/x] \equiv (\lnot \mc{B}[t/x])$.}
-\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then if $y\not \equiv x$ then $\mc{A}[t/x] \equiv ((\forall y)\mc{B}[t/x]$. If $y\equiv x$ then $\mc{A}[t/x] \equiv \mc{A}$.}
+\item{If $s \in \textbf{Var}$ then if $s\equiv x$ $s[t\leftarrow x] \equiv t$. If $s \not\equiv x$ then $s[t\leftarrow x] \equiv s$}
+\item{If $s \equiv fs_1\ldots s_n$ with $f\in \textbf{Func}_n$ and $s_1\ldots s_n \in \textbf{Term}$ then \\ $s[t\leftarrow x] \equiv fs_1[t\leftarrow x]\ldots s_n[t\leftarrow x]$. This definition implies that if $f\in \textbf{Func}_0$ then $f[t\leftarrow x] \equiv f$.}
+\end{itemize}
+
+Suppose $\mc{A}\in \textbf{Wff}$.
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $\mc{A}\equiv Ps_1\ldots s_n$ with $P\in \textbf{Pred}_n$ and $s_1\ldots s_n\in \textbf{Term}$. $\mc{A}[t\leftarrow x] \equiv Ps_1[t\leftarrow x]\ldots s_n[t\leftarrow x]$. This definition implies that if $P \in \textbf{Pred}_0$ then $P[t\leftarrow x] \equiv P$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $\mc{A}[t\leftarrow x] \equiv (\mc{B}[t\leftarrow x] \implies \mc{C}[t\leftarrow x])$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}[t\leftarrow x] \equiv (\lnot \mc{B}[t\leftarrow x])$.}
+\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then if $y\not \equiv x$ then $\mc{A}[t\leftarrow x] \equiv ((\forall y)\mc{B}[t\leftarrow x])$. If $y\equiv x$ then $\mc{A}[t\leftarrow x] \equiv \mc{A}$.}
 \end{itemize}
 \hrulefill
 
