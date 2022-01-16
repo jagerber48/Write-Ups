@@ -1,0 +1,174 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{tcolorbox}
+\usepackage{bbm}
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}%ngerman
+%\usepackage[pdftex]{graphicx}
+\usepackage{textcomp} 
+\usepackage{color}
+\usepackage[hidelinks]{hyperref}
+\usepackage{anysize}
+\usepackage{verbatim}
+\usepackage{float}
+\usepackage{braket}
+\usepackage{xfrac}
+\usepackage{array, booktabs} 
+\usepackage{tabularx}
+\usepackage{bussproofs}
+
+\newtheorem{definition}{Definition}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+
+\begin{document}
+\title{Algebra}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Magma}
+
+A magma is a set $S$ together with a binary operation
+$$
+\cdot: S\times S \rightarrow S.
+$$
+
+\section{Semigroup}
+
+A semigroup is a set $S$ together with a binary operation
+$$
+\cdot: S\times S \rightarrow S.
+$$
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in S$ we have $(a\cdot b)\cdot c = a \cdot(b\cdot c).$}
+\end{itemize}
+A semigroup is an associative magma
+
+\section{Monoid}
+
+A monoid is a set $S$ together with a binary operation
+$$
+\cdot: S \times S \rightarrow S.
+$$
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in S$ we have $(a\cdot b)\cdot c = a \cdot(b\cdot c).$}
+\item{\textbf{Identity:} There exists an element $e\in S$ called the identity such that for all $a\in S$ we have $e\cdot a = a \cdot e = a$.}
+\end{itemize}
+
+A monoid is a semigroup with identity
+
+\section{Group}
+
+A group is a set $G$ together with a binary operation
+$$
+\cdot: G \times G \rightarrow G
+$$
+
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in G$ we have $(a\cdot b)\cdot c = a \cdot(b\cdot c).$}
+\item{\textbf{Identity:} There exists an element $e\in G$ called the identity such that for all $a\in S$ we have $e\cdot a = a \cdot e = a$.}
+\item{\textbf{Inverse:} For each $a\in G$ there exists a $b \in G$ such that $a \cdot b = b \cdot a = e$. $b$ is called the inverse of $a$ and is notated as $a^{-1}$.}
+\end{itemize}
+
+A group is a monoid in which every element is invertible.
+
+\section{Ring}
+
+A ring is a set $R$ together with two binary operations 
+\begin{align}
+\text{(Addition) } +:& R\times R \rightarrow R\\
+\text{(Multiplication) } \cdot:& R\times R \rightarrow R
+\end{align}
+
+Properties of addition: 
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in R$ we have $(a+b)+c = a+(b+c)$.}
+\item{\textbf{Additive Identity:} There exists an element $0\in R$ called the additive identity or zero such that for all $a \in R$ we have $0+a = a+0 = a$.}
+\item{\textbf{Additive Inverse:} For each $a\in R$ there exists a $b \in R$ such that $a + b = b + a = e$. $b$ is called the additive inverse of $a$ and is notated as $-a$.}
+\item{\textbf{Commutative:} For all $a, b \in R$ we have $a+b = b+a$.}
+\end{itemize}
+
+Properties of multiplication:
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in R$ we have $(a\cdot b)\cdot c = a\cdot(b\cdot c)$.}
+\item{\textbf{Multiplicative Identity:} There exists an element $1\in R$ called the multiplicative identity or one such that for all $a\in R$ we have $1\cdot a = a \cdot 1 = a$.}
+\end{itemize}
+
+Joint Properties:
+\begin{itemize}
+\item{\textbf{Distributivity:} for all $a, b, c \in R$ we have $a\cdot(b+c)= (a\cdot b) + (a\cdot c)$ and $(b+c)\cdot a = (b\cdot a) + (c\cdot a)$.}
+\end{itemize}
+
+A ring is a group over addition and a monoid over multiplication which satisfies left- and right-distributivity of multiplication over addition.
+
+\section{Module}
+
+A module or $R$-module consists of a ring $R$ and an abelian group $M$ and an operation called scalar multiplication
+
+$$
+\cdot: R \times M \rightarrow M.
+$$
+
+Recall that a ring is a commutative group over addition and a monoid over multiplication and ring multiplication is left- and right-distributive over addition.
+
+Properties of scalar multiplication:
+\begin{itemize}
+\item{\textbf{Distributivity of Scalar Multiplication over Group Addition:} for all $r \in R$ and $x, y \in M$ we have $r\cdot(x+y) = r\cdot x + r \cdot y$.}
+\item{\textbf{Distributivity of Ring Addition over Scalar Multiplication:} for all $r, s \in R$ and $x\in M$ we have $(r+s)\cdot x = r\cdot x + s \cdot x$.}
+\item{\textbf{Distributivity of Ring Multiplication over Scalar Multiplication:} for all $r, s\in R$ and $x\in M$ we have $(rs)\cdot x = r\cdot(s\cdot x)$. Here $rs$ indicates the ring multiplication of $r$ and $s$.}
+\item{\textbf{Scalar Multiplication by Ring Identity:} For the multiplicative identity element in $1\in R$ and for all $x\in R$ we have $1\cdot x = x$.}
+\end{itemize}
+
+\section{Field}
+A Field is a set $F$ together with two binary operations 
+\begin{align}
+\text{(Addition) } +:& F\times F \rightarrow F\\
+\text{(Multiplication) } \cdot:& F\times F \rightarrow F
+\end{align}
+
+Properties of addition: 
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in F$ we have $(a+b)+c = a+(b+c)$.}
+\item{\textbf{Additive Identity:} There exists an element $0\in F$ called the additive identity or zero such that for all $a \in R$ we have $0+a = a+0 = a$.}
+\item{\textbf{Additive Inverse:} For each $a\in F$ there exists a $b \in F$ such that $a + b = b + a = e$. $b$ is called the additive inverse of $a$ and is notated as $-a$.}
+\item{\textbf{Commutative:} For all $a, b \in F$ we have $a+b = b+a$.}
+\end{itemize}
+
+Properties of multiplication:
+\begin{itemize}
+\item{\textbf{Associative:} For all $a, b, c \in F$ we have $(a\cdot b)\cdot c = a\cdot(b\cdot c)$.}
+\item{\textbf{Multiplicative Identity:} There exists an element $1\neq 0\in F$ called the multiplicative identity or one such that for all $a\in F$ we have $1\cdot a = a \cdot 1 = a$.}
+\item{\textbf{Commutative:} for all $a, b \in F$ we have $a\cdot b = b \cdot a$.}
+\item{\textbf{Multiplicative Inverse:} For every $a \neq 0 \in F$ there exists an element $b\in F$ such that $a\cdot b = b\cdot a = 1$. $b$ is called the multiplicative inverse of $a$ and is notated as $a^{-1}$.}
+\end{itemize}
+
+Joint Properties:
+\begin{itemize}
+\item{\textbf{Distributivity:} for all $a, b, c \in F$ we have $a\cdot(b+c)= (a\cdot b) + (a\cdot c)$ and $(b+c)\cdot a = (b\cdot a) + (c\cdot a)$.}
+\end{itemize}
+
+A field is a ring with $0\neq 1$, multiplication commutative, and all non-zero elements have multiplicative inverse.
+
+Note that $F$ is not a group under multiplication because $0$ does not have a multiplicative inverse, but the multiplicative group of $F$ denoted by $F^{\times} = F\backslash \{0\}$ is a commutative group under multiplication.
+
+
+
+
+\section{Summary}
+
+\begin{itemize}
+\item{\textbf{Magma:} A magma is a set with a binary operation defined on it.}
+\item{\textbf{Semigroup:} A semigroup is a set with a binary operation defined on it that is associative. A semigroup is an associative magma.}
+\item{\textbf{Monoid:} A monoid is a set with a binary operation defined on it that is associative and which contains an identity element. A monoid is a semigroup with identity.}
+\item{\textbf{Group:} A group is  a set with a binary operation defined on it that is associative, which contains an identity element, and for which every element has an inverse. A group is monoid in which every element is invertible.}
+\item{\textbf{Ring:} A ring is a set with two binary operations defined on it: addition and multiplication. A ring is a commutative group over addition and a monoid over multiplication. Multiplication is left- and right-distributive over addition.}
+\item{\textbf{Field:} A field is a set with two binary operations defined on it: addition and multiplication. A field is a commutative group over addition and a monoid over multiplication. Multiplication is left- and right-distributive over addition. Furthermore, a field is commutative over multiplication and each non-zero element of the field has a multiplicative inverse. The additive and multiplicative identities in a field are distinct. A field is a ring with $0\neq 1$, multiplication commutative, and all non-zero elements have multiplicative inverses.}
+\end{itemize}
+
+
+\end{document}
