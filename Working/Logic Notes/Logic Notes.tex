@@ -190,23 +190,24 @@ That is, we broke down the Wff into smaller parts of the formal language.
 We will see below that this Wff is, in fact, a Wff according to the formal rules of syntax.
 
 Semantics comes in when we give an \textit{interpretation} to the various expressions above.
-For example, when we \textit{interpret} the symbol \qq{2} as the number 2, the expression \qq{$x \div 2$} as the division of the variable $x$ by the number 2, or predicate \qq{$Ox$} to mean that the variable $x$ is odd, we are imposing semantics onto the expression.
+For example, when we \textit{interpret} the symbol \qq{2} as the number 2, the expression \qq{$\div x 2$} as the division of the variable $x$ by the number 2, or predicate \qq{$Ox$} to mean that the variable $x$ is odd, we are imposing semantics onto the expression.
 We also are making a semantic interpretation any time we impose or deduce a truth value for a given Wff.
 For example, on all of the usual interpretations, we would assign a value of false to the Wff above because the odd integers are in fact, not divisible by 2.
 
 In this document I would like to follow a game formalist approach to formal logic.
-This is an approach which holds that it is possible to describe set theory, and by extension, all of mathematics using on the syntactic methods.
+This is an approach which holds that it is possible to describe set theory, and by extension, all of mathematics using only syntactic methods.
 Or, at the very least, it asks the question how far one can get using such an approach.
-To that end, I would like it to be clear that all definitions and arguments which should be self-contained within purely syntactic analyses.
+To that end, I would like it to be clear that all definitions and arguments should be self-contained within purely syntactic analyses.
 At a few times I may make reference to semantic ideas, but this is only to motivate the definition.
-If one wishes to always drop the semantics from the narrative entirely then we may have some unmotivated definitions, but there is nothing in the rules against unmotivated definitions.
+One could, instead, proceed by dropping semantics entirely from the narrative.
+In this case some definitions may appear unmotivated, at least at first, but that is not, technically, a problem for the game formalist.
 
 \subsection{Outline}
 
 The goal of this work is to prove that extensions by definition to a formal theory are conservative extensions.
 
 I will begin with a thorough outlining of \textbf{LFOL}, starting with the alphabet, and then moving onto syntax.
-In addition some useful metalanguage concepts such as term substitution will be defined.
+In addition, some useful metalanguage concepts such as term substitution will be defined.
 The conventions chosen in my definitions for \textbf{LFOL} are chosen with the goal of easing the proof about definition by extension to follow.
 For example, to minimize metalogical inductive cases, I restrict to using a small subset of connectives, rather than the full intuitive set sometimes chosen.
 
@@ -238,9 +239,8 @@ The symbols included in the non-logical symbols may vary from one application of
 
 \subsection{The Lexicon of LFOL:}
 
-\hrulefill
-
-\subsubsection*{Logical Symbols:}
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Logical Symbols:}
 \begin{itemize}
 \item{\textbf{Variables:} Variable symbols such as $x_1, x_2, \ldots, v_1, v_2, \ldots$. We will try to use lower case letters from near the end of the alphabet for variables. The set of all variables is denoted $\textbf{Var}$.}
 \item{\textbf{Logical Operators:} The logical operators for implication: $\implies$, and negation: $\lnot$. The set of all logical operators is denoted $\textbf{Lop}$.}
@@ -248,27 +248,34 @@ The symbols included in the non-logical symbols may vary from one application of
 \item{\textbf{Punctuation Marks:} Parenthesis $($ and $)$. The set of all punctuation marks is denoted $\textbf{Punct}$.}
 \end{itemize}
 
+
 The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \sqcup \textbf{Lop} \sqcup \textbf{Quant} \sqcup \textbf{Punct}$.
+}}
 
-\hrulefill
+\vspace{1cm}
 
-\subsubsection*{Non-Logical Symbols:}
-\begin{itemize}
-\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
-\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^\infty \textbf{Func}_i$.}
-\end{itemize}
-
-The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoin union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$.
-
-\hrulefill
-
-The set of all symbols in the language is denoted $\textbf{Symb}$ and is the disjoint union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \sqcup \textbf{NonLogSymb}$.
-
-\hrulefill
-
-I have chosen to use a restricted set of logical operators in the theory to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
+We have chosen to use a restricted set of logical operators in the theory to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
 This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs. 
 However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as abbreviations and metalogically derive the appropriate corresponding rules of inference.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Non-Logical Symbols:}
+\begin{itemize}
+\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
+\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$.}
+\end{itemize}
+
+The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoint union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$. If we are not worried about having an infinite number of distinct symbol types then we can let $N_{\text{pred}} = N_{\text{func}} = \infty$.
+}}
+
+\vspace{1cm}
+
+\noindent\fbox{\parbox{\textwidth}{
+The set of all symbols in the language is denoted $\textbf{Symb}$ and is the disjoint union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \sqcup \textbf{NonLogSymb}$.
+}}
+
+\vspace{1cm}
+
 
 \subsection{The Syntax of LFOL}
 
@@ -276,46 +283,49 @@ Strings in the language are strings of symbols of the language. For example ``$x
 We consider the symbols in $\textbf{Symb}$ to be length 1 strings so that $\textbf{Symb} \subset \textbf{Str}$.
 Below we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
 
-String $\mc{B}$ appears in string $\mc{A}$, or is a substring of string $\mc{A}$, iff there are (possibly empty) strings $\mc{C}$ and $\mc{D}$ such that $\mc{B}\equiv \mc{C}\mc{B}\mc{D}$.
-
-\hrulefill
-
-\subsubsection*{Terms}
+String $\mc{B}$ appears in string $\mc{A}$, or is a substring of string $\mc{A}$, iff there are (possibly empty) strings $\mc{C}$ and $\mc{D}$ such that $\mc{A}\equiv \mc{C}\mc{B}\mc{D}$.
 
 The smallest syntactic elements of \textbf{LFOL} are the terms defined as follows.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Terms}
 
 $t \in \textbf{Term}$ iff $t \in \textbf{Str}$ and satisfies one of
 \begin{itemize}
 \item{\textbf{Variables:} $t \in \textbf{Var}$.}
-\item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\vec{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
+\item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\bv{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
 \end{itemize}
+}}
+\vspace{1cm}
 
 Semantically, if we think of the formal language as expressing meaning, then terms are the objects about which the formal language is communicating information. 0-ary functions represent constants or concrete objects while variables represent place-holders into which other terms can be `plugged in'.
-If a term is closed (meaning that no variables appear in the term as will be defined more precisely below) then the term represents another concrete object.
 
-\hrulefill 
-
-\subsubsection*{Atomic Formulas}
+A closed term is a term which contains no variables.
+An open term contains at least one variable.
+Closed terms can be thought of as concrete objects while open terms can be thought of as placeholders into which concrete objects can be `plugged in'.
 
 The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defined as follows.
+
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{Atomic Formulas}
 
 $\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
 
 \begin{itemize}
-\item{\textbf{Atoms:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\vec{t})$. In our notation $\curlywedge$ is an atomic formula.}
+\item{\textbf{Atoms:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\bv{t})$. In our notation $\curlywedge$ is an atomic formula.}
 \end{itemize}
+}}
 
 Semantically an atomic formula expresses a statement about the `objects of study', that is the terms, which have been plugged into it.
 Semantically terms do not have truth value, rather, they are objects about which boolean claims can be made.
 Semantically, closed atomic formulas can be thought of as having truth values.
 
-\hrulefill
-
-\subsubsection*{Well-Formed Formulas}
 
 The final layer of syntax is the Wff.
 Wffs combine multiple atomic formulas into more complex expressions using the logical operators.
 
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{Well-Formed Formulas}
 $\mc{A} \in \textbf{Wff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
 
 \begin{itemize}
@@ -324,10 +334,9 @@ $\mc{A} \in \textbf{Wff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
 \item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{Wff}$.}
 \item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{Wff}$, and $\mc{B}$ contains $x$ as a substring but does not contain $(\forall x)$ as a substring. We say $\mc{B}$ and all substrings of $\mc{B}$ are in the scope of $(\forall x)$} 
 \end{itemize}
+}}
 
 Semantically, like atomic formulas, Wffs express, now more complex, statements about terms.
-
-\hrulefill
 
 The formation rules are all straightforward with the exception of quantification.
 For the quantification formation rule we include 2 provisos.
@@ -342,11 +351,10 @@ It is possible to develop formal logic in ways to allow redundant and double qua
 However, in the interest of preserving `naturalness' of the language, we restrict to avoid them.
 This may have the consequence of making some metalogical proofs and definitions more complicated.
 
-\hrulefill
-
-\subsubsection*{Logical Abbreviations}
-
 We introduce a number of logical abbreviations to allow us to express the usual full range of logical connectives.
+
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{Logical Abbreviations}
 
 For Wffs $\mc{A}$ and $\mc{B}$
 \begin{itemize}
@@ -355,78 +363,99 @@ For Wffs $\mc{A}$ and $\mc{B}$
 \item{\textbf{Equivalence}: We let $(\mc{A} \iff \mc{B})$ abbreviate $((\mc{A} \implies \mc{B}) \land (\mc{B} \implies \mc{A}))$}
 \item{\textbf{Existential Quantification}: We let $((\exists x) \mc{A})$ abbreviate $(\lnot((\forall x)(\lnot \mc{A})))$. .}
 \end{itemize}
+}}
 
 We also introduce abbreviations for removing parentheses. 
 This abbreviation language is copied directly from Tourlakis.
 
+\noindent\fbox{\parbox{\textwidth}{
 \begin{itemize}
 \item{\textbf{Parentheses:} ``To minimize the use of brackets in the metanotation we adopt standard \textit{priorities} of connectives: $\forall, \exists,$ and $\lnot$ have the highest, and then we have (in decreasing order of priority) $\land, \lor, \implies, \iff$, and we agree not to use outermost brackets. all \textit{associativities} are \textit{right} - that is if we write $\mc{A} \implies \mc{B} \implies \mc{C}$, then it is a (sloppy) counterpart for $(\mc{A} \implies ( \mc{B} \implies \mc{C}))$.''}
 \end{itemize}
-\hrulefill
+}}
 
-\subsection{Metalanguage Variable/Term Manipulation}
+\subsection{Metalanguage Concepts}
 
-\hrulefill
+There are a number of metalanguage concepts and manipulations which will be important to the final proof that extensions by definitions are conservative.
 
-\subsubsection*{Free Variables}
-We define inductively the set of free variables in a term or Wff $\mc{A}$.
+The first of these is the concept of the \textit{depth} of a Wff, with the idea that more complex Wffs have a larger depth.
+The depth, or complexity, of a Wff will be an integer quantifying the number of steps used to build up that Wff.
+Induction on the depth of a Wff will be an important metalogical technique.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Wff Depth}
+
+We define inductively the depth of a Wff $\mc{A}$.
 
 \begin{itemize}
-\item{if $\mc{A}\equiv x$ is a variable then $FV(x) = \{x\}$.}
-\item{if $\mc{A} \equiv ft_1\ldots t_n$ then $FV(ft_1\ldots t_n) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
-\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(Pt_1\ldots t_n) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
+\item{If $\mc{A}$ is an atomic formula then $D(\mc{A}) = 0$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $D(\mc{A}) = \text{max}(D(\mc{B}) + D(\mc{C})) + 1$.}
+\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
+\end{itemize}
+}}
+
+We can see plainly (and could prove by induction) that the depth of a Wff is equivalent to the total number of logical operators and quantifiers in that Wff.
+
+\newpage
+The next metalogical concept is the distinction between free and bound variables.
+The terminology developed here will help us discuss the concept of term substitution.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Free Variables}
+We define inductively the set of free variables in a term or Wff $\mc{A}$, $FV(\mc{A})$.
+
+\begin{itemize}
+\item{if $\mc{A}\equiv x$ is a variable then $FV(\mc{A}) = \{x\}$.}
+\item{if $\mc{A} \equiv ft_1\ldots t_n$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
+\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
 \item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
 \item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
-\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ if $\mc{A}$ is a Wff.}
+\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ as a substring.}
 \end{itemize}
+}}
 
+If $FV(\mc{A}) = \{x_1, \ldots, x_n\}$ then we write $\mc{A} = \mc{A}(x_1, \ldots, x_n) = \mc{A}(\bv{x})$.
+We say that $x_1, \ldots, x_n$ appear free in $\mc{A}$.
+If a Wff contains any free variables then we say that it is \textit{open}.
+Otherwise we say the Wff is \textit{closed}.
+A closed Wff has had functions or constants plugged in for all variables.
 
-
-We say than an instance of a variable $x$ within a Wff $\mc{A}$ is bound if it appears in the scope of a quantifier $(\forall x)$, otherwise the instance is free and we can see that it is appears in $FV(\mc{A})$.
+Recall that an instance of a variable $x$ is \textit{bound} within a Wff $\mc{A}$ if it appears in the scope of a quantifier $(\forall x)$.
+If an instance of a variable $x$ does not appear within the scope of a quantifier with $\mc{A}$ then we can see that $x$ appears free in $\mc{A}$.
 
 Note that a variable can appear both free and bound in a Wff.
 For example, $x$ appears both free and bound in the Wff $(Px \land ((\forall x)Qxy))$.
-While this is valid, it would be less confusing if we instead had $(Px \land ((\forall z)Qzy))$.
-These two expression can be shown to be logically equivalent using the inference rules which will follow.
-
-If a Wff contains any free variables then we say that it is \textit{open}.
-Otherwise we say the Wff is closed.
-A closed Wff has had functions or constants plugged in for all variables.
+While this is a valid Wff, it would be less confusing if we instead had $(Px \land ((\forall z)Qzy))$.
+These two expressions can be shown to be logically equivalent using the inference rules which will follow.
 
 In terms of semantics, it is always possible to assign a truth value to a closed Wff.
 Open Wffs however are trickier.
 For example, while it is clear that the sentence `$3=5$' can have a truth value, the sentence `$x=5$' cannot have a truth value because the truth value depends on what value is plugged in for $x$.
 
-if $\mc{A}$ has $FV(\mc{A}) = \{x_1, \ldots, x_n\}$ then we define 
-$$
-\bar{\mc{A}} \equiv ((\forall x_1)(\ldots((\forall x_n)\mc{A})))
-$$
-as the closure of $\mc{A}$.
-$FV(\bar{\mc{A}}) \equiv \emptyset$ so $\bar{\mc{A}}$ is closed.
+\newpage
+We are now in a position to carefully define term replacement.
 
-\hrulefill
-
-\subsubsection*{Term Replacement}
-
-It will be very important to carefully define term replacement. 
-
-First term replacement within a term.
-
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Term Replacement}
 
 Suppose $s, t\in \textbf{Term}$ and $x\in \textbf{Var}$.
 \begin{itemize}
-\item{If $s \in \textbf{Var}$ then if $s\equiv x$ $s[t\leftarrow x] \equiv t$. If $s \not\equiv x$ then $s[t\leftarrow x] \equiv s$}
-\item{If $s \equiv fs_1\ldots s_n$ with $f\in \textbf{Func}_n$ and $s_1\ldots s_n \in \textbf{Term}$ then \\ $s[t\leftarrow x] \equiv fs_1[t\leftarrow x]\ldots s_n[t\leftarrow x]$. This definition implies that if $f\in \textbf{Func}_0$ then $f[t\leftarrow x] \equiv f$.}
+\item{If $s \in \textbf{Var}$ then if $s\equiv x$ $s[t/ x] \equiv t$. If $s \not\equiv x$ then $s[t/ x] \equiv s$}
+\item{If $s \equiv fs_1\ldots s_n$ with $f\in \textbf{Func}_n$ and $s_1\ldots s_n \in \textbf{Term}$ then \\ $s[t/ x] \equiv fs_1[t/ x]\ldots s_n[t/ x]$. This definition implies that if $f\in \textbf{Func}_0$ then $f[t/ x] \equiv f$.}
 \end{itemize}
 
 Suppose $\mc{A}\in \textbf{Wff}$.
 \begin{itemize}
-\item{If $\mc{A}$ is atomic then $\mc{A}\equiv Ps_1\ldots s_n$ with $P\in \textbf{Pred}_n$ and $s_1\ldots s_n\in \textbf{Term}$. $\mc{A}[t\leftarrow x] \equiv Ps_1[t\leftarrow x]\ldots s_n[t\leftarrow x]$. This definition implies that if $P \in \textbf{Pred}_0$ then $P[t\leftarrow x] \equiv P$.}
-\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $\mc{A}[t\leftarrow x] \equiv (\mc{B}[t\leftarrow x] \implies \mc{C}[t\leftarrow x])$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}[t\leftarrow x] \equiv (\lnot \mc{B}[t\leftarrow x])$.}
-\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then if $y\not \equiv x$ then $\mc{A}[t\leftarrow x] \equiv ((\forall y)\mc{B}[t\leftarrow x])$. If $y\equiv x$ then $\mc{A}[t\leftarrow x] \equiv \mc{A}$.}
+\item{If $\mc{A}$ is atomic then $\mc{A}\equiv Ps_1\ldots s_n$ with $P\in \textbf{Pred}_n$ and $s_1\ldots s_n\in \textbf{Term}$. $\mc{A}[t/ x] \equiv Ps_1[t/ x]\ldots s_n[t/ x]$. This definition implies that if $P \in \textbf{Pred}_0$ then $P[t/ x] \equiv P$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $\mc{A}[t/ x] \equiv (\mc{B}[t/ x] \implies \mc{C}[t/ x])$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}[t/ x] \equiv (\lnot \mc{B}[t/ x])$.}
+\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then if $y\not \equiv x$ then $\mc{A}[t/ x] \equiv ((\forall y)\mc{B}[t/ x])$. If $y\equiv x$ then $\mc{A}[t/ x] \equiv \mc{A}$.}
 \end{itemize}
-\hrulefill
+}}
+
+With some minor work, we can see that if $s$ is a term that $s[t/x]$ is also a term and that if $\mc{A}$ is atomic that $\mc{A}[t/x]$ is also atomic.
+We can then perform induction on Wff depth to prove that if $\mc{A}$ is a Wff that $\mc{A}[t/x]$ is also a Wff.
 
 Our rule for replacement in a quantifier Wff says to replace all free occurrences of $x$ by $t$.
 We would typically expect the replacement of free variables to have no effect on the semantics of the formula in question.
@@ -438,34 +467,148 @@ What has happened here is that the variable $y$, which appeared in the replaceme
 When we define the rules of inference we will have to take special care to ensure no capture of replacement terms occurs.
 
 An alternative approach would be to add a proviso to the term replacement rule that no replacement occurs if $y$ appears in $t$.
-However, we will take the philosophical view that replacement should be a simple operation on strings independent of the anticipated logical manipulation.
+However, we will take the philosophical view that replacement should be a simple operation on Wffs independent of the anticipated logical manipulation.
 Instead we will define the concept of substitutability.
-The idea is that if construction $\mc{A}[t/x]$ results in no capture of any variables that we would like to say $t$ is substitutable for $x$ in $\mc{A}$.
+
+\newpage
+The idea for term substitutability is that if construction $\mc{A}[t/x]$ results in no capture of any variables then we would like to say $t$ is substitutable for $x$ in $\mc{A}$.
 In this case we write $\mc{S}(\mc{A}, t, x)$.
 If it is the case that $\mc{S}(\mc{A}, t, x)$ then we notationally indicate $\mc{A} \equiv _{[t/x]}\mc{A}$.
 We define substitutability as follows.
 
-\hrulefill
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Term Substitutability}
+
 \begin{itemize}
 \item{If $\mc{A}$ is an atomic formula then $\mc{S}(\mc{A}, t, x)$.}
 \item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$ and $\mc{S}(\mc{C}, t, x)$.}
 \item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$.}
 \item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$ and $y\not\in FV(t)$ or $x\not \in FV(\mc{B})$.}
 \end{itemize}
-\hrulefill
+}}
 
-The first restriction of substitutability in a quantifier expression ensures that if a replacement is made that there is no capture of a variable $y$ that might appear in $t$.
-However, if $x \not \in FV(\mc{B})$ we allow the substitution to take place even if $y$ appears in $t$.
-This is because if $x\not \in FV(\mc{B})$ then the replacement won't result in any change of the expression, so there is no issue with it. 
+The first proviso on substitutability in a quantifier expression ensures that if a replacement is made that there is no capture of a variable $y$ that might appear in $t$.
+In particular, note that if $t$ is a closed term then we always have $\mc{S}(\mc{A}, t, x)$
+
+The second proviso on substitutability in a quantifier expression allows for the substitution to take place if $x \not\in FV(\mc{B})$ even if $y\in FV(t)$.
+This is allowed because the substitution will not change the overall expression $\mc{A}$ since $x$ does not appear in $\mc{B}$.
 
 Finally, it will also be valuable for us to introduce notation for when a term does not appear in an expression.
 If $t$ does not appear in $\mc{A}$ we write $_{\{t\}}\mc{A} \equiv \mc{A}$.
 If $t$ does not appear in $\mc{A}$ and $t$ is substitutable for $x$ in $\mc{A}$ then we write $_{[t/x], \{t\}}\mc{A}$.
 
+The next (final?) metalanguage concept we will introduce is that of sub-Wff replacement.
+This will allow us to perform the operation of replacing an atomic formula, or sub-Wff within a Wff, by another Wff.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Wff Substitution}
+
+If $\mc{A}$ is a Wff, $\mc{X}$ is an atomic formula and $\mc{P}$ is a Wff then we define the replacement of $\mc{X}$ by $\mc{P}$ in $\mc{A}$, notated as $\mc{A}[\mc{P}/\mc{X}]$ by:
+
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then if $\mc{A}\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{P}$. If $\mc{A}\not\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{A}$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ the $\mc{A}[\mc{P}/\mc{X}] \equiv (\lnot \mc{B}[\mc{P}/\mc{X}])$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{A}[\mc{P}/\mc{X}] \equiv (\mc{B}[\mc{P}/\mc{X}] \implies \mc{C}[\mc{P}/\mc{X}])$.}
+\item{If $\mc{A} \equiv ((\forall x)\mc{B})$ then $\mc{A}[\mc{P}/\mc{X}] \equiv ((\forall x) (\mc{B}[\mc{P}/\mc{X}])$.}
+\end{itemize}
+}}
+
+Above, we saw that in term substitution we always ended up with either a term or a Wff after the term substitution took place.
+However, it was necessary to define the concept of substitutability to highlight substitutions that did or didn't fundamentally change the structure of a Wff.
+In particular, it was important to be able to rule out substitution which would result in variable capture.
+
+The case for Wff substitution is even more drastic.
+Wff substitution as defined above does not even always result in a Wff.
+There are three ways $\mc{A}[\mc{P}/\mc{X}]$ can be problematic.
+The first one results in redundant quantification, the second results in repeated quantification, and the third results in variable capture.
+
+\begin{itemize}
+\item{If $\mc{X}$ is within the scope of a quantifier $(\forall x)$ but $x\not \in FV(\mc{P})$, then it is possible that after substitution of $\mc{P}$ for $\mc{X}$ that the quantifier $(\forall x)$ will not quantify over any variable $x$ resulting in redundant quantification. For example, let $\mc{X} \equiv Q_x$, $\mc{P} \equiv P$ and $\mc{A} \equiv ((\forall x) Q_x)$. Then $\mc{A}[\mc{P}/\mc{X}] \equiv ((\forall x) P)$. We can see this is not a valid Wff because $(\forall x)$ is a redundant quantifier. Note however that, even though $FV(\mc{X})$ contains an element not in $FV(\mc{P})$ it is not always the case that replacement of $\mc{X}$ by $\mc{P}$ will result in redundant quantification. For example if $\mc{A} \equiv ((\forall x)(Q_x \land S_x))$ then $\mc{A}[\mc{P}/\mc{X}] \equiv ((\forall x)(P\land S_x))$ which is in fact a Wff with no redundant quantification.}
+\item{If $\mc{X}$ appears in $\mc{A}$ within the scope of some quantifier $(\forall x)$ and $\mc{P}$ quantifies over that same variable then $\mc{A}[\mc{P}/\mc{X}]$ will have repeated quantification. For example if $\mc{X} \equiv Q$, $\mc{P} \equiv ((\forall y) P_y)$ and $\mc{A} \equiv ((\forall y) (Q\land S_y))$ then $\mc{A}[\mc{P}/\mc{X}] \equiv ((\forall y)(((\forall y)P_y)\land S_y))$ which we can see is not a Wff because we have repeated quantification of $(\forall y)$.}
+\item{Finally, if $\mc{X}$ is within the scope of some quantifier $(\forall x)$ but $x\not \in FV(\mc{X})$ but $x\in FV(\mc{P})$ then the free occurrences of $x$ in $\mc{P}$ will become captured after substitution. For example if $\mc{X} \equiv Q$, $\mc{P} \equiv P_x$ and $\mc{A} \equiv ((\forall x) (Q\land R_x))$ then $\mc{A} \equiv ((\forall x)(P_x\land R_x))$.}
+\end{itemize}
+
+We can always avoid the first and final issues by requiring that $FV(\mc{P}) = FV(\mc{X})$ when performing atomic formula substitution.
+The second issue can be avoided by noting (as we will prove later) that any Wff $\mc{P}$ is equivalent to one in which all bound variables are replaced by new, fresh, bound variables which do not appear in $\mc{A}$.
+
+We saw above that in term substitution it was necessary to define the concept of substitutability on top of substitution.
+In the case of term substitution it was always the case that term substitution resulted in either a term or a Wff after substitution
+
+Similar to the case 
+
+
+
+Note that $\mc{A}[\mc{P}/\mc{X}]$ is only a Wff if none of the quantifiers with $\mc{P}$ result in repeated quantification after substitution in $\mc{A}$.
+For example consider
+
+$$
+\mc{A} \equiv ((\forall x) (Q_x \land \mc{X}))
+$$
+
+with $Q_x$ a 1-ary predicate and $\chi$ a 0-ary predicate.
+Let $\mc{P} \equiv ((\forall x) S_x)$.
+We see that $FV(\mc{X}) = FV(\mc{P}) = \emptyset$ so $\mc{A}[\mc{P}/\mc{X}]$ is define as above by
+
+$$
+\mc{A}[\mc{P}/\mc{X}] \equiv ((\forall x)(Q_x \land ((\forall x) S_x)))
+$$
+
+But we can see that this is not a Wff because of the repeated quantification over $x$.
+This issue 
+
+Similarly to term replacement, we must also define a concept of substitutability for atoms. We say $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ to mean that $\mc{P}$ is substitutable for $\mc{X}$ in $\mc{A}$. $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ if (1) if $(\forall x)$ appear in $\mc{P}$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier in $\mc{A}$ and (2) no  
+
+\subsubsection{Draft}
+
+Bound Variable Substitution 
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Bound Variable Substitution}
+
+If $\mc{A}$, $\mc{B}$, and $\mc{C}$ are Wffs and $x$ and $y$ are variables then we define $\mc{A}\{y/x\}$ as
+
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula then $\mc{A}\{y/x\} \equiv \mc{A}$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$.}
+\item{If $\mc{A} \equiv ((\forall z) \mc{B})$ then if $x \equiv z$ then $\mc{A}\{y/x\} \equiv ((\forall y) \mc{B}[y/z])$ and if $x\not \equiv z$ then $\mc{A}\{y/x\} \equiv \mc{A}$.}
+\end{itemize}
+}}
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Bound Variable Substitutability}
+
+If $\mc{A}$, $\mc{B}$, and $\mc{C}$ are Wffs and $x$ and $y$ are variables then we define $\mc{A}\{y/x\}$ as
+
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula then $S_B(\mc{A}, y, x)$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $S_B(\mc{A}, y, x)$ if $S_B(\mc{B}, y, x)$ and $S_B(\mc{C}, y, x)$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $S_B(\mc{A}, y, x)$ if $S_B(\mc{B}, y, x)$.}
+\item{If $\mc{A} \equiv ((\forall z) \mc{B})$ then if $x \equiv z$ then $S_B(\mc{A}, y, x)$ if $S_F(\mc{B}, y, z)$. If $x\not \equiv z$ then $S_B(\mc{A}, y, x)$.}
+\end{itemize}
+}}
+
+Proof that if $S_B(\mc{A}, y, x)$ then $\mc{A}\{y/x\}$ is a Wff. We induct on $D(\mc{A})$
+
+Base case: If $D(\mc{A}) = 0$ then $\mc{A}$ is an atomic formula. Then $\mc{A}\{y/x\}$ is also an atomic formula so $\mc{A}\{y/x\}$ is a Wff.
+
+Induction: Assume that, for any Wff $\mc{B}$, that if $D(\mc{B}) < n$ then $\mc{B}\{y/x\}$ is a Wff. Now assume $D(\mc{A}) = n$
+
+If $\mc{A} \equiv (\lnot \mc{B})$ then $D(\mc{B}) = D(\mc{A}) - 1 < n$. $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$ but $\mc{B}\{y/x\}$ is a Wff so $\mc{A}\{y/x\}$ is also a Wff.
+
+If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $D(\mc{A}) = D(\mc{B}) + d(\mc{C}) + 1$ so $D(\mc{B}), D(\mc{C}) < \mc{A}$ so $\mc{B}\{y/x\}$ and $\mc{C}\{y/x\}$ are Wffs by induction hypothesis. $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$. Since $\mc{B}\{y/x\}$ and $\mc{C}\{y/x\}$ are Wffs we have that $\mc{A}\{y/x\}$ is a Wff.
+
+Now suppose $\mc{A} \equiv ((\forall z)\mc{B})$. if $x\equiv z$ then $\mc{A}\{y/x\} \equiv ((\forall y)\mc{B}[y/x])$. For this to be a Wff we must have that $\mc{B}[y/z]\equiv$ is a Wff, $\mc{B}[y/z]$ contains $y$, but does not contain $(\forall y)$. 
+
+$\mc{B}[y/z]$ is a Wff because $\mc{B}$ is a Wff. <<need some proofs about term substitution to prove that since $z$ appears in $\mc{B}$ (because it's in the scope of $\forall z$ in $\mc{A}$) that $y$ appears in $\mc{B}[y/z]$. I think this will proceed by showing that $z \in FV(\mc{B})$ and that $FV(\mc{B}[y/z]) = FV(\mc{B})\backslash \{z\} \cup \{y\}$ so that $y\in FV(\mc{B}[y/z])$ and if $y\in FV(\mc{B}[y/z])$ then $y$ appears in $\mc{B}[y/z]$>>
+
+But, because $S_B(\mc{A}, y, x)$, we have that $S_F(\mc{B}, y, z)$.
+
+
 \newpage
 
 \section{Formal Proof}
-\subsection*{Sequents}
+\subsection{Sequents}
 Syntactically, we represent the idea that Wff $\mc{A}$ logically follows from a set of Wffs $\Gamma$ using a sequent, or judgment, which we express as
 
 $$\Gamma \vdash \mc{A}$$.
@@ -494,14 +637,14 @@ as an abbreviation for
 
 That is Wffs are replaced by singleton sets containing those Wffs and commas are replaced by the set union operation.
 
-In some of what follows it will be important to indicate that a particular variable, $x$, doesn't appear free in any of a set of Wffs. If $\Gamma = \{\mc{A}_1, \ldots , \mc{A}_n\}$ where $x$ doesn't appear free in any of $\mc{A}_i$ (that is $_{\{x\}}\mc{A}_i$) then we let $\Gamma \equiv _{\{x\}}\Gamma$.
+In some of what follows it will be important to indicate that a particular term, $t$, doesn't appear free in any of a set of Wffs. If $\Gamma = \{\mc{A}_1, \ldots , \mc{A}_n\}$ where $t$ doesn't appear free in any of $\mc{A}_i$ (that is $_{\{t\}}\mc{A}_i$) then we let $\Gamma \equiv _{\{t\}}\Gamma$.
 
 $\Gamma_1 \backslash \Gamma_2$ denotes the subtraction of set $\Gamma_2$ from $\Gamma_1$.
 
 In what follows, we will develop our proof theoretic framework which is essentially a calculus of the $\vdash$ symbol.
 The framework will be based around rules of inference which allow us to derive new sequents from old sequents.
 
-\subsection*{Proof Table}
+\subsection{Proof Table}
 
 In logical proofs we begin with a set of premises, and, through logical manipulations, we draw new conclusions.
 In the context of syntactic proof theory the premises serve as the starting point for a logical symbol game and rules of inference allows us to infer new logical statements dependent on the premises and other derived statements.
@@ -521,15 +664,25 @@ One of the simplest example of a logical proof would be
 We see that each line of the proof is numbered at the far left.
 In the center of each line we see a sequent with a set of antecedents and a subsequent.
 At the right we see the logical justification for writing down each line.
-For the first line the logical justification is that we take that sequent as a premise.
+For the first line in the proof above the logical justification is that we take that sequent as a premise.
 In this case no further logical justification is needed.
 On the second line we have leveraged the rule of $\land E$, shorthand for `conjunction elimination' and applied it to the first line.
 This is an example of one of the inference rules which we be described shortly.
 
 All of the premises for a proof must be written as the first lines in the proof.
-If we have any proof table which obeys the rules of inference faithfully, then for any line of the proof we say that the proof table constitutes a proof of the sequent on that line from the set of premise sequents.
+If we have any proof table which obeys the rules of inference faithfully, then for any line of the proof after the premises, we say that the proof table constitutes a proof of the sequent on that line from the set of premise sequents.
 
-\subsection*{Inference Rules}
+If a sequent appear on line $(n)$ of a proof that has $k$ premises then we say the proof table constitutes a proof of length $n-k$ of the sequent on line $(n)$ from the $k$ premises.
+
+In what follows we will demand that all of the all of the Wffs in our proofs are closed.
+That is to say, semantically, we would like to deal with Wffs which could have truth values.
+Again, semantically, a proof would say something like: If the sets of statements $\Gamma$ are true then some other statement $\mc{A}$ will be true.
+Recall that only closed statements can be easily assigned clear truth values.
+This does slightly limit our proof structure.
+For example, we can't prove $((x>5) \implies (x>3))$.
+Instead we must prove $((\forall x)((x>5) \implies (x>3))$.
+
+\subsection{Inference Rules}
 
 Below I will write down all of the native inference rules for this system of natural deduction.
 Each of these rules can be used in a formal proof as described above.
@@ -669,12 +822,12 @@ That is, rather than repeat the proof of the derived inference in a new proof, o
 
 \newpage
 
-\section*{Deriving Inference Rules for Abbreviated Logical Symbols}
+\section{Deriving Inference Rules for Abbreviated Logical Symbols}
 
 We will now derive the inference rules for the abbreviation logical symbols $\land, \lor, \iff$ and $\exists$.
 We will first introduce some convenience inference rules.
 
-\subsection*{Convenience Inference Rules}
+\subsection{Convenience Inference Rules}
 
 \subsubsection*{Weaker $\implies I$}
 
@@ -720,7 +873,7 @@ This is because $(\Gamma \cup \{\mc{A}\})/\{\mc{A}\} = \Gamma / \{\mc{A}\}$ whic
 
 \hrulefill
 
-\subsection*{Modus Tollens}
+\subsection{Modus Tollens}
 
 I'll prove three forms of Modus Tollens and give three corresponding derived rules.
 
@@ -780,7 +933,7 @@ We can use the derived inference rule to derive two closely related forms of the
 
 \hrulefill
 
-\subsection*{Conjunction Inference Rules}
+\subsection{Conjunction Inference Rules}
 \subsubsection*{Proof for Right Conjunction Elimination}
 
 \begin{center}
@@ -835,7 +988,7 @@ We can use the derived inference rule to derive two closely related forms of the
 
 \hrulefill
 
-\subsection*{Proof for Conjunction Introduction}
+\subsubsection*{Proof for Conjunction Introduction}
 
 \begin{center}
 \begin{tabular}{ p{1cm} p{6cm} p{3cm} }
@@ -860,7 +1013,8 @@ We can use the derived inference rule to derive two closely related forms of the
 \end{prooftree}
 
 \hrulefill
-\subsection*{Proof for Disjunction Elimination}
+\subsection{Disjunction Inference Rules}
+\subsubsection*{Proof for Disjunction Elimination}
 
 \begin{center}
 \begin{tabular}{ p{1cm} p{6cm} p{3cm} }
@@ -878,7 +1032,7 @@ We can use the derived inference rule to derive two closely related forms of the
 \end{tabular}
 \end{center}
 
-\subsection*{Proof for Left Disjunction Introduction}
+\subsubsection*{Proof for Left Disjunction Introduction}
 
 \begin{center}
 \begin{tabular}{ p{1cm} p{6cm} p{3cm} }
@@ -894,7 +1048,7 @@ We can use the derived inference rule to derive two closely related forms of the
 \end{center}
 
 
-\subsection*{Proof for Right Disjunction Introduction}
+\subsubsection*{Proof for Right Disjunction Introduction}
 
 \begin{center}
 \begin{tabular}{ p{1cm} p{6cm} p{3cm} }
@@ -938,7 +1092,7 @@ With this we introduce the inference rules for disjunction:
 
 \hrulefill
 
-\subsection*{Biconditional Inference Rules}
+\subsection{Biconditional Inference Rules}
 \subsubsection*{Proof for Biconditional Introduction}
 
 \begin{center}
@@ -993,7 +1147,7 @@ The inference rules for biconditional are
 
 \hrulefill
 
-\subsection*{Inference Rules for Existence}
+\subsection{Inference Rules for Existence}
 
 We now must derive the inference rule for existence introduction and elimination.
 For reference I repeat the rules for universal introduction and elimination.
@@ -1109,6 +1263,75 @@ I repeat this proof with implicit metalogical notation.
 \end{center}
 
 These proofs complete the derivation of the inference rules for the existence quantifier.
+
+\section{Theories}
+
+A logical theory $\mc{T}$ consists of a language $\mc{L}$, a set of closed Wffs $\Gamma = \{\gamma_1, \ldots, \gamma_N\}$ in the language $\mc{L}$ which are referred to as the axioms of the theory, and a set of inference rules $\mc{R}$ such as those given above.
+A proof in $\mc{T}$ is any proof that begins with $N$ premises of the form $\Gamma \vdash \gamma_i$ and uses the inference rules $\mc{R}$.
+If it is possible to prove $\Gamma \vdash \mc{A}$ under these circumstance then we write
+
+$$
+\Gamma \vdash_{\mc{T}} \mc{A}
+$$
+
+Though we often drop the $\mc{T}$ subscript when the context of the theory is clear.
+We would like to collect all of the Wffs which are derivable from $\Gamma$ under the inference rules $\mc{R}$.
+If $\Gamma \vdash_{\mc{T}} \mc{A}$ and $\mc{T}$ is the theory with axioms $\Gamma$ and inference rules $\mc{R}$ then we write
+
+$$
+\mc{A} \in \Phi_{\mc{T}}
+$$
+
+$\Phi_{\mc{T}}$ is the set of all Wffs derivable under theory $\mc{T}$.
+
+\subsection*{Extension}
+Suppose $\mc{T}_1$ and $\mc{T}_2$ are theories with languages $\mc{L}_1$ and $\mc{L}_2$, axioms $\Gamma_1$ and $\Gamma_2$ and inference rules $\mc{R}_1$ and $\mc{R}_2$. We say that $\mc{T}_2$ is an extension of $\mc{T}_1$ if $\mc{L}_1 \subset \mc{L}_2$ (this means that $\mc{L}_1$ and $\mc{L}_2$ share their syntax rules but $\mc{L}_2$ has the same, or additional predicate or function symbols compared to $\mc{L}_1$), $\mc{R}_2 = \mc{R}_1$, and $\Gamma_1 \subset \Gamma_2$.
+So we see that $\mc{T}_2$ may have more logical symbols than $\mc{T}_1$ and also may have more axioms than $\mc{T}_1$.
+
+\subsection*{Conservative Extension}
+If $\mc{T}_2$ is an extension of $\mc{T}_1$ and $\Phi_{\mc{T}_2} \cap \mc{L}_1 = \Phi_{\mc{T}_1}$ then we say that $\mc{T}_2$ is a conservative extension of $\mc{T}_1$.
+That is, every Wff which is provable in $\mc{T}_1$ is also provable and $\mc{T}_2$ and every Wff of $\mc{L}_1$ which is provable in $\mc{T}_2$ is also provable in $\mc{T}_1$.
+
+\subsection*{Extension by Definition}
+There are two ways we can extend a theory by definition. 
+We can either introduce a new predicate or new function symbol and a corresponding axiom.
+The concept of extension by function definition requires equality $=$ to be included in the language.
+We will not yet include equality so we will save the description of that for later.
+
+\subsubsection*{New Predicate Symbol}
+
+Suppose $\mc{T}_1$ is a theory with language $\mc{L}_1$, axioms $\Gamma_1$ and inference rules $\mc{R}$.
+Suppose $P$ is not a symbol in $\mc{L}_1$.
+Suppose $\mc{Q}$ is a Wff in $\mc{L}_1$ with $FV(\mc{Q}) = \{x_1, \ldots , x_N\}$.
+Let $\mc{L}_2$ be the same as $\mc{L}_1$ but with the addition of the $n$-ary predicate symbol $P$.
+Let $\nu\in \mc{L}_2$ be the Wff
+
+\begin{align*}
+\nu \equiv& ((\forall x_1) (\ldots (\forall x_N) (P(x_1, \ldots, x_N) \iff \mc{Q}) \ldots ))\\
+\equiv& \forall x_1,\ldots,x_N (P(x_1, \ldots, x_N) \iff \mc{Q})
+\end{align*}
+
+Let $\mc{R}_2 = \mc{R}_1$ and $\Gamma_2 = \Gamma_1 \cup \{\nu\}$.
+The theory $\mc{T}_2$ determined by $\mc{L}_2, \Gamma_2$ and $\mc{R}_2$ is an extension by predicate definition of $\mc{T}_1$.
+
+\section{Temporary section on predicate definition without quantifiers}
+
+Above we defined term replacement.
+In addition to replacing terms, it will be valuable for us to be able to replace entire sub-Wffs within a Wff by another Wff.
+To this end we define Wff replacement.
+
+
+If $\mc{A}$ is a Wff, $\mc{X}$ is an atomic formula, and $\mc{P}$ is a Wff then we define the replacement of $\mc{X}$ by $\mc{P}$ in $\mc{A}$, notated as $\mc{A}[\mc{P}/\mc{X}]$, by:
+
+\hrulefill
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then if $\mc{A}\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{P}$. If $\mc{A}\not\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{A}$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ the $\mc{A}[\mc{P}/\mc{X}] \equiv (\lnot \mc{B}[\mc{P}/\mc{X}])$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{A}[\mc{P}/\mc{X}] \equiv (\mc{B}[\mc{P}/\mc{X}] \implies \mc{C}[\mc{P}/\mc{X}])$.}
+\end{itemize}
+\hrulefill
+
+It can be easily proven that if $\mc{A}$
 
 \section{Wff Atom Replacement}
 
@@ -1282,55 +1505,7 @@ $$
 where $\mc{B}'$ is the result of replacing $\mc{P}$ by $\mc{Q}$ as above.
 
 
-\section{Theories}
 
-A logical theory $\mc{T}$ consists of a language $\mc{L}$, a set of (NOTE: perhaps add the constraint the axioms are all closed WFFs?) Wffs $\Gamma = \{\gamma_1, \ldots, \gamma_N\}$ in the language $\mc{L}$ which are referred to as the axioms of the theory, and a set of inference rules $\mc{R}$ such as those given above.
-A proof in $\mc{T}$ is any proof that begins with $N$ premises of the form $\Gamma \vdash \gamma_i$ and uses the inference rules $\mc{R}$.
-If it is possible to prove $\Gamma \vdash \mc{A}$ under these circumstance then we write
-
-$$
-\Gamma \vdash_{\mc{T}} \mc{A}
-$$
-
-Though we often drop the $\mc{T}$ subscript when the context of the theory is clear.
-We would like to collect all of the Wffs which are derivable from $\Gamma$ under the inference rules $\mc{R}$.
-If $\Gamma \vdash_{\mc{T}} \mc{A}$ and $\mc{T}$ is the theory with axioms $\Gamma$ and inference rules $\mc{R}$ then we write
-
-$$
-\mc{A} \in \Phi_{\mc{T}}
-$$
-
-$\Phi_{\mc{T}}$ is the set of all Wffs derivable under theory $\mc{T}$.
-
-\subsection*{Extension}
-Suppose $\mc{T}_1$ and $\mc{T}_2$ are theories with languages $\mc{L}_1$ and $\mc{L}_2$, axioms $\Gamma_1$ and $\Gamma_2$ and inference rules $\mc{R}_1$ and $\mc{R}_2$. We say that $\mc{T}_2$ is an extension of $\mc{T}_1$ if $\mc{L}_1 \subset \mc{L}_2$ (this means that $\mc{L}_1$ and $\mc{L}_2$ share their syntax rules but $\mc{L}_2$ has the same, or additional predicate or function symbols compared to $\mc{L}_1$), $\mc{R}_2 = \mc{R}_1$, and $\Gamma_1 \subset \Gamma_2$.
-So we see that $\mc{T}_2$ may have more logical symbols than $\mc{T}_1$ and also may have more axioms than $\mc{T}_1$.
-
-\subsection*{Conservative Extension}
-If $\mc{T}_2$ is an extension of $\mc{T}_1$ and $\Phi_{\mc{T}_2} \cap \mc{L}_1 = \Phi_{\mc{T}_1}$ then we say that $\mc{T}_2$ is a conservative extension of $\mc{T}_1$.
-That is, every Wff which is provable in $\mc{T}_1$ is also provable and $\mc{T}_2$ and every Wff of $\mc{L}_1$ which is provable in $\mc{T}_2$ is also provable in $\mc{T}_1$.
-
-\subsection*{Extension by Definition}
-There are two ways we can extend a theory by definition. 
-We can either introduce a new predicate or new function symbol and a corresponding axiom.
-The concept of extension by function definition requires equality $=$ to be included in the language.
-We will not yet include equality so we will save the description of that for later.
-
-\subsubsection*{New Predicate Symbol}
-
-Suppose $\mc{T}_1$ is a theory with language $\mc{L}_1$, axioms $\Gamma_1$ and inference rules $\mc{R}$.
-Suppose $P$ is not a symbol in $\mc{L}_1$.
-Suppose $\mc{Q}$ is a Wff in $\mc{L}_1$ with $FV(\mc{Q}) = \{x_1, \ldots , x_N\}$.
-Let $\mc{L}_2$ be the same as $\mc{L}_1$ but with the addition of the $n$-ary predicate symbol $P$.
-Let $\nu\in \mc{L}_2$ be the Wff
-
-\begin{align*}
-\nu \equiv& ((\forall x_1) (\ldots (\forall x_N) (P(x_1, \ldots, x_N) \iff \mc{Q}) \ldots ))\\
-\equiv& \forall x_1,\ldots,x_N (P(x_1, \ldots, x_N) \iff \mc{Q})
-\end{align*}
-
-Let $\mc{R}_2 = \mc{R}_1$ and $\Gamma_2 = \Gamma_1 \cup \{\nu\}$.
-The theory $\mc{T}_2$ determined by $\mc{L}_2, \Gamma_2$ and $\mc{R}_2$ is an extension by predicate definition of $\mc{T}_1$.
 
 \section{Proof that Extension by Predicate Definition is a Conservative Extension}
 
