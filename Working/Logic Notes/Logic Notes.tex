@@ -321,22 +321,87 @@ Semantically terms do not have truth value, rather, they are objects about which
 Semantically, closed atomic formulas can be thought of as having truth values.
 
 
-The final layer of syntax is the Wff.
+The final layer of syntax is the well-formed formula  (Wff).
 Wffs combine multiple atomic formulas into more complex expressions using the logical operators.
+We will define Wffs in two phases.
+We will first present \textit{permissive} Wffs, or pWffs, then we will present \textit{strict} Wffs, or sWffs. 
+pWffs and sWffs will differ in their treatment of quantifiers.
+In short, permissive Wffs will also repeated quantification (the binding of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification over a variable $x$ over an expression which does not include $x$). 
+Both repeated and redundant quantification are in some-sense unnatural, in that they don't translate well into English example sentences and that the quantification feels either confusing (in the case of repeated quantification) or wasteful (in the case of redundant quantification).
+
+Strict Wffs will explicitly forbid both repeated and redundant quantification.
+The downside, however, is that it will be much more difficult to prove metalogical theorems about strict Wffs.
+This is because care will need to be taken at each step to ensure that each expression satisfies the provisos necessary for strict Wffs.
+It is typically the case that logic references do allow repeated and redundant quantification for precisely this reason.
+In fact, one might worry that semantically different theorems could be derived using pWffs compared to sWffs, but this is in fact not the case.
+
+Nonetheless, in this document we will mainly be using sWffs, with pWffs only as a temporary stepping stone to help more easily define sWffs.
+Moving forward Wff will refer to sWff unless otherwise specified.
 
 \noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Well-Formed Formulas}
-$\mc{A} \in \textbf{Wff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
+\textbf{Permissive Well-Formed Formulas}
+
+$\mc{A} \in \textbf{pWff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
 
 \begin{itemize}
 \item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula.}
-\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{Wff}$.}
-\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{Wff}$.}
-\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{Wff}$, and $\mc{B}$ contains $x$ as a substring but does not contain $(\forall x)$ as a substring. We say $\mc{B}$ and all substrings of $\mc{B}$ are in the scope of $(\forall x)$} 
+\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{pWff}$.}
+\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{pWff}$.}
+\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pWff}$. We say $\mc{B}$ and all substrings of $\mc{B}$ are in the scope of $(\forall x)$} 
 \end{itemize}
 }}
 
 Semantically, like atomic formulas, Wffs express, now more complex, statements about terms.
+
+We will now use pWffs to define free and quantified variables within a pWff $\mc{A}$.
+These concepts will, in turn, be used to define sWffs.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Free Variables}
+We define inductively the set of free variables in a term $t$ or pWff $\mc{A}$, $FV(\mc{A})$.
+
+\begin{itemize}
+\item{if $t\equiv x$ is a variable then $FV(t) = \{x\}$.}
+\item{if $t \equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
+\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
+\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
+\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
+\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ as a substring.}
+\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
+\end{itemize}
+}}
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Quantified Variables}
+We define inductively the set of quantified variables in a pWff $\mc{A}$, $QV(\mc{A})$.
+
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula then $QV(\mc{A}) = \emptyset$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $QV(\mc{A}) = QV(\mc{B}) \cup QV(\mc{C})$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $QV(\mc{A}) = QV(\mc{B})$.}
+\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ then $QV(\mc{A}) = QV(\mc{B}) \cup \{x\}$.}
+\end{itemize}
+
+}}
+
+We are now in a position to define sWffs or Wffs.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Strict Well-Formed Formulas}
+$\mc{A} \in \textbf{sWff} = \textbf{Wff}$ iff $\mc{A} \in \textbf{pWff}\subset\textbf{Str}$ and satisfies one of
+
+\begin{itemize}
+\item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula}
+\item{\textbf{Implication:} $\mc{A} \equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{sWff}$.}
+\item{\textbf{Negation:} $\mc{A} \equiv (\lnot \mc{B})$ and $\mc{B}\in \textbf{sWff}$.}
+\item{\textbf{Quantification:} $\mc{A} \equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{sWff}$, $x\in FV(\mc{B})$ and $x\not\in QV(\mc{B})$.}
+\end{itemize}
+}}
+
+Note that $FV(\mc{A})$ and $QV(\mc{A})$ are defined the same for pWff and sWff.
+This is fine because $\textbf{sWff}\subset\textbf{pWff}$.
+
+
 
 The formation rules are all straightforward with the exception of quantification.
 For the quantification formation rule we include 2 provisos.
@@ -385,7 +450,7 @@ Induction on the depth of a Wff will be an important metalogical technique.
 \noindent\fbox{\parbox{\textwidth}{
 \textbf{Wff Depth}
 
-We define inductively the depth of a Wff $\mc{A}$.
+We define inductively the depth of a pWff $\mc{A}$.
 
 \begin{itemize}
 \item{If $\mc{A}$ is an atomic formula then $D(\mc{A}) = 0$.}
