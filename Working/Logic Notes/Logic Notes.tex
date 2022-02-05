@@ -276,14 +276,138 @@ The set of all symbols in the language is denoted $\textbf{Symb}$ and is the dis
 
 \vspace{1cm}
 
+If $\alpha, \beta \in \textbf{Symb}$, then if they are the same symbol we denote this by $\alpha \equiv \beta$, otherwise we have $\alpha \not \equiv \beta$.
+
+\subsection{Strings}
+
+After symbols strings are the next primitive element of our language.
+Strings in the language are finite ordered lists of elements of $\textbf{Symb}$.
+We denote the set of all strings as $\textbf{Str}$.
+Below we will use the term list to refer to a finite ordered list in what follows.\footnote{In other contexts it may be possible the relax the constraint that lists are finite}
+In the next section we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
+
+Every finite ordered list has a length given by the number of elements in that list.
+If $\mc{A}$ is a list then the length of $\mc{A}$ is denoted by $|\mc{A}|$.
+Perhaps the most formal definition we can give for a finite ordered list is that it is a mapping from the set of natural numbers between 0 and $|\mc{A}|$ (inclusive start, exclusive end) and the elements of the list. 
+An example of such a mapping would be
+
+\begin{align*}
+[&[0, x_1],\\
+&[1, \lnot],\\
+&[2, Q],\\
+&[3, \curlywedge],\\
+&[4, (]]
+\end{align*}
+
+Here we see a string with length 5.
+We can see, for example, that the $0^{\text{th}}$ element of this string is $x_1$, and the $3^{\text{rd}}$ element is $\curlywedge$.
+We can denote this string with the abbreviation $\mc{A}$ by 
+$$
+\mc{A} \equiv [[0, x_1], [1, \lnot], [2, Q], [3, \curlywedge], [4, (]]
+$$
+However, we often abbreviate strings by dropping the explicit number of the elements so that
+$$
+\mc{A} \equiv [x_1, \lnot, Q, \curlywedge, (]
+$$
+Or, we can abbreviate more by dropping the outer square brackets and commas so that
+$$
+\mc{A} \equiv x_1\lnot Q \curlywedge (
+$$
+
+We use the notation $\mc{A}[i]$ to denote the $i^{\text{th}}$ element of the string $\mc{A}$. 
+So for the string above we have $\mc{A}[2] \equiv Q$.
+Note that $\mc{A}[i] \in \textbf{Symb}$.
+
+We consider the empty string $[]$ to be a string and denote it by $\emptyset$.
+
+It is possible to generate news strings using concatenation.
+We define the concatenation of strings $\mc{A}$ and $\mc{B}$ as follows.
+$\mc{A}\circ\mc{B}$ is the concatenation of strings $\mc{A}$ and $\mc{B}$.
+We typically abbreviate $\mc{A}\circ{\mc{B}}$ as $\mc{A}\mc{B}$.
+We have that $\mc{C} \equiv \mc{A}\mc{B}$ if $|\mc{C}| = |\mc{A}| + |\mc{B}|$ and for $0 \le i < |\mc{A}|$ we have $\mc{C}[i]$
+
+
+
+
+From a given string it is possible to extract other strings called substrings.
+We do this using a notation called substring slicing.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Substring Slicing}
+Suppose $\mc{A} \in \textbf{Str}$ and $L(\mc{A}) = n$. Suppose $0\le i \le j \le n$.
+
+\begin{itemize}
+\item{If $j=i$ the $\mc{A}[i:j] \equiv \emptyset$}
+\item{If}
+\end{itemize}
+
+
+}}
+ 
+
+
+
+ For example $[x_1, \lnot, Q, \curlywedge, (,]$ is a string in the language.
+
+
+
+
+We typically abbreviate strings by removing the outer brackets $[$, and $]$ which denote the scope of the string and the separation commas so that the previous string would appear as ``$x_1\lnot Q \curlywedge ($''.
+The set of all strings is denoted by $\textbf{Str}$.
+In the next section we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
+Below are key properties about strings and a few methods to manipulate them. 
+
+\begin{itemize}
+\item{Every ordered list of elements of $\textbf{Symb}$ is in $\textbf{Str}$ and every element of $\textbf{Str}$ is an ordered list of elements of $\textbf{Symb}$.}
+\item{The list of no symbols is considered a string and is denoted by $\emptyset$.}
+\item{Every string $\mc{A}\in \mathbf{Str}$ has a finite, non-negative integer length which we express as $0 \le L(\mc{A})=n$. $L(\emptyset) = 0$.}
+\item{If $\mc{A}, \mc{B} \in \mathbf{Str}$ then $\mc{A}\mc{B}\in\mathbf{Str}$ is the list of symbols of $\mc{A}$ followed by the list of symbols of $\mc{B}$. $\mc{A}\mc{B}$ is the concatenation of $\mc{A}$ and $\mc{B}$.}
+\item{If $\mc{A}\in \textbf{Str}$ and $L(\mc{A}) = n$ then, for $0 \le i < n$, we express the $i^{\text{th}}$ symbol in $\mc{A}$ as $\mc{A}[i]\in\textbf{Symb}$, using 0- (as opposed to 1-) indexing. If $i < 0$ or $i\ge n$ then $\mc{A}[i]$ is undefined.}
+\item{If $\alpha, \beta \in \textbf{Symb}$ and they are the same symbol then we say $\mc{\alpha}\equiv \mc{\beta}$.}
+\item{If $\mc{A}, \mc{B} \in \mathbf{Str}$ and $L(\mc{A}) = L(\mc{B}) = n$ and for $0 \le i < n$ we have that $\mc{A}[i]\equiv \mc{B}[i]$ then we say $\mc{A}$ and $\mc{B}$ are the same string and we say $\mc{A}\equiv \mc{B}$.}
+\end{itemize}
+
+We now define substring slicing.
+
+\noindent\fbox{\parbox{\textwidth}{
+Substring slicing can be defined by induction. Suppose $\mc{A} \in \textbf{Str}$ and $L(\mc{A}) = n > 0$. We would like to define the notation $\mc{A}[i:j]\in \textbf{Str}$ for $0 \le i < j \le n$ to be the substring of $\mc{A}$ consisting of the $i^{\text{th}}$ through $j^{\text{th}}$ symbols in $\mc{A}$ (inclusive start, exclusive finish). We define this by recursively.
+
+Suppose $\mc{A} \in \textbf{Str}$ with $L(\mc{A}) = n > 0$ and $0 \le i < j \le n$.
+We define substring slicing by recursion on $m = j-i > 0$.
+
+\begin{itemize}
+\item{If $m = j-i=1$ then we define $\mc{A}[i:j] \equiv \mc{A}[i]$.}
+\item{If $m = j-i>1$ then note that $j-1 > i$. We define $\mc{A}[i:j] \equiv \mc{A}[i:j-1]\mc{A}[j-1]$}
+\end{itemize}
+}}
+
+We will require a seemingly simple result about string slicing.
+First a preparatory proof.
+
+\noindent\fbox{\parbox{\textwidth}{
+If $\mc{A}\in \textbf{Str}$ with $L(\mc{A}) = n$ and $0\le i < j \le n$ then $L(\mc{A}[i:j]) = j-i = m$.
+We induct on $m=j-i$.
+
+If $m=j-i = 1$ then $\mc{A}[i:j] \equiv \mc{A}[i]$ which is a single symbol.
+Therefore $L(\mc{A}[i:j]) = 1 = j-i$.
+
+Now suppose for all $m'<m$ that if $0 \le i'<j' \le n$ that if $j'-i'=m'$ then $L(\mc{A}[i':j']) = j'-i' =m$.
+Consider $\mc{A}[i:j]$ with $j-i=m$.
+We have $\mc{A}[i:j]\equiv \mc{A}[i:j-1]\mc{A}[j-1]$. Since $j-1-i = m-1 < m$ we have that $L(\mc{A}[i:j-1]) = j-1-i$ by the induction hypothesis.
+Since $\mc{A}[i:j]$ is the concatenation of $\mc{A}[i:j-1]$ with a single symbol, $\mc{A}[j-1]$, we can see that $L(\mc{A}[i:j]) = L(\mc{A}[i:j-1]) + 1 = j-i$ as needed.
+}}
+
+
+If $\mc{B} \equiv \mc{A}[0:i]$ for some $1 < i \le L(\mc{A})$ then we say that $\mc{B}$ is an initial part of $\mc{A}$.
+If $\mc{B}$ is an initial part of $\mc{A}$ but $\mc{B} \not\equiv \mc{A}$ then we say $\mc{B}$ is a proper initial part of $\mc{A}$.
+This is equivalent to $\mc{B} \equiv \mc{A}[0:i]$ with $0 < i < L(\mc{A})$.
+
+\noindent\fbox{\parbox{\textwidth}{
+We now prove that if $\mc{A} \equiv \mc{B}\mc{C}\mc{D}$ and $\mc{A} \equiv \mc{B}\mc{C}'\mc{D}'$ then $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
+}}
+
 
 \subsection{The Syntax of LFOL}
-
-Strings in the language are strings of symbols of the language. For example ``$x_1 \lnot Q \curlywedge ($'' is a string in the language. We can think of a string as an ordered tuple of elements from $\textbf{Symb}$. The set of all strings is denoted by $\textbf{Str}$.
-We consider the symbols in $\textbf{Symb}$ to be length 1 strings so that $\textbf{Symb} \subset \textbf{Str}$.
-Below we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
-
-String $\mc{B}$ appears in string $\mc{A}$, or is a substring of string $\mc{A}$, iff there are (possibly empty) strings $\mc{C}$ and $\mc{D}$ such that $\mc{A}\equiv \mc{C}\mc{B}\mc{D}$.
 
 The smallest syntactic elements of \textbf{LFOL} are the terms defined as follows.
 
@@ -353,6 +477,58 @@ $\mc{A} \in \textbf{pWff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
 
 Semantically, like atomic formulas, Wffs express, now more complex, statements about terms.
 
+\subsection{Unique Readability}
+
+If $\mc{A}$ is a string with $L(\mc{A}) = n > 0$ and $\mc{A}'$ is a string with $\mc{A}' \equiv \mc{A}[1:i]$ with $1\le i \le n$ then we say $\mc{A}'$ is an initial segment of $\mc{A}$.
+If $n>1$ and $\mc{A}' \equiv \mc{A}[1:i]$ with $1 \le i < n$ then we say $\mc{A}'$ is a proper initial segment of $\mc{A}$.
+If $n=1$ then $\mc{A}$ has no proper initial segments.
+
+Suppose $\mc{A} \equiv \mc{B}\mc{C}\mc{D}$ and that $\mc{A} \equiv \mc{B}\mc{C}'\mc{D}'$.
+If $\mc{C}$ and $\mc{C}'$ are non-empty then $\mc{C} \equiv \mc{A}[L(\mc{B}) + 1 : L(\mc{B}) + 1 + L(\mc{C}) - 1]$ and $\mc{C}' \equiv \mc{A}[L(\mc{B}) + 1 : L(\mc{B}) + 1 + L(\mc{C}') - 1]$.
+If $L(\mc{C}') = L(\mc{C})$ then $\mc{C}' \equiv \mc{C}$ so $\mc{C}' \equiv \mc{C}[1:L(\mc{C}')]$.
+If $L(\mc{C}') < L(\mc{C})$ then $\mc{C}' \equiv \mc{C}[1:L(\mc{C}')]$.
+If $L(\mc{C}) < L(\mc{C}')$ then $\mc{C} \equiv \mc{C}'[1:L(\mc{C})]$.
+
+
+Suppose also that $\mc{A} \equiv \mc{B}\mc{C}'\mc{D}'$.
+
+
+
+Any of $\mc{B}$, $\mc{C}$, $\mc{D}$, $\mc{C}'$, and $\mc{D}'$ might be the empty string.
+We have that $\mc{C} = \mc{A}[L(\mc{B})+1:L(\mc{B})+1+L(\mc{C})$
+
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{No Proper Initial Segment of a Term is a Term}
+
+I will now prove that if $t$ is a term and $t'$ is a proper initial segment of $t$ that $t'$ is not a term.
+I will proceed by induction on $L(t)$.
+
+If $L(t) = 1$ then $t$ is either a variable or a 0-ary function and is a single symbol.
+In this case $t$ has no proper initial segment.
+
+Now suppose for $n>1$ that for any $s$, if $L(s) < n$, that if $s'$ is a proper initial segment of $s$ that $s'$ is not a term. 
+Now suppose $t$ is a term and $L(t) = n > 1$.
+$t$ is not a variable or 0-ary function since $L(t) > 1$ so $t \equiv ft_1\ldots t_k$ where $f$ is a $k$-ary function.
+We must prove that if $t'$ is a proper initial segment of $t$ that $t'$ is not a term.
+
+Suppose that $t'$ is a term.
+Since $t'$ is a proper initial segment of $t$ we have $t[1] \equiv t'[1] \equiv f$.
+This means that $t' \equiv f t_1'\ldots t_k'$ with $t_1', \ldots t_k'$ terms.
+Note that $t_1, \ldots t_k, t_1', \ldots t_k'$ all have lengths less than $n$.
+Because $t \equiv t'$ we must have that $t_1$ is an initial segment of $t_1'$ or $t_1'$ is an initial segment of $t_1$.
+But, because $L(t_1)$ and $L(t_1')$ are both less than $n$ it is possible for either $t_1$ or $t_1'$ to have an initial segment that is a proper initial segment.
+This means we must have $t_1 \equiv t_1'$. 
+We can then repeat this argument for $t_2$ through $t_n$ showing that $t_i \equiv t_i'$ for all $1 \le i \le k$.
+This means that $t \equiv t'$, contradicting the fact that $t'$ is a proper initial segment of $t$.
+This contradiction means it cannot be the case both that $t'$ is a proper initial segment of $t$ and $t'$ is a term.
+}}
+
+I will prove that if $t \equiv f t_1\ldots t_n$ and $t\equiv f' t_1'\ldots t_n'$ that $f\equiv f'$ and $t_1\equiv t_1', \ldots, t_n\equiv t_n'$.
+$t[1] \equiv f$ and $t[1] \equiv f'$ so we must have $f\equiv f'$.
+
+
+
+\subsection{Strict Wffs}
 We will now use pWffs to define free and quantified variables within a pWff $\mc{A}$.
 These concepts will, in turn, be used to define sWffs.
 
