@@ -365,12 +365,12 @@ The same holds for concatenations of more than three lists.
 In addition to combining lists to form larger lists, we can also slice lists to form smaller lists.
 
 \noindent\fbox{\parbox{\textwidth}{
-\textbf{String Slicing}
+\textbf{List Slicing}
 Suppose $\mc{A}$ is a list.
 We define $\mc{A}[i:j]$ recursively on the difference $j-i$.
 
 \begin{itemize}
-\item{If $j-i=1$ then $\mc{A}[i:j] \equiv [\mc{A}[i]]$. Note the difference between $[\mc{A}[i]]$, the list containing the symbol $\mc{A}[i]$ and the symbol $\mc{A}[i]$ iteself.}
+\item{If $j-i=1$ then $\mc{A}[i:j] \equiv [\mc{A}[i]]$. Note the difference between $[\mc{A}[i]]\in \Sigma^*$, the list containing the object $\mc{A}[i]$ and the object $\mc{A}[i]\in \Sigma$ iteself.}
 \item{If $j-i>1$ then $\mc{A}[i:j] \equiv \mc{A}[i:j-1]\circ\mc{A}[j-1:j]$}
 
 Note that $\mc{A}[i:j]$ is only defined for $0 \le i < j \le |\mc{A}|$.
@@ -410,7 +410,7 @@ I will now prove one of the most important results of this section
 \noindent\fbox{\parbox{\textwidth}{
 \textbf{Intermediate Initial Part Identification}
 
-We will prove that if $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ that either $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
+We will prove that if $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ for nonempty $\mc{C}$ and $\mc{C}'$ that either $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
 
 Suppose, without loss of generality that $|\mc{C}| \le |\mc{C}'|$.
 We will show that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
@@ -426,134 +426,26 @@ This means that $\mc{C}$ is an initial part of $\mc{C}'$.
 if instead we have that $|\mc{C}'| \le |\mc{C}|$ then we can repeat the proof with $\mc{C}$ and $\mc{C}'$ reversed to conclude that $\mc{C}'$ is an initial part of $\mc{C}$.
 }}
 
+Up until now we have been discussing lists of over a general set of objects $\Sigma$.
+A string is any list over $\textbf{Symb}$.
+That is, any list over $\textbf{Symb}$ is in $\textbf{Str}$ and any element of $\textbf{Str}$ is a list of $\textbf{Symb}$.
+In short $\textbf{Str} = \textbf{Str}*$.
+The only distinctive feature about strings compared to general lists is that if we have a list of symbols such as 
 
-\subsection{Strings}
-
-After symbols strings are the next primitive element of our language.
-Strings in the language are finite ordered lists of elements of $\textbf{Symb}$.
-We denote the set of all strings as $\textbf{Str}$.
-Below we will use the term list to refer to a finite ordered list in what follows.\footnote{In other contexts it may be possible the relax the constraint that lists are finite}
-In the next section we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
-
-Every finite ordered list has a length given by the number of elements in that list.
-If $\mc{A}$ is a list then the length of $\mc{A}$ is denoted by $|\mc{A}|$.
-Perhaps the most formal definition we can give for a finite ordered list is that it is a mapping from the set of natural numbers between 0 and $|\mc{A}|$ (inclusive start, exclusive end) and the elements of the list. 
-An example of such a mapping would be
-
-\begin{align*}
-[&[0, x_1],\\
-&[1, \lnot],\\
-&[2, Q],\\
-&[3, \curlywedge],\\
-&[4, (]]
-\end{align*}
-
-Here we see a string with length 5.
-We can see, for example, that the $0^{\text{th}}$ element of this string is $x_1$, and the $3^{\text{rd}}$ element is $\curlywedge$.
-We can denote this string with the abbreviation $\mc{A}$ by 
 $$
-\mc{A} \equiv [[0, x_1], [1, \lnot], [2, Q], [3, \curlywedge], [4, (]]
-$$
-However, we often abbreviate strings by dropping the explicit number of the elements so that
-$$
-\mc{A} \equiv [x_1, \lnot, Q, \curlywedge, (]
-$$
-Or, we can abbreviate more by dropping the outer square brackets and commas so that
-$$
-\mc{A} \equiv x_1\lnot Q \curlywedge (
+[x_1, \lnot, Q, \curlywedge, (]
 $$
 
-We use the notation $\mc{A}[i]$ to denote the $i^{\text{th}}$ element of the string $\mc{A}$. 
-So for the string above we have $\mc{A}[2] \equiv Q$.
-Note that $\mc{A}[i] \in \textbf{Symb}$.
+We will typically abbreviate it as
 
-We consider the empty string $[]$ to be a string and denote it by $\emptyset$.
+$$
+x_1\lnot Q\curlywedge (
+$$
 
-It is possible to generate news strings using concatenation.
-We define the concatenation of strings $\mc{A}$ and $\mc{B}$ as follows.
-$\mc{A}\circ\mc{B}$ is the concatenation of strings $\mc{A}$ and $\mc{B}$.
-We typically abbreviate $\mc{A}\circ{\mc{B}}$ as $\mc{A}\mc{B}$.
-We have that $\mc{C} \equiv \mc{A}\mc{B}$ if $|\mc{C}| = |\mc{A}| + |\mc{B}|$ and for $0 \le i < |\mc{A}|$ we have $\mc{C}[i] \equiv$
-
-
-
-
-From a given string it is possible to extract other strings called substrings.
-We do this using a notation called substring slicing.
-
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Substring Slicing}
-Suppose $\mc{A} \in \textbf{Str}$ and $L(\mc{A}) = n$. Suppose $0\le i \le j \le n$.
-
-\begin{itemize}
-\item{If $j=i$ the $\mc{A}[i:j] \equiv \emptyset$}
-\item{If}
-\end{itemize}
-
-
-}}
- 
-
-
-
- For example $[x_1, \lnot, Q, \curlywedge, (,]$ is a string in the language.
-
-
-
-
-We typically abbreviate strings by removing the outer brackets $[$, and $]$ which denote the scope of the string and the separation commas so that the previous string would appear as ``$x_1\lnot Q \curlywedge ($''.
-The set of all strings is denoted by $\textbf{Str}$.
-In the next section we will see rules for constructing `sensible' strings or `well-formed formulas' (Wffs) in the language.
-Below are key properties about strings and a few methods to manipulate them. 
-
-\begin{itemize}
-\item{Every ordered list of elements of $\textbf{Symb}$ is in $\textbf{Str}$ and every element of $\textbf{Str}$ is an ordered list of elements of $\textbf{Symb}$.}
-\item{The list of no symbols is considered a string and is denoted by $\emptyset$.}
-\item{Every string $\mc{A}\in \mathbf{Str}$ has a finite, non-negative integer length which we express as $0 \le L(\mc{A})=n$. $L(\emptyset) = 0$.}
-\item{If $\mc{A}, \mc{B} \in \mathbf{Str}$ then $\mc{A}\mc{B}\in\mathbf{Str}$ is the list of symbols of $\mc{A}$ followed by the list of symbols of $\mc{B}$. $\mc{A}\mc{B}$ is the concatenation of $\mc{A}$ and $\mc{B}$.}
-\item{If $\mc{A}\in \textbf{Str}$ and $L(\mc{A}) = n$ then, for $0 \le i < n$, we express the $i^{\text{th}}$ symbol in $\mc{A}$ as $\mc{A}[i]\in\textbf{Symb}$, using 0- (as opposed to 1-) indexing. If $i < 0$ or $i\ge n$ then $\mc{A}[i]$ is undefined.}
-\item{If $\alpha, \beta \in \textbf{Symb}$ and they are the same symbol then we say $\mc{\alpha}\equiv \mc{\beta}$.}
-\item{If $\mc{A}, \mc{B} \in \mathbf{Str}$ and $L(\mc{A}) = L(\mc{B}) = n$ and for $0 \le i < n$ we have that $\mc{A}[i]\equiv \mc{B}[i]$ then we say $\mc{A}$ and $\mc{B}$ are the same string and we say $\mc{A}\equiv \mc{B}$.}
-\end{itemize}
-
-We now define substring slicing.
-
-\noindent\fbox{\parbox{\textwidth}{
-Substring slicing can be defined by induction. Suppose $\mc{A} \in \textbf{Str}$ and $L(\mc{A}) = n > 0$. We would like to define the notation $\mc{A}[i:j]\in \textbf{Str}$ for $0 \le i < j \le n$ to be the substring of $\mc{A}$ consisting of the $i^{\text{th}}$ through $j^{\text{th}}$ symbols in $\mc{A}$ (inclusive start, exclusive finish). We define this by recursively.
-
-Suppose $\mc{A} \in \textbf{Str}$ with $L(\mc{A}) = n > 0$ and $0 \le i < j \le n$.
-We define substring slicing by recursion on $m = j-i > 0$.
-
-\begin{itemize}
-\item{If $m = j-i=1$ then we define $\mc{A}[i:j] \equiv \mc{A}[i]$.}
-\item{If $m = j-i>1$ then note that $j-1 > i$. We define $\mc{A}[i:j] \equiv \mc{A}[i:j-1]\mc{A}[j-1]$}
-\end{itemize}
-}}
-
-We will require a seemingly simple result about string slicing.
-First a preparatory proof.
-
-\noindent\fbox{\parbox{\textwidth}{
-If $\mc{A}\in \textbf{Str}$ with $L(\mc{A}) = n$ and $0\le i < j \le n$ then $L(\mc{A}[i:j]) = j-i = m$.
-We induct on $m=j-i$.
-
-If $m=j-i = 1$ then $\mc{A}[i:j] \equiv \mc{A}[i]$ which is a single symbol.
-Therefore $L(\mc{A}[i:j]) = 1 = j-i$.
-
-Now suppose for all $m'<m$ that if $0 \le i'<j' \le n$ that if $j'-i'=m'$ then $L(\mc{A}[i':j']) = j'-i' =m$.
-Consider $\mc{A}[i:j]$ with $j-i=m$.
-We have $\mc{A}[i:j]\equiv \mc{A}[i:j-1]\mc{A}[j-1]$. Since $j-1-i = m-1 < m$ we have that $L(\mc{A}[i:j-1]) = j-1-i$ by the induction hypothesis.
-Since $\mc{A}[i:j]$ is the concatenation of $\mc{A}[i:j-1]$ with a single symbol, $\mc{A}[j-1]$, we can see that $L(\mc{A}[i:j]) = L(\mc{A}[i:j-1]) + 1 = j-i$ as needed.
-}}
-
-
-If $\mc{B} \equiv \mc{A}[0:i]$ for some $1 < i \le L(\mc{A})$ then we say that $\mc{B}$ is an initial part of $\mc{A}$.
-If $\mc{B}$ is an initial part of $\mc{A}$ but $\mc{B} \not\equiv \mc{A}$ then we say $\mc{B}$ is a proper initial part of $\mc{A}$.
-This is equivalent to $\mc{B} \equiv \mc{A}[0:i]$ with $0 < i < L(\mc{A})$.
-
-\noindent\fbox{\parbox{\textwidth}{
-We now prove that if $\mc{A} \equiv \mc{B}\mc{C}\mc{D}$ and $\mc{A} \equiv \mc{B}\mc{C}'\mc{D}'$ then $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
-}}
+dropping the separating commas and enclosing square brackets.
+This abbreviation is generally ok.
+The main ambiguity in this abbreviation is that we write down, for example, the symbol $\lnot$ it is not clear if we are talking about the symbol $\lnot$ or the list containing the symbol $[\lnot] \equiv [[0, \lnot]]$.
+In practice, this distinction is typically not important so the ambiguity is harmless.
 
 
 \subsection{The Syntax of LFOL}
