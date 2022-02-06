@@ -278,6 +278,155 @@ The set of all symbols in the language is denoted $\textbf{Symb}$ and is the dis
 
 If $\alpha, \beta \in \textbf{Symb}$, then if they are the same symbol we denote this by $\alpha \equiv \beta$, otherwise we have $\alpha \not \equiv \beta$.
 
+\subsection{Strings - Terse}
+
+The symbols in $\textbf{Symb}$ can be combined into collections of symbols called strings.
+We define strings as follows.
+Let $[n]$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$, for example $[5] = \{0, 1, 2, 3, 4\}$.
+Note that $[0] = \{\} = \emptyset$.
+If $\Sigma$ is any set of objects then a length $n$ finite ordered list of objects in $\Sigma$ is a functional mapping from $[n]$ to $\Sigma$.\footnote{When we use the term `list' below we always mean `finite ordered list'.} The collection of all lists over a set of objects $\Sigma$ is denoted by $\Sigma^*$.
+An example of a list of elements of $\textbf{Symb}$ defined above is is
+\begin{align*}
+[&[0, x_1],\\
+&[1, \lnot],\\
+&[2, Q],\\
+&[3, \curlywedge],\\
+&[4, (]]
+\end{align*}
+This list could also be written as
+$$
+[[0, x_1], [1, \lnot], [2, Q], [3, \curlywedge], [4, (]]
+$$
+We can also abbreviate the list expression by excluding the explicit inclusion of the numbering:
+$$
+[x_1, \lnot, Q, \curlywedge, (]
+$$
+
+If $\mc{L}$ is a mapping from $[n]$ into a set of objects $\Sigma$ then we say that $\mc{L}$ is a length $n$ list of elements of $\Sigma$.
+We denote the length of the list by $|\mc{L}| = n$.
+Note that $|\mc{L}| \ge 0$.
+The natural number length of a list is a fundamental part of its definition in this formal setting.
+Recall that a list can be a mapping from $[0] = \emptyset$.
+In this case the list will have no elements and will be the empty list which can be expressed as $[]$.
+The length of the empty list is $0$.
+
+If $\alpha, \beta \in \Sigma$ and $\alpha$ and $\beta$ represent the same object then we may write $\alpha \equiv \beta$.
+Otherwise, if $\alpha$ and $\beta$ represent different objects we may write $\alpha \not \equiv \beta$.
+
+Suppose $\mc{L}$ is a list with $|\mathcal{L}| = n$.
+For $0 \le i < n$ we denote the $i^{\text{th}}$ element of $\mc{L}$ by $\mc{L}[i]$.
+For example, in the list above we have $\mc{L}[2] \equiv Q$.
+
+If $\mc{A}$ and $\mc{B}$ are two lists which satisfy $|\mc{A}| = |\mc{B}| = n$ and for all $0 \le i < n$ we have $\mc{A}[i] \equiv \mc{B}[i]$ then we say that $\mc{A}$ and $\mc{B}$ are the same list and we may write $\mc{A} \equiv \mc{B}$.
+
+We denote the empty list by $e \equiv []$.
+Note that $|e| = 0$ so there is no $i$ which satisfies $0 \le i < 0$ so that $e[i]$ is undefined for all $i$.
+
+If we are given two lists, $\mc{A}$ and $\mc{B}$, we can define a third list by concatenating these two lists.
+We define the concatenation of $\mc{A}$ and $\mc{B}$ as follows.
+$\mc{A} \circ \mc{B}$ is the concatenation of the the lists $\mc{A}$ and $\mc{B}$.
+We often abbreviate $\mc{A}\circ\mc{B}$ by $\mc{A}\mc{B}$.
+We have that $\mc{C} \equiv \mc{A}\mc{B}$ iff $|\mc{C}| = |\mc{A}| + |\mc{B}|$ and for $0 \le i < |\mc{A}|$ we have $\mc{C}[i] \equiv \mc{A}[i]$ and for $0 \le i < |\mc{B}|$ we have $\mc{C}[|\mc{A}| + i] \equiv \mc{B}[i]$.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{List Concatenation is Commutative}
+
+Here we will prove that $(\mc{A}\circ \mc{B}) \circ \mc{C} \equiv \mc{A} \circ (\mc{B} \circ \mc{C})$.
+
+First we have that
+$$
+|(\mc{A}\mc{B})\mc{C}| = |\mc{A}\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}\mc{C}| = |\mc{A}(\mc{B}\mc{C})|.
+$$
+
+Let $n = |(\mc{A}\mc{B})\mc{C}| = |\mc{A}(\mc{B}\mc{C})|$.
+Consider $0 \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$.
+We must show
+$$
+((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]
+$$
+There are three cases
+\begin{itemize}
+\item{
+Suppose $0 \le i < |\mc{A}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Since $0 \le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have that $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}\mc{B})[i]$. Again, since $0\le i < |\mc{A}|$, we have $(\mc{A}\mc{B})[i] \equiv \mc{A}[i]$ so that $((\mc{A}\mc{B})\mc{C})[i] \equiv \mc{A}[i]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. Since $0 \le i < |\mc{A}|$ we have $(\mc{A}(\mc{B}\mc{C}) \equiv \mc{A}[i]$. So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.
+}
+\item{
+Now suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$. Define $j = i - |\mc{A}|$ so that $0 \le j < |\mc{B}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Because $0 \le i < |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}\mc{B})[i] \equiv (\mc{A}\mc{B})[|\mc{A}| + j]$ Because $0 \le j < |\mc{B}|$ we have $(\mc{A}\mc{B})[|\mc{A}|+j] = \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. Because $0 \le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + j] \equiv (\mc{B}\mc{C})[j]$. But, since $0 \le j < |\mc{B}|$ we have $(\mc{B}\mc{C})[j] \equiv \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.}
+\item{
+Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$. Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Because $0 \le j < |\mc{C}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}| + |\mc{B}| + j] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. We have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j]$. We have that $0 \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $(\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j] \equiv (\mc{B}\mc{C})[|\mc{B}| + j]$. But, $0 \le j < |\mc{C}|$ so $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$. So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i].$
+}
+
+In all cases we have $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.
+This means that $(\mc{A}\mc{B})\mc{C} \equiv \mc{A}(\mc{B}\mc{C})$. 
+This associativity allows us to suppress the parentheses notation and simply write $(\mc{A}\mc{B})\mc{C} \equiv \mc{A}(\mc{B}\mc{C}) \equiv \mc{A}\mc{B}\mc{C}$ since the resulting list is unambiguous.
+The same holds for concatenations of more than three lists.
+\end{itemize}
+}}
+
+In addition to combining lists to form larger lists, we can also slice lists to form smaller lists.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{String Slicing}
+Suppose $\mc{A}$ is a list.
+We define $\mc{A}[i:j]$ recursively on the difference $j-i$.
+
+\begin{itemize}
+\item{If $j-i=1$ then $\mc{A}[i:j] \equiv [\mc{A}[i]]$. Note the difference between $[\mc{A}[i]]$, the list containing the symbol $\mc{A}[i]$ and the symbol $\mc{A}[i]$ iteself.}
+\item{If $j-i>1$ then $\mc{A}[i:j] \equiv \mc{A}[i:j-1]\circ\mc{A}[j-1:j]$}
+
+Note that $\mc{A}[i:j]$ is only defined for $0 \le i < j \le |\mc{A}|$.
+
+\end{itemize}
+}}
+
+If $\mc{A}$ is a list and $\mc{B} \equiv \mc{A}[i:j]$ with $0\le i < j \le |\mc{A}|$.
+We say that $\mc{B}$ is a sublist of $\mc{A}$.
+If $\mc{B} \equiv \mc{A}[0:j]$ with $0 < j \le |\mc{A}|$ then we say that $\mc{B}$ is an initial part of $\mc{A}$.
+If $\mc{B} \equiv \mc{A}[0:j]$ with $0 < j < |\mc{A}|$ then we say that $\mc{B}$ is a proper initial part of $\mc{A}$.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Length of Sublist}
+
+Here we will prove that $|\mc{A}[i:j]| = j-i$ by induction on $j-i$.
+
+If $j-i=1$ then $\mc{A}[i:j] = [\mc{A}[i]]$ so $|\mc{A}[i:j]| = 1 = j-i$.
+
+Now consider $j-i > 1$.
+Suppose that if $j'-i' < j-i$ that $|\mc{A}[i':j']| = j'-i'$.
+Consider $\mc{A}[i:j] \equiv \mc{A}[i:j-1] \circ \mc{A}[j-1:j]$.
+We have, from the definition of concatenation, that $|\mc{A}[i:j]| = |\mc{A}[i:j-1]| + |\mc{A}[j-1:j]|$.
+But, $j-1 -i < j-i$ and $j - (j-1) = 1 < j-i$ so $|\mc{A}[i:j-1]| + |\mc{A}[j-1:j]| = j-1-i + j - (j-1) = j-i$.
+}}
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Elements of Sublists Related of Elements of the List}
+
+We will prove that $\mc{A}[0:j][i] \equiv \mc{A}[i]$ for $0 < j \le |\mc{A}|$ and $0 \le i < j$. We will induct on $j$. If $j=1$ then $i=0$. $\mc{A}[0:1][0] \equiv [\mc{A}[0]][0] \equiv \mc{A}[0]$. Now suppose for $j>1$ but for any $j'<j$ and $0\le i < j'$ that $\mc{A}[0:j'][i]\equiv \mc{A}[i]$. Consider $\mc{A}[0:j][i] \equiv (\mc{A}[0:j-1]\circ\mc{A}[j-1:j])[i]$. Note that $|\mc{A}[0:j-1]| = j-1$ and $|\mc{A}[j-1:j]| = 1$ We have that $0 \le i < j$. If $0 \le i < j-1$ then $\mc{A}[0:j][i] \equiv \mc{A}[0:j-1][i]$. Since $j-1<j$ this means $\mc{A}[0:j][i] \equiv \mc{A}[i]$. If $i=j-1$ then $\mc{A}[0:j][i] \equiv \mc{A}[0:j][j-1 + 0] \equiv \mc{A}[j-1:j][0] \equiv [\mc{A}[j-1]][0] \equiv \mc{A}[j-1] = \mc{A}[i]$. Therefore $\mc{A}[0:j][i] \equiv \mc{A}[i]$.
+Taking $j = |\mc{A}|$ we see that $\mc{A}[0:|\mc{A}|] \equiv \mc{A}$, therefore $\mc{A}$ is a sublist of itself.
+
+}}
+
+I will now prove one of the most important results of this section
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Intermediate Initial Part Identification}
+
+We will prove that if $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ that either $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
+
+Suppose, without loss of generality that $|\mc{C}| \le |\mc{C}'|$.
+We will show that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
+
+Consider $0 \le j < |\mc{C}| \le |\mc{C}'|$.
+We have $\mc{A} \equiv (\mc{B}\mc{C})\mc{D} \equiv (\mc{B}\mc{C}')\mc{D}'$.
+Let $i = j + |\mc{B}|$ so that $0 \le i < |\mc{B}|+|\mc{C}| =|\mc{B}\mc{C}| \le |\mc{B}|+|\mc{C}'| = |\mc{B}\mc{C}'|$ so we have that $\mc{A}[i] \equiv (\mc{B}\mc{C})[i] \equiv (\mc{B}\mc{C}')[i]$. 
+
+We rewrite as $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv (\mc{B}\mc{C}')[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}'[j] \equiv \mc{C}'[0:|\mc{C}|]$.
+Since this holds for all $0 \le j < |\mc{C}|$ we have that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
+
+This means that $\mc{C}$ is an initial part of $\mc{C}'$.
+if instead we have that $|\mc{C}'| \le |\mc{C}|$ then we can repeat the proof with $\mc{C}$ and $\mc{C}'$ reversed to conclude that $\mc{C}'$ is an initial part of $\mc{C}$.
+}}
+
+
 \subsection{Strings}
 
 After symbols strings are the next primitive element of our language.
@@ -324,7 +473,7 @@ It is possible to generate news strings using concatenation.
 We define the concatenation of strings $\mc{A}$ and $\mc{B}$ as follows.
 $\mc{A}\circ\mc{B}$ is the concatenation of strings $\mc{A}$ and $\mc{B}$.
 We typically abbreviate $\mc{A}\circ{\mc{B}}$ as $\mc{A}\mc{B}$.
-We have that $\mc{C} \equiv \mc{A}\mc{B}$ if $|\mc{C}| = |\mc{A}| + |\mc{B}|$ and for $0 \le i < |\mc{A}|$ we have $\mc{C}[i]$
+We have that $\mc{C} \equiv \mc{A}\mc{B}$ if $|\mc{C}| = |\mc{A}| + |\mc{B}|$ and for $0 \le i < |\mc{A}|$ we have $\mc{C}[i] \equiv$
 
 
 
