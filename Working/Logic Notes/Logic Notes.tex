@@ -380,6 +380,7 @@ Note that $\mc{A}[i:j]$ is only defined for $0 \le i < j \le |\mc{A}|$.
 
 If $\mc{A}$ is a list and $\mc{B} \equiv \mc{A}[i:j]$ with $0\le i < j \le |\mc{A}|$.
 We say that $\mc{B}$ is a sublist of $\mc{A}$.
+If $\mc{A}$ is a list and $\mc{B} \equiv \mc{A}[i:j]$ with $0\le i < j \le |\mc{A}|$ and  $i>0$ or $j <|\mc{A}|$ then we say that $\mc{B}$ is a proper sublist of $\mc{A}$.
 If $\mc{B} \equiv \mc{A}[0:j]$ with $0 < j \le |\mc{A}|$ then we say that $\mc{B}$ is an initial part of $\mc{A}$.
 If $\mc{B} \equiv \mc{A}[0:j]$ with $0 < j < |\mc{A}|$ then we say that $\mc{B}$ is a proper initial part of $\mc{A}$.
 
@@ -446,6 +447,8 @@ dropping the separating commas and enclosing square brackets.
 This abbreviation is generally ok.
 The main ambiguity in this abbreviation is that we write down, for example, the symbol $\lnot$ it is not clear if we are talking about the symbol $\lnot$ or the list containing the symbol $[\lnot] \equiv [[0, \lnot]]$.
 In practice, this distinction is typically not important so the ambiguity is harmless.
+If we say, for example, that $\alpha \in \textbf{Str}$ where $\alpha$ is a symbol we mean $[\alpha] \in \textbf{Str}$.
+For strings we replace the terms `sublist' and `proper sublist' with `substring' and `proper substring'.
 
 
 \subsection{The Syntax of LFOL}
@@ -457,16 +460,28 @@ The smallest syntactic elements of \textbf{LFOL} are the terms defined as follow
 
 $t \in \textbf{Term}$ iff $t \in \textbf{Str}$ and satisfies one of
 \begin{itemize}
-\item{\textbf{Variables:} $t \in \textbf{Var}$.}
+\item{\textbf{Variables:} $t\equiv [x]$ with $x \in \textbf{Var}$.}
 \item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\bv{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
 \end{itemize}
 }}
 \vspace{1cm}
 
-Semantically, if we think of the formal language as expressing meaning, then terms are the objects about which the formal language is communicating information. 0-ary functions represent constants or concrete objects while variables represent place-holders into which other terms can be `plugged in'.
+Semantically, if the expressions of the formal language are making statements, then terms are the subjects of those statements.
+0-ary functions represent constants or concrete objects while variables represent place-holders into which other terms can be `plugged in'.
 
-A closed term is a term which contains no variables.
-An open term contains at least one variable.
+We define the set of free variables $FV(t)$ of a term $t$ recursively.
+
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{Free Variables in a Term}
+
+If $t\in \textbf{Term}$ then $t$ we define the set $FV(t)$ as follows.
+\begin{itemize}
+\item{\textbf{Variables:} If $t\equiv [x]$ with $FV = \{x\}$}
+\item{\textbf{Functions:} If $t\equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots \cup FV(t_n)$.}
+\end{itemize}
+}}
+
+If $FV(t)$ is empty then we say that $t$ is closed, otherwise we say that $t$ is open.
 Closed terms can be thought of as concrete objects while open terms can be thought of as placeholders into which concrete objects can be `plugged in'.
 
 The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defined as follows.
@@ -477,46 +492,64 @@ The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defi
 $\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
 
 \begin{itemize}
-\item{\textbf{Atoms:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\bv{t})$. In our notation $\curlywedge$ is an atomic formula.}
+\item{\textbf{Atomic Formulas:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\bv{t})$. In our notation $\curlywedge$ is an atomic formula.}
 \end{itemize}
 }}
 
-Semantically an atomic formula expresses a statement about the `objects of study', that is the terms, which have been plugged into it.
-Semantically terms do not have truth value, rather, they are objects about which boolean claims can be made.
-Semantically, closed atomic formulas can be thought of as having truth values.
+Semantically, an atomic formula express a boolean statement about the terms within its scope.
+If the terms are all closed then we can, semantically, think of the atomic formula as having a truth value.
+If any of the terms are open then the atomic formula would only have a truth value once closed terms are `plugged in' for all variables.
 
+The final layer of syntax is the formula, sometimes called a well-formed formula  (Wff).
+Formulas combine multiple atomic formulas into more complex expressions using the logical operators.
+We will define formulas in two phases.
+We will first present \textit{permissive} formulas, then we will present \textit{strict} formulas. 
+permissive formulas and strict formulas will differ in their treatment of quantifiers.
+In short, permissive formulas will allow repeated quantification (the binding of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification over a variable $x$ over an expression which does not include $x$). 
+Both repeated and redundant quantification are in some-sense unnatural, in that they don't translate well into English example sentences, and that the quantification feels either confusing (in the case of repeated quantification) or wasteful (in the case of redundant quantification).
 
-The final layer of syntax is the well-formed formula  (Wff).
-Wffs combine multiple atomic formulas into more complex expressions using the logical operators.
-We will define Wffs in two phases.
-We will first present \textit{permissive} Wffs, or pWffs, then we will present \textit{strict} Wffs, or sWffs. 
-pWffs and sWffs will differ in their treatment of quantifiers.
-In short, permissive Wffs will also repeated quantification (the binding of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification over a variable $x$ over an expression which does not include $x$). 
-Both repeated and redundant quantification are in some-sense unnatural, in that they don't translate well into English example sentences and that the quantification feels either confusing (in the case of repeated quantification) or wasteful (in the case of redundant quantification).
-
-Strict Wffs will explicitly forbid both repeated and redundant quantification.
-The downside, however, is that it will be much more difficult to prove metalogical theorems about strict Wffs.
-This is because care will need to be taken at each step to ensure that each expression satisfies the provisos necessary for strict Wffs.
+Strict formulas will explicitly forbid both repeated and redundant quantification.
+The downside, however, is that it will be much more difficult to prove metalogical theorems about strict formulas.
+This is because care will need to be taken at each step to ensure that each expression satisfies the provisos necessary for strict formulas.
 It is typically the case that logic references do allow repeated and redundant quantification for precisely this reason.
-In fact, one might worry that semantically different theorems could be derived using pWffs compared to sWffs, but this is in fact not the case.
+In fact, one might worry that semantically different theorems could be derived using permissive formulas compared to strict formulas, but this is in fact not the case.
 
-Nonetheless, in this document we will mainly be using sWffs, with pWffs only as a temporary stepping stone to help more easily define sWffs.
-Moving forward Wff will refer to sWff unless otherwise specified.
+Nonetheless, in this document we will mainly be using strict formulas, with permissive formulas only as a temporary stepping stone to help more easily define strict formulas.
+Moving forward `formula' will refer to `strict formula' unless otherwise specified.
 
 \noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Permissive Well-Formed Formulas}
+\textbf{Permissive Formulas}
 
-$\mc{A} \in \textbf{pWff}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
+$\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
 
 \begin{itemize}
 \item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula.}
-\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{pWff}$.}
-\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{pWff}$.}
-\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pWff}$. We say $\mc{B}$ and all substrings of $\mc{B}$ are in the scope of $(\forall x)$} 
+\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{pForm}$.}
+\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{pForm}$.}
+\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.} 
 \end{itemize}
 }}
 
-Semantically, like atomic formulas, Wffs express, now more complex, statements about terms.
+We define the free variables, $FV(\mc{A})$ in a formula $\mc{A}$ similarly to the free variables of a term.
+
+\noindent\fbox{\parbox{\textwidth}{
+\textbf{Free Variables in Permissive Formulas}
+
+If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
+
+\begin{itemize}
+\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
+\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
+\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
+\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$.}
+\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
+\end{itemize}
+}}
+
+
+Semantically, like atomic formulas, formulas express, now more complex, statements about terms.
+Note that, $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(\mc{B})$.
+
 
 \subsection{Unique Readability}
 
