@@ -20,7 +20,26 @@
 \usepackage{tabularx}
 \usepackage{bussproofs}
 
-\newtheorem{definition}{Definition}
+\usepackage{amsthm}
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {\itshape}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+
 
 \newcommand{\bv}[1]{\boldsymbol{#1}}
 \newcommand{\mc}[1]{\mathcal{#1}}
@@ -239,8 +258,8 @@ The symbols included in the non-logical symbols may vary from one application of
 
 \subsection{The Lexicon of LFOL:}
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Logical Symbols:}
+\begin{definition}[Logical Symbols]
+The logical symbols are defined as follows.
 \begin{itemize}
 \item{\textbf{Variables:} Variable symbols such as $x_1, x_2, \ldots, v_1, v_2, \ldots$. We will try to use lower case letters from near the end of the alphabet for variables. The set of all variables is denoted $\textbf{Var}$.}
 \item{\textbf{Logical Operators:} The logical operators for implication: $\implies$, and negation: $\lnot$. The set of all logical operators is denoted $\textbf{Lop}$.}
@@ -250,41 +269,44 @@ The symbols included in the non-logical symbols may vary from one application of
 
 
 The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \sqcup \textbf{Lop} \sqcup \textbf{Quant} \sqcup \textbf{Punct}$.
-}}
-
-\vspace{1cm}
+\end{definition}
 
 We have chosen to use a restricted set of logical operators in the theory to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
 This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs. 
 However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as abbreviations and metalogically derive the appropriate corresponding rules of inference.
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Non-Logical Symbols:}
+\begin{definition}[Non-Logical Symbols]
+The non-logical symbols are defined as follows.
 \begin{itemize}
 \item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
 \item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$.}
 \end{itemize}
 
 The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoint union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$. If we are not worried about having an infinite number of distinct symbol types then we can let $N_{\text{pred}} = N_{\text{func}} = \infty$.
-}}
+\end{definition}
 
-\vspace{1cm}
-
-\noindent\fbox{\parbox{\textwidth}{
+\begin{definition}[The Set of All Symbols]
 The set of all symbols in the language is denoted $\textbf{Symb}$ and is the disjoint union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \sqcup \textbf{NonLogSymb}$.
-}}
+\end{definition}
 
-\vspace{1cm}
-
-If $\alpha, \beta \in \textbf{Symb}$, then if they are the same symbol we denote this by $\alpha \equiv \beta$, otherwise we have $\alpha \not \equiv \beta$.
-
-\subsection{Strings - Terse}
-
+\subsection{Strings}
+\subsubsection{Definition of Lists}
 The symbols in $\textbf{Symb}$ can be combined into collections of symbols called strings.
-We define strings as follows.
-Let $[n]$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$, for example $[5] = \{0, 1, 2, 3, 4\}$.
+Formally, we will define strings as finite ordered lists of symbols.
+Most of this section will be devoted to defining and describing finite ordered lists.
+
+\begin{definition}[Natural Number Subset]
+Let $[n]$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$
+\end{definition}
+
+As an example we have that $[5] = \{0, 1, 2, 3, 4\}$.
 Note that $[0] = \{\} = \emptyset$.
-If $\Sigma$ is any set of objects then a length $n$ finite ordered list of objects in $\Sigma$ is a functional mapping from $[n]$ to $\Sigma$.\footnote{When we use the term `list' below we always mean `finite ordered list'.} The collection of all lists over a set of objects $\Sigma$ is denoted by $\Sigma^*$.
+
+\begin{definition}[Finite Ordered List]
+If $\Sigma$ is any set of objects then a length $n$ finite ordered list of objects in $\Sigma$ is a functional mapping from $[n]$ to $\Sigma$.\footnote{When we use the term `list' below we always mean `finite ordered list'.}  The collection of all lists over a set of objects $\Sigma$ is denoted by $\Sigma^*$.
+\end{definition}
+
+
 An example of a list of elements of $\textbf{Symb}$ defined above is is
 \begin{align*}
 [&[0, x_1],\\
@@ -302,57 +324,137 @@ $$
 [x_1, \lnot, Q, \curlywedge, (]
 $$
 
+\begin{definition}[List Length]
 If $\mc{L}$ is a mapping from $[n]$ into a set of objects $\Sigma$ then we say that $\mc{L}$ is a length $n$ list of elements of $\Sigma$.
 We denote the length of the list by $|\mc{L}| = n$.
 Note that $|\mc{L}| \ge 0$.
-The natural number length of a list is a fundamental part of its definition in this formal setting.
-Recall that a list can be a mapping from $[0] = \emptyset$.
-In this case the list will have no elements and will be the empty list which can be expressed as $[]$.
-The length of the empty list is $0$.
+\end{definition}
 
+The natural number length of a list is a fundamental part of its definition in this formal setting.
+
+\begin{definition}[Symbol Equality]
 If $\alpha, \beta \in \Sigma$ and $\alpha$ and $\beta$ represent the same object then we may write $\alpha \equiv \beta$.
 Otherwise, if $\alpha$ and $\beta$ represent different objects we may write $\alpha \not \equiv \beta$.
+\end{definition}
 
+\begin{definition}[List Element Extraction]
 Suppose $\mc{L}$ is a list with $|\mathcal{L}| = n$.
-For $0 \le i < n$ we denote the $i^{\text{th}}$ element of $\mc{L}$ by $\mc{L}[i]$.
+For all $i$ with $0 \le i < n$ we denote the $i^{\text{th}}$ element of $\mc{L}$ (with 0-indexing) by $\mc{L}[i]$.
+\end{definition}
+
 For example, in the list above we have $\mc{L}[2] \equiv Q$.
 
+\begin{definition}[List Equality]
 If $\mc{A}$ and $\mc{B}$ are two lists which satisfy $|\mc{A}| = |\mc{B}| = n$ and for all $0 \le i < n$ we have $\mc{A}[i] \equiv \mc{B}[i]$ then we say that $\mc{A}$ and $\mc{B}$ are the same list and we may write $\mc{A} \equiv \mc{B}$.
+\end{definition}
 
-We denote the empty list by $e \equiv []$.
-Note that $|e| = 0$ so there is no $i$ which satisfies $0 \le i < 0$ so that $e[i]$ is undefined for all $i$.
+Recall that a list can be a mapping from $[0] = \emptyset$.
+
+\begin{definition}[Empty Lists]
+If $\mc{L}$ is a mapping from the empty set $[0] = \emptyset$ then we say $\mc{L}$ is an empty list.
+We can see that if $\mc{L}$ is an empty list then $|\mc{L}| = 0$.
+An empty list could be written as $[]$.
+\end{definition}
+
+\begin{theorem}[The Empty List is Unique]
+Suppose $\mc{E}$ and $\mc{E}'$ are both empty lists.
+We have that $|\mc{E}| = |\mc{E}'| = 0 $.
+Since there is no $i$ satisfying $0\le i < 0$ we need not check equality for any elements of these empty lists.
+Therefore $\mc{E} \equiv \mc{E}'$.
+\end{theorem}
+
+\begin{definition}[The Empty List]
+Because of the uniqueness of the empty list we are justified in defining a notation for it. The empty list can be expressed as $[]$ and we define $\mc{E} \equiv []$.
+\end{definition}
 
 If we are given two lists, $\mc{A}$ and $\mc{B}$, we can define a third list by concatenating these two lists.
-We define the concatenation of $\mc{A}$ and $\mc{B}$ as follows.
-$\mc{A} \circ \mc{B}$ is the concatenation of the the lists $\mc{A}$ and $\mc{B}$.
-We often abbreviate $\mc{A}\circ\mc{B}$ by $\mc{A}\mc{B}$.
-We have that $\mc{C} \equiv \mc{A}\mc{B}$ iff $|\mc{C}| = |\mc{A}| + |\mc{B}|$ and for $0 \le i < |\mc{A}|$ we have $\mc{C}[i] \equiv \mc{A}[i]$ and for $0 \le i < |\mc{B}|$ we have $\mc{C}[|\mc{A}| + i] \equiv \mc{B}[i]$.
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{List Concatenation is Commutative}
+\begin{definition}[List Concatenation]
+Suppose $\mc{A}$, $\mc{B}$, and $\mc{C}$ are lists.
+If $\mc{C}$ satisfies
+\begin{enumerate}
+\item{$|\mc{C}| = |\mc{A}| + |\mc{B}|$}
+\item{for all $i$ with $0 \le i < |\mc{A}|$ we have $\mc{C}[i] \equiv \mc{A}[i]$}
+\item{for all $i$ with $0 \le i < |\mc{B}|$ we have $\mc{C}[|\mc{A}| + i] \equiv \mc{B}[i]$}
+\end{enumerate}
+Then we say $\mc{C}$ is the concatenation of $\mc{A}$ and $\mc{B}$ and we write
+$$
+\mc{C} \equiv \mc{A}\circ \mc{B}
+$$
+We often abbreviate $\mc{A}\circ\mc{B}$ as $\mc{A}\mc{B}$.
+Note that such a $\mc{C}$ always exists.
+\end{definition}
 
-Here we will prove that $(\mc{A}\circ \mc{B}) \circ \mc{C} \equiv \mc{A} \circ (\mc{B} \circ \mc{C})$.
+\begin{theorem}[Concatenation with the Empty List]
+Here we prove that $\mc{E}\mc{B} \equiv \mc{B} \mc{E} \equiv \mc{B}$.
 
+For the first case, suppose $|\mc{B}|= 0$ so that $\mc{B}\equiv \mc{E}$.
+We can check that the set $\mc{E}$ satisfies the conditions to be the concatenation $\mc{E}\mc{E}$. 
+First $|\mc{E}| = 0 = 0 + 0 = |\mc{E}| + |\mc{E}|$. 
+Next, there is no $i$ satisfying $0 \le i < |\mc{B}|$ or $0 \le i < |\mc{E}|$ so the two element equality conditions for concatenation are vacuously satisfied. 
+Therefore $\mc{E}\mc{E} \equiv \mc{E}\mc{B} \equiv \mc{B}\mc{E} \equiv \mc{E}$.
+
+Consider $|\mc{B}|>0$ .
+
+Let $\mc{C} \equiv \mc{E}\mc{B}$. 
+First we see that $|\mc{C}| = |\mc{E}| + |\mc{B}| = |\mc{B}|$.
+By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[|\mc{E}| + i] \equiv \mc{C}[i] \equiv \mc{B}[i]$. 
+This means that $\mc{E}\mc{B}\equiv\mc{B}$.
+
+Let $\mc{C} \equiv \mc{B}\mc{E}$. 
+Again $|\mc{C}| \equiv |\mc{B}|+|\mc{E}| = |\mc{B}|$. 
+By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[i] \equiv \mc{B}[i]$. 
+This means $\mc{B}\mc{E} \equiv \mc{B}$.
+\end{theorem}
+
+
+\begin{theorem}[List Concatenation is Associative]
+% TODO: Replace () with \Braket
+Here we will prove that $\Braket{\mc{A}\circ \mc{B}}\circ \mc{C} \equiv \mc{A} \circ \Braket{\mc{B} \circ \mc{C}}$.
+
+First, if $\mc{A} \equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{B}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. 
+If $\mc{B}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. 
+If $\mc{C}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{B} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. So the theorem holds if any of $\mc{A}$, $\mc{B}$ or $\mc{C}$ is empty.
+
+Now suppose $\mc{A}$, $\mc{B}$, and $\mc{C}$ are all nonempty so that $|\mc{A}|, |\mc{B}|, |\mc{C}| > 0$.
 First we have that
 $$
-|(\mc{A}\mc{B})\mc{C}| = |\mc{A}\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}\mc{C}| = |\mc{A}(\mc{B}\mc{C})|.
+|\Braket{\mc{A}\mc{B}}\mc{C}| = |\mc{A}\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}\mc{C}| = |\mc{A}\Braket{\mc{B}\mc{C}}|.
 $$
 
-Let $n = |(\mc{A}\mc{B})\mc{C}| = |\mc{A}(\mc{B}\mc{C})|$.
 Consider $0 \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$.
 We must show
 $$
-((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]
+\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]
 $$
 There are three cases
 \begin{itemize}
 \item{
-Suppose $0 \le i < |\mc{A}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Since $0 \le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have that $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}\mc{B})[i]$. Again, since $0\le i < |\mc{A}|$, we have $(\mc{A}\mc{B})[i] \equiv \mc{A}[i]$ so that $((\mc{A}\mc{B})\mc{C})[i] \equiv \mc{A}[i]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. Since $0 \le i < |\mc{A}|$ we have $(\mc{A}(\mc{B}\mc{C}) \equiv \mc{A}[i]$. So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.
+Suppose $0 \le i < |\mc{A}|$. 
+Consider $\Braket{\mc{A}\mc{B}}\mc{C}$. 
+Since $0 \le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i]$. 
+Again, since $0\le i < |\mc{A}|$, we have $\Braket{\mc{A}\mc{B}}[i] \equiv \mc{A}[i]$ so that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \mc{A}[i]$. 
+On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$. 
+Since $0 \le i < |\mc{A}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}} \equiv \mc{A}[i]$. 
+So in this case $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]$.
 }
 \item{
-Now suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$. Define $j = i - |\mc{A}|$ so that $0 \le j < |\mc{B}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Because $0 \le i < |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}\mc{B})[i] \equiv (\mc{A}\mc{B})[|\mc{A}| + j]$ Because $0 \le j < |\mc{B}|$ we have $(\mc{A}\mc{B})[|\mc{A}|+j] = \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. Because $0 \le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + j] \equiv (\mc{B}\mc{C})[j]$. But, since $0 \le j < |\mc{B}|$ we have $(\mc{B}\mc{C})[j] \equiv \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.}
+Now suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$. 
+Define $j = i - |\mc{A}|$ so that $0 \le j < |\mc{B}|$. 
+Consider $\Braket{\mc{A}\mc{B}}\mc{C}$. 
+Because $0 \le |\mc{A}| \le i < |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i] \equiv \Braket{\mc{A}\mc{B}}[|\mc{A}| + j]$. Because $0 \le j < |\mc{B}|$ we have $\Braket{\mc{A}\mc{B}}[|\mc{A}|+j] = \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. 
+On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$. 
+Because $0 \le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + j] \equiv \Braket{\mc{B}\mc{C}}[j]$. But, since $0 \le j < |\mc{B}|$ we have $\Braket{\mc{B}\mc{C}}[j] \equiv \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. So in this case $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]$.
+}
 \item{
-Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$. Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Because $0 \le j < |\mc{C}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}| + |\mc{B}| + j] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. We have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j]$. We have that $0 \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $(\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j] \equiv (\mc{B}\mc{C})[|\mc{B}| + j]$. But, $0 \le j < |\mc{C}|$ so $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$. So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i].$
+Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$. 
+Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $(\mc{A}\mc{B})\mc{C}$. 
+Because $0 \le j < |\mc{C}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}| + |\mc{B}| + j] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$. 
+On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. 
+We have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j]$.
+We have that $0 \le |\mc{B}| \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $(\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j] \equiv (\mc{B}\mc{C})[|\mc{B}| + j]$. 
+But, $0 \le j < |\mc{C}|$ so $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$. 
+So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i].$
 }
 
 In all cases we have $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.
@@ -360,77 +462,242 @@ This means that $(\mc{A}\mc{B})\mc{C} \equiv \mc{A}(\mc{B}\mc{C})$.
 This associativity allows us to suppress the parentheses notation and simply write $(\mc{A}\mc{B})\mc{C} \equiv \mc{A}(\mc{B}\mc{C}) \equiv \mc{A}\mc{B}\mc{C}$ since the resulting list is unambiguous.
 The same holds for concatenations of more than three lists.
 \end{itemize}
-}}
+\end{theorem}
+
+\begin{definition}[Multiple Concatenation]
+Here we define the set of $n$-concatenations over a list of strings. 
+Note that lists of strings are different than strings which are themselves lists of symbols.
+If $S$ is a list of $n$ strings, i.e. $S\in \textbf{Str}^*$ and $|S| = n$, then $\circ_n(S)$ is defined to be the set of all strings which arise from concatenations of the $n$ strings in $S$.
+We define $\circ_n$ recursively.
+
+\begin{itemize}
+\item{We define $\circ_1([\mc{A}]) = \{\mc{A}\}$}
+\item{$\circ_n([\mc{A}_0,\ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{X}\circ\mc{Y}:\mc{X} \in \circ_i([\mc{A}_0,\ldots \mc{A}_{i-1}]) \text{ and } \mc{Y}\in \circ_{n-i}([\mc{A}_{i}, \ldots, \mc{A}_{n-1}])\}$}
+\end{itemize}
+
+\end{definition}
+
+As an example consider $\circ_4([\mc{A}, \mc{B}, \mc{C}, \mc{D}])$. This will be equal to
+\begin{align*}
+\circ_4(\mc{A}, \mc{B}, \mc{C}, \mc{D}) = \{&\Braket{\mc{A}\circ\Braket{\mc{B}\circ\Braket{\mc{C}\circ\mc{D}}}},\\
+&\Braket{\mc{A}\circ\Braket{\Braket{\mc{B}\circ\mc{C}}\circ\mc{D}}},\\
+&\Braket{\Braket{\mc{A}\circ\mc{B}}\circ\Braket{\mc{C}\circ\mc{D}}},\\
+&\Braket{\Braket{\mc{A}\circ\Braket{\mc{B}\circ\mc{C}}}\circ\mc{D}},\\
+&\Braket{\Braket{\Braket{\mc{A}\circ\mc{B}}\circ\mc{C}}\circ\mc{D}}\}
+\end{align*}
+
+
+\begin{theorem}[Generalized Associativity of Multiple Concatenation]
+The generalized associativity property for multiple concatenation states that, for $S\in\textbf{Str}^*$ with $S=[\mc{A}_0,\ldots,A_{n-1}]$ that $\circ_n(S)$ has only one element.
+That is, if $\mc{A}, \mc{B}\in\circ_n(S)$ then $\mc{A}\equiv \mc{B}$.
+We proceed by induction on $n$.
+
+If $n=1$ then $|S|=1$ and $S = [\mc{A}]$.
+We then have $\circ_1(S) = \{\mc{A}\}$.
+This set only has one element so we are done.
+
+Suppose that for all $m<n$ that if $S\in\textbf{Str}^*$ with $|S|=m$ that $\circ_m(S)$ only contains one element.
+If $S = [\mc{A}_0,\ldots, \mc{A}_{m-1}]$ then we denote this element by $\mc{A}_0\ldots\mc{A}_{m-1}$.
+Consider now
+
+\begin{align*}
+\circ_n([\mc{A}_0,\ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{X}\circ\mc{Y}:\mc{X} \in \circ_i([\mc{A}_0,\ldots \mc{A}_{i-1}]) \text{ and } \mc{Y}\in \circ_{n-i}([\mc{A}_{i}, \ldots, \mc{A}_{n-1}])\}
+\end{align*}
+
+Because $i<n$ and $n-i<n$ we know that $\circ_i([\mc{A}_0,\ldots, \mc{A}_{i-1}])$ and $\circ_{n-i}([\mc{A}_i,\ldots,\mc{A}_{n-1}])$ only contain one element.
+This can then be rewritten as
+\begin{align}
+\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{i-1} \circ \mc{A}_i\ldots\mc{A}_{n-1}\}
+\end{align}
+But consider $\mc{A}_i\ldots\mc{A}_{n-1} \in \circ_{n-i}([\mc{A}_i,\ldots,\mc{A}_{n-1}])$.
+We can see that, since $n-i-1 < n$, that $\mc{A}_i\ldots\mc{A}_{n-2}$ is the unique element in $\circ_{n-i-1}(\mc{A}_i,\ldots,\mc{A}_{n-2})$. 
+We can then see that $\mc{A}_i\ldots\mc{A}_{n-2}\circ\mc{A}_{n-1} \in \circ_{n-1}(\mc{A}_i\ldots\mc{A}_{n-1}$ so that
+$$
+\mc{A}_i\ldots\mc{A}_{n-2}\circ\mc{A}_{n-1} \equiv \mc{A}_i\ldots\mc{A}_{n-1}
+$$
+
+This means we can write
+$$
+\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{i-1} \circ \Braket{\mc{A}_i\ldots\mc{A}_{n-2}\circ\mc{A}_{n-1}}\}
+$$
+Which can be rewritten, using simple associativity of concatenation as
+$$
+\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\Braket{\mc{A}_0\ldots\mc{A}_{i-1} \circ \mc{A}_i\ldots\mc{A}_{n-2}}\circ\mc{A}_{n-1}\}
+$$
+But, because $i<n$ and $n-1-i<n$, We can see that $\mc{A}_0\ldots\mc{A}_{i-1}\circ \mc{A}_i\ldots\mc{A}_{n-2} \equiv \mc{A}_0\ldots \mc{A}_{n-2}$ so that
+$$
+\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{n-2} \circ \mc{A}_{n-1} \}
+$$
+
+But this is a union over the same set so we have
+$$
+\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \{\mc{A}_0\ldots\mc{A}_{n-2} \circ \mc{A}_{n-1} \}
+$$
+
+We see that there is a unique $n$-concatenation over the list of strings $[\mc{A}_0, \ldots, \mc{A}_{n-1}]$ which we denote by $\mc{A}_0\ldots\mc{A}_{n-1}$.
+
+\end{theorem}
+
+\begin{theorem}[Length of Multiple Concatenations]
+\label{thm:multconcat}
+Suppose $\mc{A} \equiv \mc{A}_0 \ldots \mc{A}_{N-1}$.
+We will prove by induction on $N$ that $|\mc{A}| = \sum_{k=0}^{N-1} |\mc{A}|_k$.
+
+Suppose $N=1$.
+Then $\mc{A} \equiv \mc{A}_0$ so $|\mc{A}| = |\mc{A}_0|$.
+
+Now suppose the theorem holds for any $m<N$. 
+Let $m=N-1$.
+We can write
+$$
+\mc{A} \equiv \Braket{\mc{A}_0 \ldots \mc{A}_{m-1}} \circ \mc{A}_{N-1}
+$$
+Because the term in the angle brackets is a concatenation of $m<N$ strings we have that 
+$$
+|\mc{A}_0\ldots \mc{A}_{m-1}| = \sum_{k=0}^{m-1} |\mc{A}_k|
+$$
+By the definition of concatenation, the length of $\mc{A}$ must then be
+$$
+|\mc{A}| = \sum_{k=0}^{N-2} |\mc{A}_k| + |\mc{A}_{N-1}| = \sum_{k=0}^{N-1}|\mc{A}_k|
+$$
+\end{theorem}
+
+\begin{theorem}[Multiple Concatenation Element Extraction]
+\label{thm:multconcatextract}
+Suppose $\mc{A} \equiv \mc{A}_0\ldots\mc{A}_{N-1}$.
+Now choose $0\le k \le N-1$ and let $L_k = \sum_{j=0}^{k-1} |\mc{A}_j|$, noting that $L_0=0$.
+I will prove by induction on $N$ that if $\mc{A}_k$ is non-empty, then for $0 \le i < |\mc{A}_k|$ that $\mc{A}[L_k + i] \equiv \mc{A}_k[i]$.
+
+Suppose $N=1$.
+Then $\mc{A} \equiv \mc{A}_0$ and we must choose $k=0$ with $L_0=0$ and $0 \le i < |\mc{A}[0]|$.
+In this case $\mc{A}[i]$ and $\mc{A}_0[i]$ are both defined and $\mc{A}[i] \equiv \mc{A}_0[i]$.
+
+As our induction hypothesis we suppose that for $m = N-1 < N$ that, if $\mc{B}\equiv \mc{A}_0 \ldots \mc{A}_{m-1}$ that for $0\le k \le m-1$ if $\mc{A}_k$ is non-empty and $0 \le i < |\mc{A}_k|$ then $\mc{B}[L_k+i] \equiv \mc{A}_k[i]$.
+
+Consider $\mc{A} \equiv \mc{A}_0 \ldots \mc{A}_{N-1}$.
+We write $\mc{A}$ as
+\begin{align*}
+\mc{A} \equiv \Braket{\mc{A}_0\ldots \mc{A}_{m-1}} \circ \mc{A}_{N-1} \equiv \mc{B}\mc{A}_{N-1}
+\end{align*}
+where I've defined $\mc{B} \equiv \mc{A}_0 \ldots \mc{A}_{m-1}$.
+Note that by the Theorem \ref{thm:multconcat} we have $|\mc{B}| = L_m$.
+Choose $k$ with $0 \le k \le N-1$ with $\mc{A}_k$ non-empty and choose $i$ with $0 \le i < |\mc{A}_k|$.
+
+If $k=m=N-1$ then we have $0\le i < |\mc{A}_{N-1}|$ which means, by the definition of concatenation, that
+$$
+\mc{A}[|\mc{B}|+i] \equiv \mc{A}[L_k+i] \equiv \mc{A}_{N-1}[i] \equiv \mc{A}_k[i]
+$$
+
+If $k < m$ then $k+1 \le m$ so $L_{k+1} \le L_m = |\mc{B}|$.
+Consider $j = L_k + i$.
+We have 
+$$
+0\le L_k \le j < L_k + |\mc{A}_k| = L_{k+1} \le |\mc{B}|
+$$
+This means, by the definition of concatenation, that
+$$
+\mc{A}[j] \equiv \mc{B}[j] \equiv \mc{B}[L_k + i]
+$$
+But, the induction hypothesis holds for $\mc{B}$, which means $\mc{B}[L_k+i] \equiv \mc{A}_k[i]$.
+This means $\mc{A}[L_k+i] \equiv \mc{A}_k[i]$.
+
+\end{theorem}
 
 In addition to combining lists to form larger lists, we can also slice lists to form smaller lists.
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{List Slicing}
+\begin{definition}[List Slicing]
 Suppose $\mc{A}$ is a list.
-We define $\mc{A}[i:j]$ recursively on the difference $j-i$.
+We define $\mc{A}[i:j]$ recursively on the difference $j-i$. Suppose $0 \le i \le j \le |\mc{A}|$.
 
 \begin{itemize}
-\item{If $j-i=1$ then $\mc{A}[i:j] \equiv [\mc{A}[i]]$. Note the difference between $[\mc{A}[i]]\in \Sigma^*$, the list containing the object $\mc{A}[i]$ and the object $\mc{A}[i]\in \Sigma$ iteself.}
+\item{If $j-i=0$ then $\mc{A}[i:j] \equiv \mc{E}$.}
+\item{If $j-i=1$ then $\mc{A}[i:j] \equiv [\mc{A}[i]]$.\footnote{Note the difference between $[\mc{A}[i]]\in \Sigma^*$, the list containing the object $\mc{A}[i]$ and the object $\mc{A}[i]\in \Sigma$ itself.}}
 \item{If $j-i>1$ then $\mc{A}[i:j] \equiv \mc{A}[i:j-1]\circ\mc{A}[j-1:j]$}
-
-Note that $\mc{A}[i:j]$ is only defined for $0 \le i < j \le |\mc{A}|$.
-
 \end{itemize}
-}}
+\end{definition}
 
-If $\mc{A}$ is a list and $\mc{B} \equiv \mc{A}[i:j]$ with $0\le i < j \le |\mc{A}|$.
-We say that $\mc{B}$ is a sublist of $\mc{A}$.
-If $\mc{A}$ is a list and $\mc{B} \equiv \mc{A}[i:j]$ with $0\le i < j \le |\mc{A}|$ and  $i>0$ or $j <|\mc{A}|$ then we say that $\mc{B}$ is a proper sublist of $\mc{A}$.
-If $\mc{B} \equiv \mc{A}[0:j]$ with $0 < j \le |\mc{A}|$ then we say that $\mc{B}$ is an initial part of $\mc{A}$.
-If $\mc{B} \equiv \mc{A}[0:j]$ with $0 < j < |\mc{A}|$ then we say that $\mc{B}$ is a proper initial part of $\mc{A}$.
+\begin{definition}[Sublists and Initial Parts]
+Suppose $\mc{A}$ is a list, $0\le i \le j \le |\mc{A}|$ and $\mc{B} \equiv \mc{A}[i:j]$.
+\begin{itemize}
+\item{We say $\mc{B}$ is a sublist of $\mc{A}$.}
+\item{If $i>0$ or $j<|\mc{A}|$ then we say $\mc{B}$ is a proper sublist of $\mc{A}$.}
+\item{If $i=0$ then we say $\mc{B}$ is an initial part of $\mc{A}$.}
+\item{If $i=0$ and $j < |\mc{A}|$ then we say $\mc{B}$ is a proper initial part of $\mc{A}$.}
+Clearly if $\mc{B}$ is a proper initial part of $\mc{A}$ then it is an initial part of $\mc{A}$, if $\mc{B}$ is an initial part of $\mc{A}$ it is a sublist of $\mc{A}$, and if $\mc{B}$ is a proper sublist of $\mc{A}$ then it is a sublist of $\mc{A}$.
+\end{itemize}
+\end{definition}
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Length of Sublist}
+\begin{theorem}[The Empty List is an Initial Part of Every List]
+\label{thm:emptylistinitialpart}
+If $\mc{A}$ is a list then $\mc{A}[0:0] \equiv \mc{E}$ so $\mc{E}$ is an initial part of $\mc{A}$.
+\end{theorem}
 
-Here we will prove that $|\mc{A}[i:j]| = j-i$ by induction on $j-i$.
+\begin{theorem}[Length of Sublist]
 
-If $j-i=1$ then $\mc{A}[i:j] = [\mc{A}[i]]$ so $|\mc{A}[i:j]| = 1 = j-i$.
+Suppose $\mc{A}$ is a list and $0 \le i \le j \le |\mc{A}|$. Here we will prove that $|\mc{A}[i:j]| = j-i$ by induction on $j-i$.
 
-Now consider $j-i > 1$.
+\begin{itemize}
+\item{If $j-i=0$ then $\mc{A}[i:j] \equiv \mc{E}$ and $|\mc{A}[i:j]|=0 = j-i$.}
+\item{If $j-i=1$ then $\mc{A}[i:j] = [\mc{A}[i]]$ so $|\mc{A}[i:j]| = 1 = j-i$.}
+\item{Now consider $j-i > 1$.
 Suppose that if $j'-i' < j-i$ that $|\mc{A}[i':j']| = j'-i'$.
 Consider $\mc{A}[i:j] \equiv \mc{A}[i:j-1] \circ \mc{A}[j-1:j]$.
 We have, from the definition of concatenation, that $|\mc{A}[i:j]| = |\mc{A}[i:j-1]| + |\mc{A}[j-1:j]|$.
-But, $j-1 -i < j-i$ and $j - (j-1) = 1 < j-i$ so $|\mc{A}[i:j-1]| + |\mc{A}[j-1:j]| = j-1-i + j - (j-1) = j-i$.
-}}
+But, $(j-1) - i < j-i$ and $j - (j-1) = 1 < j-i$ so $|\mc{A}[i:j-1]| + |\mc{A}[j-1:j]| = (j-1)-i + j - (j-1) = j-i$.}
+\end{itemize}
+\end{theorem}
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Elements of Sublists Related of Elements of the List}
+\begin{theorem}[Sublist Element Extraction]
+\label{thm:sublistextraction}
+Suppose $\mc{A}$ is non-empty and $0 \le i < j \le |\mc{A}|$ and $0 \le k < j-i$.
+We will prove that $\mc{A}[i:j][k] \equiv \mc{A}[k + i]$. We will induct on $j$. 
 
-We will prove that $\mc{A}[0:j][i] \equiv \mc{A}[i]$ for $0 < j \le |\mc{A}|$ and $0 \le i < j$. We will induct on $j$. If $j=1$ then $i=0$. $\mc{A}[0:1][0] \equiv [\mc{A}[0]][0] \equiv \mc{A}[0]$. Now suppose for $j>1$ but for any $j'<j$ and $0\le i < j'$ that $\mc{A}[0:j'][i]\equiv \mc{A}[i]$. Consider $\mc{A}[0:j][i] \equiv (\mc{A}[0:j-1]\circ\mc{A}[j-1:j])[i]$. Note that $|\mc{A}[0:j-1]| = j-1$ and $|\mc{A}[j-1:j]| = 1$ We have that $0 \le i < j$. If $0 \le i < j-1$ then $\mc{A}[0:j][i] \equiv \mc{A}[0:j-1][i]$. Since $j-1<j$ this means $\mc{A}[0:j][i] \equiv \mc{A}[i]$. If $i=j-1$ then $\mc{A}[0:j][i] \equiv \mc{A}[0:j][j-1 + 0] \equiv \mc{A}[j-1:j][0] \equiv [\mc{A}[j-1]][0] \equiv \mc{A}[j-1] = \mc{A}[i]$. Therefore $\mc{A}[0:j][i] \equiv \mc{A}[i]$.
-Taking $j = |\mc{A}|$ we see that $\mc{A}[0:|\mc{A}|] \equiv \mc{A}$, therefore $\mc{A}$ is a sublist of itself.
+If $j=1$ then $i=k=0$. $\mc{A}[0:1][0] \equiv [\mc{A}[0]][0] \equiv \mc{A}[0]$. Now suppose that $j>1$ but for any $j'<j$ and $0 \le i < j'$ and $0 \le k < j'-i$ that $\mc{A}[i:j'][k]\equiv \mc{A}[k+i]$. Suppose $0 \le i < j \le |\mc{A}|$ and $0 \le k < j-i$ and consider $\mc{A}[i:j][k] \equiv (\mc{A}[i:j-1]\circ\mc{A}[j-1:j])[k]$. Note that $|\mc{A}[i:j-1]| = j-1-i$. If $0 \le k < j-1-i$ then $\mc{A}[i:j][k] \equiv \mc{A}[i:j-1][k]$. Since $j-1<j$ this means $\mc{A}[i:j][k] \equiv \mc{A}[k+i]$. If $k=j-i-1$ then $\mc{A}[i:j][k] \equiv \mc{A}[i:j][j-i-1 + 0] \equiv \mc{A}[j-1:j][0] \equiv [\mc{A}[j-1]][0] \equiv \mc{A}[j-1] = \mc{A}[k+i]$. Therefore $\mc{A}[i:j][k+i] \equiv \mc{A}[k+i]$.
+\end{theorem}
 
-}}
+\begin{corollary}[A List is a Sublist of Itself]
+Taking $i=0$ and $j = |\mc{A}|$ we see that $\mc{A}[0:|\mc{A}|] \equiv \mc{A}$, therefore $\mc{A}$ is a sublist of itself.
+\end{corollary}
 
-I will now prove one of the most important results of this section
+\begin{theorem}[Mutual Initial Parts are Equal]
+Suppose $\mc{A}$ is an initial part of $\mc{A}'$ and $\mc{A}'$ is an initial part of $\mc{A}$. 
+This means $\mc{A} \equiv \mc{A}'[0:j]$ so $|\mc{A}| = j\le|\mc{A}'|$ and $\mc{A}'\equiv \mc{A}[0:j']$ so $|\mc{A}'| = j'\le |\mc{A}|$. 
+Since $|\mc{A}|\le |\mc{A}|'$ and $|\mc{A}'| \le |\mc{A}|$ we have $|\mc{A}| = |\mc{A}'| = j = j'$.
+So $\mc{A}' \equiv \mc{A}[0:|\mc{A}|] \equiv \mc{A}$.
+\end{theorem}
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Intermediate Initial Part Identification}
+The following theorem will be critical for proving facts about strings within the formal language.
 
-We will prove that if $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ for nonempty $\mc{C}$ and $\mc{C}'$ that either $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
-
-Suppose, without loss of generality that $|\mc{C}| \le |\mc{C}'|$.
+\begin{theorem}[Corresponding Intermediate Parts]
+\label{thm:corrintpart}
+We will prove that if $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ with $|\mc{C}| \le |\mc{C}'|$ that either $\mc{C}$ is an initial part of $\mc{C}'$.
 We will show that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
 
-Consider $0 \le j < |\mc{C}| \le |\mc{C}'|$.
+If $\mc{C}\equiv\mc{E}$ then $\mc{C}$ is a sublist of $\mc{C}'$ by Theorem \ref{thm:emptylistinitialpart}.
+
+If $\mc{C}$ is non-empty, consider $0 \le j < |\mc{C}| \le |\mc{C}'|$.
 We have $\mc{A} \equiv (\mc{B}\mc{C})\mc{D} \equiv (\mc{B}\mc{C}')\mc{D}'$.
 Let $i = j + |\mc{B}|$ so that $0 \le i < |\mc{B}|+|\mc{C}| =|\mc{B}\mc{C}| \le |\mc{B}|+|\mc{C}'| = |\mc{B}\mc{C}'|$ so we have that $\mc{A}[i] \equiv (\mc{B}\mc{C})[i] \equiv (\mc{B}\mc{C}')[i]$. 
 
-We rewrite as $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv (\mc{B}\mc{C}')[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}'[j] \equiv \mc{C}'[0:|\mc{C}|]$.
+We rewrite this as $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv (\mc{B}\mc{C}')[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}'[j] \equiv \mc{C}'[0:|\mc{C}|][j]$ by Theorem \ref{thm:sublistextraction}.
 Since this holds for all $0 \le j < |\mc{C}|$ we have that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
 
 This means that $\mc{C}$ is an initial part of $\mc{C}'$.
-if instead we have that $|\mc{C}'| \le |\mc{C}|$ then we can repeat the proof with $\mc{C}$ and $\mc{C}'$ reversed to conclude that $\mc{C}'$ is an initial part of $\mc{C}$.
-}}
+\end{theorem}
+
+\begin{corollary}{Corresponding Intermediate Parts}
+\label{corr:intpart}
+If $\mc{A} \equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ then either $\mc{C}$ is an initial part of $\mc{C}'$ of $\mc{C}'$ is an initial part of $\mc{C}$.
+This follows from the fact that either $|\mc{C}| \le |\mc{C}'|$ or $|\mc{C}'| \le |\mc{C}|$ and Theorem \ref{thm:corrintpart}.
+\end{corollary}
 
 Up until now we have been discussing lists of over a general set of objects $\Sigma$.
-A string is any list over $\textbf{Symb}$.
-That is, any list over $\textbf{Symb}$ is in $\textbf{Str}$ and any element of $\textbf{Str}$ is a list of $\textbf{Symb}$.
-In short $\textbf{Str} = \textbf{Str}*$.
+
+\begin{definition}[String]
+A string is an element of $\textbf{Str} = \textbf{Symb}^*$.
+In other words, every string is a finite ordered list of symbols and any finite ordered list of symbols is a string.
+\end{definition}
+
 The only distinctive feature about strings compared to general lists is that if we have a list of symbols such as 
 
 $$
@@ -445,7 +712,7 @@ $$
 
 dropping the separating commas and enclosing square brackets.
 This abbreviation is generally ok.
-The main ambiguity in this abbreviation is that we write down, for example, the symbol $\lnot$ it is not clear if we are talking about the symbol $\lnot$ or the list containing the symbol $[\lnot] \equiv [[0, \lnot]]$.
+The main ambiguity in this abbreviation is that when we write down, for example, the symbol $\lnot$ it is not clear if we are talking about the symbol $\lnot$ or the list containing the symbol $[\lnot] \equiv [[0, \lnot]]$.
 In practice, this distinction is typically not important so the ambiguity is harmless.
 If we say, for example, that $\alpha \in \textbf{Str}$ where $\alpha$ is a symbol we mean $[\alpha] \in \textbf{Str}$.
 For strings we replace the terms `sublist' and `proper sublist' with `substring' and `proper substring'.
@@ -455,46 +722,40 @@ For strings we replace the terms `sublist' and `proper sublist' with `substring'
 
 The smallest syntactic elements of \textbf{LFOL} are the terms defined as follows.
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Terms}
+\begin{definition}[Terms]
 
 $t \in \textbf{Term}$ iff $t \in \textbf{Str}$ and satisfies one of
 \begin{itemize}
 \item{\textbf{Variables:} $t\equiv [x]$ with $x \in \textbf{Var}$.}
 \item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\bv{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
 \end{itemize}
-}}
-\vspace{1cm}
+\end{definition}
 
 Semantically, if the expressions of the formal language are making statements, then terms are the subjects of those statements.
 0-ary functions represent constants or concrete objects while variables represent place-holders into which other terms can be `plugged in'.
 
 We define the set of free variables $FV(t)$ of a term $t$ recursively.
 
-\noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Free Variables in a Term}
-
+\begin{definition}[Free Variables in Terms]
 If $t\in \textbf{Term}$ then $t$ we define the set $FV(t)$ as follows.
 \begin{itemize}
 \item{\textbf{Variables:} If $t\equiv [x]$ with $FV = \{x\}$}
 \item{\textbf{Functions:} If $t\equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots \cup FV(t_n)$.}
 \end{itemize}
-}}
+\end{definition}
 
 If $FV(t)$ is empty then we say that $t$ is closed, otherwise we say that $t$ is open.
 Closed terms can be thought of as concrete objects while open terms can be thought of as placeholders into which concrete objects can be `plugged in'.
 
 The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defined as follows.
 
-\noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Atomic Formulas}
-
+\begin{definition}[Atomic Formulas]
 $\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
 
 \begin{itemize}
 \item{\textbf{Atomic Formulas:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\bv{t})$. In our notation $\curlywedge$ is an atomic formula.}
 \end{itemize}
-}}
+\end{definition}
 
 Semantically, an atomic formula express a boolean statement about the terms within its scope.
 If the terms are all closed then we can, semantically, think of the atomic formula as having a truth value.
@@ -517,9 +778,7 @@ In fact, one might worry that semantically different theorems could be derived u
 Nonetheless, in this document we will mainly be using strict formulas, with permissive formulas only as a temporary stepping stone to help more easily define strict formulas.
 Moving forward `formula' will refer to `strict formula' unless otherwise specified.
 
-\noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Permissive Formulas}
-
+\begin{definition}[Permissive Formulas]
 $\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
 
 \begin{itemize}
@@ -528,15 +787,12 @@ $\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
 \item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{pForm}$.}
 \item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.} 
 \end{itemize}
-}}
+\end{definition}
 
 We define the free variables, $FV(\mc{A})$ in a formula $\mc{A}$ similarly to the free variables of a term.
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Free Variables in Permissive Formulas}
-
+\begin{definition}[Free Variables in Permissive Formulas]
 If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
-
 \begin{itemize}
 \item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
 \item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
@@ -544,61 +800,183 @@ If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
 \item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$.}
 \item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
 \end{itemize}
-}}
+\end{definition}
 
 
 Semantically, like atomic formulas, formulas express, now more complex, statements about terms.
 Note that, $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(\mc{B})$.
 
-
 \subsection{Unique Readability}
 
-If $\mc{A}$ is a string with $L(\mc{A}) = n > 0$ and $\mc{A}'$ is a string with $\mc{A}' \equiv \mc{A}[1:i]$ with $1\le i \le n$ then we say $\mc{A}'$ is an initial segment of $\mc{A}$.
-If $n>1$ and $\mc{A}' \equiv \mc{A}[1:i]$ with $1 \le i < n$ then we say $\mc{A}'$ is a proper initial segment of $\mc{A}$.
-If $n=1$ then $\mc{A}$ has no proper initial segments.
+\begin{theorem}[No Proper Initial Part of a Term is a Term]
+I will prove that if $t\in\textbf{Term}$ then if $t'$ is a proper initial part of $t$ then $t'\not \in \textbf{Term}$. I will induct on $|t|$.
 
-Suppose $\mc{A} \equiv \mc{B}\mc{C}\mc{D}$ and that $\mc{A} \equiv \mc{B}\mc{C}'\mc{D}'$.
-If $\mc{C}$ and $\mc{C}'$ are non-empty then $\mc{C} \equiv \mc{A}[L(\mc{B}) + 1 : L(\mc{B}) + 1 + L(\mc{C}) - 1]$ and $\mc{C}' \equiv \mc{A}[L(\mc{B}) + 1 : L(\mc{B}) + 1 + L(\mc{C}') - 1]$.
-If $L(\mc{C}') = L(\mc{C})$ then $\mc{C}' \equiv \mc{C}$ so $\mc{C}' \equiv \mc{C}[1:L(\mc{C}')]$.
-If $L(\mc{C}') < L(\mc{C})$ then $\mc{C}' \equiv \mc{C}[1:L(\mc{C}')]$.
-If $L(\mc{C}) < L(\mc{C}')$ then $\mc{C} \equiv \mc{C}'[1:L(\mc{C})]$.
+$|t|$ must be greater than zero because if $|t| = 0$ then $t \equiv \mc{E}$ and $\mc{E}\not \in \textbf{Term}$.
+
+If $|t| = 1$ then the only proper initial part of $t$ is $t[0:0] = \mc{E}$ and $\mc{E} \not \in \textbf{Term}$.
+
+Now suppose $|t|>1$. 
+Suppose, as the induction hypothesis, that for any $s\in\textbf{Term}$ with $|s|<|t|$ that if $s'$ is a proper initial part of $s$ that $s'\not \in \textbf{Term}$. 
+Suppose, for contradiction, that $t'$ is a proper initial part of $t$ and that $t'$ is a term. 
+We then have that $t \equiv ft_1\ldots t_n$ and $t' \equiv f't_1'\ldots t_n'$ With $t_1, \ldots t_n, t_1', \ldots t_n' \in \textbf{Term}$. 
+We must have $t' \equiv t[0:j]$ for some $0 < j < |t|$ so $t'[0] \equiv t[0]$ by Theorem \ref{thm:sublistextraction}.
+This means $f' \equiv f$ so that $t' \equiv ft_1'\ldots t_n'$. 
+By Corollary \ref{corr:intpart} it must be the case that either $t_1'$ is an initial part of $t_1$ or $t_1$ is an initial part of $t_1'$. But, $|t_1|, |t_1'| < |t|$ which means that neither $t_1$ nor $t_1'$ can have a proper initial part that is a term which means that either $t_1$ is a non-proper initial part of $t_1$ or $t_1$ is a non-proper initial part of $t_1'$, in both cases, we get that $t_1\equiv t_1'$.
+This argument can be repeated up to $t_n$ showing that $t_k \equiv t_k'$ for $1 \le k \le n$ which means that $t \equiv t'$ contradicting the assumption that $t'$ is a proper initial substring of $t$.
+\end{theorem}
+
+\begin{theorem}[Initial Symbols in a Term]
+\label{thm:initsymbterm}
+Suppose $t$ is a term. If $|t|=1$ then either $t[0] \in \textbf{Var}$ or $t[0] \in \textbf{Func}_0$.
+If $|t|>1$ then $t\equiv ft_1\ldots t_n$ with $f\in\textbf{Func}$ and $t_1\ldots t_n\in\textbf{Term}$ so $t[0]\equiv f \in \textbf{Func}$.
+This means that for any term $t$ that $t[0] \in \textbf{Var}$ or $t[0]\in\textbf{Func}$.
+\end{theorem}
+
+\begin{theorem}[Initial Symbols in a Permissive Formula]
+\label{thm:initsymbform}
+Suppose $\mc{A}\in \textbf{pForm}$.
+We will use Theorem \ref{thm:multconcatextract} throughout.
+
+If $\mc{A}$ is atomic then $\mc{A}[0] \in \textbf{Pred}$.
+If $\mc{A}$ is an implication, negation, or quantification, then $\mc{A}[0] \equiv ($. So for every permissive formula $\mc{A}[0]$ is in $\textbf{Pred}$ or equal to $($.
+
+Suppose $|\mc{A}| > 1$.
+If $\mc{A}$ is atomic then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1\ldots t_n\in\textbf{Term}$.
+This means $\mc{A}[1]\equiv t_1[0]$ and, by Theorem \ref{thm:initsymbterm} $t_1[0]\in\textbf{Var}$ or $t_1[0]\in\textbf{Func}$.
+
+If $\mc{A}$ is an implication then $\mc{A}\equiv (\mc{B}\implies \mc{C})$ for $\mc{B},\mc{C}\in\textbf{pForm}$.
+We see that $\mc{A}[1]\equiv \mc{B}[0]$ and from above, $\mc{B}[0]$ is either in $\textbf{Pred}$ or equal to $($.
+
+If $\mc{A}$ is a negation then $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{A}[1] \equiv \lnot$.
+
+If $\mc{A}$ is a quantification then $\mc{A}\equiv ((\forall x)\mc{B}0$ and $\mc{A}[1] \equiv ($.
+
+This all means that if $|\mc{A}|>1$ that $\mc{A}[1]$ is either in $\textbf{Var}$, in $\textbf{Func}$, in $\textbf{Pred}$, equal to $($, or equal to $\lnot$.
+\end{theorem}
+
+\begin{theorem}[Unique Range of Permissive Formula Construction Rules]
+Suppose $\mc{A}\in\textbf{pForm}$.
+We will use Theorem \ref{thm:multconcatextract} throughout.
+
+Suppose $\mc{A}$ is atomic.
+Then $\mc{A}[0] \in \textbf{Pred}$.
+If $\mc{A}$ were either an implication, negation, or quantification we would have $\mc{A}[0]\equiv (\not\in \textbf{Pred}$ so $\mc{A}$ is not an implication negation or quantification.
 
 
-Suppose also that $\mc{A} \equiv \mc{B}\mc{C}'\mc{D}'$.
+
+Suppose $\mc{A}$ is an implication so that $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$.
+We know from above that $\mc{A}$ is not atomic.
+
+We see that $\mc{A}[1]\equiv \mc{B}[0]$ so by Theorem \ref{thm:initsymbform}, $\mc{A}[1]\equiv\mc{B}[0]$ is in $\textbf{Pred}$ or equal to $($. 
+If $\mc{A}$ were also a negation then we would have $\mc{A}[1]\equiv \lnot$, so $\mc{A}$ is not a negation.
+
+If $|\mc{B}| = 1$ then $\mc{A}[2]\equiv \implies$.
+If $|\mc{B}| > 1$ then $\mc{A}[2] \equiv \mc{B}[1]$ which, by Theorem \ref{thm:initsymbform}, is either in $\textbf{Var}$, in $\textbf{Func}$, in $\textbf{Pred}$, equal to $($, or equal to $\lnot$. 
+If $\mc{A}$ were a quantification then we would have $\mc{A}[2] \equiv \forall$, so $\mc{A}$ is not a quantification.
+
+Suppose $\mc{A}$ is a negation so that $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+We know from above that $\mc{A}$ is not atomic and $\mc{A}$ is not an implication.
+$\mc{A}[2] \equiv \mc{B}[0]$ which must either be in $\textbf{Pred}$ or equal to $($.
+If $\mc{A}$ were a quantification then we would have $\mc{A}[2] \equiv \forall$, so $\mc{A}$ is not a quantification.
+
+If $\mc{A}$ were a quantification then we know from above that it is not atomic, not an implication, and not a negation.
+
+Therefore if $\mc{A}\in\textbf{pForm}$ then it exactly one of atomic, implication, negation, or quantification.
+\end{theorem}
+
+\begin{definition}[Parentheses Counting]
+Suppose $\mc{A}\in\textbf{Str}$.
+We define the number of left and right parentheses in $\mc{A}$ recursively on $|\mc{A}|$.
+We define the number of left and right parentheses in a string recursively. Suppose $\mc{A}\in\textbf{Str}$.
+
+\begin{itemize}
+\item{If $|\mc{A}| = 0$ then $N_{(}(\mc{A}) = 0$.}
+\item{If $|\mc{A}| = 1$ then if $\mc{A}[0] \equiv ($ then $N_{(}(\mc{A}) = 1$, otherwise $N_{(}(\mc{A}) = 0$.}
+\item{If $|\mc{A}| > 1$ then $N_{(}(\mc{A}) = N_{(}(\mc{A}[0:|\mc{A}|-1]) + N_{(}(\mc{A}[|\mc{A}|-1])$.}
+\end{itemize}
+
+Similarly
+
+\begin{itemize}
+\item{If $|\mc{A}| = 0$ then $N_{)}(\mc{A}) = 0$.}
+\item{If $|\mc{A}| = 1$ then if $\mc{A}[0] \equiv )$ then $N_{)}(\mc{A}) = 1$, otherwise $N_{(}(\mc{A}) = 0$.}
+\item{If $|\mc{A}| > 1$ then $N_{)}(\mc{A}) = N_{)}(\mc{A}[0:|\mc{A}|-1]) + N_{)}(\mc{A}[|\mc{A}|-1])$.}
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Multiple String Parentheses Counting]
+% TODO: This theorem?
+We could prove by induction that $N_{(}(\mc{A}_0\ldots\mc{A}_{N-1}) = \sum_{k=0}^{N-1} N_{(}(\mc{A}_k)$ and likewise for $N_{)}$.
+\end{theorem}
+
+\begin{lemma}[Atomic Formulas Have No Parentheses]
+If $t\in\textbf{Var}$ then $t\equiv x \in \textbf{Var}$.
 
 
 
-Any of $\mc{B}$, $\mc{C}$, $\mc{D}$, $\mc{C}'$, and $\mc{D}'$ might be the empty string.
-We have that $\mc{C} = \mc{A}[L(\mc{B})+1:L(\mc{B})+1+L(\mc{C})$
+\end{lemma}
+
+\begin{theorem}[Equal Number of Left and Right Parentheses]
+We will prove by induction on $|\mc{A}|$ that if $\mc{A}\in\textbf{pForm}$ that $N_{(}(\mc{A}) = N_{)}(\mc{A})$.
+
+If $|\mc{A}| = 0$ then $N_{(}(\mc{A}) = N_{)}(\mc{A}) = 0$.
+
+If $|\mc{A}| = 1$ then $\mc{A}$
+\end{theorem}
+
 
 \noindent\fbox{\parbox{\textwidth}{ 
-\textbf{No Proper Initial Segment of a Term is a Term}
 
-I will now prove that if $t$ is a term and $t'$ is a proper initial segment of $t$ that $t'$ is not a term.
-I will proceed by induction on $L(t)$.
+Suppose $\mc{A}$ is a permissive formula. If $\mc{A}$ is atomic then $\mc{A}[0]$ is in \textbf{Pred}. If $\mc{A}$ is an implication, negation, or quantification, then $\mc{A}[0] \equiv ($. So for every permissive formula $\mc{A}[0]$ is in $\textbf{Pred}$ or is equal to $($.
 
-If $L(t) = 1$ then $t$ is either a variable or a 0-ary function and is a single symbol.
-In this case $t$ has no proper initial segment.
+Now suppose $\mc{A}$ is a permissive formula. If $\mc{A}$ is atomIf $\mc{A}$ is an implication then $\mc{A}\equiv (\mc{B}\implies \mc{C})$. $\mc{A}[1] \equiv \mc{B}[0]$ so $\mc{A}[1]$ is either an element of $\textbf{Pred}$ or equal to $($. If $\mc{A}$ is a negation then $\mc{A}[1] \equiv \lnot$. If $\mc{A}$ is a quantification then $\mc{A} \equiv ($. This means, for non-atomic $\mc{A}$, that $\mc{A}[1]$ is either an element of $\textbf{Pred}$, equal to $($, or equal to $\lnot$.
 
-Now suppose for $n>1$ that for any $s$, if $L(s) < n$, that if $s'$ is a proper initial segment of $s$ that $s'$ is not a term. 
-Now suppose $t$ is a term and $L(t) = n > 1$.
-$t$ is not a variable or 0-ary function since $L(t) > 1$ so $t \equiv ft_1\ldots t_k$ where $f$ is a $k$-ary function.
-We must prove that if $t'$ is a proper initial segment of $t$ that $t'$ is not a term.
-
-Suppose that $t'$ is a term.
-Since $t'$ is a proper initial segment of $t$ we have $t[1] \equiv t'[1] \equiv f$.
-This means that $t' \equiv f t_1'\ldots t_k'$ with $t_1', \ldots t_k'$ terms.
-Note that $t_1, \ldots t_k, t_1', \ldots t_k'$ all have lengths less than $n$.
-Because $t \equiv t'$ we must have that $t_1$ is an initial segment of $t_1'$ or $t_1'$ is an initial segment of $t_1$.
-But, because $L(t_1)$ and $L(t_1')$ are both less than $n$ it is possible for either $t_1$ or $t_1'$ to have an initial segment that is a proper initial segment.
-This means we must have $t_1 \equiv t_1'$. 
-We can then repeat this argument for $t_2$ through $t_n$ showing that $t_i \equiv t_i'$ for all $1 \le i \le k$.
-This means that $t \equiv t'$, contradicting the fact that $t'$ is a proper initial segment of $t$.
-This contradiction means it cannot be the case both that $t'$ is a proper initial segment of $t$ and $t'$ is a term.
 }}
 
-I will prove that if $t \equiv f t_1\ldots t_n$ and $t\equiv f' t_1'\ldots t_n'$ that $f\equiv f'$ and $t_1\equiv t_1', \ldots, t_n\equiv t_n'$.
-$t[1] \equiv f$ and $t[1] \equiv f'$ so we must have $f\equiv f'$.
+
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{Unique Range of Quantification Rules}
+
+Here we will show that if $\mc{A}$ is a permissive formula then it is exactly one of an atomic formula, an implication, a negation, or a quantification, but not more than one.
+
+Suppose $\mc{A}$ is an atomic formula. Then $\mc{A}[0] \in \textbf{Pred}$. 
+If $\mc{A}$ was also either an implication, negation, or quantification we would have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A}$ is not an implication, negation, or quantification.
+
+Suppose $\mc{A}$ is an implication so $\mc{A}\equiv(\mc{B} \implies \mc{C})$ for $\mc{B},\mc{C} \in \textbf{pForm}$.
+We know from above that $\mc{A}$ is not atomic. 
+If $\mc{A}$ was a negation then we would have $\mc{A}[1] \equiv \lnot$.
+But $\mc{A}[1] \equiv \mc{B}[0]$, but we have from the theorem above that $\mc{B}[0]$ can only be in $\textbf{Pred}$ or equal to $($, so $\mc{A}$ is not a negation.
+If $\mc{A}$ was a quantification we would have $\mc{A}[2] \equiv \forall$.
+If $|\mc{B}|=1$ then $\mc{A}[2]\equiv \implies \not \equiv \forall$.
+If $|\mc{B}|>1$ then $\mc{A}[2] \equiv \mc{B}[1]$, but we have from the theorem above that $\mc{B}[1]$ can only be in $\textbf{Pred}$, equal to $($, or equal to $\lnot$ so $\mc{A}$ is not a quantificaiton.
+
+Suppose $\mc{A}$ is a negation so $\mc{A} \equiv (\lnot \mc{B})$ for $\mc{B}\in\textbf{pForm}$. 
+We know from above that $\mc{A}$ is not atomic or an implication.
+If $\mc{A}$ was a quantification then we would have $\mc{A}[2] \equiv \forall$.
+But $\mc{A}[2] \equiv \mc{B}[1]$, but we have from the theorem above that $\mc{B}[1]$ can only be in $\textbf{Pred}$, equal to $($ or equal to $\lnot$ so $\mc{A}$ is not a quantification.
+An alternative proof would be to notice that if $\mc{A}$ was a quantification we would have $\mc{A}[1] \equiv ($ but $\mc{A}[1]$ is in fact equal to $\lnot$.
+
+}}
+
+
+\noindent\fbox{\parbox{\textwidth}{ 
+\textbf{No Proper Initial Segment of a Permissive Formula is a Permissive Formula}
+
+suppose $\mc{A}$ is a permissive formula.
+
+Suppose $\mc{A}$ is atomic. Suppose that $\mc{A}'$ is a proper intial substring of $\mc{A}$ and suppose for contraction that $\mc{A}'$ is a permissive formula. Since $\mc{A}$ is atomic we have $\mc{A}[0] \equiv \mc{A}'[0] \equiv P$. Thus $\mc{A}$ must also be atomic. This is because if $\mc{A}'$ were a negation, implication, or quantification then we would have had $\mc{A}'[0] \equiv ( \not \equiv P$. This means $\mc{A}' \equiv P t_1'\ldots t_n'$. But, by a previous theorem, we must have  that either $t_1$ is an initial substring of $t_1'$ or $t_1'$ is an initial substring of $t_1$, but because terms cannot have proper initial substrings this means $t_1 \equiv t_1'$. This argument can be repeated up through $t_n$ and $t_n'$ showing that $\mc{P}' \equiv \mc{P}$ and $t_k'\equiv t_k$ for $1\le k \le n$ meaning that $\mc{A} \equiv \mc{A}'$, contradicting the assumptions that $\mc{A}'$ is a proper initial substring of $\mc{A}$.
+
+Now suppose $\mc{A}$ is a negation so $\mc{A}\equiv (\lnot\mc{B})$. Suppose that $\mc{A}'$ is a proper initial substring of $\mc{A}$ and, for contradiction, that $\mc{A}'$ is a permissive formula. $\mc{A}'$ cannot be atomic because $\mc{A}'[0] \equiv \mc{A}[0] \equiv ( \not \in \textbf{Pred}$. Suppose that $\mc{A}'$ is an implication. $\mc{A}' \equiv (\mc{B}'\implies \mc{C}')$. It can be shown (by the definition of concatenation) and $\mc{B}'$ being non-empty that $\mc{A}'[1] \equiv \mc{B}'[0]$. But $\mc{A}'[1] \equiv \mc{A}[1] \equiv \lnot$ which would imply $\mc{B}'[0] \equiv \lnot$, but there is no permissive formula which begins with $\lnot$. Similarly, 
+
+Note that $\mc{A}'[1] \equiv \mc{A}[0]$
+
+
+
+
+}}
+
+
+
 
 
 
