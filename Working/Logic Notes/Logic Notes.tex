@@ -290,7 +290,7 @@ The set of all symbols in the language is denoted $\textbf{Symb}$ and is the dis
 \end{definition}
 
 \subsection{Strings}
-\subsubsection{Definition of Lists}
+\subsubsection{Definition of and Basic Facts about Lists}
 The symbols in $\textbf{Symb}$ can be combined into collections of symbols called strings.
 Formally, we will define strings as finite ordered lists of symbols.
 Most of this section will be devoted to defining and describing finite ordered lists.
@@ -367,6 +367,7 @@ Therefore $\mc{E} \equiv \mc{E}'$.
 Because of the uniqueness of the empty list we are justified in defining a notation for it. The empty list can be expressed as $[]$ and we define $\mc{E} \equiv []$.
 \end{definition}
 
+\subsubsection{List Concatenation}
 If we are given two lists, $\mc{A}$ and $\mc{B}$, we can define a third list by concatenating these two lists.
 
 \begin{definition}[List Concatenation]
@@ -384,6 +385,22 @@ $$
 We often abbreviate $\mc{A}\circ\mc{B}$ as $\mc{A}\mc{B}$.
 Note that such a $\mc{C}$ always exists.
 \end{definition}
+
+\begin{theorem}[Equality of Concatenation with list implies Equality of Lists]
+Suppose $\mc{A}\mc{B} \equiv \mc{A}\mc{B}'$. 
+Then $\mc{B} \equiv \mc{B}'$.
+First, $|\mc{A}\mc{B}| = |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}'| = |\mc{A}| + |\mc{B}'|$ so $|\mc{B}| = |\mc{B}'| = n$.
+Choose $0\le i < n$.
+By the definition of concatenation we have $\mc{A}\mc{B}[|\mc{A}| + i] \equiv \mc{A}\mc{B}'[|\mc{A}| + i] \equiv \mc{B}[i] \equiv \mc{B}'[i]$.
+Since this holds for $0\le i < n$ we have $\mc{B} \equiv \mc{B}'$.
+
+Now suppose $\mc{A}\mc{B}\equiv \mc{A}'\mc{B}$. Then $\mc{A}\equiv \mc{A}'$.
+First $|\mc{A}\mc{B}| \equiv |\mc{A}| + |\mc{B}| = |\mc{A}'\mc{B}| = |\mc{A}'\mc{B}| = |\mc{A}'| + |\mc{B}|$ so $|\mc{A}| = |\mc{A}'| = n$. Consider $0\le i < n$.
+By the definition of concatenation we have $\mc{A}\mc{B}[i] \equiv \mc{A}'\mc{B}[i] \equiv \mc{A}[i] \equiv \mc{A}'[i]$.
+Since this holds for $0 \le i < n$ we have $\mc{A} \equiv \mc{A}'$.
+
+
+\end{theorem}
 
 \begin{theorem}[Concatenation with the Empty List]
 Here we prove that $\mc{E}\mc{B} \equiv \mc{B} \mc{E} \equiv \mc{B}$.
@@ -409,8 +426,9 @@ This means $\mc{B}\mc{E} \equiv \mc{B}$.
 
 
 \begin{theorem}[List Concatenation is Associative]
-% TODO: Replace () with \Braket
+\label{thm:concatassoc}
 Here we will prove that $\Braket{\mc{A}\circ \mc{B}}\circ \mc{C} \equiv \mc{A} \circ \Braket{\mc{B} \circ \mc{C}}$.
+The angle brackets here denote the order of operations for the multiple concatenations.
 
 First, if $\mc{A} \equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{B}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. 
 If $\mc{B}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. 
@@ -448,32 +466,31 @@ Because $0 \le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $\Braket{\mc{A}\Braket{\
 }
 \item{
 Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$. 
-Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $(\mc{A}\mc{B})\mc{C}$. 
-Because $0 \le j < |\mc{C}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}| + |\mc{B}| + j] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$. 
-On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. 
-We have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j]$.
-We have that $0 \le |\mc{B}| \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $(\mc{A}(\mc{B}\mc{C}))[|\mc{A}| + |\mc{B}| + j] \equiv (\mc{B}\mc{C})[|\mc{B}| + j]$. 
-But, $0 \le j < |\mc{C}|$ so $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$. 
-So in this case $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i].$
+Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $\langle\mc{A}\mc{B}\rangle\mc{C}$. 
+Because $0 \le j < |\mc{C}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}| + |\mc{B}| + j] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$. 
+On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$. 
+We have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j]$.
+We have that $0 \le |\mc{B}| \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j] \equiv \Braket{\mc{B}\mc{C}}[|\mc{B}| + j]$. 
+But, $0 \le j < |\mc{C}|$ so $\Braket{\mc{B}\mc{C}}[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$. 
+So in this case $\langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[i] \equiv \langle\mc{A}\langle\mc{B}\mc{C}\rangle\rangle[i].$
 }
 
-In all cases we have $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.
-This means that $(\mc{A}\mc{B})\mc{C} \equiv \mc{A}(\mc{B}\mc{C})$. 
-This associativity allows us to suppress the parentheses notation and simply write $(\mc{A}\mc{B})\mc{C} \equiv \mc{A}(\mc{B}\mc{C}) \equiv \mc{A}\mc{B}\mc{C}$ since the resulting list is unambiguous.
-The same holds for concatenations of more than three lists.
+In all cases we have $\langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[i] \equiv \langle\mc{A}\langle\mc{B}\mc{C}\rangle\rangle[i]$.
+This means that $\langle\mc{A}\mc{B}\rangle\mc{C} \equiv \mc{A}\langle\mc{B}\mc{C}\rangle$. 
 \end{itemize}
 \end{theorem}
 
 \begin{definition}[Multiple Concatenation]
-Here we define the set of $n$-concatenations over a list of strings. 
-Note that lists of strings are different than strings which are themselves lists of symbols.
-If $S$ is a list of $n$ strings, i.e. $S\in \textbf{Str}^*$ and $|S| = n$, then $\circ_n(S)$ is defined to be the set of all strings which arise from concatenations of the $n$ strings in $S$.
+Here we define the set of $n$-concatenations over a list of lists. 
+Note that lists of lists are different than lists which are themselves lists of objects.
+If $S$ is a list of $n$ lists, i.e. $S\in \textbf{Str}^*$ and $|S| = n$, then $\circ_n(S)$ is defined to be the set of all lists which arise from concatenations of the $n$ lists in $S$.
 We define $\circ_n$ recursively.
 
 \begin{itemize}
 \item{We define $\circ_1([\mc{A}]) = \{\mc{A}\}$}
 \item{$\circ_n([\mc{A}_0,\ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{X}\circ\mc{Y}:\mc{X} \in \circ_i([\mc{A}_0,\ldots \mc{A}_{i-1}]) \text{ and } \mc{Y}\in \circ_{n-i}([\mc{A}_{i}, \ldots, \mc{A}_{n-1}])\}$}
 \end{itemize}
+We say that $\circ_n(S)$ is the set of all parenthesizations of the concatenations of the $n$ lists in $S$.
 
 \end{definition}
 
@@ -490,51 +507,61 @@ As an example consider $\circ_4([\mc{A}, \mc{B}, \mc{C}, \mc{D}])$. This will be
 \begin{theorem}[Generalized Associativity of Multiple Concatenation]
 The generalized associativity property for multiple concatenation states that, for $S\in\textbf{Str}^*$ with $S=[\mc{A}_0,\ldots,A_{n-1}]$ that $\circ_n(S)$ has only one element.
 That is, if $\mc{A}, \mc{B}\in\circ_n(S)$ then $\mc{A}\equiv \mc{B}$.
+We may denote this unique element as $\mc{A}_0\circ\ldots\circ\mc{A}_{n-1}$, which can be abbreviated as $\mc{A}_0\ldots\mc{A}_{n-1}$.
 We proceed by induction on $n$.
 
 If $n=1$ then $|S|=1$ and $S = [\mc{A}]$.
 We then have $\circ_1(S) = \{\mc{A}\}$.
 This set only has one element so we are done.
 
-Suppose that for all $m<n$ that if $S\in\textbf{Str}^*$ with $|S|=m$ that $\circ_m(S)$ only contains one element.
-If $S = [\mc{A}_0,\ldots, \mc{A}_{m-1}]$ then we denote this element by $\mc{A}_0\ldots\mc{A}_{m-1}$.
-Consider now
+The induction hypothesis is that for all $m<n$ that $\circ_m([\mc{A}_0, \ldots, \mc{A}_{m-1}])$ contains a single unique element.
+This element is denoted by $\mc{A}_0\ldots\mc{A}_{m-1}$.
 
+We have the following useful result.
+Suppose $1 \le l \le {m-1}$.
+Since $l < m < n$ we have, by the induction hypothesis, that $\circ_l([\mc{A}_0, \ldots, \mc{A}_{l-1}])$ has a single unique element denoted by $\mc{A}_0\ldots\mc{A}_{l-1}$ (or simply $\mc{A}_0 \equiv \mc{A}_{l-1}$ if $l=1$).
+Since $m-l < m < n$ we also have, again by the induction hypothesis, that $\circ_{m-l}([\mc{A}_l, \ldots, \mc{A}_{m-1}])$ has a single unique element denoted by $\mc{A}_l\ldots\mc{A}_{m-1}$ (or simply $\mc{A}_l \equiv \mc{A}_{m-1}$ if $l=m-1$).
+This means that
+$$
+\mc{A}_0\ldots\mc{A}_{l-1} \circ \mc{A}_l\ldots\mc{A}_{m-1} \in \circ_m([\mc{A}_0, \ldots, \mc{A}_{m-1}])
+$$
+But, by the induction hypothesis, we know this latter set has a single unique element which means
+$$
+\mc{A}_0\ldots\mc{A}_{m-1} \equiv \mc{A}_0\ldots\mc{A}_{l-1}\circ \mc{A}_l \ldots \mc{A}_{m-1}
+$$
+We will use this result below.
+
+Consider now
 \begin{align*}
 \circ_n([\mc{A}_0,\ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{X}\circ\mc{Y}:\mc{X} \in \circ_i([\mc{A}_0,\ldots \mc{A}_{i-1}]) \text{ and } \mc{Y}\in \circ_{n-i}([\mc{A}_{i}, \ldots, \mc{A}_{n-1}])\}
 \end{align*}
-
-Because $i<n$ and $n-i<n$ we know that $\circ_i([\mc{A}_0,\ldots, \mc{A}_{i-1}])$ and $\circ_{n-i}([\mc{A}_i,\ldots,\mc{A}_{n-1}])$ only contain one element.
-This can then be rewritten as
+Because $i<n$ we know, by the induction hypothesis, that $\circ_i([\mc{A}_0, \ldots, \mc{A}_{i-1}])$ has a single unique element denoted by $\mc{A}_0\ldots\mc{A}_{i-1}$.
+Likewise, because $n-i < n$, we know, again by the induction hypothesis, that $\circ_{n-i}([\mc{A}_i, \ldots, \mc{A}_{n-1}])$ has a single unique element denoted by $\mc{A}_i \ldots \mc{A}_{n-1}$.
+We then have
 \begin{align}
-\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{i-1} \circ \mc{A}_i\ldots\mc{A}_{n-1}\}
+\circ_n([\mc{A}_0, \ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{i-1}\circ\mc{A}_i\ldots\mc{A}_{n-1}\}
 \end{align}
-But consider $\mc{A}_i\ldots\mc{A}_{n-1} \in \circ_{n-i}([\mc{A}_i,\ldots,\mc{A}_{n-1}])$.
-We can see that, since $n-i-1 < n$, that $\mc{A}_i\ldots\mc{A}_{n-2}$ is the unique element in $\circ_{n-i-1}(\mc{A}_i,\ldots,\mc{A}_{n-2})$. 
-We can then see that $\mc{A}_i\ldots\mc{A}_{n-2}\circ\mc{A}_{n-1} \in \circ_{n-1}(\mc{A}_i\ldots\mc{A}_{n-1}$ so that
-$$
-\mc{A}_i\ldots\mc{A}_{n-2}\circ\mc{A}_{n-1} \equiv \mc{A}_i\ldots\mc{A}_{n-1}
-$$
 
-This means we can write
-$$
-\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{i-1} \circ \Braket{\mc{A}_i\ldots\mc{A}_{n-2}\circ\mc{A}_{n-1}}\}
-$$
-Which can be rewritten, using simple associativity of concatenation as
-$$
-\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\Braket{\mc{A}_0\ldots\mc{A}_{i-1} \circ \mc{A}_i\ldots\mc{A}_{n-2}}\circ\mc{A}_{n-1}\}
-$$
-But, because $i<n$ and $n-1-i<n$, We can see that $\mc{A}_0\ldots\mc{A}_{i-1}\circ \mc{A}_i\ldots\mc{A}_{n-2} \equiv \mc{A}_0\ldots \mc{A}_{n-2}$ so that
-$$
-\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{n-2} \circ \mc{A}_{n-1} \}
-$$
+Now suppose $\mc{X}, \mc{Y} \in \circ([\mc{A}_0, \ldots, \mc{A}{n-1}])$.
+This means there exists $j, k$ with $1 \le j \le n-1$ and $1 \le k \le n-1$ with
+\begin{align}
+\mc{X} \equiv& \mc{A}_0\ldots\mc{A}_{j-1} \circ \mc{A}_j \ldots \mc{A}_{n-1}\\
+\mc{Y} \equiv& \mc{A}_0\ldots\mc{A}_{k-1} \circ \mc{A}_k \ldots \mc{A}_{n-1} 
+\end{align}
+We will now show $\mc{X} \equiv \mc{Y}$.
 
-But this is a union over the same set so we have
-$$
-\circ_n([\mc{A}_0,\ldots,\mc{A}_{n-1}]) = \{\mc{A}_0\ldots\mc{A}_{n-2} \circ \mc{A}_{n-1} \}
-$$
-
-We see that there is a unique $n$-concatenation over the list of strings $[\mc{A}_0, \ldots, \mc{A}_{n-1}]$ which we denote by $\mc{A}_0\ldots\mc{A}_{n-1}$.
+If $j=k$ then clearly $\mc{X}\equiv \mc{Y}$.
+We now suppose, without loss of generality, that $k>j$.
+By the intermediate result on the induction hypothesis above, and $n-j < n$ and $k<n$, we can write this as
+\begin{align}
+\mc{X} \equiv& \mc{A}_0\ldots\mc{A}_{j-1} \circ \langle\mc{A}_j\ldots\mc{A}_{k-1} \circ \mc{A}_k\ldots\mc{A}_{n-1}\rangle\\
+\mc{Y} \equiv& \langle \mc{A}_0\ldots\mc{A}_{j-1}\circ\mc{A}_j\ldots\mc{A}_{k-1}\rangle\circ\mc{A}_k\ldots\mc{A}_{n-1}
+\end{align}
+But, we can see by Theorem \ref{thm:concatassoc} that $\mc{X}\equiv \mc{Y}$.
+This implies that $\circ_n(\mc{A}_0,\ldots, \mc{A}_{n-1})$ has a single unique element which we may denote as
+\begin{align*}
+\mc{A}_0\ldots\mc{A}_{n-1}
+\end{align*}
 
 \end{theorem}
 
@@ -603,6 +630,7 @@ This means $\mc{A}[L_k+i] \equiv \mc{A}_k[i]$.
 
 \end{theorem}
 
+\subsubsection{List Slicing and Sublists}
 In addition to combining lists to form larger lists, we can also slice lists to form smaller lists.
 
 \begin{definition}[List Slicing]
@@ -691,6 +719,7 @@ If $\mc{A} \equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ then either $\
 This follows from the fact that either $|\mc{C}| \le |\mc{C}'|$ or $|\mc{C}'| \le |\mc{C}|$ and Theorem \ref{thm:corrintpart}.
 \end{corollary}
 
+\subsubsection{Strings from Lists}
 Up until now we have been discussing lists of over a general set of objects $\Sigma$.
 
 \begin{definition}[String]
@@ -809,6 +838,7 @@ Note that, $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(
 \subsection{Unique Readability}
 
 \begin{theorem}[No Proper Initial Part of a Term is a Term]
+\label{thm:termnopropinit}
 I will prove that if $t\in\textbf{Term}$ then if $t'$ is a proper initial part of $t$ then $t'\not \in \textbf{Term}$. I will induct on $|t|$.
 
 $|t|$ must be greater than zero because if $|t| = 0$ then $t \equiv \mc{E}$ and $\mc{E}\not \in \textbf{Term}$.
@@ -855,6 +885,7 @@ This all means that if $|\mc{A}|>1$ that $\mc{A}[1]$ is either in $\textbf{Var}$
 \end{theorem}
 
 \begin{theorem}[Unique Range of Permissive Formula Construction Rules]
+\label{thm:uniquerange}
 Suppose $\mc{A}\in\textbf{pForm}$.
 We will use Theorem \ref{thm:multconcatextract} throughout.
 
@@ -884,101 +915,162 @@ If $\mc{A}$ were a quantification then we know from above that it is not atomic,
 Therefore if $\mc{A}\in\textbf{pForm}$ then it exactly one of atomic, implication, negation, or quantification.
 \end{theorem}
 
-\begin{definition}[Parentheses Counting]
-Suppose $\mc{A}\in\textbf{Str}$.
-We define the number of left and right parentheses in $\mc{A}$ recursively on $|\mc{A}|$.
-We define the number of left and right parentheses in a string recursively. Suppose $\mc{A}\in\textbf{Str}$.
+\begin{theorem}[Unique Readability of Atomic Formulas]
+\label{thm:atomunique}
+Suppose $\mc{A}\in \textbf{pForm}$ and $\mc{A}$ is atomic.
+Then $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots,t_n\in\textbf{Term}$. 
+We know from \ref{thm:uniquerange} that $\mc{A}$ is not an implication, negation, or quantification.
+Suppose that $\mc{A} \equiv P't_1'\ldots t_k'$ with $P'\in\textbf{Pred}_k$ and $t_1',\ldots, t_k'\in\textbf{Term}$.
+We see that $\mc{A}[0] \equiv P \equiv P'$ which also means $k=n$.
+We then have $\mc{A}\equiv P t_1'\ldots t_k'$.
+We can see by Corollary \ref{corr:intpart} that $t_1$ must be an initial part of $t_1'$ or $t_1'$ must be an initial part of $t_1$, but because of Theorem \ref{thm:termnopropinit} no term can have a proper initial part, so we must have $t_1\equiv t_1'$.
+This same argument is repeated for $t_2$ through $t_n$ so that $t_i \equiv t_i'$ for all $1 \le i \le n$.
+\end{theorem}
 
+\begin{theorem}[No Proper Initial Part of a Permissive Formula is a Permissive Formula]
+\label{thm:permpropinit}
+Suppose $\mc{A}\in\textbf{pForm}$.
+We proceed by induction on $|\mc{A}|$ to show that $\mc{A}$ has no proper initial part that is a permissive formula.
+
+If $|\mc{A}| = 1$ then the only proper initial part of $\mc{A}$ is $\mc{E} \not \in \textbf{pForm}$.
+
+Suppose that $|\mc{A}| = n>1$. 
+The induction hypothesis is that for any $\mc{B}$ with $|\mc{B}|<n$ that $\mc{B}$ has no proper initial part that is a permissive formula.
+We need one case for each type of permissive formula.
+
+Suppose $\mc{A}$ is atomic and suppose $\mc{A}'\in \textbf{pForm}$ and is an initial part of $\mc{A}$.
+We have $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$.
+We can see that $\mc{A}'[0] \equiv \mc{A}[0] \equiv  P$ so we see that $\mc{A}'$ is atomic.
+We have $\mc{A}' \equiv Pt_1'\ldots t_n'$.
+By the same argument as in Theorem \ref{thm:atomunique} we conclude that $t_i' \equiv t_i$ for all $1 \le i \le n$.
+Therefore $\mc{A}' \equiv \mc{A}$ so that $\mc{A}'$ cannot be a proper initial part of $\mc{A}$.
+Note that this case does not require the induction hypothesis.
+
+If $\mc{A}$ is an implication then we have $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$.
+Suppose, for contradiction, that $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}\in\textbf{pForm}$.
+If $|\mc{A}'| = 0$ then $\mc{A}' \equiv \mc{E}$ and so $\mc{A}' \not \in \textbf{pForm}$.
+If $|\mc{A}'| = 1$ then $\mc{A}' \equiv [(]$ and $\mc{A}' \not\in \textbf{pForm}$.
+Suppose $|\mc{A}'|>1$.
+Then $\mc{A}'[1] \equiv \mc{A}[1] \equiv \mc{B}[0]$ which is either in $\textbf{Pred}$ or equal to $($. This means that $\mc{A}'$ is not a negation.
+If $|\mc{A}'| < 3$ then $\mc{A}'$ is not a quantification.
+If $|\mc{A}'| \ge 3$ then $\mc{A}'[2] \equiv \mc{A}[2] \equiv \mc{B}[1]$ which is either in $\textbf{Var}$, $\textbf{Func}$, or $\textbf{Pred}$ or equal to $($ or $\lnot$. But if $\mc{A}'$ were a quantification then we would have $\mc{A}'[2] \equiv \forall$, so $\mc{A}'$ is not a quantification.
+So $\mc{A}'$ is an implication with $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$.
+We can see by Corollary \ref{corr:intpart} that $\mc{B}$ must be an initial part of $\mc{B'}$ or $\mc{B}'$ must be an initial part of $\mc{B}$.
+But $|\mc{B}|$ and $|\mc{B}'|$ are less than $n$, so, by the induction hypothesis, neither can have a proper initial part that is also a permissive formula.
+Therefore $\mc{B} \equiv \mc{B}'$ and $\mc{A}' \equiv (\mc{B} \implies \mc{C}')$.
+By the same argument we find $\mc{C} \equiv \mc{C}'$.
+This means $\mc{A} \equiv \mc{A}'$, contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
+
+If $\mc{A}$ is a negation then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{pForm}$.
+Suppose that $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$.
+Since $\mc{A}'[0] \equiv \mc{A}[0] \equiv ($ we know that $\mc{A}'$ is not atomic.
+If $\mc{A}'$ were an implication then we would have $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$. 
+In this case we would have $\mc{A}[1] \equiv \mc{B}[0]$ which can be either in $\textbf{Pred}$ or equal to $($, but $\mc{A}[1] \equiv \lnot$ so $\mc{A}'$ is not an implication.
+If $\mc{A}'$ were a quantification we would have $\mc{A}' \equiv ((\forall x) \mc{B}')$ so that $\mc{A}'[2] \equiv \forall$. But $\mc{A}'[2] \equiv \mc{B}[0]$ which is either in $\textbf{Pred}$ or equal to $($ so $\mc{A}'$ is not a quantification.
+$\mc{A}'$ must be a negation so that $\mc{A}' \equiv (\lnot \mc{B}')$ with $\mc{B}' \in \textbf{pForm}$.
+But, by Corollary \ref{corr:intpart} we have $\mc{B}$ must be an initial part of $\mc{B}'$ or $\mc{B}'$ must be an initial part of $\mc{B}$.
+But, $|\mc{B}|$ and $|\mc{B}'|$ are both less than $n$, so by the induction hypothesis, neither can have a proper initial part that is also a permissive formula so we must have $\mc{B}' \equiv \mc{B}$.
+This means $\mc{A}' \equiv \mc{A}$, contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
+
+If $\mc{A}$ is a quantification then $\mc{A} \equiv ((\forall x) \mc{B})$ with $x \in \textbf{Var}$ and $\mc{B} \in \textbf{pForm}$.
+Suppose $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}' \in \textbf{pForm}$.
+$\mc{A}'[0] \equiv \mc{A}[0] \equiv ($ so $\mc{A}'$ is not atomic.
+Also, $\mc{A}'[1] \equiv \mc{A}[1] \equiv \lnot$ so $\mc{A}'$ is not a negation.
+If $\mc{A}'$ were an implication then we would have $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$.
+$\mc{A}'[2]$ would be $\mc{B}'[1]$ which is either in $\textbf{Var}$, $\textbf{Func}$, $\textbf{Pred}$, or equal to $($ or $\lnot$, but $\mc{A}'[2] \equiv \mc{A}[2] \equiv \forall$, so $\mc{A}'$ is not an implication.
+$\mc{A}'$ must be a quantification with $\mc{A}' \equiv ((\forall x') \mc{B}')$ with $x' \in \textbf{Var}$ and $\mc{B}' \in \textbf{pForm}$.
+$\mc{A}'[3] \equiv x' \equiv \mc{A}[3] \equiv x$ so $x' \equiv x$.
+We can then see, by an application of Corollary \ref{corr:intpart}, that $\mc{B}$ must be an initial part of $\mc{B}'$ or $\mc{B}'$ must be an initial part of $\mc{B}$.
+But since $|\mc{B}|$ and $|\mc{B}'| $ are less than $n$ neither can have a proper initial part that is also a permissive formula, so we must have $\mc{B} \equiv \mc{B}'$.
+This means $\mc{A}' \equiv \mc{A}$ contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
+\end{theorem}
+
+\begin{corollary}[Unique Readability of Permissive Formulas]
+If $\mc{A}$ is atomic with $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1, \ldots, t_n \in \textbf{Term}$ then we know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not an implication, negation, or quantification.
+We also know from Theorem \ref{thm:atomunique} that if $\mc{A} \equiv P't_1'\ldots t_n'$ with $P'\in\textbf{Pred}$ and $t_1',\ldots, t_n'\in\textbf{Term}$ that $P' \equiv P$ and $t_i' \equiv t_i$ for all $1 \le i \le n$.
+
+Suppose $\mc{A}$ is an implication with $\mc{A} \equiv (\mc{B} \implies \mc{C})$.
+We know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not atomic, a negation, or a quantification.
+Suppose $\mc{A} \equiv (\mc{B}'\implies \mc{C}')$.
+Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
+The same argument follows to conclude $\mc{C} \equiv \mc{C}'$.
+
+Suppose $\mc{A}$ is a negation with $\mc{A} \equiv (\lnot \mc{B})$.
+We know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, or a quantification.
+Suppose $\mc{A} \equiv (\lnot \mc{B}')$.
+Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
+
+Suppose $\mc{A}$ is a quantification with $\mc{A} \equiv ((\forall x) \mc{B})$ with $x \in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We know from \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, or a negation.
+Suppose $\mc{A} \equiv ((\forall x') \mc{B}')$.
+Since $\mc{A}[3] \equiv x' \equiv x$ we have $x' \equiv x$.
+Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
+\end{corollary}
+
+\subsection{Free and Bound Variable Identification}
+
+In this section we will define the free and bound variables in a permissive formula $\mc{A}$.
+
+
+\begin{definition}[Free Variables in Terms]
+If $t\in \textbf{Term}$ then $t$ we define the set $FV(t)$ as follows.
 \begin{itemize}
-\item{If $|\mc{A}| = 0$ then $N_{(}(\mc{A}) = 0$.}
-\item{If $|\mc{A}| = 1$ then if $\mc{A}[0] \equiv ($ then $N_{(}(\mc{A}) = 1$, otherwise $N_{(}(\mc{A}) = 0$.}
-\item{If $|\mc{A}| > 1$ then $N_{(}(\mc{A}) = N_{(}(\mc{A}[0:|\mc{A}|-1]) + N_{(}(\mc{A}[|\mc{A}|-1])$.}
-\end{itemize}
-
-Similarly
-
-\begin{itemize}
-\item{If $|\mc{A}| = 0$ then $N_{)}(\mc{A}) = 0$.}
-\item{If $|\mc{A}| = 1$ then if $\mc{A}[0] \equiv )$ then $N_{)}(\mc{A}) = 1$, otherwise $N_{(}(\mc{A}) = 0$.}
-\item{If $|\mc{A}| > 1$ then $N_{)}(\mc{A}) = N_{)}(\mc{A}[0:|\mc{A}|-1]) + N_{)}(\mc{A}[|\mc{A}|-1])$.}
+\item{\textbf{Variables:} If $t\equiv [x]$ with $FV = \{x\}$}
+\item{\textbf{Functions:} If $t\equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots \cup FV(t_n)$.}
 \end{itemize}
 \end{definition}
 
-\begin{theorem}[Multiple String Parentheses Counting]
-% TODO: This theorem?
-We could prove by induction that $N_{(}(\mc{A}_0\ldots\mc{A}_{N-1}) = \sum_{k=0}^{N-1} N_{(}(\mc{A}_k)$ and likewise for $N_{)}$.
-\end{theorem}
+\begin{definition}[Free Variables in Permissive Formulas]
+If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
+\begin{itemize}
+\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
+\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
+\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
+\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$.}
+\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
+\end{itemize}
+\end{definition}
 
-\begin{lemma}[Atomic Formulas Have No Parentheses]
-If $t\in\textbf{Var}$ then $t\equiv x \in \textbf{Var}$.
+Note that $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(\mc{B})$.
+In such cases $\mc{A}$ exhibits redundant quantification.
 
+\begin{definition}[Quantified Variables in Permissive Formulas]
+If $\mc{A}$ is a permissive formula then we define $QV(\mc{A}$ recursively.
 
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula then $QV(\mc{A}) = \emptyset$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $QV(\mc{A}) \equiv QV(\mc{B})$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ then $QV(\mc{A}) = QV(\mc{B}) \cup QV(\mc{C})$.}
+\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ then $QV(\mc{A}) = QV(\mc{B}) \cup \{x\}$.}
+\end{itemize}
+\end{definition}
 
-\end{lemma}
+Note that $((\forall x)\mc{B})$ is a permissive formula even if $x\in QV(\mc{B})$.
+In such cases $\mc{A}$ exhibits repeated quantification.
 
-\begin{theorem}[Equal Number of Left and Right Parentheses]
-We will prove by induction on $|\mc{A}|$ that if $\mc{A}\in\textbf{pForm}$ that $N_{(}(\mc{A}) = N_{)}(\mc{A})$.
+Note also that it is possible to have $x\in FV(\mc{A})$ and $x\in QV(\mc{A})$.
+For example
+\begin{align}
+\mc{A} \equiv (Px \implies ((\forall x) Qy))
+\end{align}
+We have $FV(\mc{A}) = \{x, y\}$ and $QV(\mc{A}) = \{x\}$.
 
-If $|\mc{A}| = 0$ then $N_{(}(\mc{A}) = N_{)}(\mc{A}) = 0$.
+\subsection{Strict Formulas}
 
-If $|\mc{A}| = 1$ then $\mc{A}$
-\end{theorem}
-
-
-\noindent\fbox{\parbox{\textwidth}{ 
-
-Suppose $\mc{A}$ is a permissive formula. If $\mc{A}$ is atomic then $\mc{A}[0]$ is in \textbf{Pred}. If $\mc{A}$ is an implication, negation, or quantification, then $\mc{A}[0] \equiv ($. So for every permissive formula $\mc{A}[0]$ is in $\textbf{Pred}$ or is equal to $($.
-
-Now suppose $\mc{A}$ is a permissive formula. If $\mc{A}$ is atomIf $\mc{A}$ is an implication then $\mc{A}\equiv (\mc{B}\implies \mc{C})$. $\mc{A}[1] \equiv \mc{B}[0]$ so $\mc{A}[1]$ is either an element of $\textbf{Pred}$ or equal to $($. If $\mc{A}$ is a negation then $\mc{A}[1] \equiv \lnot$. If $\mc{A}$ is a quantification then $\mc{A} \equiv ($. This means, for non-atomic $\mc{A}$, that $\mc{A}[1]$ is either an element of $\textbf{Pred}$, equal to $($, or equal to $\lnot$.
-
-}}
-
-
-\noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Unique Range of Quantification Rules}
-
-Here we will show that if $\mc{A}$ is a permissive formula then it is exactly one of an atomic formula, an implication, a negation, or a quantification, but not more than one.
-
-Suppose $\mc{A}$ is an atomic formula. Then $\mc{A}[0] \in \textbf{Pred}$. 
-If $\mc{A}$ was also either an implication, negation, or quantification we would have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A}$ is not an implication, negation, or quantification.
-
-Suppose $\mc{A}$ is an implication so $\mc{A}\equiv(\mc{B} \implies \mc{C})$ for $\mc{B},\mc{C} \in \textbf{pForm}$.
-We know from above that $\mc{A}$ is not atomic. 
-If $\mc{A}$ was a negation then we would have $\mc{A}[1] \equiv \lnot$.
-But $\mc{A}[1] \equiv \mc{B}[0]$, but we have from the theorem above that $\mc{B}[0]$ can only be in $\textbf{Pred}$ or equal to $($, so $\mc{A}$ is not a negation.
-If $\mc{A}$ was a quantification we would have $\mc{A}[2] \equiv \forall$.
-If $|\mc{B}|=1$ then $\mc{A}[2]\equiv \implies \not \equiv \forall$.
-If $|\mc{B}|>1$ then $\mc{A}[2] \equiv \mc{B}[1]$, but we have from the theorem above that $\mc{B}[1]$ can only be in $\textbf{Pred}$, equal to $($, or equal to $\lnot$ so $\mc{A}$ is not a quantificaiton.
-
-Suppose $\mc{A}$ is a negation so $\mc{A} \equiv (\lnot \mc{B})$ for $\mc{B}\in\textbf{pForm}$. 
-We know from above that $\mc{A}$ is not atomic or an implication.
-If $\mc{A}$ was a quantification then we would have $\mc{A}[2] \equiv \forall$.
-But $\mc{A}[2] \equiv \mc{B}[1]$, but we have from the theorem above that $\mc{B}[1]$ can only be in $\textbf{Pred}$, equal to $($ or equal to $\lnot$ so $\mc{A}$ is not a quantification.
-An alternative proof would be to notice that if $\mc{A}$ was a quantification we would have $\mc{A}[1] \equiv ($ but $\mc{A}[1]$ is in fact equal to $\lnot$.
-
-}}
-
-
-\noindent\fbox{\parbox{\textwidth}{ 
-\textbf{No Proper Initial Segment of a Permissive Formula is a Permissive Formula}
-
-suppose $\mc{A}$ is a permissive formula.
-
-Suppose $\mc{A}$ is atomic. Suppose that $\mc{A}'$ is a proper intial substring of $\mc{A}$ and suppose for contraction that $\mc{A}'$ is a permissive formula. Since $\mc{A}$ is atomic we have $\mc{A}[0] \equiv \mc{A}'[0] \equiv P$. Thus $\mc{A}$ must also be atomic. This is because if $\mc{A}'$ were a negation, implication, or quantification then we would have had $\mc{A}'[0] \equiv ( \not \equiv P$. This means $\mc{A}' \equiv P t_1'\ldots t_n'$. But, by a previous theorem, we must have  that either $t_1$ is an initial substring of $t_1'$ or $t_1'$ is an initial substring of $t_1$, but because terms cannot have proper initial substrings this means $t_1 \equiv t_1'$. This argument can be repeated up through $t_n$ and $t_n'$ showing that $\mc{P}' \equiv \mc{P}$ and $t_k'\equiv t_k$ for $1\le k \le n$ meaning that $\mc{A} \equiv \mc{A}'$, contradicting the assumptions that $\mc{A}'$ is a proper initial substring of $\mc{A}$.
-
-Now suppose $\mc{A}$ is a negation so $\mc{A}\equiv (\lnot\mc{B})$. Suppose that $\mc{A}'$ is a proper initial substring of $\mc{A}$ and, for contradiction, that $\mc{A}'$ is a permissive formula. $\mc{A}'$ cannot be atomic because $\mc{A}'[0] \equiv \mc{A}[0] \equiv ( \not \in \textbf{Pred}$. Suppose that $\mc{A}'$ is an implication. $\mc{A}' \equiv (\mc{B}'\implies \mc{C}')$. It can be shown (by the definition of concatenation) and $\mc{B}'$ being non-empty that $\mc{A}'[1] \equiv \mc{B}'[0]$. But $\mc{A}'[1] \equiv \mc{A}[1] \equiv \lnot$ which would imply $\mc{B}'[0] \equiv \lnot$, but there is no permissive formula which begins with $\lnot$. Similarly, 
-
-Note that $\mc{A}'[1] \equiv \mc{A}[0]$
+We are now in a position to define strict formulas.
+\begin{definition}[Strict Formulas]
+$\mc{A}\in\textbf{sForm} = \textbf{Form}$ iff $\mc{A} \in \textbf{pForm}$ and satisfies one of
+\begin{itemize}
+\item{\textbf{Atomic Formulas}: $\mc{A}$ is an atomic formula.}
+\item{\textbf{Implication}: $\mc{A} \equiv (\mc{B} \implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{Form}$.}
+\item{\textbf{Negation}: $\mc{A} \equiv (\lnot \mc{B})$ and $\mc{B}\in\textbf{Form}$.}
+\item{\textbf{Quantification}: $\mc{A} \equiv ((\forall x)\mc{B})$ with $\mc{x}\in\textbf{Var}$, $\mc{B}\in\textbf{Form}$, and $x\in FV(\mc{B})$ and $x\not\in QV(\mc{B})$.}
+\end{itemize}
+\end{definition}
 
 
 
-
-}}
-
-
-
-
-
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 \subsection{Strict Wffs}
 We will now use pWffs to define free and quantified variables within a pWff $\mc{A}$.
