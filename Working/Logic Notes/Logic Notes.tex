@@ -766,6 +766,7 @@ Semantically, if the expressions of the formal language are making statements, t
 We define the set of free variables $FV(t)$ of a term $t$ recursively.
 
 \begin{definition}[Free Variables in Terms]
+% TODO: Can't define this here before unique readability
 If $t\in \textbf{Term}$ then $t$ we define the set $FV(t)$ as follows.
 \begin{itemize}
 \item{\textbf{Variables:} If $t\equiv [x]$ with $FV = \{x\}$}
@@ -821,6 +822,7 @@ $\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
 We define the free variables, $FV(\mc{A})$ in a formula $\mc{A}$ similarly to the free variables of a term.
 
 \begin{definition}[Free Variables in Permissive Formulas]
+% TODO: Can't define this here before unique readability
 If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
 \begin{itemize}
 \item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
@@ -985,7 +987,8 @@ But since $|\mc{B}|$ and $|\mc{B}'| $ are less than $n$ neither can have a prope
 This means $\mc{A}' \equiv \mc{A}$ contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
 \end{theorem}
 
-\begin{corollary}[Unique Readability of Permissive Formulas]
+\begin{theorem}[Unique Readability of Permissive Formulas]
+\label{thm:uniqueread}
 If $\mc{A}$ is atomic with $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1, \ldots, t_n \in \textbf{Term}$ then we know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not an implication, negation, or quantification.
 We also know from Theorem \ref{thm:atomunique} that if $\mc{A} \equiv P't_1'\ldots t_n'$ with $P'\in\textbf{Pred}$ and $t_1',\ldots, t_n'\in\textbf{Term}$ that $P' \equiv P$ and $t_i' \equiv t_i$ for all $1 \le i \le n$.
 
@@ -1005,7 +1008,27 @@ We know from \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, 
 Suppose $\mc{A} \equiv ((\forall x') \mc{B}')$.
 Since $\mc{A}[3] \equiv x' \equiv x$ we have $x' \equiv x$.
 Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
-\end{corollary}
+\end{theorem}
+
+The unique readability of permissive formulas allows to define recursively define functions on permissive formulas as we demonstrate below.
+
+\begin{definition}[Depth of a Permissive Formula]
+If $\mc{A}\in\textbf{pForm}$ then $D(\mc{A})$ is the formula depth (or depth) of $\mc{A}$ and is defined recursively.
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $D(\mc{A}) = 0$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$ then $D(\mc{A}) = \text{max}(D(\mc{B}, \mc{C}) + 1$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
+\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B} \in \textbf{pForm}$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
+\end{itemize}
+\end{definition}
+
+Note that it would not have been possible to define $D(\mc{A})$ without Theorem \ref{thm:uniqueread} and the other theorems of this section.
+For example, suppose we have $\mc{A} \equiv (\lnot \mc{B})$. 
+However, suppose it is also the case that $\mc{A} \equiv (\lnot \mc{B}')$. 
+The function $D(\mc{A})$ would not be well defined unless we had a guarantee that $D(\mc{B}) = D(\mc{B}')$.
+For a more extreme example suppose $\mc{A} \equiv (\lnot \mc{B})$ and $\mc{A} \equiv (\mc{C} \implies \mc{D})$.
+We would then need a guarantee that $D(\mc{B}) = \text{max}(D(\mc{C}, \mc{D}))$.
+Unique readability ensures that there is only one way to parse, or decompose, a permissive formula thus allowing us to define functions on the parsing of the permissive formula.
 
 \subsection{Free and Bound Variable Identification}
 
@@ -1035,7 +1058,7 @@ Note that $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(\
 In such cases $\mc{A}$ exhibits redundant quantification.
 
 \begin{definition}[Quantified Variables in Permissive Formulas]
-If $\mc{A}$ is a permissive formula then we define $QV(\mc{A}$ recursively.
+If $\mc{A}$ is a permissive formula then we define $QV(\mc{A})$ recursively.
 
 \begin{itemize}
 \item{If $\mc{A}$ is an atomic formula then $QV(\mc{A}) = \emptyset$.}
@@ -1064,77 +1087,311 @@ $\mc{A}\in\textbf{sForm} = \textbf{Form}$ iff $\mc{A} \in \textbf{pForm}$ and sa
 \item{\textbf{Atomic Formulas}: $\mc{A}$ is an atomic formula.}
 \item{\textbf{Implication}: $\mc{A} \equiv (\mc{B} \implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{Form}$.}
 \item{\textbf{Negation}: $\mc{A} \equiv (\lnot \mc{B})$ and $\mc{B}\in\textbf{Form}$.}
-\item{\textbf{Quantification}: $\mc{A} \equiv ((\forall x)\mc{B})$ with $\mc{x}\in\textbf{Var}$, $\mc{B}\in\textbf{Form}$, and $x\in FV(\mc{B})$ and $x\not\in QV(\mc{B})$.}
+\item{\textbf{Quantification}: $\mc{A} \equiv ((\forall x)\mc{B})$ with $x\in\textbf{Var}$, $\mc{B}\in\textbf{Form}$, and $x\in FV(\mc{B})$ and $x\not\in QV(\mc{B})$.}
 \end{itemize}
 \end{definition}
 
 
+\subsection{Substitution}
+
+\begin{definition}[Term Substitution]
+We define recursively the concept of term replacement.
+Suppose $s, t \in \textbf{Term}$ and $x\in \textbf{Var}$.
+\begin{itemize}
+\item{If $s\in\textbf{Var}$ then if $s\equiv x$ we define $s[t/x] \equiv t$. If $s\not \equiv x$ then $s[t/x] \equiv x$.}
+\item{If $s \equiv fs_1\ldots s_n$ with $f\in\textbf{Func}_n$ and $s_1, \ldots s_n \in \textbf{Term}$ then $s[t/x] \equiv fs_1[t/x]\ldots s_n[t/x]$. This definition implies that if $f\in \textbf{Func}_0$ and $s\equiv f$ then $s[t/x] \equiv s \equiv f$.}
+\end{itemize}
+
+Suppose $\mc{A} \in \textbf{pForm}$.
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $\mc{A} \equiv Ps_1\ldots s_n$ with $P\in\textbf{Pred}_n$ and $s_1\ldots s_n\in\textbf{Term}$. We define $\mc{A}[t/x] \equiv Ps_1[t/x]\ldots s_n[t/x]$. This definition implies that if $P\in\textbf{Pred}_0$ and $\mc{A}\equiv P$ then $\mc{A}[t/x] \equiv \mc{A} \equiv P$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ then $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $\mc{A}[t/x] \equiv (\lnot \mc{B}[t/x])$.}
+\item{If $\mc{A} \equiv ((\forall y) \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ then if $x\not \equiv y$ then $\mc{A}[t/x] \equiv ((\forall y) \mc{B}[t/x])$. If $x \equiv y$ then $\mc{A}[t/x] \equiv \mc{A}$.}
+\end{itemize}
+
+\end{definition}
+
+\begin{theorem}[Term Substitution Within a Term Results in a Term]
+Suppose $s, t\in\textbf{Term}$ and $x\in\textbf{Var}$.
+We prove by induction on $|s|$ that $s[t/x] \in \textbf{Term}$.
+
+if $|s| = 1$ then there are two cases. 
+First suppose $s\in \textbf{Var}$.
+If $s\in \textbf{Var}$ then if $s\equiv x$ $s[t/x] \equiv t$ so $s[t/x]\in\textbf{Term}$. 
+If $s \not \equiv x$ then $s[t/x] \equiv s$ so again $s[t/x] \in \textbf{Term}$.
+The other case is $s\equiv f$ with $f\in \textbf{Func}_0$.
+In this case $s[t/x] \equiv s$ so $s[t/x] \in \textbf{Term}$.
+
+Now suppose $|s| > 1$.
+The induction hypothesis is that for any term $r$ with $|r|<|s|$ we have $r[t/x] \in \textbf{Term}$.
+We have $s\equiv ft_1\ldots t_n$ with $f\in\textbf{Func}_n$. $s[t/x] \equiv f t_1[t/x]\ldots t_n[t/x]$, but each of $t_i[t/x]\in\textbf{Term}$ for $1\le i \le n$ so $s[t/x]\in\textbf{Term}$.
+\end{theorem}
+
+\begin{theorem}[Term Substitution Within a Permissive Formula Results in a Permissive Formula]
+Suppose $\mc{A}\in\textbf{pForm}$, $x\in\textbf{Var}$ and $t \in \textbf{Term}$.
+We prove, by induction of $D(\mc{A})$, that $\mc{A}[t/x] \in \textbf{pForm}$.
+
+Suppose $D(\mc{A}) = 0$.
+Then $\mc{A}$ is atomic so $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$. $\mc{A}[t/x] \equiv Pt_1[t/x]\ldots t_n[t/x]$, but, by the previous theorem, $t_1[t/x],\ldots,t_n[t/x]\in\textbf{Term}$ so $\mc{A}[t/x]\in\textbf{pForm}$.
+
+Now suppose that $D(\mc{A}) > 0$ but that for any $\mc{B}$ with $D(\mc{B}) < D(\mc{A})$ we have that $\mc{B}[t/x] \in \textbf{pForm}$.
+
+$\mc{A}$ cannot be atomic since $D(\mc{A})>0$.
+
+Suppose $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.
+Then $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$.
+Since $D(\mc{A}) = \text{max}(D(\mc{B}) + D(\mc{C}))$ we have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ so, by the induction hypothesis, $\mc{B}, \mc{C}\in\textbf{pForm}$ which means $\mc{A}\in\textbf{pForm}$.
+
+Suppose $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+Then $\mc{A}[t/x] \equiv (\mc{B}[t/x])$.
+$D(\mc{B}) = D(\mc{A}) -1 < D(\mc{A})$ so, by the induction hypothesis, $\mc{B}[t/x]\in\textbf{pForm}$ which means $\mc{A}[t/x]\in\textbf{pForm}$.
+
+Suppose $\mc{A} \equiv ((\forall y) \mc{B})$ with $y\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+If $x\equiv y$ then $\mc{A}[t/x] \equiv \mc{A}$ so $\mc{A}[t/x]\in\textbf{pForm}$.
+If $x\not\equiv y$ then $\mc{A}[t/x] \equiv ((\forall y) \mc{B}[t/x])$.
+$D(\mc{B}) = D(\mc{A})-1$ so $\mc{B}[t/x]\in\textbf{pForm}$ which means $\mc{A}[t/x]\in\textbf{pForm}$.
+
+\end{theorem}
+
+\begin{definition}[Absent Term]
+Suppose $t, s\in\textbf{Term}$ and $\mc{A}\in\textbf{pForm}$.
+We recursively define the concept that $t$ does not appear in $s$ or $\mc{A}$.
+If $t$ does not appear in $s$ or $\mc{A}$ then we may write $s\equiv {_{\{t\}}s}$ or $\mc{A}\equiv {_{\{t\}}\mc{A}}$.
+
+Suppose $s\in\textbf{Term}$.
+\begin{itemize}
+\item{If $s\equiv t$ the $t$ appears in $s$.}
+\item{If $s\equiv f s_1\ldots s_n$ with $f\in\textbf{Func}_n$ and $s_1,\ldots,s_n\in\textbf{Term}$ then $t$ appears in $s$ if $t$ appears in at least one of $s_1,\ldots, s_n$.}
+\end{itemize}
+
+Suppose $\mc{A}\in\textbf{pForm}$.
+\begin{itemize}
+\item{If $\mc{A} \equiv Ps_1\ldots s_n$ with $P\in\textbf{Pred}_n$ and $s_1,\ldots, s_n\in\textbf{Term}$ then $t$ appears in $\mc{A}$ if $t$ appears in at least one of $s_1,\ldots, s_n$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ then $t$ appears in $\mc{A}$ if $t$ appears in at least one of $\mc{B}$ or $\mc{C}$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $t$ appears in $\mc{A}$ if $t$ appears in $\mc{B}$.}
+\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $t$ appears in $\mc{A}$ if $t$ appears in $\mc{B}$.}
+\end{itemize}
+
+\end{definition}
+
 
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-\subsection{Strict Wffs}
-We will now use pWffs to define free and quantified variables within a pWff $\mc{A}$.
-These concepts will, in turn, be used to define sWffs.
+\section{Formal Proof}
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Free Variables}
-We define inductively the set of free variables in a term $t$ or pWff $\mc{A}$, $FV(\mc{A})$.
+We now transition from discussing the syntax for making and manipulating formulas within the formal language into combining the formulas into natural deduction proofs.
+Semantically a proof encapsulates the idea that, if some set of formulas, called the \textit{premises}, are assumed to be true, then we can logically deduce other formulas which are also true.
+Recall that, semantically speaking, we can only assign truth values to closed formulas.
+For this reason, we will require that all formulas involved in natural deduction proofs be closed.
 
-\begin{itemize}
-\item{if $t\equiv x$ is a variable then $FV(t) = \{x\}$.}
-\item{if $t \equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
-\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
-\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
-\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
-\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ as a substring.}
-\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
-\end{itemize}
-}}
+\subsection{Sequents}
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Quantified Variables}
-We define inductively the set of quantified variables in a pWff $\mc{A}$, $QV(\mc{A})$.
+Syntactically, we represent the idea that a (closed) formula $\mc{A}$ logically follows from a set of (closed) formulas $\Gamma$ using a \textit{sequent} or \text{judgment} which we express as 
+\begin{align}
+\Gamma \vdash \mc{A}
+\end{align}
 
-\begin{itemize}
-\item{If $\mc{A}$ is an atomic formula then $QV(\mc{A}) = \emptyset$.}
-\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $QV(\mc{A}) = QV(\mc{B}) \cup QV(\mc{C})$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $QV(\mc{A}) = QV(\mc{B})$.}
-\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ then $QV(\mc{A}) = QV(\mc{B}) \cup \{x\}$.}
-\end{itemize}
+The symbol in the middle $\vdash$ is the turnstile symbol.
+The set of formulas in the set $\Gamma$ on the left hand side are called the antecedents of the sequent and the formula $\mc{A}$ on the right hand side is called the subsequent.
+We say the subsequent of $\mc{A}$ is derivable form the antecedents $\Gamma$.
+A more concrete example of a sequent is
+$$
+\{(\mc{A}\implies \mc{B}), \mc{A}\} \vdash \mc{B}
+$$
 
-}}
+We will use shorthand notation in writing the antecedents of sequents.
+If we have a sequent 
+$$
+\Gamma_1\cup \ldots \cup \Gamma_n \cup \{\mc{A}_1\}\cup \ldots \cup \{\mc{A}_n\} \vdash \mc{B}
+$$
+Then we can abbreviate this as
+$$
+\Gamma_1,\ldots, \Gamma_n, \mc{A}_1,\ldots, \mc{A}_n \vdash \mc{B}
+$$
+That is, singleton sets containing formulas have curly brackets suppressed and union operators are replaced by commas.
+The notation $\Gamma_1 - \Gamma_2$ denotes the subtraction of set $\Gamma_2$ from $\Gamma_1$.
+If $\Gamma = \{\mc{A}_1, \ldots, \mc{A}_n\}$ and $t$ does not appear in any of $\mc{A}_i$ (that is $\mc{A}_i \equiv {_{\{t\}}\mc{A}}$ for all $1\le i \le n$) then we say $t$ does not appear in $\Gamma$ and we may write $\Gamma = {_{\{t\}}\Gamma}$.
 
-We are now in a position to define sWffs or Wffs.
+In what follows we will develop our proof theoretic framework which is essentially a calculus of the $\vdash$ symbol over the closed formulas of the language.
+The framework will be based around rules of inference which allow us to derive new sequents from old sequents.
 
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Strict Well-Formed Formulas}
-$\mc{A} \in \textbf{sWff} = \textbf{Wff}$ iff $\mc{A} \in \textbf{pWff}\subset\textbf{Str}$ and satisfies one of
+\section{Proofs and Proof Tables}
 
-\begin{itemize}
-\item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula}
-\item{\textbf{Implication:} $\mc{A} \equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{sWff}$.}
-\item{\textbf{Negation:} $\mc{A} \equiv (\lnot \mc{B})$ and $\mc{B}\in \textbf{sWff}$.}
-\item{\textbf{Quantification:} $\mc{A} \equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{sWff}$, $x\in FV(\mc{B})$ and $x\not\in QV(\mc{B})$.}
-\end{itemize}
-}}
+As mentioned above we begin with a set of premises and, through logical manipulations, we draw new conclusions.
+In the context of syntactic proof theory, the premises serve as the starting point for a logical symbol manipulation game whereby the rules of inference allow us to infer or derive new logical formulas from the premises and other formulas.
 
-Note that $FV(\mc{A})$ and $QV(\mc{A})$ are defined the same for pWff and sWff.
-This is fine because $\textbf{sWff}\subset\textbf{pWff}$.
+In a proof we begin with one or more sets of closed formulas called premises.
+For examples, one set of premises may be may be
+$$
+\Gamma = \{\gamma_1, \ldots, \gamma_n\}
+$$
+where each of $\gamma_i$ for $1\le i \le n$ is a closed formula.
+We'll give an example of one of the simplest proofs possible.
+Suppose 
+$$
+\Gamma = \{(\mc{A}\implies \mc{B}), \mc{A}\}
+$$
+We can then write down a simple proof table.
+\begin{center}
+\begin{tabular}{ p{1cm} p{6cm} p{3cm} }
+(P1) & $\Gamma \vdash (\mc{A} \implies \mc{B})$ & Prem\\
+(P2) & $\Gamma \vdash \mc{A}$ & Prem\\
+(1) & $\Gamma \vdash \mc{B}$ & $\implies E$, P1, P2
+\end{tabular}
+\end{center}
+
+The proof table has three columns.
+The left column numbers premises and inferences within the proof, the middle column is a sequent, and the third column indicates the logical justification or inference rule for the conclusion of the sequent in the middle column.
+
+The rules for a proof table are as follows. 
+First the premises for a proof must be laid out.
+The premises can be one or more sets $\Gamma_i$ of closed formulas. 
+Every premise of $\Gamma_1 \cup \ldots \cup \Gamma_N$ which is used in the proof must be specified as one of the first lines and numbered as (P1), (P2), $\ldots$.
+Premises are justified by the Prem inference rule.
+
+Subsequent lines of derivation are labeled (1), (2), $\ldots$.
+Each line of the proof follows from an inference rule (tabulated and explained in the following section) which may leverage some earlier lines in the proof.
+Both the name of the inference rule and the lines on which the inference rule relies are specified in the right column.
+
+The content of the proof above is that if we begin with the set of premises $\Gamma$, we can logically deduce $\mc{B}$.
+Generally, if a sequent like $\Gamma \vdash \mc{B}$ appears on line ($n$) of a proof table then we say the proof constitutes a proof of length $n$ of the subsequent of the sequent on line ($n$) from the antecedents of the sequent on line ($n$).
+Note that if the sets of premises are $\Gamma_1, \ldots, \Gamma_n$ then it is not necessary that every $\gamma_{ij}$ in every $\Gamma_i$ appears as a premise in the proof.
+Furthermore, it is not necessary that every $\Gamma_i$ that is used in the premise lines appears in the antecedent of the final sequent.
+
+Note that this proof format in fact allows us to derive new sequents from old sequents.
+Alternatively, it is possible to develop a natural deduction in which the lines of the proofs are formulas rather than sequents.
+The advantage of the sequent oriented approach is that it is very natural to keep track of on which earlier formulas a particular conclusion relies.
+In the formula based approach the dependency formulas must be kept track of independently.
+
+\subsection{Inference Rules}
+
+Below I will write down all of the native inference rules for this system of natural deduction.
+Each of these rules can be used in a formal proof as described above.
+The rules of inference will be notated as one set of sequents above a line and one sequent below the line.
+This indicates that the set of sequents above the line (the dependencies) logically allow the deduction of the sequent below the line (the conclusion).
+If certain lines within a proof table match the format of the dependencies of a particular inference rule then we may append a new row to the proof table whose sequent in the conclusion sequent of the inference rule and indicating the inference rule and dependency lines appropriately.
+
+\hrulefill
+\begin{definition}[Rule of Prem (Premise)]
+\leavevmode
+If the premises for a proof are the sets $\{\Gamma_1, \ldots \Gamma_N\}$ and $\gamma_{ij} \in \Gamma_i$ then we have
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$\Gamma_i \vdash \gamma_{ij}$}
+\end{prooftree}
+We must begin a proof with lines like these indicating that each premise follows from the set of premises to which it belongs. Premises cannot appear after any other steps in a proof. Note that we need not include each premise or any premises from each of the sets $\Gamma_i$.
+\end{definition}
+
+\begin{definition}[Rule of A (Assumption)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{}
+\UnaryInfC{$\mc{A}\vdash \mc{A}$}
+\end{prooftree}
+We can always assume that a (closed) formula $\mc{A}$ derives itself from no premises.
+\end{definition}
+
+\begin{definition}[Rule of W (Weakening)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \mc{A}$}
+\UnaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{A}$}
+\end{prooftree}
+
+Note that $\Gamma_2$ may be the empty set. This allows us to derive a sequent that has already been derived on a later line. This will be useful to allow to rewrite the same sequent with the inclusion or exclusions of convenient abbreviations. (Each formula in $\Gamma_2$ must be closed)
+\end{definition}
+
+\begin{definition}[Rule of $\implies I$ (Implication Introduction)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash \mc{B}$}
+\UnaryInfC{$\Gamma\backslash \{\mc{A}\} \vdash (\mc{A} \implies \mc{B})$}
+\end{prooftree}
+
+Note that $\mc{A}$ need not appear in $\Gamma$ for this inference rule. ($\mc{A}$ must be closed).
+\end{definition}
+
+\begin{definition}[Rule of $\implies E$ (Implication Elimination)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash (\mc{A} \implies \mc{B})$}
+\AxiomC{$\Gamma_2 \vdash \mc{A}$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{B}$}
+\end{prooftree}
+\end{definition}
+
+\begin{definition}[Rule of $\lnot E$ (Negation Elimination)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \mc{A}$}
+\AxiomC{$\Gamma_2 \vdash (\lnot \mc{A})$}
+\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \curlywedge$}
+\end{prooftree}
+Here $\curlywedge\in\textbf{Pred}_0$ is the contradiction symbol.
+\end{definition}
+
+\begin{definition}[Rule of $\lnot I$ (Negation Introduction)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash \curlywedge$}
+\UnaryInfC{$\Gamma \backslash \{\mc{A}\} \vdash (\lnot \mc{A})$}
+\end{prooftree}
+Note that $\mc{A}$ need not appear in $\Gamma$. ($\mc{A}$ must be closed.)
+\end{definition}
+
+\begin{definition}[Rule of $DN$ (Double Negation)]
+\leavevmode
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash (\lnot(\lnot \mc{A}))$}
+\UnaryInfC{$\Gamma \vdash \mc{A}$}
+\end{prooftree}
+\end{definition}
+
+\begin{definition}[Rule of $\forall I$ (Universal Introduction/Generalization)]
+Suppose $\mc{A}$ is a formula with $FV(\mc{A}) = \{x\}$. Suppose $t$ is a closed term and $t$ does not appear in $\Gamma$ or $\mc{A}$. Then we have
+\begin{prooftree}
+\AxiomC{$_{\{t\}}\Gamma \vdash \left(_{\{t\}}\mc{A}\right)[t/x]$}
+\UnaryInfC{$\Gamma \vdash ((\forall x) \mc{A})$}
+\end{prooftree}
+\end{definition}
+
+\begin{definition}[Rule of $\forall E$ (Universal Elimination/Instantiation/Specification)]
+Suppose $t$ is a closed term, then
+\begin{prooftree}
+\AxiomC{$\Gamma \vdash ((\forall x)\mc{A})$}
+\UnaryInfC{$\Gamma \vdash \mc{A}[t/x]$}
+\end{prooftree}
+\end{definition}
+\hrulefill
+
+We can modularize our proof finding apparatus by introducing so-called derived inference rules.
+Suppose we have
+
+Recall that when we have a proof table we may say that we have proven the sequent appearing on any line (typically the last line) from the premises.
+Whenever we prove one sequent from some set of sequents we can introduce a new derived inference rule.
+Specifically, if we have premises of the form $\Gamma_i \vdash \gamma_i$ and we derive $\Theta \vdash \mc{B}$ then we can introduce a new derived inference rule:
+
+\hrulefill
+
+\textbf{Rule of [Der] (Derived Inference Rule)}
+
+\begin{prooftree}
+\AxiomC{$\Gamma_1 \vdash \gamma_1, \ldots, \Gamma_n \vdash \gamma_2$}
+\UnaryInfC{$\Theta \vdash \mc{B}$}
+\end{prooftree}
+
+\hrulefill
+
+A derived inference rule can be thought of as an abbreviation for the proof that justifies the introduction of that derived rule.
+That is, rather than repeat the proof of the derived inference in a new proof, one can skip the proof and simply use the derived inference rule.
+
+\newpage
 
 
 
-The formation rules are all straightforward with the exception of quantification.
-For the quantification formation rule we include 2 provisos.
-The first proviso is that $\mc{B}$ must contain the variable $x$ as a substring.
-We will see below that this is equivalent to requiring the variable $x$ to appear in the set of free variables of $\mc{B}$.
-This proviso allows us to avoid so-called redundant quantification such as in the expression $((\forall x)((\forall y) P_y))$.
-Here the $\forall x$ quantifier does nothing to change the meaning of the expression, and, when rendered into English, the expression doesn't quite make sense.
-The second proviso is that we can not quantify twice over the same variable.
-This would be double quantification.
-This allows us to avoid an expression like $((\forall x)((\forall x)(P_{xx})))$.
-It is possible to develop formal logic in ways to allow redundant and double quantification.
-However, in the interest of preserving `naturalness' of the language, we restrict to avoid them.
-This may have the consequence of making some metalogical proofs and definitions more complicated.
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+
 
 We introduce a number of logical abbreviations to allow us to express the usual full range of logical connectives.
 
@@ -1477,7 +1734,7 @@ The proof will then derive new sequents from old sequents.
 Alternatively, it is possible to develop a natural deduction in which the lines of the proofs are Wffs rather than sequents.
 The advantage of deriving new sequents from old sequents, as opposed to simply deriving new Wffs from old Wffs, is that it is natural to keep track of on which premises any particular conclusion relies.
 
-The rules of inference will be notated as one set of sequents above a line and one sequent below the line with the idea that the set of sequents above the line (the premises) logically allow the deduction of the sequent below the line (the conclusion). 
+The rules of inference will be notated as one set of sequents above a line and one sequent below the line with the idea that the set of sequents above the line (the dependencies) logically allow the deduction of the sequent below the line (the conclusion). 
 
 \newpage
 
