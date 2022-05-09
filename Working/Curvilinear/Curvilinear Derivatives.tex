@@ -1,0 +1,203 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{graphicx}
+
+\newcommand{\intprodl}{%
+    \mathbin{\scalebox{1.5}{$\lrcorner$}}%
+}
+
+\begin{document}
+\title{Curvilinear Coordinates}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+I'll try to prove some stuff about divergence, gradient, and Laplacian in a general differential geometry coordinate-dependent way.
+
+We first work on divergence. Lee defines the divergence operator as (Pg 423) as
+
+$$
+\text{div}(X) = \ast^{-1} d(\beta(X))
+$$
+
+We have (Pg 423) that
+
+$$
+\beta(X) = X \intprodl dV_g
+$$
+
+Here $dV_g$ is the Reimannian volume form defined in coordinates as (see 422 and Proposition 15.31 Pg 389)
+
+$$
+dV_g = \sqrt{\text{det}(g)} dx^1\wedge\ldots \wedge dx^n
+$$
+
+and $\intprodl$ is the interior product defined as (pg 359)
+
+$$
+v\intprodl(\omega^1 \wedge \ldots \wedge \omega^k) \sum_{i=1}^k (-1)^{i-1} \omega^i(v) \omega^1\wedge \ldots \wedge \hat{\omega^i} \wedge \ldots \omega^k
+$$
+
+$d$ is the exterior derivative and is defined in coordinate as (Pg 363)
+
+$$
+d \left(\sum_J{}^{'} \omega_J dx^J\right) = \sum_J {}^{'} d\omega_J \wedge dx^J
+$$
+Or specifying this for the case that $\omega_J$ is only non-zero for one multi-index $J$ (See Wikipedia on exterior derivative ``In Terms of Local Coordinates''):
+
+$$
+d (\omega dx^{j_1} \wedge \ldots \wedge dx^{j_k}) = \partial_i\omega ( dx^i \wedge dx^{j_1} \wedge \ldots \wedge dx^{j_k})
+$$
+
+Finally $\ast$ is the Hodge star and is defined as (pg 423)
+
+$$
+\ast f = f dV_g
+$$
+
+Finally note that 
+
+$$
+X = X^i \partial_i
+$$
+We can now begin unraveling definitions.
+
+\begin{align}
+\text{div}(X) =& \ast^{-1} d(\beta(X)) = \ast^{-1} d\left(X \intprodl dV_g\right)\\
+=& \ast^{-1} d\left(\sqrt{\text{det}(g)} X^i \partial_i \intprodl (dx^1\wedge \ldots \wedge dx^n)\right)\\
+=& \ast^{-1} d \left(X^i\sqrt{\text{det}(g)}  \sum_{j=1}^k (-1)^{j-1} dx^j(\partial_i) (dx^1\wedge \ldots \wedge \hat{dx^j} \wedge \ldots \wedge dx^n)\right)\\
+=& \ast^{-1} d \left(\sqrt{X^i\text{det}(g)}  (-1)^{i-1} (dx^1 \wedge \ldots \wedge \hat{dx^i} \wedge \ldots \wedge dx^n)\right)\\
+=& \ast^{-1} \left(\partial_i\left(X^i\sqrt{\text{det}(g)} \right) (-1)^{i-1} (dx^{i} \wedge dx^1 \wedge \ldots \wedge \hat{dx^i} \wedge \ldots \wedge dx^n)\right)\\
+=& \ast^{-1} \left(\partial_i\left(X^i\sqrt{\text{det}(g)} \right) \left(dx^1 \wedge \ldots \wedge dx^i \wedge \ldots dx^n\right)\right)\\
+=& \ast^{-1} \left(\partial_i \left(X^i\sqrt{\text{det}(g)}\right) \frac{dV_g}{\sqrt{\text{det}(g)}}\right)\\
+=& \frac{1}{\sqrt{\text{det}(g)}} \partial_i \left(X^i\sqrt{\text{det}(g)} \right)
+\end{align}
+
+Line (6) follows by anti-symmetry of the wedge product.
+This answers Problem 16-11.
+
+We can quickly generalize this to the Laplacian, but first the gradient (pg 342).
+
+\begin{align}
+\text{grad}(f) = df^{\sharp}
+\end{align}
+
+Where $\sharp$ is the sharp or raising operator defined in coordinate (pg 342) as
+
+$$
+(\omega_i dx^i)^{\sharp} = g^{ij} \omega_j \partial_i
+$$
+
+So
+
+\begin{align}
+\text{grad}(f) =& df^{\sharp}\\
+=& (\partial_i f dx^i)^{\sharp}\\
+=& g^{ij} \partial_i f \partial_j
+\end{align}
+
+Putting this together we see
+
+\begin{align}
+\Delta f =& \text{div}(\text{grad}(f))\\
+=& \frac{1}{\sqrt{\text{det}(g)}} \partial_i \left(g^{ji} \partial_j f \sqrt{\text{det}(g)}\right)\\
+=& \frac{1}{\sqrt{\text{det}(g)}} \partial_i\left(g^{ij} \sqrt{\text{det}(g)} \partial_j f\right) 
+\end{align}
+
+Line (15) follows from symmetry of the metric.
+This answers problem 16-13.
+
+We now apply this to spherical coordinates. We have the conversion between Cartesian and spherical coordinates:
+
+\begin{align}
+x =& r \sin(\theta) \cos(\phi)\\
+y =& r \sin(\theta) \sin(\phi)\\
+z =& r \cos(\theta)
+\end{align}
+
+The metric tensor is given by
+
+$$
+g = g_{ij} dx^i dx^j = \tilde{g}_{ij} d\tilde{x}^i d\tilde{x}^j
+$$
+
+where the middle expression is the Cartesian representation and the right expression is the spherical representation. We perform a coordinate transformation by
+
+$$
+g_{ij} dx^i dx^j = g_{ij} \tilde{\partial}_k x^i \tilde{\partial}_l x^j d\tilde{x}^k d\tilde{x}^l = \tilde{g}_{ij} d\tilde{x}^i d\tilde{x}^j
+$$
+
+If we then act both expressions on $\tilde{\partial}_{\alpha} \tilde{\partial}_{\beta}$ we get
+
+$$
+\tilde{g}_{\alpha\beta} = g_{ij} \tilde{\partial}_{\alpha} x^i \tilde{\partial}_{\beta} x^j
+$$
+
+We can expand out this summation and note that the Cartesian metric is given by
+
+$$
+g_{ij} = \delta_{ij}
+$$
+
+This yields
+
+$$
+\tilde{g}_{\alpha\beta} = \tilde{\partial}_{\alpha} x \tilde{\partial}_{\beta} x + \tilde{\partial}_{\alpha} y \tilde{\partial}_{\beta} y + \tilde{\partial}_{\alpha} z \tilde{\partial}_{\beta} z
+$$
+
+There are 9 entries in the matrix for $\tilde{g}_{\alpha\beta}$ each with up to 3 terms.
+For, hopefully the last time, we'll write out this matrix.
+\tiny
+\begin{align}
+\left[\tilde{g}\right] = \begin{pmatrix}
+S^2 \theta C^2 \phi + S^2\theta S^2 \phi + C^2\theta& S\theta C\phi r C\theta C\phi + S\theta S \phi r C \theta S \phi + C\theta r (-S\theta)& S\theta C\phi r S\theta (-S\phi) + S\theta S \phi r S\theta C\phi\\
+\ldots & r^2 C^2\theta C^2 \phi + r^2 C^2\theta S^2\phi + r^2 S^2\theta & r^2 C\theta C\phi S\theta (-S\phi) + r^2 C\theta S \phi S\theta C\phi\\
+\ldots & \ldots & r^2 S^2\theta S^2 \phi + r^2 S^2\theta C^2\phi\\
+\end{pmatrix}
+\end{align}
+\normalsize
+
+Which can be simplified as
+\begin{align}
+\left[\tilde{g}\right] = \begin{pmatrix}
+1 & 0 & 0\\
+0 & r^2 & 0\\
+0 & 0 & r^2 \sin^2(\theta) 
+\end{pmatrix}
+\end{align}
+
+\begin{align}
+\left[\tilde{g}^{-1}\right] = \begin{pmatrix}
+1 & 0 & 0\\
+0 & \frac{1}{r^2} & 0\\
+0 & 0 & \frac{1}{r^2 \sin^2(\theta)}
+\end{pmatrix}
+\end{align}
+
+From this we have
+
+\begin{align}
+\text{det}(\tilde{g}) =& r^4 \sin^2(\theta)\\
+\sqrt{\text{det}(\tilde{g})} =& r^2 \sin(\theta)
+\end{align}
+
+We recall
+
+\begin{align}
+\Delta f = \frac{1}{\sqrt{\text{det}{\tilde{g}}}} \partial_i\left(\tilde{g}^{ij} \sqrt{\text{det}(\tilde{g})} \partial_j f\right)
+\end{align}
+
+and note that $\tilde{g}^{ij}$ corresponds to components of the inverse metric.
+From this we can calculate the Laplacian in spherical coordinates:
+
+\begin{align}
+\Delta f =& \frac{1}{r^2 \sin(\theta)}\left(\partial_r\left(r^2\sin(\theta) \partial_r f\right) + \partial_{\theta}\left(\sin(\theta) \partial_{\theta} f\right) + \partial_{\phi}\left(\frac{1}{\sin(\theta)}\partial_{\phi} f \right)\right)\\
+=& \frac{1}{r^2} \partial_r (r^2 \partial_r f) + \frac{1}{r^2 \sin(\theta)} \partial_{\theta}(\sin(\theta) \partial_{\theta} f) + \frac{1}{r^2\sin^2(\theta)} \partial_{\phi}^2 f\\
+=& \frac{1}{r^2} \frac{\partial}{\partial r}\left(r^2 \frac{\partial f}{\partial r}\right) + \frac{1}{r^2\sin(\theta)} \frac{\partial}{\partial \theta}\left(\sin(\theta) \frac{\partial f}{\partial \theta}\right) + \frac{1}{r^2 \sin^2(\theta)}\frac{\partial^2 f}{\partial \phi^2}
+\end{align}
+
+
+\end{document}
+
+
