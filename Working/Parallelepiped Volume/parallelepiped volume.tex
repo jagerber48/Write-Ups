@@ -1,0 +1,69 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+
+\usepackage{amsthm}
+
+\newtheoremstyle{break}% name
+  {}%         Space above, empty = `usual value'
+  {}%         Space below
+  {\itshape}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\begin{document}
+\title{Parallelepiped Volume}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+We consider functions of the following sort:
+
+$$
+F: \underbrace{\mathbb{R}^n \times \ldots \times \mathbb{R}^n}_{n \text{ times}} \to \mathbb{R}
+$$
+
+
+\begin{definition}[Shear Property]
+test
+\end{definition}
+Scale property:
+\begin{align}
+F(v_1, \ldots, \lambda v_i, \ldots, v_n) = \lambda F(v_1, \ldots, v_i, \ldots, v_n)
+\end{align}
+
+Shear property: for $i\neq j$:
+\begin{align}
+F(v_1, \ldots, v_i + v_j, \ldots, v_n) = F(v_1,\ldots, v_i, \ldots, v_n)
+\end{align}
+
+Show that these two imply multilinear:
+\begin{align}
+F(v_1, \ldots, \lambda v_i + w, \ldots, v_n) = \lambda F(v_1, \ldots, v_i, \ldots, v_n) + F(v_1, \ldots, w, \ldots, v_n)
+\end{align}
+
+
+
+$w$ can be decomposed as 
+
+
+
+Alternating:
+\begin{align}
+F(v_1, \ldots, v_i, \ldots, v_j, \ldots, v_n) = - F(v_1, \ldots, v_j, \ldots, v_i, \ldots, v_n)
+\end{align}
+
+\end{document}
+
+
