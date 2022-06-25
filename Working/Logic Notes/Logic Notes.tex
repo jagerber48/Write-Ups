@@ -2,35 +2,23 @@
 
 \usepackage{amssymb, amsmath, amsfonts}
 \usepackage{mathtools}
-\usepackage{ND}
-\usepackage{tcolorbox}
-\usepackage{bbm}
-\usepackage[utf8]{inputenc}
-\usepackage{subfigure}%ngerman
-%\usepackage[pdftex]{graphicx}
-\usepackage{textcomp} 
-\usepackage{color}
-\usepackage[hidelinks]{hyperref}
-\usepackage{anysize}
-\usepackage{verbatim}
-\usepackage{float}
 \usepackage{braket}
-\usepackage{xfrac}
-\usepackage{array, booktabs} 
-\usepackage{tabularx}
 \usepackage{bussproofs}
-
 \usepackage{amsthm}
 
+\makeatletter
 \newtheoremstyle{break}% name
-  {}%         Space above, empty = `usual value'
-  {}%         Space below
-  {\itshape}% Body font
-  {}%         Indent amount (empty = no indent, \parindent = para indent)
-  {\bfseries}% Thm head font
-  {}%        Punctuation after thm head
-  {\newline}% Space after thm head: \newline = linebreak
-  {}%         Thm head spec
+    {12pt}%         Space above, empty = `usual value'
+    {12pt}%         Space below
+    {\addtolength{\@totalleftmargin}{1.5em}
+     \addtolength{\linewidth}{-3em}
+     \parshape 1 1.5em \linewidth
+     \itshape}% Body font
+    {}%         Indent amount (empty = no indent, \parindent = para indent)
+    {\bfseries}% Thm head font
+    {}%        Punctuation after thm head
+    {\newline}% Space after thm head: \newline = linebreak
+    {}%         Thm head spec
 \theoremstyle{break}
 \newtheorem{definition}{Definition}[section]
 \theoremstyle{break}
@@ -59,11 +47,11 @@ In this document I will try to get straight some of my thoughts on formal logic.
 I am following two references. ``Modern Logic: A Text in Elementary Symbolic Logic'' by Graehme Forbes and ``Lectures in Logic and Set Theory: Volume I'' by George Tourlakis. The former is my reference on Lemon logic and the rules therein while The Tourlakis book is more rigorous and does a cleaner job introducing ideas with the metalanguage or metatheory including the concept of inducting on formulas using the metalanguage. However, Tourlakis uses the Hilbert system and semantic proofs in cases which is why I need to adapt both approaches.
 
 \section*{Preface}
-The previous introduction was written around February 2019, the last time I took up investigations into formal logic. I'm revisiting formal logic again (Aug 2021). 
-Typically I find myself looking into formal logic after the following sequence of events. 
+The previous introduction was written around February 2019, the last time I took up investigations into formal logic. I'm revisiting formal logic again (Aug 2021).
+Typically I find myself looking into formal logic after the following sequence of events.
 1) I am interested in some physics topic, typically somewhat mathematically oriented in nature, 2) I look into the math supporting this topic, 3) I get curious about the deep mathematical definitions or theorems involved in the math topic 4) I get into very deep math subjects such as topology or the very definitions of functions 5) I finally find myself back facing formal logic.
 
-Back in 2019 I believe I was interested in the relationship between classical and quantum random variables. 
+Back in 2019 I believe I was interested in the relationship between classical and quantum random variables.
 This led me to look into mathematical formulations of probability theory which took me eventually to measure theory.
 In learning measure theory I was attempting to learn about Borel sets and some basic topology again.
 I believe I then got curious about the definition of infinite unions and this brought me down to formal logic.
@@ -92,14 +80,14 @@ This is of course the same story as the origin of Gentzen's natural deduction.
 I have recently revisited this problem.
 The physics problem I was trying to understand is how to derive the 3D multipole vector fields describing electromagnetic radiation from multipole charge and current distributions.
 This led me to try to understand some theorems about differential equations.
-In learning about existence theorems for solutions to, for example, the Laplace equation, i was directed towards, simultaneously, it seems, complex analysis and the fundamental theorem of algebra. 
+In learning about existence theorems for solutions to, for example, the Laplace equation, i was directed towards, simultaneously, it seems, complex analysis and the fundamental theorem of algebra.
 In proving the fundamental theorem of algebra I found myself visiting some familiar topics in multivariable calculus.
 At this time I hit upon a confusion/frustration that has cropped its head up for me time and time again.
 This frustration regards the notation for partial derivatives.
 
 We often have, for example $\partial f/\partial x$.
 It is implicitly understood that this means differentiation with respect to the `first parameter' of the function $f$.
-In cases of nested functions the notation gets complicated, confusing, and sometimes ambiguous so I seek a rigorous definition. 
+In cases of nested functions the notation gets complicated, confusing, and sometimes ambiguous so I seek a rigorous definition.
 A long story short, this led me to try to understand a set theoretic definition of a multivariable function.
 Finally, in the context of ZFC set theory, function notation arises from symbols which have been added to the theory via extensions by definition.
 This brought me back to formal logic.
@@ -133,13 +121,13 @@ I hope that in this revisit I'll be able to overcome this difficulty.
 \section{Introduction}
 
 \subsection{Formal Logic and Language}
-All of traditional mathematics can be expressed in terms of mathematical set theory. 
+All of traditional mathematics can be expressed in terms of mathematical set theory.
 Set theory itself is expressed in terms of a formal logic called first-order logic \textbf{FOL} which is expressed in the language of first-order logic \textbf{LFOL} .
 The \textbf{LFOL} is a written formal language which means that it is composed of a clearly and well-defined set of symbols which constitutes the alphabet of that language and clear rules of syntax which identify `appropriate' ways in which the symbols can be combined to form well-formed formulas, or Wffs.
 In addition to \textbf{LFOL}, \textbf{FOL} includes a deductive calculus based on inference rules which allows us to derive new Wffs from old Wffs in a way which will be made clear below.
 \textbf{FOL} is fully captured by the language in which it is expressed, \textbf{LFOL}, and the inference rules which allow for deduction within the logic.
 
-A formal theory within a formal logic begins with a set of axioms which are a subset of the Wffs of the language. 
+A formal theory within a formal logic begins with a set of axioms which are a subset of the Wffs of the language.
 It is then possible, using the inference rules, to derive new formulas from these axioms using the inference rules.
 The main question we ask about a formal theory is which Wffs can be proven from the given axioms?
 
@@ -247,8 +235,8 @@ These proofs will utilize metalogical induction.
 At the basis of a formal language is a set of symbols which can be concatenated together to form strings.
 If a string follows certain allowed construction rules, specified by the syntax of the language, then the string is said to be a well-formed formula, or Wff.
 
-There are multiple classes of symbol objects, each of which plays a different role in the syntax of the language. 
-We first distinguish between logical and non-logical symbols. 
+There are multiple classes of symbol objects, each of which plays a different role in the syntax of the language.
+We first distinguish between logical and non-logical symbols.
 Logical symbols are symbols which are related purely to the formal presentation of the language.
 Logical symbols include things like logical connectives and parentheses.
 The second main class of symbols is the class of non-logical symbols.
@@ -272,14 +260,14 @@ The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint
 \end{definition}
 
 We have chosen to use a restricted set of logical operators in the theory to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
-This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs. 
+This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs.
 However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as abbreviations and metalogically derive the appropriate corresponding rules of inference.
 
 \begin{definition}[Non-Logical Symbols]
 The non-logical symbols are defined as follows.
 \begin{itemize}
 \item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
-\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$.}
+\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$. We reserve constants $\alpha_0, \alpha_1, \ldots \in \textbf{Func}_0$ as `placeholder' constants that exist in any logical theory. The placeholder constants will be used for proofs involving universal specification and generalization, but will not be permitted to appear in logical axioms.}
 \end{itemize}
 
 The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoint union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$. If we are not worried about having an infinite number of distinct symbol types then we can let $N_{\text{pred}} = N_{\text{func}} = \infty$.
@@ -387,7 +375,7 @@ Note that such a $\mc{C}$ always exists.
 \end{definition}
 
 \begin{theorem}[Equality of Concatenation with list implies Equality of Lists]
-Suppose $\mc{A}\mc{B} \equiv \mc{A}\mc{B}'$. 
+Suppose $\mc{A}\mc{B} \equiv \mc{A}\mc{B}'$.
 Then $\mc{B} \equiv \mc{B}'$.
 First, $|\mc{A}\mc{B}| = |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}'| = |\mc{A}| + |\mc{B}'|$ so $|\mc{B}| = |\mc{B}'| = n$.
 Choose $0\le i < n$.
@@ -406,21 +394,21 @@ Since this holds for $0 \le i < n$ we have $\mc{A} \equiv \mc{A}'$.
 Here we prove that $\mc{E}\mc{B} \equiv \mc{B} \mc{E} \equiv \mc{B}$.
 
 For the first case, suppose $|\mc{B}|= 0$ so that $\mc{B}\equiv \mc{E}$.
-We can check that the set $\mc{E}$ satisfies the conditions to be the concatenation $\mc{E}\mc{E}$. 
-First $|\mc{E}| = 0 = 0 + 0 = |\mc{E}| + |\mc{E}|$. 
-Next, there is no $i$ satisfying $0 \le i < |\mc{B}|$ or $0 \le i < |\mc{E}|$ so the two element equality conditions for concatenation are vacuously satisfied. 
+We can check that the set $\mc{E}$ satisfies the conditions to be the concatenation $\mc{E}\mc{E}$.
+First $|\mc{E}| = 0 = 0 + 0 = |\mc{E}| + |\mc{E}|$.
+Next, there is no $i$ satisfying $0 \le i < |\mc{B}|$ or $0 \le i < |\mc{E}|$ so the two element equality conditions for concatenation are vacuously satisfied.
 Therefore $\mc{E}\mc{E} \equiv \mc{E}\mc{B} \equiv \mc{B}\mc{E} \equiv \mc{E}$.
 
 Consider $|\mc{B}|>0$ .
 
-Let $\mc{C} \equiv \mc{E}\mc{B}$. 
+Let $\mc{C} \equiv \mc{E}\mc{B}$.
 First we see that $|\mc{C}| = |\mc{E}| + |\mc{B}| = |\mc{B}|$.
-By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[|\mc{E}| + i] \equiv \mc{C}[i] \equiv \mc{B}[i]$. 
+By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[|\mc{E}| + i] \equiv \mc{C}[i] \equiv \mc{B}[i]$.
 This means that $\mc{E}\mc{B}\equiv\mc{B}$.
 
-Let $\mc{C} \equiv \mc{B}\mc{E}$. 
-Again $|\mc{C}| \equiv |\mc{B}|+|\mc{E}| = |\mc{B}|$. 
-By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[i] \equiv \mc{B}[i]$. 
+Let $\mc{C} \equiv \mc{B}\mc{E}$.
+Again $|\mc{C}| \equiv |\mc{B}|+|\mc{E}| = |\mc{B}|$.
+By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[i] \equiv \mc{B}[i]$.
 This means $\mc{B}\mc{E} \equiv \mc{B}$.
 \end{theorem}
 
@@ -430,8 +418,8 @@ This means $\mc{B}\mc{E} \equiv \mc{B}$.
 Here we will prove that $\Braket{\mc{A}\circ \mc{B}}\circ \mc{C} \equiv \mc{A} \circ \Braket{\mc{B} \circ \mc{C}}$.
 The angle brackets here denote the order of operations for the multiple concatenations.
 
-First, if $\mc{A} \equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{B}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. 
-If $\mc{B}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. 
+First, if $\mc{A} \equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{B}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$.
+If $\mc{B}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$.
 If $\mc{C}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{B} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. So the theorem holds if any of $\mc{A}$, $\mc{B}$ or $\mc{C}$ is empty.
 
 Now suppose $\mc{A}$, $\mc{B}$, and $\mc{C}$ are all nonempty so that $|\mc{A}|, |\mc{B}|, |\mc{C}| > 0$.
@@ -448,40 +436,40 @@ $$
 There are three cases
 \begin{itemize}
 \item{
-Suppose $0 \le i < |\mc{A}|$. 
-Consider $\Braket{\mc{A}\mc{B}}\mc{C}$. 
-Since $0 \le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i]$. 
-Again, since $0\le i < |\mc{A}|$, we have $\Braket{\mc{A}\mc{B}}[i] \equiv \mc{A}[i]$ so that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \mc{A}[i]$. 
-On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$. 
-Since $0 \le i < |\mc{A}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}} \equiv \mc{A}[i]$. 
+Suppose $0 \le i < |\mc{A}|$.
+Consider $\Braket{\mc{A}\mc{B}}\mc{C}$.
+Since $0 \le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i]$.
+Again, since $0\le i < |\mc{A}|$, we have $\Braket{\mc{A}\mc{B}}[i] \equiv \mc{A}[i]$ so that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \mc{A}[i]$.
+On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$.
+Since $0 \le i < |\mc{A}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}} \equiv \mc{A}[i]$.
 So in this case $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]$.
 }
 \item{
-Now suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$. 
-Define $j = i - |\mc{A}|$ so that $0 \le j < |\mc{B}|$. 
-Consider $\Braket{\mc{A}\mc{B}}\mc{C}$. 
-Because $0 \le |\mc{A}| \le i < |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i] \equiv \Braket{\mc{A}\mc{B}}[|\mc{A}| + j]$. Because $0 \le j < |\mc{B}|$ we have $\Braket{\mc{A}\mc{B}}[|\mc{A}|+j] = \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. 
-On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$. 
+Now suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$.
+Define $j = i - |\mc{A}|$ so that $0 \le j < |\mc{B}|$.
+Consider $\Braket{\mc{A}\mc{B}}\mc{C}$.
+Because $0 \le |\mc{A}| \le i < |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i] \equiv \Braket{\mc{A}\mc{B}}[|\mc{A}| + j]$. Because $0 \le j < |\mc{B}|$ we have $\Braket{\mc{A}\mc{B}}[|\mc{A}|+j] = \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$.
+On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$.
 Because $0 \le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + j] \equiv \Braket{\mc{B}\mc{C}}[j]$. But, since $0 \le j < |\mc{B}|$ we have $\Braket{\mc{B}\mc{C}}[j] \equiv \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. So in this case $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]$.
 }
 \item{
-Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$. 
-Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $\langle\mc{A}\mc{B}\rangle\mc{C}$. 
-Because $0 \le j < |\mc{C}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}| + |\mc{B}| + j] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$. 
-On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$. 
+Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$.
+Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $\langle\mc{A}\mc{B}\rangle\mc{C}$.
+Because $0 \le j < |\mc{C}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}| + |\mc{B}| + j] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$.
+On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$.
 We have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j]$.
-We have that $0 \le |\mc{B}| \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j] \equiv \Braket{\mc{B}\mc{C}}[|\mc{B}| + j]$. 
-But, $0 \le j < |\mc{C}|$ so $\Braket{\mc{B}\mc{C}}[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$. 
+We have that $0 \le |\mc{B}| \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j] \equiv \Braket{\mc{B}\mc{C}}[|\mc{B}| + j]$.
+But, $0 \le j < |\mc{C}|$ so $\Braket{\mc{B}\mc{C}}[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$.
 So in this case $\langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[i] \equiv \langle\mc{A}\langle\mc{B}\mc{C}\rangle\rangle[i].$
 }
 
 In all cases we have $\langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[i] \equiv \langle\mc{A}\langle\mc{B}\mc{C}\rangle\rangle[i]$.
-This means that $\langle\mc{A}\mc{B}\rangle\mc{C} \equiv \mc{A}\langle\mc{B}\mc{C}\rangle$. 
+This means that $\langle\mc{A}\mc{B}\rangle\mc{C} \equiv \mc{A}\langle\mc{B}\mc{C}\rangle$.
 \end{itemize}
 \end{theorem}
 
 \begin{definition}[Multiple Concatenation]
-Here we define the set of $n$-concatenations over a list of lists. 
+Here we define the set of $n$-concatenations over a list of lists.
 Note that lists of lists are different than lists which are themselves lists of objects.
 If $S$ is a list of $n$ lists, i.e. $S\in \textbf{Str}^*$ and $|S| = n$, then $\circ_n(S)$ is defined to be the set of all lists which arise from concatenations of the $n$ lists in $S$.
 We define $\circ_n$ recursively.
@@ -546,7 +534,7 @@ Now suppose $\mc{X}, \mc{Y} \in \circ([\mc{A}_0, \ldots, \mc{A}{n-1}])$.
 This means there exists $j, k$ with $1 \le j \le n-1$ and $1 \le k \le n-1$ with
 \begin{align}
 \mc{X} \equiv& \mc{A}_0\ldots\mc{A}_{j-1} \circ \mc{A}_j \ldots \mc{A}_{n-1}\\
-\mc{Y} \equiv& \mc{A}_0\ldots\mc{A}_{k-1} \circ \mc{A}_k \ldots \mc{A}_{n-1} 
+\mc{Y} \equiv& \mc{A}_0\ldots\mc{A}_{k-1} \circ \mc{A}_k \ldots \mc{A}_{n-1}
 \end{align}
 We will now show $\mc{X} \equiv \mc{Y}$.
 
@@ -573,13 +561,13 @@ We will prove by induction on $N$ that $|\mc{A}| = \sum_{k=0}^{N-1} |\mc{A}|_k$.
 Suppose $N=1$.
 Then $\mc{A} \equiv \mc{A}_0$ so $|\mc{A}| = |\mc{A}_0|$.
 
-Now suppose the theorem holds for any $m<N$. 
+Now suppose the theorem holds for any $m<N$.
 Let $m=N-1$.
 We can write
 $$
 \mc{A} \equiv \Braket{\mc{A}_0 \ldots \mc{A}_{m-1}} \circ \mc{A}_{N-1}
 $$
-Because the term in the angle brackets is a concatenation of $m<N$ strings we have that 
+Because the term in the angle brackets is a concatenation of $m<N$ strings we have that
 $$
 |\mc{A}_0\ldots \mc{A}_{m-1}| = \sum_{k=0}^{m-1} |\mc{A}_k|
 $$
@@ -617,7 +605,7 @@ $$
 
 If $k < m$ then $k+1 \le m$ so $L_{k+1} \le L_m = |\mc{B}|$.
 Consider $j = L_k + i$.
-We have 
+We have
 $$
 0\le L_k \le j < L_k + |\mc{A}_k| = L_{k+1} \le |\mc{B}|
 $$
@@ -678,7 +666,7 @@ But, $(j-1) - i < j-i$ and $j - (j-1) = 1 < j-i$ so $|\mc{A}[i:j-1]| + |\mc{A}[j
 \begin{theorem}[Sublist Element Extraction]
 \label{thm:sublistextraction}
 Suppose $\mc{A}$ is non-empty and $0 \le i < j \le |\mc{A}|$ and $0 \le k < j-i$.
-We will prove that $\mc{A}[i:j][k] \equiv \mc{A}[k + i]$. We will induct on $j$. 
+We will prove that $\mc{A}[i:j][k] \equiv \mc{A}[k + i]$. We will induct on $j$.
 
 If $j=1$ then $i=k=0$. $\mc{A}[0:1][0] \equiv [\mc{A}[0]][0] \equiv \mc{A}[0]$. Now suppose that $j>1$ but for any $j'<j$ and $0 \le i < j'$ and $0 \le k < j'-i$ that $\mc{A}[i:j'][k]\equiv \mc{A}[k+i]$. Suppose $0 \le i < j \le |\mc{A}|$ and $0 \le k < j-i$ and consider $\mc{A}[i:j][k] \equiv (\mc{A}[i:j-1]\circ\mc{A}[j-1:j])[k]$. Note that $|\mc{A}[i:j-1]| = j-1-i$. If $0 \le k < j-1-i$ then $\mc{A}[i:j][k] \equiv \mc{A}[i:j-1][k]$. Since $j-1<j$ this means $\mc{A}[i:j][k] \equiv \mc{A}[k+i]$. If $k=j-i-1$ then $\mc{A}[i:j][k] \equiv \mc{A}[i:j][j-i-1 + 0] \equiv \mc{A}[j-1:j][0] \equiv [\mc{A}[j-1]][0] \equiv \mc{A}[j-1] = \mc{A}[k+i]$. Therefore $\mc{A}[i:j][k+i] \equiv \mc{A}[k+i]$.
 \end{theorem}
@@ -688,8 +676,8 @@ Taking $i=0$ and $j = |\mc{A}|$ we see that $\mc{A}[0:|\mc{A}|] \equiv \mc{A}$, 
 \end{corollary}
 
 \begin{theorem}[Mutual Initial Parts are Equal]
-Suppose $\mc{A}$ is an initial part of $\mc{A}'$ and $\mc{A}'$ is an initial part of $\mc{A}$. 
-This means $\mc{A} \equiv \mc{A}'[0:j]$ so $|\mc{A}| = j\le|\mc{A}'|$ and $\mc{A}'\equiv \mc{A}[0:j']$ so $|\mc{A}'| = j'\le |\mc{A}|$. 
+Suppose $\mc{A}$ is an initial part of $\mc{A}'$ and $\mc{A}'$ is an initial part of $\mc{A}$.
+This means $\mc{A} \equiv \mc{A}'[0:j]$ so $|\mc{A}| = j\le|\mc{A}'|$ and $\mc{A}'\equiv \mc{A}[0:j']$ so $|\mc{A}'| = j'\le |\mc{A}|$.
 Since $|\mc{A}|\le |\mc{A}|'$ and $|\mc{A}'| \le |\mc{A}|$ we have $|\mc{A}| = |\mc{A}'| = j = j'$.
 So $\mc{A}' \equiv \mc{A}[0:|\mc{A}|] \equiv \mc{A}$.
 \end{theorem}
@@ -705,7 +693,7 @@ If $\mc{C}\equiv\mc{E}$ then $\mc{C}$ is a sublist of $\mc{C}'$ by Theorem \ref{
 
 If $\mc{C}$ is non-empty, consider $0 \le j < |\mc{C}| \le |\mc{C}'|$.
 We have $\mc{A} \equiv (\mc{B}\mc{C})\mc{D} \equiv (\mc{B}\mc{C}')\mc{D}'$.
-Let $i = j + |\mc{B}|$ so that $0 \le i < |\mc{B}|+|\mc{C}| =|\mc{B}\mc{C}| \le |\mc{B}|+|\mc{C}'| = |\mc{B}\mc{C}'|$ so we have that $\mc{A}[i] \equiv (\mc{B}\mc{C})[i] \equiv (\mc{B}\mc{C}')[i]$. 
+Let $i = j + |\mc{B}|$ so that $0 \le i < |\mc{B}|+|\mc{C}| =|\mc{B}\mc{C}| \le |\mc{B}|+|\mc{C}'| = |\mc{B}\mc{C}'|$ so we have that $\mc{A}[i] \equiv (\mc{B}\mc{C})[i] \equiv (\mc{B}\mc{C}')[i]$.
 
 We rewrite this as $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv (\mc{B}\mc{C}')[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}'[j] \equiv \mc{C}'[0:|\mc{C}|][j]$ by Theorem \ref{thm:sublistextraction}.
 Since this holds for all $0 \le j < |\mc{C}|$ we have that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
@@ -727,7 +715,7 @@ A string is an element of $\textbf{Str} = \textbf{Symb}^*$.
 In other words, every string is a finite ordered list of symbols and any finite ordered list of symbols is a string.
 \end{definition}
 
-The only distinctive feature about strings compared to general lists is that if we have a list of symbols such as 
+The only distinctive feature about strings compared to general lists is that if we have a list of symbols such as
 
 $$
 [x_1, \lnot, Q, \curlywedge, (]
@@ -794,9 +782,9 @@ If any of the terms are open then the atomic formula would only have a truth val
 The final layer of syntax is the formula, sometimes called a well-formed formula  (Wff).
 Formulas combine multiple atomic formulas into more complex expressions using the logical operators.
 We will define formulas in two phases.
-We will first present \textit{permissive} formulas, then we will present \textit{strict} formulas. 
+We will first present \textit{permissive} formulas, then we will present \textit{strict} formulas.
 permissive formulas and strict formulas will differ in their treatment of quantifiers.
-In short, permissive formulas will allow repeated quantification (the binding of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification over a variable $x$ over an expression which does not include $x$). 
+In short, permissive formulas will allow repeated quantification (the binding of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification over a variable $x$ over an expression which does not include $x$).
 Both repeated and redundant quantification are in some-sense unnatural, in that they don't translate well into English example sentences, and that the quantification feels either confusing (in the case of repeated quantification) or wasteful (in the case of redundant quantification).
 
 Strict formulas will explicitly forbid both repeated and redundant quantification.
@@ -809,13 +797,13 @@ Nonetheless, in this document we will mainly be using strict formulas, with perm
 Moving forward `formula' will refer to `strict formula' unless otherwise specified.
 
 \begin{definition}[Permissive Formulas]
-$\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of 
+$\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
 
 \begin{itemize}
 \item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula.}
 \item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{pForm}$.}
 \item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{pForm}$.}
-\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.} 
+\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.}
 \end{itemize}
 \end{definition}
 
@@ -847,12 +835,12 @@ $|t|$ must be greater than zero because if $|t| = 0$ then $t \equiv \mc{E}$ and 
 
 If $|t| = 1$ then the only proper initial part of $t$ is $t[0:0] = \mc{E}$ and $\mc{E} \not \in \textbf{Term}$.
 
-Now suppose $|t|>1$. 
-Suppose, as the induction hypothesis, that for any $s\in\textbf{Term}$ with $|s|<|t|$ that if $s'$ is a proper initial part of $s$ that $s'\not \in \textbf{Term}$. 
-Suppose, for contradiction, that $t'$ is a proper initial part of $t$ and that $t'$ is a term. 
-We then have that $t \equiv ft_1\ldots t_n$ and $t' \equiv f't_1'\ldots t_n'$ With $t_1, \ldots t_n, t_1', \ldots t_n' \in \textbf{Term}$. 
+Now suppose $|t|>1$.
+Suppose, as the induction hypothesis, that for any $s\in\textbf{Term}$ with $|s|<|t|$ that if $s'$ is a proper initial part of $s$ that $s'\not \in \textbf{Term}$.
+Suppose, for contradiction, that $t'$ is a proper initial part of $t$ and that $t'$ is a term.
+We then have that $t \equiv ft_1\ldots t_n$ and $t' \equiv f't_1'\ldots t_n'$ With $t_1, \ldots t_n, t_1', \ldots t_n' \in \textbf{Term}$.
 We must have $t' \equiv t[0:j]$ for some $0 < j < |t|$ so $t'[0] \equiv t[0]$ by Theorem \ref{thm:sublistextraction}.
-This means $f' \equiv f$ so that $t' \equiv ft_1'\ldots t_n'$. 
+This means $f' \equiv f$ so that $t' \equiv ft_1'\ldots t_n'$.
 By Corollary \ref{corr:intpart} it must be the case that either $t_1'$ is an initial part of $t_1$ or $t_1$ is an initial part of $t_1'$. But, $|t_1|, |t_1'| < |t|$ which means that neither $t_1$ nor $t_1'$ can have a proper initial part that is a term which means that either $t_1$ is a non-proper initial part of $t_1$ or $t_1$ is a non-proper initial part of $t_1'$, in both cases, we get that $t_1\equiv t_1'$.
 This argument can be repeated up to $t_n$ showing that $t_k \equiv t_k'$ for $1 \le k \le n$ which means that $t \equiv t'$ contradicting the assumption that $t'$ is a proper initial substring of $t$.
 \end{theorem}
@@ -900,11 +888,11 @@ If $\mc{A}$ were either an implication, negation, or quantification we would hav
 Suppose $\mc{A}$ is an implication so that $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$.
 We know from above that $\mc{A}$ is not atomic.
 
-We see that $\mc{A}[1]\equiv \mc{B}[0]$ so by Theorem \ref{thm:initsymbform}, $\mc{A}[1]\equiv\mc{B}[0]$ is in $\textbf{Pred}$ or equal to $($. 
+We see that $\mc{A}[1]\equiv \mc{B}[0]$ so by Theorem \ref{thm:initsymbform}, $\mc{A}[1]\equiv\mc{B}[0]$ is in $\textbf{Pred}$ or equal to $($.
 If $\mc{A}$ were also a negation then we would have $\mc{A}[1]\equiv \lnot$, so $\mc{A}$ is not a negation.
 
 If $|\mc{B}| = 1$ then $\mc{A}[2]\equiv \implies$.
-If $|\mc{B}| > 1$ then $\mc{A}[2] \equiv \mc{B}[1]$ which, by Theorem \ref{thm:initsymbform}, is either in $\textbf{Var}$, in $\textbf{Func}$, in $\textbf{Pred}$, equal to $($, or equal to $\lnot$. 
+If $|\mc{B}| > 1$ then $\mc{A}[2] \equiv \mc{B}[1]$ which, by Theorem \ref{thm:initsymbform}, is either in $\textbf{Var}$, in $\textbf{Func}$, in $\textbf{Pred}$, equal to $($, or equal to $\lnot$.
 If $\mc{A}$ were a quantification then we would have $\mc{A}[2] \equiv \forall$, so $\mc{A}$ is not a quantification.
 
 Suppose $\mc{A}$ is a negation so that $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
@@ -920,7 +908,7 @@ Therefore if $\mc{A}\in\textbf{pForm}$ then it exactly one of atomic, implicatio
 \begin{theorem}[Unique Readability of Atomic Formulas]
 \label{thm:atomunique}
 Suppose $\mc{A}\in \textbf{pForm}$ and $\mc{A}$ is atomic.
-Then $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots,t_n\in\textbf{Term}$. 
+Then $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots,t_n\in\textbf{Term}$.
 We know from \ref{thm:uniquerange} that $\mc{A}$ is not an implication, negation, or quantification.
 Suppose that $\mc{A} \equiv P't_1'\ldots t_k'$ with $P'\in\textbf{Pred}_k$ and $t_1',\ldots, t_k'\in\textbf{Term}$.
 We see that $\mc{A}[0] \equiv P \equiv P'$ which also means $k=n$.
@@ -936,7 +924,7 @@ We proceed by induction on $|\mc{A}|$ to show that $\mc{A}$ has no proper initia
 
 If $|\mc{A}| = 1$ then the only proper initial part of $\mc{A}$ is $\mc{E} \not \in \textbf{pForm}$.
 
-Suppose that $|\mc{A}| = n>1$. 
+Suppose that $|\mc{A}| = n>1$.
 The induction hypothesis is that for any $\mc{B}$ with $|\mc{B}|<n$ that $\mc{B}$ has no proper initial part that is a permissive formula.
 We need one case for each type of permissive formula.
 
@@ -966,7 +954,7 @@ This means $\mc{A} \equiv \mc{A}'$, contradicting the assumption that $\mc{A}'$ 
 If $\mc{A}$ is a negation then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{pForm}$.
 Suppose that $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$.
 Since $\mc{A}'[0] \equiv \mc{A}[0] \equiv ($ we know that $\mc{A}'$ is not atomic.
-If $\mc{A}'$ were an implication then we would have $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$. 
+If $\mc{A}'$ were an implication then we would have $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$.
 In this case we would have $\mc{A}[1] \equiv \mc{B}[0]$ which can be either in $\textbf{Pred}$ or equal to $($, but $\mc{A}[1] \equiv \lnot$ so $\mc{A}'$ is not an implication.
 If $\mc{A}'$ were a quantification we would have $\mc{A}' \equiv ((\forall x) \mc{B}')$ so that $\mc{A}'[2] \equiv \forall$. But $\mc{A}'[2] \equiv \mc{B}[0]$ which is either in $\textbf{Pred}$ or equal to $($ so $\mc{A}'$ is not a quantification.
 $\mc{A}'$ must be a negation so that $\mc{A}' \equiv (\lnot \mc{B}')$ with $\mc{B}' \in \textbf{pForm}$.
@@ -995,19 +983,19 @@ We also know from Theorem \ref{thm:atomunique} that if $\mc{A} \equiv P't_1'\ldo
 Suppose $\mc{A}$ is an implication with $\mc{A} \equiv (\mc{B} \implies \mc{C})$.
 We know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not atomic, a negation, or a quantification.
 Suppose $\mc{A} \equiv (\mc{B}'\implies \mc{C}')$.
-Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
+Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$.
 The same argument follows to conclude $\mc{C} \equiv \mc{C}'$.
 
 Suppose $\mc{A}$ is a negation with $\mc{A} \equiv (\lnot \mc{B})$.
 We know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, or a quantification.
 Suppose $\mc{A} \equiv (\lnot \mc{B}')$.
-Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
+Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$.
 
 Suppose $\mc{A}$ is a quantification with $\mc{A} \equiv ((\forall x) \mc{B})$ with $x \in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
 We know from \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, or a negation.
 Suppose $\mc{A} \equiv ((\forall x') \mc{B}')$.
 Since $\mc{A}[3] \equiv x' \equiv x$ we have $x' \equiv x$.
-Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$. 
+Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$.
 \end{theorem}
 
 The unique readability of permissive formulas allows to define recursively define functions on permissive formulas as we demonstrate below.
@@ -1016,15 +1004,15 @@ The unique readability of permissive formulas allows to define recursively defin
 If $\mc{A}\in\textbf{pForm}$ then $D(\mc{A})$ is the formula depth (or depth) of $\mc{A}$ and is defined recursively.
 \begin{itemize}
 \item{If $\mc{A}$ is atomic then $D(\mc{A}) = 0$.}
-\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$ then $D(\mc{A}) = \text{max}(D(\mc{B}, \mc{C}) + 1$.}
+\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$ then $D(\mc{A}) = \text{max}(D(\mc{B}), D(\mc{C})) + 1$.}
 \item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
 \item{If $\mc{A} \equiv ((\forall x) \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B} \in \textbf{pForm}$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
 \end{itemize}
 \end{definition}
 
 Note that it would not have been possible to define $D(\mc{A})$ without Theorem \ref{thm:uniqueread} and the other theorems of this section.
-For example, suppose we have $\mc{A} \equiv (\lnot \mc{B})$. 
-However, suppose it is also the case that $\mc{A} \equiv (\lnot \mc{B}')$. 
+For example, suppose we have $\mc{A} \equiv (\lnot \mc{B})$.
+However, suppose it is also the case that $\mc{A} \equiv (\lnot \mc{B}')$.
 The function $D(\mc{A})$ would not be well defined unless we had a guarantee that $D(\mc{B}) = D(\mc{B}')$.
 For a more extreme example suppose $\mc{A} \equiv (\lnot \mc{B})$ and $\mc{A} \equiv (\mc{C} \implies \mc{D})$.
 We would then need a guarantee that $D(\mc{B}) = \text{max}(D(\mc{C}, \mc{D}))$.
@@ -1038,24 +1026,32 @@ In this section we will define the free and bound variables in a permissive form
 \begin{definition}[Free Variables in Terms]
 If $t\in \textbf{Term}$ then $t$ we define the set $FV(t)$ as follows.
 \begin{itemize}
-\item{\textbf{Variables:} If $t\equiv [x]$ with $FV = \{x\}$}
-\item{\textbf{Functions:} If $t\equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots \cup FV(t_n)$.}
+\item{\textbf{Variables:} If $t\equiv x$ with $x\in\textbf{Var}$ then $FV = \{x\}$}
+\item{\textbf{Functions:} If $t\equiv ft_1\ldots t_n$ with $f\in\textbf{Func}_n$ and $t_1,\ldots,t_n \in \textbf{Term}$ then $FV(t) = FV(t_1)\cup\ldots \cup FV(t_n)$.}
+\item{If $x\in \textbf{Var}$ then if $x\in FV(t)$ we say $x$ appears free in $t$. Otherwise we say $x$ does not appear free in $t$.}
+\item{if $FV(t)=\emptyset$ then we say $t$ is closed. Otherwise we say $t$ is open.}
 \end{itemize}
 \end{definition}
 
+Semantically closed terms are concrete objects about which statements can be made while open terms contain variables into which other terms can be plugged into to eventually realize a particular closed object and concrete object.
+
 \begin{definition}[Free Variables in Permissive Formulas]
-If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
+If $\mc{A}\in\textbf{pForm}$ then we define $FV(\mc{A})$ recursively.
 \begin{itemize}
-\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
-\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
-\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
-\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$.}
-\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
+\item{If $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
+\item{If $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
+\item{If $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$.}
+\item{If $x \in \textbf{Var}$ and $x\in FV(\mc{A})$ then we say $x$ appears free in $\mc{A}$. Otherwise we say $x$ does not appear free in $\mc{A}$.}
+\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed. Otherwise we say $\mc{A}$ is open.}
 \end{itemize}
 \end{definition}
 
 Note that $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(\mc{B})$.
 In such cases $\mc{A}$ exhibits redundant quantification.
+For example $((\forall x) Py)$ is a permissive formula.
+
+Semantically closed formulas are concrete statements which can have a truth value whereas open formulas contain variables into which terms can be plugged in to eventually realize a closed formula and concrete statement.
 
 \begin{definition}[Quantified Variables in Permissive Formulas]
 If $\mc{A}$ is a permissive formula then we define $QV(\mc{A})$ recursively.
@@ -1092,10 +1088,10 @@ $\mc{A}\in\textbf{sForm} = \textbf{Form}$ iff $\mc{A} \in \textbf{pForm}$ and sa
 \end{definition}
 
 
-\subsection{Substitution}
+\subsection{Free Variable Substitution}
 
-\begin{definition}[Term Substitution]
-We define recursively the concept of term replacement.
+\begin{definition}[Free Variable Substitution]
+We define recursively the concept of free variable substitution.
 Suppose $s, t \in \textbf{Term}$ and $x\in \textbf{Var}$.
 \begin{itemize}
 \item{If $s\in\textbf{Var}$ then if $s\equiv x$ we define $s[t/x] \equiv t$. If $s\not \equiv x$ then $s[t/x] \equiv x$.}
@@ -1112,13 +1108,14 @@ Suppose $\mc{A} \in \textbf{pForm}$.
 
 \end{definition}
 
-\begin{theorem}[Term Substitution Within a Term Results in a Term]
+\begin{theorem}[Free Variable Substitution Within a Term Results in a Term]
+\label{thm:fvsubintermgivesterm}
 Suppose $s, t\in\textbf{Term}$ and $x\in\textbf{Var}$.
 We prove by induction on $|s|$ that $s[t/x] \in \textbf{Term}$.
 
-if $|s| = 1$ then there are two cases. 
+if $|s| = 1$ then there are two cases.
 First suppose $s\in \textbf{Var}$.
-If $s\in \textbf{Var}$ then if $s\equiv x$ $s[t/x] \equiv t$ so $s[t/x]\in\textbf{Term}$. 
+If $s\in \textbf{Var}$ then if $s\equiv x$ $s[t/x] \equiv t$ so $s[t/x]\in\textbf{Term}$.
 If $s \not \equiv x$ then $s[t/x] \equiv s$ so again $s[t/x] \in \textbf{Term}$.
 The other case is $s\equiv f$ with $f\in \textbf{Func}_0$.
 In this case $s[t/x] \equiv s$ so $s[t/x] \in \textbf{Term}$.
@@ -1128,12 +1125,21 @@ The induction hypothesis is that for any term $r$ with $|r|<|s|$ we have $r[t/x]
 We have $s\equiv ft_1\ldots t_n$ with $f\in\textbf{Func}_n$. $s[t/x] \equiv f t_1[t/x]\ldots t_n[t/x]$, but each of $t_i[t/x]\in\textbf{Term}$ for $1\le i \le n$ so $s[t/x]\in\textbf{Term}$.
 \end{theorem}
 
-\begin{theorem}[Term Substitution Within a Permissive Formula Results in a Permissive Formula]
+\begin{theorem}[Free Variable Substitution in Term for Variable the Does Not Appear Free]
+\label{thm:fvsubtermvarnotappear}
+Suppose $s, t \in \textbf{Term}$ and $x \in \textbf{Var}$. Suppose that $x\not \in FV(s)$. Then $s[t/x] \equiv s$.
+
+If $|s| = 1$ then there are two cases. First suppose $s\in \textbf{Var}$. Since $x\not \in FV(s)$ we must have $s \equiv y \not \equiv x$ so $s[t/x] \equiv s$. The other case is that $s\in \textbf{Func}_0$ in which case $s[t/x]\equiv s$.
+
+Now suppose $|s|>1$ The induction hypothesis is that for any term $r$ with $|r| < |s|$ that if $x \not \in FV(r)$ that $r[t/x] \equiv r$. We have that $s \equiv fr_1\ldots r_n$ with $f$ in $\textbf{Func}_n$. We have that $FV(s) = FV(r_1)\cup\ldots\cup FV(r_n)$. Since $x\not \in FV(s)$ it must be the case that $x \not \in FV(r_i)$ for $1\le i \le n$. Now $s[t/x] \equiv fr_1[t/x]\ldots r_n[t/x]$ but since $|r_i|<|s|$ and $x\not \in FV(r_i)$ we have that $r_i[t/x] \equiv r_i$ for each $1\le i \le n$ so that $s[t/x] \equiv fr_1\ldots r_n \equiv s$.
+\end{theorem}
+
+\begin{theorem}[Free Variable Substitution Within a Permissive Formula Results in a Permissive Formula]
 Suppose $\mc{A}\in\textbf{pForm}$, $x\in\textbf{Var}$ and $t \in \textbf{Term}$.
 We prove, by induction of $D(\mc{A})$, that $\mc{A}[t/x] \in \textbf{pForm}$.
 
 Suppose $D(\mc{A}) = 0$.
-Then $\mc{A}$ is atomic so $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$. $\mc{A}[t/x] \equiv Pt_1[t/x]\ldots t_n[t/x]$, but, by the previous theorem, $t_1[t/x],\ldots,t_n[t/x]\in\textbf{Term}$ so $\mc{A}[t/x]\in\textbf{pForm}$.
+Then $\mc{A}$ is atomic so $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$. $\mc{A}[t/x] \equiv Pt_1[t/x]\ldots t_n[t/x]$, but, by the previous theorem, $t_1[t/x],\ldots,t_n[t/x]\in\textbf{Term}$ so $\mc{A}[t/x]$ is atomic so $\mc{A}[t/x]\in\textbf{pForm}$.
 
 Now suppose that $D(\mc{A}) > 0$ but that for any $\mc{B}$ with $D(\mc{B}) < D(\mc{A})$ we have that $\mc{B}[t/x] \in \textbf{pForm}$.
 
@@ -1141,7 +1147,7 @@ $\mc{A}$ cannot be atomic since $D(\mc{A})>0$.
 
 Suppose $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.
 Then $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$.
-Since $D(\mc{A}) = \text{max}(D(\mc{B}) + D(\mc{C}))$ we have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ so, by the induction hypothesis, $\mc{B}, \mc{C}\in\textbf{pForm}$ which means $\mc{A}\in\textbf{pForm}$.
+Since $D(\mc{A}) = \text{max}(D(\mc{B}) + D(\mc{C}))$ we have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ so, by the induction hypothesis, $\mc{B}[t/x], \mc{C}[t/x]\in\textbf{pForm}$ which means $\mc{A}[t/x]\in\textbf{pForm}$.
 
 Suppose $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
 Then $\mc{A}[t/x] \equiv (\mc{B}[t/x])$.
@@ -1152,6 +1158,180 @@ If $x\equiv y$ then $\mc{A}[t/x] \equiv \mc{A}$ so $\mc{A}[t/x]\in\textbf{pForm}
 If $x\not\equiv y$ then $\mc{A}[t/x] \equiv ((\forall y) \mc{B}[t/x])$.
 $D(\mc{B}) = D(\mc{A})-1$ so $\mc{B}[t/x]\in\textbf{pForm}$ which means $\mc{A}[t/x]\in\textbf{pForm}$.
 
+\end{theorem}
+
+\begin{theorem}[Free Variable Substitution in a Permissive Formula for a Variable that Does Not Appear Free]
+\label{thm:fvsubpformnotappear}
+Suppose $t\in \textbf{Term}$, $x\in \textbf{Var}$ and $\mc{A} \in \textbf{pForm}$. If $x\not \in FV(\mc{A})$ then $\mc{A}[t/x] \equiv \mc{A}$.
+
+Suppose $D(\mc{A}) = 0$. Then $\mc{A}$ is atomic so $\mc{A} \equiv P t_1\ldots t_n$. $FV(\mc{A}) \equiv FV(t_1)\cup\ldots\cup FV(t_n)$. Since $x\not \in FV(\mc{A})$ we must have $x\not \in FV(t_i)$ for $1\le i \le n$. $\mc{A}[t/x] \equiv Pt_1[t/x]\ldots t_n[t/x]$. But since $x\not \in FV(t_i)$ we have, by Theorem \ref{thm:fvsubtermvarnotappear}, that $t_i[t/x] \equiv t_i$ so that $\mc{A}[t/x] \equiv Pt_1\ldots t_n \equiv \mc{A}$.
+
+Now suppose that $D(\mc{A}) > 0$ but that for any $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that if $x \not \in FV(\mc{B})$ that $\mc{B}[t/x] \equiv \mc{B}$.
+
+$\mc{A}$ cannot be atomic because $D(\mc{A})>0$.
+
+Suppose $\mc{A}$ is an implication with $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.
+Since $x\not \in FV(\mc{A})$ we must have $x\not \in FV(\mc{B})$ and $x \not \in FV(\mc{C})$.
+We also have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$.
+We have $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$ but, by the induction hypothesis, we have that $\mc{B}[t/x] \equiv \mc{B}$ and $\mc{C}[t/x] \equiv \mc{C}$ so $\mc{A}[t/x] \equiv \mc{A}$.
+
+Suppose $\mc{A}$ is a negation with $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+Since $x\not \in FV(\mc{A})$ we must have $x\not \in FV(\mc{B})$.
+We also have $D(\mc{B}) < D(\mc{A})$.
+We have $\mc{A}[t/x] \equiv (\lnot \mc{B}[t/x])$ but, by the induction hypothesis, we have $\mc{B}[t/x] \equiv \mc{B}$ so that $\mc{A}[t/x] \equiv \mc{A}$.
+
+Suppose $\mc{A}$ is a quantification with $\mc{A} \equiv ((\forall y)\mc{B})$ with $y\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have the $D(\mc{B}) < D(\mc{A})$.
+If $x\equiv y$ then $\mc{A}[t/x] \equiv \mc{A}$.
+We have that $FV(\mc{A}) = FV(\mc{B})\setminus\{y\}$.
+If $x \not \equiv y$ then $x\not \in FV(\mc{A})$ implies that $x\not \in FV(\mc{B})$.
+In this case $\mc{A}[t/x] \equiv ((\forall y) \mc{B}[t/x])$ but the induction hypothesis gives us that $\mc{B}[t/x] \equiv \mc{B}$ so $\mc{A}[t/x] \equiv \mc{A}$.
+\end{theorem}
+
+\begin{theorem}[Free Variables in a Term after Free Variable Substitution]
+\label{thm:fvtermafterfvsub}
+Suppose $s, t \in \textbf{Term}$ and $x\in\textbf{Var}$. If $x \not \in FV(s)$ then $s[t/x] \equiv s$ so $FV(s[t/x]) = FV(s)$. If $x\in FV(s)$ then $FV(s[t/x]) = (FV(s)\setminus \{x\})\cup FV(t)$. We prove this by induction.
+
+Suppose $|s|=1$. Since $x\in FV(s)$ this implies that $s \equiv x$ so that $FV(s)=\{x\}$. Then $s[t/x] \equiv t$ so $FV(s[t/x]) = FV(t)$ but $(FV(s)\setminus\{x\})\cup FV(t) = FV(t)$ as needed.
+
+Now suppose that $|s|>1$ and for $r\in \textbf{Term}$ with $|r|<|s|$ that if $x\in FV(r)$ that $FV(r[t/x]) = (FV(r)\setminus \{x\})\cup FV(t)$. We have that $s\equiv fr_1\ldots r_n$ and $FV(s) = FV(r_1)\cup\ldots\cup FV(r_n)$.
+
+Since $x\in FV(s)$ by assumption then it must be in at least one of the $r_i$. Suppose that there are $1\le j \le n$ values of $i$ for which $x \in FV(r_i)$ and $k = n-j$ values of $i$ for which $x \not \in FV(r_i)$.
+
+Suppose that $x\in FV(r_i)$ for $1\le j \le n$ values of $i$ and $x \not \in FV(r_i)$ for $k = n-j$ values of $i$. Let $a_i$ for $1 \le i \le j$ enumerate the values for which $x\in FV(r_{a_i})$ and let $b_i$ for $1 \le i \le n-j$ enumerate the values for which $x \not \in FV(r_{b_i})$.
+
+We then have $s[t/x] \equiv fr_1[t/x]\ldots r_n[t/x]$ and we can write
+$$
+FV(s[t/x]) = FV(r_{a_1}[t/x])\cup\ldots\cup FV(r_{a_j}[t/x]) \cup FV(r_{b_1}[t/x])\cup \ldots \cup FV(r_{b_k}[t/x])
+$$
+
+By the induction hypothesis we have $FV(r_{a_i}[t/x]) = (FV(r_{a_i})\setminus \{x\}) \cup FV(t)$ and $FV(r_{b_i}[t/x]) = FV(r_{b_i})$ so
+
+\begin{align}
+FV(s[t/x]) = \big(&((FV(r_{a_1})\setminus \{x\}) \cup FV(t)) \cup \ldots \cup ((FV(r_{a_j})\setminus \{x\}) \cup FV(t)) \nonumber\\
+&\cup FV(r_{b_1}) \cup\ldots \cup FV(r_{b_k})\big) \nonumber
+\end{align}
+
+Using some set identities and the fact that $x \not \in FV(r_{b_i})$ we can rewrite this as
+
+\begin{align}
+FV(s[t/x]) &= \left(\left(FV(r_{a_1}) \cup \ldots \cup FV(r_{a_j}) \cup FV(r_{b_1}) \cup \ldots \cup FV(r_{b_{n-j}})\right) \setminus \{x\}\right) \cup FV(t) \nonumber\\
+&= \left(\left(FV(r_1)\cup \ldots \cup FV(r_n)\right)\setminus \{x\}\right)\cup FV(t) \nonumber\\
+&= (FV(s)\setminus \{x\})\cup FV(t) \nonumber
+\end{align}
+\end{theorem}
+
+\begin{theorem}[Free Variables in a Permissive Formula after Free Variable Substitution]
+Suppose $\mc{A} \in \textbf{pForm}$, $x \in \textbf{Var}$ and $t\in\textbf{Term}$. If $x\not \in \mc{A}$ then $\mc{A}[t/x]\equiv \mc{A}$ according to Theorem \ref{thm:fvsubpformnotappear} so $FV(\mc{A}[t/x]) =  FV(\mc{A})$. If $x\in FV(\mc{A})$ then $FV(\mc{A}[t/x]) = (FV(\mc{A})\setminus \{x\})\cup FV(t)$.
+
+Suppose $\mc{A}$ is atomic so that $\mc{A} \equiv Pt_1\ldots t_n$. $FV(\mc{A}) = FV(t_1)\cup\ldots \cup FV(t_n)$. Since $x\in FV(\mc{A})$ then $x$ must be in at least one $t_i$ for $1 \le i \le n$. Suppose that there are $1\le j \le n$ values of $i$ for which $x\in FV(t_i)$ and $k=n-j$ values of $i$ fo which $x\not \in FV(t_i)$. Let $a_i$ for $1\le i \le j$ enumerate the values which $x\in FV(t_{a_i})$ and let $b_i$ for $1 \le i \le n-j$ enumerate the values for which $x\not \in FV(t_{b_i})$.
+
+We have $\mc{A}[t/x] \equiv Pt_1[t/x]\ldots t_n[t/x]$ so
+
+\begin{align}
+FV(\mc{A}[t/x]) &= FV(t_1[t/x])\cup\ldots \cup FV(t_n[t/x]) \nonumber\\
+&= FV(t_{a_1}[t/x])\cup\ldots\cup FV(t_{a_j}[t/x]) \cup FV(t_{b_1}[t/x]) \cup \ldots \cup FV(t_{b_k}[t/x]) \nonumber\\
+\end{align}
+
+According to Theorem \ref{thm:fvtermafterfvsub}, $FV(t_{a_i}[t/x]) = (FV(t_{a_i})\setminus\{x\})\cup FV(t)$ and $FV(t_{b_i}[t/x]) = FV(t_{b_i})$ so
+
+\begin{align}
+FV(\mc{A}[t/x]) =& \begin{aligned}[t]\big( &((FV(t_{a_1})\setminus\{x\})\cup FV(t)) \cup \ldots \cup ((FV(t_{a_j})\setminus\{x\})\cup FV(t)) \\
+& \cup FV(t_{b_1}) \ldots \cup FV(t_{b_k}) \big)\end{aligned} \notag \\
+=& \left(\left(FV(t_{a_1})\cup \ldots \cup FV(t_{a_j}) \cup FV(t_{b_1}) \cup \ldots \cup FV(t_{b_k})\right)\setminus \{x\} \right) \cup FV(t) \notag\\
+=& \left(\left(FV(t_1)\cup \ldots \cup FV(t_n)\right)\setminus\{x\}\right)\cup FV(t) \notag\\
+=& (FV(\mc{A})\setminus\{x\})\cup FV(t) \notag
+\end{align}
+
+\end{theorem}
+
+\begin{theorem}[Quantified Variables after Free Variable Substitution]
+Suppose $\mc{A} \in \textbf{pForm}$, $x\in\textbf{Var}$ and $t\in \textbf{Term}$. Then $QV(\mc{A}[t/x]) = QV(\mc{A})$.
+
+Suppose $D(\mc{A}) = 0$. Then $\mc{A}$ is an atomic formula so $QV(\mc{A}) = \emptyset$. But $\mc{A}[t/x]$ is also an atomic formula so $QV(\mc{A}[t/x]) = \emptyset = QV(\mc{A})$.
+
+Now assume that $D(\mc{A})>0$ and for $\mc{B}\in \textbf{pForm}$ that if $D(\mc{B})<D(\mc{A})$ that $QV(\mc{B}[t/x]) = QV(\mc{B})$.
+
+If $\mc{A}$ is a negation then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ and $D(\mc{B}) < D(\mc{A})$. We have that $QV(\mc{A}[t/x]) = QV((\lnot \mc{B}[t/x])) = QV(\mc{B}[t/x]) = QV(\mc{B}) =  QV(\mc{A})$.
+
+If $\mc{A}$ is an implication then $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$ and $D(\mc{B}), D(\mc{C}) < D(\mc{A})$. We have
+\begin{align}
+QV(\mc{A}[t/x]) &= QV((\mc{B}[t/x]\implies \mc{C}[t/x])) = QV(\mc{B}[t/x]) \cup QV(\mc{C}[t/x]) \notag\\
+&= QV(\mc{B}) \cup QV(\mc{C}) = QV(\mc{A}) \notag
+\end{align}
+
+If $\mc{A}$ is a quantification then $\mc{A} \equiv ((\forall y) \mc{B})$ with $y\in \textbf{Var}$, $\mc{B}\in\textbf{pForm}$, and $D(\mc{B}) < D(\mc{A})$. If $y\equiv x$ then $\mc{A}[t/x] \equiv \mc{A}$ so $QV(\mc{A}[t/x]) = QV(\mc{A})$. If $y\not \equiv x$ then $\mc{A}[t/x] \equiv ((\forall y) \mc{B}[t/x])$. In this case $QV(\mc{A}[t/x]) = QV(\mc{B}[t/x]) \cup \{y\} = QV(\mc{B})\cup\{y\} = QV(\mc{A})$.
+
+\end{theorem}
+
+\begin{theorem}[Free Variable Substitution in a Strict Formula Results in a Strict Formula]
+Suppose $\mc{A}\in\textbf{sForm} = \textbf{Form}$, $x\in\textbf{Var}$ and $t\in\textbf{Term}$. We prove by induction on $D(\mc{A})$ that $\mc{A}[t/x]\in\textbf{Form}$.
+
+If $D(\mc{A}) = 0$ then $\mc{A}$ is atomic. $\mc{A}[t/x]$ is also atomic so $\mc{A}[t/x]\in\textbf{Form}$.
+
+Now suppose $D(\mc{A})>0$ but that for any $\mc{B}\in\textbf{Form}$ that if $D(\mc{B}) < D(\mc{A})$ that $\mc{B}[t/x]\in\textbf{Form}$.
+
+$\mc{A}$ cannot be atomic because $D(\mc{A})\neq 0$.
+
+If $\mc{A}$ is a negation then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{Form}$ and $D(\mc{B})<D(\mc{A})$. We have $\mc{A}[t/x] \equiv (\lnot \mc{B}[t/x])$ but $\mc{B}[t/x]\in\textbf{Form}$ by the induction hypothesis so $\mc{A}[t/x]\in\textbf{Form}$.
+
+If $\mc{A}$ is an implication then $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{Form}$ and $D(\mc{B}), D(\mc{C}) < D(\mc{A})$. We have $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$ but by the induction hypothesis $\mc{B}[t/x], \mc{C}[t/x]\in\textbf{Form}$ so $\mc{A}[t/x]\in\textbf{Form}$.
+
+If $\mc{A}$ is a quantification then $\mc{A} \equiv ((\forall y) \mc{B})$ with $y\in\textbf{Var}$, $\mc{B}\in \textbf{Form}$, $D(\mc{B})<D(\mc{A})$, $y\in FV(\mc{B})$ and $y\not \in QV(\mc{B})$. If $y= x$ then $\mc{A}[t/x] \equiv \mc{A}$ so $\mc{A}[t/x]\in\textbf{Form}$. If $y\not \equiv x$ then $\mc{A}[t/x] \equiv ((\forall y) \mc{B}[t/x])$. By the induction hypothesis $\mc{B}[t/x]\in\textbf{Form}$. Because $x\in FV(\mc{B})$, we have, by the above theorem, that $FV(\mc{B}[t/x]) = (FV(\mc{B})\setminus\{x\})\cup FV(t)$. Since $y \neq x$ this means $y \in FV(\mc{B}[t/x])$. We also have, by another theorem above, that $QV(\mc{B}[t/x]) = QV(\mc{B})$ so $y\not \in QV(\mc{B}[t/x])$. This means that $\mc{A}[t/x]\in\textbf{Form}$.
+
+\end{theorem}
+
+Note that there are some term substitutions which are valid syntactically, but which are not "logically valid" in a way which will be described below.
+As an example consider
+$$
+\mc{A} \equiv (Px \land ((\forall y) Qxy))
+$$
+Now let us substitute $y$ for $x$:
+$$
+\mc{A}[y/x] \equiv (Py \land ((\forall y) Qyy)
+$$
+Note how the semantic meaning of this formulas has been changed by the substitution.
+In particular the problem is that the term being substituted in, $y$ in this case, became quantified over after being substituted for the $x$ in $Qxy$ within the scope of $(\forall y)$.
+In such a circumstance we say the variable $y$ (which occurred in the substitution term) was "captured" by the $(\forall y)$ quantifier in $\mc{A}$.
+To avoid such variable capture in logical deductions below we define the concept of substitutability.
+
+\begin{definition}[Free Variable Substitutability]
+Suppose $\mc{A}\in\textbf{pForm}$, $x\in\textbf{Var}$ and $t\in\textbf{Term}$. If $t$ is substitutable for $x$ in $\mc{A}$ then we say $S(\mc{A}, t, x)$. If it is the case that $S_F(\mc{A},t , x)$ then we may indicate this by letting $\mc{A} \equiv _{[t/x]}\mc{A}$.
+
+\begin{itemize}
+\item{If $\mc{A}$ is an atomic formula that $S_F(\mc{A}, t, x)$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $S_F(\mc{A}, t, x)$ if $S_F(\mc{B}, t, x)$ and $S_F(\mc{C}, t, x)$.}
+\item{If $\mc{A}\equiv (\lnot \mc{B})$ then $S_F(\mc{A}, t, x)$ if $S(\mc{B}, t, x)$.}
+\item{If $\mc{A}\equiv((\forall y) \mc{B})$ with $y\in\textbf{Var}$ then $S_F(\mc{A}, t, x)$ if $S_F(\mc{B}, t, x)$ and $y\not \in FV(t)$ or $x\not \in FV(\mc{B})$.}
+\end{itemize}
+
+\end{definition}
+
+\begin{theorem}[Permissive Formula Depth after Free Variable Substitution]
+\label{thm:pformdepthaftertermsub}
+Suppose $\mc{A} \in \textbf{pForm}$, $x\in\textbf{Var}$ and $t\in\textbf{Term}$. Then $D(\mc{A}[t/x] = D(\mc{A})$.
+
+Suppose $D(\mc{A}) = 0$.
+Then $\mc{A}$ is atomic so $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots,t_n \in \textbf{Term}$.
+$\mc{A}[t/x] \equiv P t_1[t/x]\ldots t_n[t/x]$.
+By Theorem \ref{thm:fvsubintermgivesterm}, $t_1[t/x],\ldots, t_n[t/x]\in\textbf{Term}$ so $\mc{A}[t/x]$ is atomic so $D(\mc{A}[t/x])=0=D(\mc{A})$.
+
+Now suppose that $D(\mc{A})>0$ but if $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that $D(\mc{B}[t/x]) = D(\mc{B})$.
+
+$\mc{A}$ can't be atomic because $D(\mc{A}) >0$.
+
+If $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $D(\mc{A}) = D(\mc{B}) + 1$.
+We have $\mc{A}[t/x] \equiv (\lnot \mc{B}[t/x])$ so $D(\mc{A}[t/x]) = D(\mc{B}[t/x]) + 1$
+But, $D(\mc{B}) < D(\mc{A})$ so $D(\mc{B}[t/x]) = D(\mc{B})$ so $D(\mc{A}[t/x]) = D(\mc{A})$.
+
+If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ then $D(\mc{A}) = \text{max}(D(\mc{B}), D(\mc{C})) + 1$.
+We have that $\mc{A}[t/x] \equiv (\mc{B}[t/x] \implies \mc{C}[t/x])$ so $D(\mc{A}[t/x]) = \text{max}(D(\mc{B}[t/x]), D(\mc{C}[t/x])) + 1$.
+But $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ so $D(\mc{B}[t/x]) = D(\mc{B})$ and $D(\mc{C}[t/x]) = D(\mc{C})$ so $D(\mc{A}[t/x]) = D(\mc{A})$.
+
+If $\mc{A} \equiv ((\forall y)\mc{B})$ with $y\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ then $D(\mc{A}) = D(\mc{B}) + 1$.
+If $x\equiv y$ then $\mc{A}[t/x] = \mc{A}$ so $D(\mc{A}[t/x]) = D(\mc{A})$.
+If $x\not \equiv y$ then $\mc{A}[t/x] \equiv ((\forall y)\mc{B}[t/x])$ and $D(\mc{A}[t/x]) = D(\mc{B}[t/x]) + 1$.
+But, $D(\mc{B}) < D(\mc{A})$ so $D(\mc{B}[t/x]) = D(\mc{B})$ so $D(\mc{A}[t/x]) = D(\mc{A})$.
 \end{theorem}
 
 \begin{definition}[Absent Term]
@@ -1175,8 +1355,127 @@ Suppose $\mc{A}\in\textbf{pForm}$.
 
 \end{definition}
 
+\section{Bound Variable Substitution}
 
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+In addition to `plugging' terms into free variables, we are also interested in replacing one bound variable with a different variable.
+This will help us to plug one formula into another by allowing us to replace all the bound variables in the first formula with variables which are unused in the second formula.
+This is  necessary to avoid double quantification.
+
+\begin{definition}[Bound Variable Substitution]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y \in \textbf{pForm}$.
+We define $\mc{A}\{y/x\}$, the bound variable substitution of $y$ for $x$ in $\mc{A}$, as follows.
+
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $\mc{A}\{y/x\} \equiv \mc{A}$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$.}
+\item{If $\mc{A}\equiv (\mc{B}\implies\mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$ then $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$.}
+\item{Suppose $\mc{A} \equiv ((\forall z) \mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. If $z \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$. If $z\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{y/x\})$.}
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Bound Variable Substitution in a Permissive Formula Results in a Permissive Formula]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y \in \textbf{Var}$. Then $\mc{A}\{y/x\}\in\textbf{pForm}$.
+
+Suppose $D(\mc{A}) = 0$ so that $\mc{A}$ is atomic. Then $\mc{A}\{y/x\}\equiv \mc{A}$ so $\mc{A}\{y/x\} \in \textbf{pForm}$.
+
+Now suppose $D(\mc{A}) >0$ and that if $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that $\mc{B}\{y/x\} \in \textbf{pForm}$.
+
+$\mc{A}$ cannot be atomic because $D(\mc{A}) > 0$.
+
+Suppose $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+Then $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$ but $D(\mc{B})<D(\mc{A})$ so $\mc{B}\{y/x\}\in\textbf{pForm}$ so $\mc{A}\{y/x\}\in\textbf{pForm}$.
+
+Suppose $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.
+Then $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$.
+But, $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ so $\mc{B}\{y/x\}, \mc{C}\{y/x\}\in\textbf{pForm}$ so $\mc{A}\in\textbf{pForm}$.
+
+Suppose $\mc{A}\equiv ((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+If $z\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{y/x\})$.
+But $D(\mc{B}) < D(\mc{A})$ so $\mc{B}\{y/x\} \in \textbf{pForm}$ so $\mc{A}\{y/x\}\in\textbf{pForm}$.
+If $z\equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$.
+By Theorem \ref{thm:pformdepthaftertermsub}, $D(\mc{B}[t/x]) = D(\mc{B}) < D(\mc{A})$ so $(\mc{B}[y/x])\{y/x\}\in\textbf{pForm}$ so $\mc{A}\{y/x\}\in\textbf{pForm}$.
+\end{theorem}
+
+\begin{theorem}[Bound Variable Substitution for a Variable the Does Not Appear Bound]
+\label{thm:bndvarsubforvarnotappear}
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y \in \textbf{Var}$ and $x\not \in QV(\mc{A})$. Then $\mc{A}\{y/x\}\equiv \mc{A}$.
+
+Suppose $D(\mc{A}) = 0$ so that $\mc{A}$ is atomic.
+Then $\mc{A}\{y/x\} \equiv \mc{A}$.
+
+Now suppose that $D(\mc{A}) > 0$ and that if $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that if $x\not \in QV(\mc{B})$ that $\mc{B}\{y/x\} \equiv \mc{B}$.
+
+Suppose $\mc{A} \equiv ((\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D\mc{A})$.
+We also have that $x\not \in QV(\mc{B})$ because $x\not \in QV(\mc{A})$.
+We have that $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$ but, by the induction hypothesis, $\mc{B}\{y/x\} \equiv \mc{B}$ so $\mc{A}\{y/x\}\equiv \mc{A}$.
+
+Suppose $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$.
+We also have that $x\not \in QV(\mc{B})$ and that $x\not \in QV(\mc{C})$ because $x\not \in QV(\mc{A})$.
+We have that $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$ but, by the induction hypothesis, $\mc{B}\{y/x\} \equiv \mc{B}$ and $\mc{C}\{y/x\}\equiv \mc{C}$ so $\mc{A}\{y/x\} \equiv \mc{A}$.
+
+Suppose $\mc{A}\equiv ((\forall z) \mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have that $D(\mc{B}) < D(\mc{A})$.
+Because $x\not \in QV(\mc{A})$ we know that $z\not \equiv x$ and that $x\not \in QV(\mc{B})$.
+We have that $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{y/x\})$ but, by the induction hypothesis, $\mc{B}\{y/x\} \equiv \mc{B}$ so $\mc{A}\{y/x\} \equiv \mc{A}$.
+\end{theorem}
+
+\begin{theorem}[Quantified Variables after Bound Variable Substitution]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y\in\textbf{Var}$.
+If $x\not \in QV(\mc{A})$ then by Theorem \ref{thm:bndvarsubforvarnotappear} we know that $\mc{A}\{y/x\} \equiv \mc{A}$ so $QV(\mc{A}\{y/x\}) = QV(\mc{A})$. If $x\in QV(\mc{A})$ then we now prove that $QV(\mc{A}\{y/x\}) = (QV(\mc{A})\setminus\{x\})\cup\{y\}$.
+
+Suppose $D(\mc{A}) = 0$ so that $\mc{A}$ is atomic.
+Then $QV(\mc{A}) = \emptyset$ so $x\not \in QV(\mc{A})$ so we know $QV(\mc{A}\{y/x\}) = QV(\mc{A})$.
+
+Now suppose that $D(\mc{A}) > 0$ but that for $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that, if $x\in QV(\mc{B})$, that $QV(\mc{B}\{y/x\}) = (QV(\mc{B})\setminus\{x\})\cup\{y\}$.
+
+$\mc{A}$ cannot be atomic because $D(\mc{A})>0$.
+
+Suppose $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ so that $QV(\mc{A}) = QV(\mc{B})$.
+We have $D(\mc{B}) < D(\mc{A})$.
+Since $x \in QV(\mc{A})$ we have $x \in QV(\mc{B})$.
+We have $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$ so $QV(\mc{A}\{y/x\}) = QV(\mc{B}\{y/x\})$ but, by the induction hypothesis, $QV(\mc{B}\{y/x\}) = (QV(\mc{B})\setminus \{x\})\cup\{y\}$ so $QV(\mc{A}\{y/x\}) = QV(\mc{A})$.
+
+Suppose $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ so that $QV(\mc{A}) = QV(\mc{B}) \cup QV(\mc{C})$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$.
+Since $x \in QV(\mc{A})$ we have $x \in QV(\mc{B})$ and/or $x \in QV(\mc{C})$.
+We have $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$ so $QV(\mc{A}\{y/x\}) = QV(\mc{B}\{y/x\}) \cup QV(\mc{C}\{y/x\})$.
+
+If $x\in QV(\mc{B})$ then, by the induction hypothesis, $QV(\mc{B}\{y/x\}) = (QV(\mc{B})\setminus\{x\})\cup\{y\}$. If $x\not \in QV(\mc{B})$ then $QV(\mc{B}\{y/x\}) = QV(\mc{B})$.
+Likewise, if $x\in QV(\mc{C})$ then $QV(\mc{C}\{y/x\}) = (QV(\mc{C})\setminus\{x\}) \cup \{y\}$ but if $x\not \in QV(\mc{C})$ then $QV(\mc{C}\{y/x\}) = QV(\mc{C})$.
+
+There are three cases.
+If $x\in QV(\mc{B})$ and $x\in QV(\mc{C})$ then
+\begin{align}
+QV(\mc{A}\{y/x\}) =& ((QV(\mc{B})\setminus\{x\})\cup \{y\}) \cup ((QV(\mc{C})\setminus\{x\})\cup \{y\}) \notag\\
+=& ((QV(\mc{B}) \cup QV(\mc{C}))\setminus\{x\})\cup\{y\} \notag\\
+=& (QV(\mc{A})\setminus\{x\})\cup\{y\} \notag
+\end{align}
+
+If $x\in QV(\mc{B})$ but $x\not \in QV(\mc{C})$ then
+\begin{align}
+QV(\mc{A}\{y/x\}) =& ((QV(\mc{B})\setminus\{x\})\cup\{y\})\cup QV(\mc{C}) \notag\\
+=& ((QV(\mc{B})\cup QV(\mc{C}))\setminus\{x\})\cup\{y\} \notag\\
+=& (QV(\mc{A})\setminus\{x\})\cup\{y\} \notag
+\end{align}
+Where the second line follows in part because $x\not \in QV(\mc{C})$.
+
+If $x\not \in QV(\mc{C})$ but $x\in QV(\mc{C})$ then
+\begin{align}
+QV(\mc{A}\{y/x\}) =& QV(\mc{B}) \cup ((QV(\mc{C})\setminus\{x\})\cup\{y\}) \notag\\
+=& ((QV(\mc{B})\cup QV(\mc{C}))\setminus\{x\})\cup\{y\} \notag\\
+=& (QV(\mc{A})\setminus\{x\})\cup\{y\} \notag
+\end{align}
+Where the second line follows in part because $x\not \in QV(\mc{B})$.
+
+In all cases $QV(\mc{A}\{y/x\}) = (QV(\mc{A})\setminus\{x\})\cup\{y\}$.
+
+\end{theorem}
+
+There are two possible issues with bound variable substitution.
+The first issue is that bound variable substitution
+
 
 \section{Formal Proof}
 
@@ -1187,7 +1486,7 @@ For this reason, we will require that all formulas involved in natural deduction
 
 \subsection{Sequents}
 
-Syntactically, we represent the idea that a (closed) formula $\mc{A}$ logically follows from a set of (closed) formulas $\Gamma$ using a \textit{sequent} or \text{judgment} which we express as 
+Syntactically, we represent the idea that a (closed) formula $\mc{A}$ logically follows from a set of (closed) formulas $\Gamma$ using a \textit{sequent} or \text{judgment} which we express as
 \begin{align}
 \Gamma \vdash \mc{A}
 \end{align}
@@ -1201,7 +1500,7 @@ $$
 $$
 
 We will use shorthand notation in writing the antecedents of sequents.
-If we have a sequent 
+If we have a sequent
 $$
 \Gamma_1\cup \ldots \cup \Gamma_n \cup \{\mc{A}_1\}\cup \ldots \cup \{\mc{A}_n\} \vdash \mc{B}
 $$
@@ -1228,36 +1527,35 @@ $$
 $$
 where each of $\gamma_i$ for $1\le i \le n$ is a closed formula.
 We'll give an example of one of the simplest proofs possible.
-Suppose 
+Suppose
 $$
 \Gamma = \{(\mc{A}\implies \mc{B}), \mc{A}\}
 $$
 We can then write down a simple proof table.
 \begin{center}
 \begin{tabular}{ p{1cm} p{6cm} p{3cm} }
-(P1) & $\Gamma \vdash (\mc{A} \implies \mc{B})$ & Prem\\
-(P2) & $\Gamma \vdash \mc{A}$ & Prem\\
-(1) & $\Gamma \vdash \mc{B}$ & $\implies E$, P1, P2
+(1) & $\Gamma \vdash (\mc{A} \implies \mc{B})$ & Prem\\
+(2) & $\Gamma \vdash \mc{A}$ & Prem\\
+(3) & $\Gamma \vdash \mc{B}$ & $\implies E$, 1, 2
 \end{tabular}
 \end{center}
 
 The proof table has three columns.
-The left column numbers premises and inferences within the proof, the middle column is a sequent, and the third column indicates the logical justification or inference rule for the conclusion of the sequent in the middle column.
+The left column numbers inferences within the proof, the middle column is a sequent, and the third column indicates the logical justification or inference rule for the conclusion of the sequent in the middle column.
 
-The rules for a proof table are as follows. 
-First the premises for a proof must be laid out.
-The premises can be one or more sets $\Gamma_i$ of closed formulas. 
-Every premise of $\Gamma_1 \cup \ldots \cup \Gamma_N$ which is used in the proof must be specified as one of the first lines and numbered as (P1), (P2), $\ldots$.
-Premises are justified by the Prem inference rule.
+The rules for a proof table are as follows.
+The premises for a proof must be specified at the outset, though it is not strictly that the first lines of a proof outline any or all of the premise of the proof..
+The premises appear as one or more sets $\Gamma_i$ of closed formulas.
+If $\gamma$ is a formula in $\Gamma$ then it may be introduced to the proof via the Prem inference rule as shown above.
 
-Subsequent lines of derivation are labeled (1), (2), $\ldots$.
+Each line of derivation is labeled (1), (2), $\ldots$ (n).
 Each line of the proof follows from an inference rule (tabulated and explained in the following section) which may leverage some earlier lines in the proof.
 Both the name of the inference rule and the lines on which the inference rule relies are specified in the right column.
 
 The content of the proof above is that if we begin with the set of premises $\Gamma$, we can logically deduce $\mc{B}$.
 Generally, if a sequent like $\Gamma \vdash \mc{B}$ appears on line ($n$) of a proof table then we say the proof constitutes a proof of length $n$ of the subsequent of the sequent on line ($n$) from the antecedents of the sequent on line ($n$).
-Note that if the sets of premises are $\Gamma_1, \ldots, \Gamma_n$ then it is not necessary that every $\gamma_{ij}$ in every $\Gamma_i$ appears as a premise in the proof.
-Furthermore, it is not necessary that every $\Gamma_i$ that is used in the premise lines appears in the antecedent of the final sequent.
+Note that it is not strictly necessary that every premise appears as a Prem line in a proof.
+Furthermore, it is not necessary that every premise appears in the antecedent of the final sequent.
 
 Note that this proof format in fact allows us to derive new sequents from old sequents.
 Alternatively, it is possible to develop a natural deduction in which the lines of the proofs are formulas rather than sequents.
@@ -1270,7 +1568,7 @@ Below I will write down all of the native inference rules for this system of nat
 Each of these rules can be used in a formal proof as described above.
 The rules of inference will be notated as one set of sequents above a line and one sequent below the line.
 This indicates that the set of sequents above the line (the dependencies) logically allow the deduction of the sequent below the line (the conclusion).
-If certain lines within a proof table match the format of the dependencies of a particular inference rule then we may append a new row to the proof table whose sequent in the conclusion sequent of the inference rule and indicating the inference rule and dependency lines appropriately.
+If certain lines within a proof table match the format of the dependencies of a particular inference rule then we may append a new row to the proof table whose sequent is the conclusion sequent of the inference rule and indicating the inference rule and dependency lines appropriately.
 
 \hrulefill
 \begin{definition}[Rule of Prem (Premise)]
@@ -1280,7 +1578,7 @@ If the premises for a proof are the sets $\{\Gamma_1, \ldots \Gamma_N\}$ and $\g
 \AxiomC{}
 \UnaryInfC{$\Gamma_i \vdash \gamma_{ij}$}
 \end{prooftree}
-We must begin a proof with lines like these indicating that each premise follows from the set of premises to which it belongs. Premises cannot appear after any other steps in a proof. Note that we need not include each premise or any premises from each of the sets $\Gamma_i$.
+
 \end{definition}
 
 \begin{definition}[Rule of A (Assumption)]
@@ -1349,9 +1647,11 @@ Note that $\mc{A}$ need not appear in $\Gamma$. ($\mc{A}$ must be closed.)
 \end{definition}
 
 \begin{definition}[Rule of $\forall I$ (Universal Introduction/Generalization)]
-Suppose $\mc{A}$ is a formula with $FV(\mc{A}) = \{x\}$. Suppose $t$ is a closed term and $t$ does not appear in $\Gamma$ or $\mc{A}$. Then we have
+Suppose $\mc{A}\in \textbf{Form}$ with $FV(\mc{A}) = \{x\}$, $t\in \textbf{Term}$ is closed and $S(\mc{A}, t, x)$. Furthermore suppose $t$ does not appear in $\Gamma$ or $\mc{A}$.
+Then we have
+
 \begin{prooftree}
-\AxiomC{$_{\{t\}}\Gamma \vdash \left(_{\{t\}}\mc{A}\right)[t/x]$}
+\AxiomC{$\Gamma \vdash \mc{A}[t/x]$}
 \UnaryInfC{$\Gamma \vdash ((\forall x) \mc{A})$}
 \end{prooftree}
 \end{definition}
@@ -1370,14 +1670,15 @@ Suppose we have
 
 Recall that when we have a proof table we may say that we have proven the sequent appearing on any line (typically the last line) from the premises.
 Whenever we prove one sequent from some set of sequents we can introduce a new derived inference rule.
-Specifically, if we have premises of the form $\Gamma_i \vdash \gamma_i$ and we derive $\Theta \vdash \mc{B}$ then we can introduce a new derived inference rule:
+Specifically, if we have derived $\Theta \vdash \mc{B}$ on line $(n)$ then we can introduce a new inference rule.
+We collect all premises which were used on lines $(j)$ with $j \le n$ and introduce:
 
 \hrulefill
 
 \textbf{Rule of [Der] (Derived Inference Rule)}
 
 \begin{prooftree}
-\AxiomC{$\Gamma_1 \vdash \gamma_1, \ldots, \Gamma_n \vdash \gamma_2$}
+\AxiomC{$\Gamma_{i_1} \vdash \gamma_{j_1}, \ldots, \Gamma_{i_n} \vdash \gamma_{j_n}$}
 \UnaryInfC{$\Theta \vdash \mc{B}$}
 \end{prooftree}
 
@@ -1385,159 +1686,34 @@ Specifically, if we have premises of the form $\Gamma_i \vdash \gamma_i$ and we 
 
 A derived inference rule can be thought of as an abbreviation for the proof that justifies the introduction of that derived rule.
 That is, rather than repeat the proof of the derived inference in a new proof, one can skip the proof and simply use the derived inference rule.
+Each derived inference rule may have its own name.
 
 \newpage
 
-
-
-BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-
-
 We introduce a number of logical abbreviations to allow us to express the usual full range of logical connectives.
 
-\noindent\fbox{\parbox{\textwidth}{ 
-\textbf{Logical Abbreviations}
+\begin{definition}[Logical Abbreviations]
 
-For Wffs $\mc{A}$ and $\mc{B}$
+Suppose $\mc{A}, \mc{B}\in \textbf{pForm}$
+
 \begin{itemize}
 \item{\textbf{Conjunction}: We let $(\mc{A} \land \mc{B})$ abbreviate $(\lnot(\mc{A} \implies (\lnot \mc{B})))$}
 \item{\textbf{Disjunction}: We let $(\mc{A} \lor \mc{B})$ abbreviate $((\lnot \mc{A}) \implies \mc{B})$}
 \item{\textbf{Equivalence}: We let $(\mc{A} \iff \mc{B})$ abbreviate $((\mc{A} \implies \mc{B}) \land (\mc{B} \implies \mc{A}))$}
 \item{\textbf{Existential Quantification}: We let $((\exists x) \mc{A})$ abbreviate $(\lnot((\forall x)(\lnot \mc{A})))$. .}
 \end{itemize}
-}}
+\end{definition}
 
-We also introduce abbreviations for removing parentheses. 
+We also introduce abbreviations for removing parentheses.
 This abbreviation language is copied directly from Tourlakis.
 
-\noindent\fbox{\parbox{\textwidth}{
+\begin{definition}[Parentheses Abbreviation]
 \begin{itemize}
 \item{\textbf{Parentheses:} ``To minimize the use of brackets in the metanotation we adopt standard \textit{priorities} of connectives: $\forall, \exists,$ and $\lnot$ have the highest, and then we have (in decreasing order of priority) $\land, \lor, \implies, \iff$, and we agree not to use outermost brackets. all \textit{associativities} are \textit{right} - that is if we write $\mc{A} \implies \mc{B} \implies \mc{C}$, then it is a (sloppy) counterpart for $(\mc{A} \implies ( \mc{B} \implies \mc{C}))$.''}
 \end{itemize}
-}}
+\end{definition}
 
 \subsection{Metalanguage Concepts}
-
-There are a number of metalanguage concepts and manipulations which will be important to the final proof that extensions by definitions are conservative.
-
-The first of these is the concept of the \textit{depth} of a Wff, with the idea that more complex Wffs have a larger depth.
-The depth, or complexity, of a Wff will be an integer quantifying the number of steps used to build up that Wff.
-Induction on the depth of a Wff will be an important metalogical technique.
-
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Wff Depth}
-
-We define inductively the depth of a pWff $\mc{A}$.
-
-\begin{itemize}
-\item{If $\mc{A}$ is an atomic formula then $D(\mc{A}) = 0$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
-\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $D(\mc{A}) = \text{max}(D(\mc{B}) + D(\mc{C})) + 1$.}
-\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ then $D(\mc{A}) = D(\mc{B}) + 1$.}
-\end{itemize}
-}}
-
-We can see plainly (and could prove by induction) that the depth of a Wff is equivalent to the total number of logical operators and quantifiers in that Wff.
-
-\newpage
-The next metalogical concept is the distinction between free and bound variables.
-The terminology developed here will help us discuss the concept of term substitution.
-
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Free Variables}
-We define inductively the set of free variables in a term or Wff $\mc{A}$, $FV(\mc{A})$.
-
-\begin{itemize}
-\item{if $\mc{A}\equiv x$ is a variable then $FV(\mc{A}) = \{x\}$.}
-\item{if $\mc{A} \equiv ft_1\ldots t_n$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(f)=\emptyset$ if $f$ is a 0-ary function.}
-\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
-\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
-\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
-\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$. Recall that $\mc{B}$ must contain $x$ as a substring.}
-\end{itemize}
-}}
-
-If $FV(\mc{A}) = \{x_1, \ldots, x_n\}$ then we write $\mc{A} = \mc{A}(x_1, \ldots, x_n) = \mc{A}(\bv{x})$.
-We say that $x_1, \ldots, x_n$ appear free in $\mc{A}$.
-If a Wff contains any free variables then we say that it is \textit{open}.
-Otherwise we say the Wff is \textit{closed}.
-A closed Wff has had functions or constants plugged in for all variables.
-
-Recall that an instance of a variable $x$ is \textit{bound} within a Wff $\mc{A}$ if it appears in the scope of a quantifier $(\forall x)$.
-If an instance of a variable $x$ does not appear within the scope of a quantifier with $\mc{A}$ then we can see that $x$ appears free in $\mc{A}$.
-
-Note that a variable can appear both free and bound in a Wff.
-For example, $x$ appears both free and bound in the Wff $(Px \land ((\forall x)Qxy))$.
-While this is a valid Wff, it would be less confusing if we instead had $(Px \land ((\forall z)Qzy))$.
-These two expressions can be shown to be logically equivalent using the inference rules which will follow.
-
-In terms of semantics, it is always possible to assign a truth value to a closed Wff.
-Open Wffs however are trickier.
-For example, while it is clear that the sentence `$3=5$' can have a truth value, the sentence `$x=5$' cannot have a truth value because the truth value depends on what value is plugged in for $x$.
-
-\newpage
-We are now in a position to carefully define term replacement.
-
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Term Replacement}
-
-Suppose $s, t\in \textbf{Term}$ and $x\in \textbf{Var}$.
-\begin{itemize}
-\item{If $s \in \textbf{Var}$ then if $s\equiv x$ $s[t/ x] \equiv t$. If $s \not\equiv x$ then $s[t/ x] \equiv s$}
-\item{If $s \equiv fs_1\ldots s_n$ with $f\in \textbf{Func}_n$ and $s_1\ldots s_n \in \textbf{Term}$ then \\ $s[t/ x] \equiv fs_1[t/ x]\ldots s_n[t/ x]$. This definition implies that if $f\in \textbf{Func}_0$ then $f[t/ x] \equiv f$.}
-\end{itemize}
-
-Suppose $\mc{A}\in \textbf{Wff}$.
-\begin{itemize}
-\item{If $\mc{A}$ is atomic then $\mc{A}\equiv Ps_1\ldots s_n$ with $P\in \textbf{Pred}_n$ and $s_1\ldots s_n\in \textbf{Term}$. $\mc{A}[t/ x] \equiv Ps_1[t/ x]\ldots s_n[t/ x]$. This definition implies that if $P \in \textbf{Pred}_0$ then $P[t/ x] \equiv P$.}
-\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $\mc{A}[t/ x] \equiv (\mc{B}[t/ x] \implies \mc{C}[t/ x])$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{A}[t/ x] \equiv (\lnot \mc{B}[t/ x])$.}
-\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then if $y\not \equiv x$ then $\mc{A}[t/ x] \equiv ((\forall y)\mc{B}[t/ x])$. If $y\equiv x$ then $\mc{A}[t/ x] \equiv \mc{A}$.}
-\end{itemize}
-}}
-
-With some minor work, we can see that if $s$ is a term that $s[t/x]$ is also a term and that if $\mc{A}$ is atomic that $\mc{A}[t/x]$ is also atomic.
-We can then perform induction on Wff depth to prove that if $\mc{A}$ is a Wff that $\mc{A}[t/x]$ is also a Wff.
-
-Our rule for replacement in a quantifier Wff says to replace all free occurrences of $x$ by $t$.
-We would typically expect the replacement of free variables to have no effect on the semantics of the formula in question.
-Unfortunately our definition of term replacement is slightly too general and simple to ensure this.
-Consider the expression $\mc{A} \equiv ((\forall y)Pxy)$.
-We can construct $\mc{A}[y/x] \equiv ((\forall y)Pyy)$.
-We see that the replacement is valid and allowed because $y\not \equiv x$, but unfortunately we can see that $\mc{A}$ and $\mc{A}[y/x]$ are not logically equivalent.
-What has happened here is that the variable $y$, which appeared in the replacement term, was captured by the quantifier $(\forall y)$ when replaced into $\mc{A}$.
-When we define the rules of inference we will have to take special care to ensure no capture of replacement terms occurs.
-
-An alternative approach would be to add a proviso to the term replacement rule that no replacement occurs if $y$ appears in $t$.
-However, we will take the philosophical view that replacement should be a simple operation on Wffs independent of the anticipated logical manipulation.
-Instead we will define the concept of substitutability.
-
-\newpage
-The idea for term substitutability is that if construction $\mc{A}[t/x]$ results in no capture of any variables then we would like to say $t$ is substitutable for $x$ in $\mc{A}$.
-In this case we write $\mc{S}(\mc{A}, t, x)$.
-If it is the case that $\mc{S}(\mc{A}, t, x)$ then we notationally indicate $\mc{A} \equiv _{[t/x]}\mc{A}$.
-We define substitutability as follows.
-
-\noindent\fbox{\parbox{\textwidth}{
-\textbf{Term Substitutability}
-
-\begin{itemize}
-\item{If $\mc{A}$ is an atomic formula then $\mc{S}(\mc{A}, t, x)$.}
-\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$ and $\mc{S}(\mc{C}, t, x)$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$.}
-\item{If $\mc{A} \equiv ((\forall y)\mc{B})$ then $\mc{S}(\mc{A}, t, x)$ if $\mc{S}(\mc{B}, t, x)$ and $y\not\in FV(t)$ or $x\not \in FV(\mc{B})$.}
-\end{itemize}
-}}
-
-The first proviso on substitutability in a quantifier expression ensures that if a replacement is made that there is no capture of a variable $y$ that might appear in $t$.
-In particular, note that if $t$ is a closed term then we always have $\mc{S}(\mc{A}, t, x)$
-
-The second proviso on substitutability in a quantifier expression allows for the substitution to take place if $x \not\in FV(\mc{B})$ even if $y\in FV(t)$.
-This is allowed because the substitution will not change the overall expression $\mc{A}$ since $x$ does not appear in $\mc{B}$.
-
-Finally, it will also be valuable for us to introduce notation for when a term does not appear in an expression.
-If $t$ does not appear in $\mc{A}$ we write $_{\{t\}}\mc{A} \equiv \mc{A}$.
-If $t$ does not appear in $\mc{A}$ and $t$ is substitutable for $x$ in $\mc{A}$ then we write $_{[t/x], \{t\}}\mc{A}$.
 
 The next (final?) metalanguage concept we will introduce is that of sub-Wff replacement.
 This will allow us to perform the operation of replacing an atomic formula, or sub-Wff within a Wff, by another Wff.
@@ -1576,7 +1752,7 @@ The second issue can be avoided by noting (as we will prove later) that any Wff 
 We saw above that in term substitution it was necessary to define the concept of substitutability on top of substitution.
 In the case of term substitution it was always the case that term substitution resulted in either a term or a Wff after substitution
 
-Similar to the case 
+Similar to the case
 
 
 
@@ -1596,13 +1772,13 @@ $$
 $$
 
 But we can see that this is not a Wff because of the repeated quantification over $x$.
-This issue 
+This issue
 
-Similarly to term replacement, we must also define a concept of substitutability for atoms. We say $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ to mean that $\mc{P}$ is substitutable for $\mc{X}$ in $\mc{A}$. $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ if (1) if $(\forall x)$ appear in $\mc{P}$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier in $\mc{A}$ and (2) no  
+Similarly to term replacement, we must also define a concept of substitutability for atoms. We say $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ to mean that $\mc{P}$ is substitutable for $\mc{X}$ in $\mc{A}$. $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ if (1) if $(\forall x)$ appear in $\mc{P}$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier in $\mc{A}$ and (2) no
 
 \subsubsection{Draft}
 
-Bound Variable Substitution 
+Bound Variable Substitution
 
 \noindent\fbox{\parbox{\textwidth}{
 \textbf{Bound Variable Substitution}
@@ -1640,227 +1816,11 @@ If $\mc{A} \equiv (\lnot \mc{B})$ then $D(\mc{B}) = D(\mc{A}) - 1 < n$. $\mc{A}\
 
 If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ then $D(\mc{A}) = D(\mc{B}) + d(\mc{C}) + 1$ so $D(\mc{B}), D(\mc{C}) < \mc{A}$ so $\mc{B}\{y/x\}$ and $\mc{C}\{y/x\}$ are Wffs by induction hypothesis. $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$. Since $\mc{B}\{y/x\}$ and $\mc{C}\{y/x\}$ are Wffs we have that $\mc{A}\{y/x\}$ is a Wff.
 
-Now suppose $\mc{A} \equiv ((\forall z)\mc{B})$. if $x\equiv z$ then $\mc{A}\{y/x\} \equiv ((\forall y)\mc{B}[y/x])$. For this to be a Wff we must have that $\mc{B}[y/z]\equiv$ is a Wff, $\mc{B}[y/z]$ contains $y$, but does not contain $(\forall y)$. 
+Now suppose $\mc{A} \equiv ((\forall z)\mc{B})$. if $x\equiv z$ then $\mc{A}\{y/x\} \equiv ((\forall y)\mc{B}[y/x])$. For this to be a Wff we must have that $\mc{B}[y/z]\equiv$ is a Wff, $\mc{B}[y/z]$ contains $y$, but does not contain $(\forall y)$.
 
 $\mc{B}[y/z]$ is a Wff because $\mc{B}$ is a Wff. <<need some proofs about term substitution to prove that since $z$ appears in $\mc{B}$ (because it's in the scope of $\forall z$ in $\mc{A}$) that $y$ appears in $\mc{B}[y/z]$. I think this will proceed by showing that $z \in FV(\mc{B})$ and that $FV(\mc{B}[y/z]) = FV(\mc{B})\backslash \{z\} \cup \{y\}$ so that $y\in FV(\mc{B}[y/z])$ and if $y\in FV(\mc{B}[y/z])$ then $y$ appears in $\mc{B}[y/z]$>>
 
 But, because $S_B(\mc{A}, y, x)$, we have that $S_F(\mc{B}, y, z)$.
-
-
-\newpage
-
-\section{Formal Proof}
-\subsection{Sequents}
-Syntactically, we represent the idea that Wff $\mc{A}$ logically follows from a set of Wffs $\Gamma$ using a sequent, or judgment, which we express as
-
-$$\Gamma \vdash \mc{A}$$.
-
-The symbol in the middle, $\vdash$, is the turnstile symbol.
-The Wffs in the set $\Gamma$ on the left hand side are called the antecedents of the sequent and the Wff $\mc{A}$ on the right hand side is called the subsequent.
-We say the subsequent $\mc{A}$ is derivable from the antecedents $\Gamma$.
-A more concrete example of a sequent is 
-
-$$
-\{(\mc{A}\implies \mc{B}), \mc{A}\} \vdash \mc{B}.
-$$
-
-We will use a shorthand notation for the antecedents of sequents.
-For sets of Wffs labeled $\Gamma_i$ and for Wffs $\mc{A}_i$ we can write
-
-\begin{align}
-\Gamma_1, \ldots, \Gamma_n, \mc{A}_1, \ldots, \mc{A}_n \vdash \mc{B}
-\end{align}
-
-as an abbreviation for
-
-\begin{align}
-\Gamma_1 \cup \ldots \cup \Gamma_n \cup \{\mc{A}_1\} \cup \ldots \cup \{\mc{A}_n\} \vdash \mc{B}
-\end{align}
-
-That is Wffs are replaced by singleton sets containing those Wffs and commas are replaced by the set union operation.
-
-In some of what follows it will be important to indicate that a particular term, $t$, doesn't appear free in any of a set of Wffs. If $\Gamma = \{\mc{A}_1, \ldots , \mc{A}_n\}$ where $t$ doesn't appear free in any of $\mc{A}_i$ (that is $_{\{t\}}\mc{A}_i$) then we let $\Gamma \equiv _{\{t\}}\Gamma$.
-
-$\Gamma_1 \backslash \Gamma_2$ denotes the subtraction of set $\Gamma_2$ from $\Gamma_1$.
-
-In what follows, we will develop our proof theoretic framework which is essentially a calculus of the $\vdash$ symbol.
-The framework will be based around rules of inference which allow us to derive new sequents from old sequents.
-
-\subsection{Proof Table}
-
-In logical proofs we begin with a set of premises, and, through logical manipulations, we draw new conclusions.
-In the context of syntactic proof theory the premises serve as the starting point for a logical symbol game and rules of inference allows us to infer new logical statements dependent on the premises and other derived statements.
-
-I will present proofs in a tabular format with premises listed at the top of the table.
-The steps of the proof will be written as new lines in the table, where each line must be justified by some rule of inference which may involve earlier lines. 
-
-One of the simplest example of a logical proof would be
-
-\begin{center}
-\begin{tabular}{ p{1cm} p{6cm} p{2cm} }
-(1) & $\Gamma \vdash (\mc{A} \land \mc{B})$ & Prem\\
-(2) & $\Gamma \vdash \mc{A}$ & $\land E$, 1\\
-\end{tabular}
-\end{center}
-
-We see that each line of the proof is numbered at the far left.
-In the center of each line we see a sequent with a set of antecedents and a subsequent.
-At the right we see the logical justification for writing down each line.
-For the first line in the proof above the logical justification is that we take that sequent as a premise.
-In this case no further logical justification is needed.
-On the second line we have leveraged the rule of $\land E$, shorthand for `conjunction elimination' and applied it to the first line.
-This is an example of one of the inference rules which we be described shortly.
-
-All of the premises for a proof must be written as the first lines in the proof.
-If we have any proof table which obeys the rules of inference faithfully, then for any line of the proof after the premises, we say that the proof table constitutes a proof of the sequent on that line from the set of premise sequents.
-
-If a sequent appear on line $(n)$ of a proof that has $k$ premises then we say the proof table constitutes a proof of length $n-k$ of the sequent on line $(n)$ from the $k$ premises.
-
-In what follows we will demand that all of the all of the Wffs in our proofs are closed.
-That is to say, semantically, we would like to deal with Wffs which could have truth values.
-Again, semantically, a proof would say something like: If the sets of statements $\Gamma$ are true then some other statement $\mc{A}$ will be true.
-Recall that only closed statements can be easily assigned clear truth values.
-This does slightly limit our proof structure.
-For example, we can't prove $((x>5) \implies (x>3))$.
-Instead we must prove $((\forall x)((x>5) \implies (x>3))$.
-
-\subsection{Inference Rules}
-
-Below I will write down all of the native inference rules for this system of natural deduction.
-Each of these rules can be used in a formal proof as described above.
-
-As explained, above, each line of our proof will express a sequent.
-The proof will then derive new sequents from old sequents.
-Alternatively, it is possible to develop a natural deduction in which the lines of the proofs are Wffs rather than sequents.
-The advantage of deriving new sequents from old sequents, as opposed to simply deriving new Wffs from old Wffs, is that it is natural to keep track of on which premises any particular conclusion relies.
-
-The rules of inference will be notated as one set of sequents above a line and one sequent below the line with the idea that the set of sequents above the line (the dependencies) logically allow the deduction of the sequent below the line (the conclusion). 
-
-\newpage
-
-\hrulefill
-
-\textbf{Rule of Prem (Premise)}
-
-\begin{prooftree}
-\AxiomC{}
-\UnaryInfC{$\Gamma \vdash \mc{A}$}
-\end{prooftree}
-
-We can start a proof with any (closed) sequent as a premise. Premises must appear at the top lines of a proof.
-
-\hrulefill
-
-\textbf{Rule of A (Assumption)}
-
-\begin{prooftree}
-\AxiomC{}
-\UnaryInfC{$\mc{A}\vdash \mc{A}$}
-\end{prooftree}
-
-We can always assume that a (closed) Wff $\mc{A}$ derives itself from no premises.
-
-\hrulefill
-
-\textbf{Rule of W (Weakening)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma_1 \vdash \mc{A}$}
-\UnaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{A}$}
-\end{prooftree}
-
-Note that $\Gamma_2$ may be the empty set. This allows us to derive a sequent that has already been derived on a later line. This will be useful to allow to rewrite the same sequent with the inclusion or exclusions of convenient abbreviations. ($\Gamma_2$ must be closed)
-
-\hrulefill
-
-\textbf{Rule of $\implies I$ (Implication Introduction)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash \mc{B}$}
-\UnaryInfC{$\Gamma\backslash \{\mc{A}\} \vdash (\mc{A} \implies \mc{B})$}
-\end{prooftree}
-
-Note that $\mc{A}$ need not appear in $\Gamma$ for this inference rule. ($\mc{A}$ must be closed).
-
-\hrulefill
-
-\textbf{Rule of $\implies E$ (Implication Elimination)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma_1 \vdash (\mc{A} \implies \mc{B})$}
-\AxiomC{$\Gamma_2 \vdash \mc{A}$}
-\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \mc{B}$}
-\end{prooftree}
-
-\hrulefill
-
-\textbf{Rule of $\lnot E$ (Negation Elimination)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma_1 \vdash \mc{A}$}
-\AxiomC{$\Gamma_2 \vdash (\lnot \mc{A})$}
-\BinaryInfC{$\Gamma_1, \Gamma_2 \vdash \curlywedge$}
-\end{prooftree}
-
-\hrulefill
-
-\textbf{Rule of $\lnot I$ (Negation Introduction)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash \curlywedge$}
-\UnaryInfC{$\Gamma \backslash \{\mc{A}\} \vdash (\lnot \mc{A})$}
-\end{prooftree}
-
-Note that $\mc{A}$ need not appear in $\Gamma$. ($\mc{A}$ must be closed.)
-
-\hrulefill
-
-\textbf{Rule of $DN$ (Double Negation)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash (\lnot(\lnot \mc{A}))$}
-\UnaryInfC{$\Gamma \vdash \mc{A}$}
-\end{prooftree}
-
-\hrulefill
-
-\textbf{Rule of $\forall I$ (Universal Introduction/Generalization)}
-
-\begin{prooftree}
-\AxiomC{$_{\{t\}}\Gamma \vdash \left(_{[t/x], \{t\}}\mc{A}\right)[t/x]$}
-\UnaryInfC{$\Gamma \vdash ((\forall x) \mc{A})$}
-\end{prooftree}
-
-$x$ must be in $FV(\mc{A})$.
-
-\hrulefill
-
-\textbf{Rule of $\forall E$ (Universal Elimination/Instantiation/Specification)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma \vdash ((\forall x)_{[t/x]}\mc{A})$}
-\UnaryInfC{$\Gamma \vdash \mc{A}[t/x]$}
-\end{prooftree}
-
-\hrulefill
-
-Recall that when we have a proof table we say can say that we have proven the sequent appearing on any line (typically the last line) from the premises.
-Whenever we prove one sequent from some set of sequents we can introduce a new derived inference rule.
-Specifically, if we have $n$ premises of the form $\Gamma_i \vdash \mc{A}_i$ and we derive $\Theta \vdash \mc{B}$ then we can introduce a new derived inference rule:
-
-\hrulefill
-
-\textbf{Rule of [Der] (Derived Inference Rule)}
-
-\begin{prooftree}
-\AxiomC{$\Gamma_1 \vdash \mc{A}_1, \ldots, \Gamma_n \vdash \mc{A}_n$}
-\UnaryInfC{$\Theta \vdash \mc{B}$}
-\end{prooftree}
-
-\hrulefill
-
-A derived inference rule can be thought of as an abbreviation for the proof that justifies the introduction of that derived rule.
-That is, rather than repeat the proof of the derived inference in a new proof, one can skip the proof and simply use the derived inference rule.
 
 \newpage
 
@@ -2223,7 +2183,7 @@ The rules for existential introduction and elimination will be
 \begin{prooftree}
 \AxiomC{$\Gamma \vdash {_{[t/x]}\mc{A}}[t/x]$}
 \UnaryInfC{$\Gamma \vdash ((\exists x)\mc{A})$}
-\end{prooftree} 
+\end{prooftree}
 
 \hrulefill
 
@@ -2335,7 +2295,7 @@ If $\mc{T}_2$ is an extension of $\mc{T}_1$ and $\Phi_{\mc{T}_2} \cap \mc{L}_1 =
 That is, every Wff which is provable in $\mc{T}_1$ is also provable and $\mc{T}_2$ and every Wff of $\mc{L}_1$ which is provable in $\mc{T}_2$ is also provable in $\mc{T}_1$.
 
 \subsection*{Extension by Definition}
-There are two ways we can extend a theory by definition. 
+There are two ways we can extend a theory by definition.
 We can either introduce a new predicate or new function symbol and a corresponding axiom.
 The concept of extension by function definition requires equality $=$ to be included in the language.
 We will not yet include equality so we will save the description of that for later.
@@ -2356,24 +2316,6 @@ Let $\nu\in \mc{L}_2$ be the Wff
 Let $\mc{R}_2 = \mc{R}_1$ and $\Gamma_2 = \Gamma_1 \cup \{\nu\}$.
 The theory $\mc{T}_2$ determined by $\mc{L}_2, \Gamma_2$ and $\mc{R}_2$ is an extension by predicate definition of $\mc{T}_1$.
 
-\section{Temporary section on predicate definition without quantifiers}
-
-Above we defined term replacement.
-In addition to replacing terms, it will be valuable for us to be able to replace entire sub-Wffs within a Wff by another Wff.
-To this end we define Wff replacement.
-
-
-If $\mc{A}$ is a Wff, $\mc{X}$ is an atomic formula, and $\mc{P}$ is a Wff then we define the replacement of $\mc{X}$ by $\mc{P}$ in $\mc{A}$, notated as $\mc{A}[\mc{P}/\mc{X}]$, by:
-
-\hrulefill
-\begin{itemize}
-\item{If $\mc{A}$ is atomic then if $\mc{A}\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{P}$. If $\mc{A}\not\equiv \mc{X}$ then $\mc{A}[\mc{P}/\mc{X}] \equiv \mc{A}$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ the $\mc{A}[\mc{P}/\mc{X}] \equiv (\lnot \mc{B}[\mc{P}/\mc{X}])$.}
-\item{If $\mc{A} \equiv (\mc{B} \implies \mc{C})$ then $\mc{A}[\mc{P}/\mc{X}] \equiv (\mc{B}[\mc{P}/\mc{X}] \implies \mc{C}[\mc{P}/\mc{X}])$.}
-\end{itemize}
-\hrulefill
-
-It can be easily proven that if $\mc{A}$
 
 \section{Wff Atom Replacement}
 
@@ -2391,14 +2333,14 @@ If $\mc{A}$ is a Wff, $\mc{X}$ is an atomic formula, and $\mc{P}$ is a Wff then 
 Note that $\mc{A}[\mc{P}/\mc{X}]$ is not necessarily a Wff due to constraints with respect to quantification.
 For $\mc{A}[\mc{P}/\mc{X}]$ to be a Wff it is necessary that, if $\mc{P}$ has any quantifier $(\forall x)$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier within $\mc{A}$.
 
-Similarly to term replacement, we must also define a concept of substitutability for atoms. We say $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ to mean that $\mc{P}$ is substitutable for $\mc{X}$ in $\mc{A}$. $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ if (1) if $(\forall x)$ appear in $\mc{P}$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier in $\mc{A}$ and (2) no  
+Similarly to term replacement, we must also define a concept of substitutability for atoms. We say $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ to mean that $\mc{P}$ is substitutable for $\mc{X}$ in $\mc{A}$. $\mc{S}(\mc{A}, \mc{P}, \mc{X})$ if (1) if $(\forall x)$ appear in $\mc{P}$ that $\mc{X}$ is not within the scope of any $(\forall x)$ quantifier in $\mc{A}$ and (2) no
 
 \section{Wff Breakdown Tree}
 
 Consider a Wff $\mc{A}$.
 In what follows we will be interested in identifying particular Wff substrings of $\mc{A}$ such as $\mc{P}$.
 For example, we may be interested in the Wff $\mc{A}$ with one instance of $\mc{P}$ replaced by $\mc{Q}$.
-Unfortunately if $\mc{A} \equiv (\mc{P} \implies \mc{P})$, for example, then this sentence is ambiguous. 
+Unfortunately if $\mc{A} \equiv (\mc{P} \implies \mc{P})$, for example, then this sentence is ambiguous.
 To resolve this problem we will come up with a rigorous schematic to uniquely specify an instance of a substring Wff in a main Wff.
 
 We first define the overall depth of a Wff which, in some way, encodes the complexity of the Wff.
@@ -2417,11 +2359,11 @@ We will often induct on the depth of a Wff to prove metalogical theorems.
 
 We now need the ability to break a Wff down into its constituent parts.
 The constituent parts of a Wff are contained in its parsing tree $T(\mc{A})$.
-We develop the parsing tree $T(\mc{A})$ by applying a recursive algorithm on the Wff. 
+We develop the parsing tree $T(\mc{A})$ by applying a recursive algorithm on the Wff.
 For any Wff we can find it's children by noticing its main connective, or top-level structure.
 The elements of the parsing tree will be 4-tuples.
 The first element of the tuple is one of $\{\text{Wff}, A, \lnot, \implies, \forall\}$.
-This first element indicates how the sub-part is brought into $\mc{A}$. 
+This first element indicates how the sub-part is brought into $\mc{A}$.
 The second element is an integer indicating the depth of the part within the overall Wff.
 The third element is an integer indicating the branch number of the part within the Wff.
 And finally the fourth element is a Wff representing the part.
@@ -2464,7 +2406,7 @@ If $\mc{A} \equiv ((\forall x)\mc{B})$ then $C(\mc{A}) = \{(\forall, 1, 1, \mc{B
 
 \subsubsection{Unique Depth and Branch Numbers}
 
-We now prove that the tuple $(n, m)$ specifying the depth and branch number for every element of $C(\mc{A})$ is unique within $C(\mc{A})$. 
+We now prove that the tuple $(n, m)$ specifying the depth and branch number for every element of $C(\mc{A})$ is unique within $C(\mc{A})$.
 
 If $D(\mc{A}) = 1$ then $\mc{A}$ is atomic so $C(\mc{A}) = \emptyset$. There are no elements in $C(\mc{A})$ so the condition is vacuously satisfied.
 
@@ -2480,7 +2422,7 @@ If $\mc{A} \equiv ((\forall x)\mc{B})$ then $C(\mc{A}) = \{(\forall, 1, 1, \mc{B
 
 \subsubsection{Unique Depth and Branch Numbers for Full Tree}
 
-Since no depth number smaller than 1 appears in $C(\mc{A})$, we have that the depth and branch numbers in 
+Since no depth number smaller than 1 appears in $C(\mc{A})$, we have that the depth and branch numbers in
 
 $$
 T(\mc{A}) = \{(\text{Wff}, 0, 1, \mc{A})\} \cup C(\mc{A})
@@ -2515,14 +2457,14 @@ $$
 \nu \vdash ((\forall x_1)(\ldots((\forall x_n) (\mc{P} \iff \mc{Q})))).
 $$
 
-Let $\mc{A}' \equiv B\mc{Q}C$. I will now prove that $\nu \vdash (\mc{A} \iff \mc{A}')$. 
+Let $\mc{A}' \equiv B\mc{Q}C$. I will now prove that $\nu \vdash (\mc{A} \iff \mc{A}')$.
 For this I will need to define the depth of a Wff, $D(\mc{A})$.
 
 
 
 We will prove the desired theorem by metalogical strong induction on the depth of the Wff $\mc{A}$.
 That is, we will prove that the theorem holds in the case when $D(\mc{A}) = 1$.
-Then, if $D(\mc{A}) = n$, we will assume the theorem holds for all integers $<n$ and the prove again that the theorem holds by $n$. 
+Then, if $D(\mc{A}) = n$, we will assume the theorem holds for all integers $<n$ and the prove again that the theorem holds by $n$.
 In this way we will be assured the theorem holds for all Wff depths.
 
 \subsection*{Base Case}
@@ -2536,7 +2478,7 @@ It is then the case that $(\mc{A} \iff \mc{A}') \equiv (\mc{P} \iff \mc{Q})$, bu
 \subsection*{Induction Step}
 
 Suppose $D(\mc{A}) = n$.
-We have that 
+We have that
 $$
 \nu \vdash ((\forall x_1)(\ldots((\forall x_n) (\mc{P} \iff \mc{Q})))).
 $$
@@ -2569,7 +2511,7 @@ $$
 \Phi_{\mc{T}_1} \subset \Phi_{\mc{T}_2} \cap \mc{L}_1
 $$
 
-The challenge for this proof is to prove that 
+The challenge for this proof is to prove that
 
 $$
 \Phi_{\mc{T}_2} \cap \mc{L}_1 \subset \Phi_{\mc{T}_1}
@@ -2582,7 +2524,7 @@ Our goal is to prove that $\Gamma_1 = \Gamma_2 \backslash \{\nu\} \vdash_{\mc{T}
 
 We will prove this in a few steps.
 First we must define the concept of the translation of a Wff from $\mc{L}_2$ into $\mc{L}_1$.
-Suppose $\mc{A} \in \mc{L}_2$. 
+Suppose $\mc{A} \in \mc{L}_2$.
 We then define $\mc{A}^\# \in \mc{L}_1$ by induction.
 
 \hrulefill
@@ -2597,7 +2539,7 @@ We will accomplish this by metalogically deconstruction of the $\mc{T}_2$ proof 
 This proof has length $N$.
 We will prove by metalogical induction on proof length that if $\Gamma_2 \vdash_{\mc{T}_2} \mc{A}$ via a proof of length $N$, then it is possible to find a proof of $\Gamma_1 \vdash_{\mc{T}_1} \mc{A}$ (of unspecified length).
 
-Suppose we have a proof that concludes $\Gamma \vdash_{\mc{T}} \mc{A}$. 
+Suppose we have a proof that concludes $\Gamma \vdash_{\mc{T}} \mc{A}$.
 We define the length of the proof to be the line number on which $\Gamma \vdash_{\mc{T}} \mc{A}$ appears minus the number of premises.
 This means that if $\mc{A}$ is an axiom of $\mc{T}$ then it is possible to prove $\Gamma \vdash_{\mc{T}} \mc{A}$ in zero steps.
 
