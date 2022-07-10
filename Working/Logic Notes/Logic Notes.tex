@@ -27,6 +27,8 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{break}
 \newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{break}
+\newtheorem{informal definition}[definition]{Informal Definition}
 
 
 \newcommand{\bv}[1]{\boldsymbol{#1}}
@@ -123,19 +125,19 @@ I hope that in this revisit I'll be able to overcome this difficulty.
 \subsection{Formal Logic and Language}
 All of traditional mathematics can be expressed in terms of mathematical set theory.
 Set theory itself is expressed in terms of a formal logic called first-order logic \textbf{FOL} which is expressed in the language of first-order logic \textbf{LFOL} .
-The \textbf{LFOL} is a written formal language which means that it is composed of a clearly and well-defined set of symbols which constitutes the alphabet of that language and clear rules of syntax which identify `appropriate' ways in which the symbols can be combined to form well-formed formulas, or Wffs.
-In addition to \textbf{LFOL}, \textbf{FOL} includes a deductive calculus based on inference rules which allows us to derive new Wffs from old Wffs in a way which will be made clear below.
+The \textbf{LFOL} is a written formal language which means that it is composed of a clearly and well-defined set of symbols which constitutes the alphabet of that language and clear rules of syntax which identify `appropriate' ways in which the symbols can be combined to form formulas.\footnote{Sometimes formulas are called well-formed formulas (Wffs), sentences, or words.}
+In addition to \textbf{LFOL}, \textbf{FOL} includes a deductive calculus based on inference rules which allows us to derive new formulas from old formulas in a way which will be made clear below.
 \textbf{FOL} is fully captured by the language in which it is expressed, \textbf{LFOL}, and the inference rules which allow for deduction within the logic.
 
-A formal theory within a formal logic begins with a set of axioms which are a subset of the Wffs of the language.
+A formal theory within a formal logic begins with a set of axioms which are a subset of the formulas of the formal of the language.
 It is then possible, using the inference rules, to derive new formulas from these axioms using the inference rules.
-The main question we ask about a formal theory is which Wffs can be proven from the given axioms?
+The main question we ask about a formal theory is which formulas can be proven from the given axioms?
 
 \subsection{Syntax and Semantics}
-There are two important topics in formal logic: syntax and semantics.
-Syntax pertains to the formal rules listed above such as which symbols are in the alphabet, how can they be combined to form Wffs, and what are the inference rules which allows us to manipulate Wffs to derive new ones.
-Semantics is the task of assigning meaning to Wffs.
-In its simplest form semantics is the assigning of a truth value to Wffs.
+Two central topics in formal logic are syntax and semantics.
+Syntax pertains to the formal rules mentioned above such as which symbols are in the alphabet, how can they be combined to form formulas, and what a
+Semantics is the task of assigning meaning to formulas.
+In its simplest form semantics is the assigning of a truth value to formulas.
 
 Let's consider an example.
 Suppose we would like to formalize the statement: If $x$ is an integer and $x$ is odd then $x \div 2$ is an integer.
@@ -145,11 +147,11 @@ $$
 $$
 
 The smallest element in our formal language is the \textit{term}.
-A term is one of three things (1) a concrete object such as the number \qq{2}, (2) a variable into which concrete objects can be `plugged in' such as \qq{x}, or (3) an $n$-ary function of other terms such as \qq{$\div$}.
+A term is one of three things (1) a concrete object such as the number \qq{2}, (2) a variable into which concrete objects can be `plugged in' such as \qq{x}, or (3) an $n$-ary function of other terms such as \qq{$\div x2$}.
 In fact, below we will express a concrete object as a 0-ary function.
 The terms in the above expression are:
 
-\begin{align}
+\begin{align*}
 & x \\
 & \mathbb{N} \\
 & x \\
@@ -157,7 +159,7 @@ The terms in the above expression are:
 & x \\
 & 2 \\
 & \mathbb{N}
-\end{align}
+\end{align*}
 
 Here I have listed every term as it appears from left to right.
 We can see that some terms appear multiple times in the formula.
@@ -171,53 +173,56 @@ An atomic formula is the combination of an $n$-ary predicate symbol and $n$ term
 We have 2 predicate symbols in the above formula: \qq{$\in$} is a 2-ary predicate and \qq{$O$} is a 1-ary predicate symbol.
 The atomic formulas are then
 
-\begin{align}
+\begin{align*}
 \mc{A} \equiv& \in x \mathbb{N}\\
 \mc{B} \equiv& Ox\\
 \mc{C} \equiv& \in \div x2 \mathbb{N}
-\end{align}
+\end{align*}
 
-Here $\mc{A}$, $\mc{B}$, and $\mc{C}$ are metalanguage symbols which stand for the corresponding Wffs on the right hand sides of the $\equiv$ symbol.
+Here $\mc{A}$, $\mc{B}$, and $\mc{C}$ are metalanguage symbols which stand for the corresponding formulas on the right hand sides of the $\equiv$ symbol.
 
-Finally, the next larger object in our language is the Wff.
-Atomic formulas themselves are already Wffs, but we can form larger more complex Wffs by stringing together smaller Wffs with connectives such as \qq{$\land$} and \qq{$\implies$} or quantifying with $(\forall x)$.
-We see sub-Wffs above:
+Finally, the next larger object in our language is the formula.
+Atomic formulas themselves are already formulas, but we can form larger more complex formulas by stringing together smaller formulas with connectives such as \qq{$\land$} and \qq{$\implies$} or quantifying with $(\forall x)$.
+We see sub-formulas above:
 
-\begin{align}
+\begin{align*}
 & ((\forall x)((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N})) \\
 & ((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N}) \\
 & (\in x \mathbb{N} \land Ox)\\
 & \in x \mathbb{N}\\
 & Ox \\
 &  \in \div x 2 \mathbb{N}
-\end{align}
+\end{align*}
 
-The above discussion has been a purely syntactic analysis of the given Wff.
-That is, we broke down the Wff into smaller parts of the formal language.
-We will see below that this Wff is, in fact, a Wff according to the formal rules of syntax.
+The above discussion has been a purely syntactic analysis of the given formula.
+That is, we broke down the formula into smaller parts of the formal language.
+We will see below that this formula is, in fact, a formula according to the formal rules of syntax for \textbf{LFOL}.
 
 Semantics comes in when we give an \textit{interpretation} to the various expressions above.
 For example, when we \textit{interpret} the symbol \qq{2} as the number 2, the expression \qq{$\div x 2$} as the division of the variable $x$ by the number 2, or predicate \qq{$Ox$} to mean that the variable $x$ is odd, we are imposing semantics onto the expression.
-We also are making a semantic interpretation any time we impose or deduce a truth value for a given Wff.
-For example, on all of the usual interpretations, we would assign a value of false to the Wff above because the odd integers are in fact, not divisible by 2.
+We also are making a semantic interpretation any time we impose or deduce a truth value for a given formula.
+For example, on all of the usual interpretations, we would assign a value of false to the formula above because the odd integers are,ga in fact, not divisible by 2.
 
 In this document I would like to follow a game formalist approach to formal logic.
 This is an approach which holds that it is possible to describe set theory, and by extension, all of mathematics using only syntactic methods.
 Or, at the very least, it asks the question how far one can get using such an approach.
 To that end, I would like it to be clear that all definitions and arguments should be self-contained within purely syntactic analyses.
-At a few times I may make reference to semantic ideas, but this is only to motivate the definition.
+At a few times I may make reference to semantic ideas, but this is only to motivate definitions and manipulations, and such references should be disposable with respect to the main focus of this work.
 One could, instead, proceed by dropping semantics entirely from the narrative.
-In this case some definitions may appear unmotivated, at least at first, but that is not, technically, a problem for the game formalist.
+In such an approach some definitions may appear unmotivated, at least at first, but that is not, technically, a problem for the game formalist.
 
 \subsection{Outline}
 
 The goal of this work is to prove that extensions by definition to a formal theory are conservative extensions.
 
-I will begin with a thorough outlining of \textbf{LFOL}, starting with the alphabet, and then moving onto syntax.
-In addition, some useful metalanguage concepts such as term substitution will be defined.
-The conventions chosen in my definitions for \textbf{LFOL} are chosen with the goal of easing the proof about definition by extension to follow.
-For example, to minimize metalogical inductive cases, I restrict to using a small subset of connectives, rather than the full intuitive set sometimes chosen.
+I will begin with a thorough outlining of \textbf{LFOL}
+I begin by defining the alphabet and the various symbols of the language.
+This is followed detailed definitions and theorems pertaining to lists which will allow us to effectively manipulate the strings over the alphabet which will constitute the terms and formulas of \textbf{LFOL}.
+Next the syntax of \textbf{LFOL} is defined which allows us to identify which strings constitute formulas.
+The next technical sections involve the definition of free and bound variables and a study of the replacement of free and bound variables within formulas.
+Such manipulations will be important for abstract proof theory involving quantification.
 
+% TODO Work on this section after writing the proof theory stuff.
 After \textbf{LFOL} is laid out we move into proof theory.
 We being by describing sequents and follow with the concept of a formal proof and our corresponding rules of inference.
 We then derive a number of derived inference rules, including inference rules for the abbreviated symbols which were not included natively in the language.
@@ -230,10 +235,137 @@ In the remainder of this document I will prove that these two forms of extension
 These proofs will utilize metalogical induction.
 
 \newpage
-\section{The Language of First Order Logic (LFOL)}
+\section{Informal Mathematics}
+The goal of this work is to carefully define \textbf{LFOL} and \textbf{FOL} so that we can eventually formally describe ZFC set theory within \textbf{FOL} to serve as a foundation for the formal description of much of modern mathematics.
+However, we will not be able to perform this task starting from nothing.
+Indeed, to create this foundation for formal mathematics we will find ourselves relying on \textit{informal} conceptions of various simple mathematical constructs.
+In this chapter I will outline these prerequisite informal mathematical concepts necessary for this project.
+In this chapter we will have "definitions" for informal concepts, but these definitions should not be taken as seriously as those that appear in later chapters of this work or in formal mathematical texts.
+These definitions should be thought of a bit more like definitions of English words which are understood by speakers of the language and less like formal definitions which could, for example, be encoded on a computer.
+
+Note that these informal definitions may closely mirror the definitions of their formal counterparts.
+However, we would have a logical circularity problem if we required the formal concept of a set to define the formal concept of a set.
+Instead, we rely on informal definitions initially and formalize them later, when we are able.
+
+The first informal concept we will need is that of an informal object.
+\begin{informal definition}[Object]
+An object can be a wide range of things.
+Examples of an object are: a table, an apple or a word.
+An object should be clearly identifiable and nameable.
+\end{informal definition}
+
+The main types of objects we will encounter in this work will be symbols.
+\begin{informal definition}[Symbol]
+A symbol is a type of object.
+Written symbols are specific two dimensional patterns depicted on paper or screens.
+We will typically use symbols from the English alphabet and numeral system as well some punctuation symbols and brackets.
+\end{informal definition}
+
+\begin{informal definition}[Object Equality]
+Suppose the symbols $x$, $y$, and $z$ represent objects.
+We define the concept of object equality.
+\begin{itemize}
+\item{If $x$ and $y$ are the same item then we may write $x\equiv y$. Otherwise we write $x\not \equiv y$. This relies on the identifiability property of informal objects.}
+\item{If $x\equiv y$ then $y\equiv x$.}
+\item{If $x\equiv y$ and $x\equiv z$ then $y\equiv z$.}
+\end{itemize}
+From the first property we can see that we always have $x\equiv x$.
+\end{informal definition}
+Note that in the formal setting it is possible to define equality as a binary relation satisfying certain properties but we will find having a direct informal definition of equality to be more useful and intuitive.
+
+The next informal concept we need is that of a set.
+\begin{informal definition}[Set]
+A set is a collection of distinct objects.
+If, for example, $a$, $b$, and $c$ are objects then the set containing these objects may be denoted as $\{a, b, c\}$.
+Note that sets only enumerate \textit{distinct} objects so if $x\equiv y$ then $\{x, y\}$ is the same set as $\{x\}$ and $\{y\}$.
+
+If a certain object denoted by $x$ is contained in a set $S$ then we denote this with the set membership symbol as $x\in S$.
+\end{informal definition}
+We may require informal sets with an infinite number of objects.
+If we have one or more sets there are ways to extract new sets composed of the elements of the initial sets.
+
+\begin{informal definition}[Subset]
+If $S$ and $T$ are sets and all elements that are contained in $S$ are also contained in $T$ then we say $S$ is a subset of $T$ and we denote this by $S\subset T$.
+This is equivalent to the condition that $x\in S$ implies $x\in T$.
+\end{informal definition}
+
+\begin{informal definition}[Set Equality]
+If $S$ and $T$ are sets and $S\subset T$ and $T\subset S$ then we say $S=T$.
+It should be informally understood that
+\begin{itemize}
+\item{$S=S$}
+\item{If $S=T$ then $T=S$}
+\item{If $U$ is a third set then if $S=T$ and $S=U$ then $T=U$.}
+\end{itemize}
+\end{informal definition}
+
+\begin{informal definition}[Subset Specification]
+Suppose $S$ is a set.
+Then we may extract a subset of $S$ by picking out all components of $x\in S$ which satisfy a certain property $\phi(x)$.
+This specification set is denoted using so-called `set-builder notation' as
+$$
+\{x\in S: \phi(x)\}
+$$
+\end{informal definition}
+
+Note that sets constructed this way are always subsets of a larger set $S$.
+If we were to drop this set and allow sets of the form $\{x:\phi(x)\}$, i.e. to allow all objects $x$ satisfying some property $\phi(x)$ to form a set, then we open ourselves to the Russell Paradox.
+
+The Russell Paradox occurs if we allows sets of the $\{x:\phi(x)\}$ to be a set.
+In that case we would be permitted to let $\phi(x)$ mean `$x$ is a set which does not contain itself'.
+We might denote the Russell set by
+$$
+R = \{x: x \not \in x\}
+$$
+But then we may ask the question is $R\in R$?
+If $R\in R$ then we would expect $R\not \in R$ because $R$ contains itself.
+But if $R\not \in R$ we would expect $R\in R$ because it does not contain itself.
+
+Another type of set pathology we may encounter is that of an `infinite descending sequence of sets'.
+Russell's paradox arose from the ability to define overly arbitrary sets.
+Our subset specification resolution to Russell's paradox however, does not prevent us to have a set $S$ which is  contained in itself: $S\in S$.
+Allowing this and similar pathologies may or may not present problems.
+This type of pathology will be prevented in formal set theory with the axiom of regularity.
+However, in our informal treatment, since we will always be working with simple enough sets (finite sets of symbols and collections thereof), we won't go through the trouble of providing an informal version of the axiom of regularity.
+
+Note also that in formal set theory all objects are sets so we are much more prone and must be more wary of `objects containing themselves' pathologies.
+But in our informal setting we are considering sets of objects, and those objects need not be sets.
+This informal approach alleviates some of the burden.
+And finally, since we are being informal, we need not be so careful as to account for every edge and corner case because we are not trying to develop a perfect system, only one which can be understood by our readers.
+
+\begin{informal definition}[Set Union]
+If $S$ and $T$ are sets then we call the set containing all elements of $S$ and all elements of $T$ the union of $S$ and $T$ and denote it by $S\cup T$.
+The union $S\cup T$ can equivalently be specified by the following sentence.
+Object $x\in S\cup T$ iff $x \in S$ or $x\in T$.
+\end{informal definition}
+In formal set theory we require an axiom which explicitly allows the union of two sets to also be a set.
+But in our informal theory we take it for granted that the union of two sets exists and merely have a definition to give a name and introduce syntax for that set.
+Likewise, in formal set theory we require a pairing axiom to allow the set $\{S, T\}$ to be a formal set, but again, we take that for granted in the informal setting.
+
+\begin{definition}[Set Intersection]
+If $S$ and $T$ are sets then we call the set containing all elements which are included in both sets $S$ and $T$ to be the intersection of $S$ and $T$ and denote it by $S\cap T$.
+We can construct the set intersection using subset specification:
+$$
+S\in T = \{x\in S: x\in T\}
+$$
+\end{definition}
+
+\begin{definition}[Set Subtraction]
+If $S$ and $T$ are sets then we may create a new set by collect all elements of $S$ which are not in $T$.
+This new set is called the set subtraction of $S$ and $T$ and is denoted by $S\setminus T$.
+We can construct the set subtraction using subset specification:
+$$
+S\setminus T = \{x\in S: x \not \in T\}
+$$
+\end{definition}
+
+
+
+\newpage
+\section{Syntax of the Language of First Order Logic (LFOL)}
 
 At the basis of a formal language is a set of symbols which can be concatenated together to form strings.
-If a string follows certain allowed construction rules, specified by the syntax of the language, then the string is said to be a well-formed formula, or Wff.
+If a string follows certain allowed construction rules, specified by the syntax of the language, then the string is said to be a well-formed formula, or formula.
 
 There are multiple classes of symbol objects, each of which plays a different role in the syntax of the language.
 We first distinguish between logical and non-logical symbols.
@@ -250,23 +382,22 @@ The symbols included in the non-logical symbols may vary from one application of
 The logical symbols are defined as follows.
 \begin{itemize}
 \item{\textbf{Variables:} Variable symbols such as $x_1, x_2, \ldots, v_1, v_2, \ldots$. We will try to use lower case letters from near the end of the alphabet for variables. The set of all variables is denoted $\textbf{Var}$.}
-\item{\textbf{Logical Operators:} The logical operators for implication: $\implies$, and negation: $\lnot$. The set of all logical operators is denoted $\textbf{Lop}$.}
-\item{\textbf{Quantifiers:} The for all quantifier: $\forall$. The set of all quantifiers is denoted $\textbf{Quant}$.}
+\item{\textbf{Logical Operators:} The logical operators for implication: $\implies$ and negation: $\lnot$. The set of all logical operators is denoted $\textbf{Lop}$.}
+\item{\textbf{Quantifiers:} The \qq{for all} quantifier: $\forall$. The set of all quantifiers is denoted $\textbf{Quant}$.}
 \item{\textbf{Punctuation Marks:} Parenthesis $($ and $)$. The set of all punctuation marks is denoted $\textbf{Punct}$.}
 \end{itemize}
-
 
 The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \sqcup \textbf{Lop} \sqcup \textbf{Quant} \sqcup \textbf{Punct}$.
 \end{definition}
 
-We have chosen to use a restricted set of logical operators in the theory to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
-This reduced set of logical symbols will reduce the number of cases over which we need to induct for metalogical proofs.
+We have chosen to use a restricted set of logical operators in the language to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
+This reduced set of logical symbols will reduce the number of cases over which we need to induct for various metalanguage proofs.
 However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as abbreviations and metalogically derive the appropriate corresponding rules of inference.
 
 \begin{definition}[Non-Logical Symbols]
 The non-logical symbols are defined as follows.
 \begin{itemize}
-\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These example all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
+\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These examples all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
 \item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$. We reserve constants $\alpha_0, \alpha_1, \ldots \in \textbf{Func}_0$ as `placeholder' constants that exist in any logical theory. The placeholder constants will be used for proofs involving universal specification and generalization, but will not be permitted to appear in logical axioms.}
 \end{itemize}
 
@@ -281,17 +412,20 @@ The set of all symbols in the language is denoted $\textbf{Symb}$ and is the dis
 \subsubsection{Definition of and Basic Facts about Lists}
 The symbols in $\textbf{Symb}$ can be combined into collections of symbols called strings.
 Formally, we will define strings as finite ordered lists of symbols.
-Most of this section will be devoted to defining and describing finite ordered lists.
+This section will be devoted to various definitions and metalinguistic or syntactic proofs regarding ordered lists.
+The technical formalism presented here will be required to establish the unique readability of formulas in $\textbf{LFOL}$ and to permit proofs regarding free and bound variable substitution.
 
 \begin{definition}[Natural Number Subset]
-Let $[n]$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$
+Let $\bar{n}$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$.
 \end{definition}
 
-As an example we have that $[5] = \{0, 1, 2, 3, 4\}$.
-Note that $[0] = \{\} = \emptyset$.
+As an example we have that $\bar{5} = \{0, 1, 2, 3, 4\}$.
+Note that $\bar{0} = \{\} = \emptyset$.
 
 \begin{definition}[Finite Ordered List]
-If $\Sigma$ is any set of objects then a length $n$ finite ordered list of objects in $\Sigma$ is a functional mapping from $[n]$ to $\Sigma$.\footnote{When we use the term `list' below we always mean `finite ordered list'.}  The collection of all lists over a set of objects $\Sigma$ is denoted by $\Sigma^*$.
+If $\Sigma$ is any set of objects then a length $n$ finite ordered list of objects in $\Sigma$ is a functional mapping from $\bar{n}$ to $\Sigma$.\footnote{When we use the term `list' below we always mean `finite ordered list'.}
+The set of all lists of length $n$ over a set of objects $\Sigma$ is denoted $\Sigma_n^*$.
+The set of all lists is the union of all lists of any length $\Sigma^* = \bigcup_{i=0}^{\infty} \Sigma_n^*$.
 \end{definition}
 
 
@@ -313,7 +447,7 @@ $$
 $$
 
 \begin{definition}[List Length]
-If $\mc{L}$ is a mapping from $[n]$ into a set of objects $\Sigma$ then we say that $\mc{L}$ is a length $n$ list of elements of $\Sigma$.
+If $\mc{L}\in\Sigma_n^*\subset \Sigma^*$ is a mapping from $\bar{n}$ into a set of objects $\Sigma$ then we say that $\mc{L}$ is a length $n$ list of elements of $\Sigma$.
 We denote the length of the list by $|\mc{L}| = n$.
 Note that $|\mc{L}| \ge 0$.
 \end{definition}
@@ -326,211 +460,192 @@ Otherwise, if $\alpha$ and $\beta$ represent different objects we may write $\al
 \end{definition}
 
 \begin{definition}[List Element Extraction]
-Suppose $\mc{L}$ is a list with $|\mathcal{L}| = n$.
+Suppose $\mc{L}\in\Sigma_n^*\subset \Sigma^*$ so that $|\mathcal{L}| = n$.
 For all $i$ with $0 \le i < n$ we denote the $i^{\text{th}}$ element of $\mc{L}$ (with 0-indexing) by $\mc{L}[i]$.
 \end{definition}
 
 For example, in the list above we have $\mc{L}[2] \equiv Q$.
 
 \begin{definition}[List Equality]
-If $\mc{A}$ and $\mc{B}$ are two lists which satisfy $|\mc{A}| = |\mc{B}| = n$ and for all $0 \le i < n$ we have $\mc{A}[i] \equiv \mc{B}[i]$ then we say that $\mc{A}$ and $\mc{B}$ are the same list and we may write $\mc{A} \equiv \mc{B}$.
+If $\mc{A}, \mc{B}\in\Sigma_n^*$ so that $|\mc{A}| = |\mc{B}| = n$ and for all $0 \le i < n$ we have $\mc{A}[i] \equiv \mc{B}[i]$ then we say that $\mc{A}$ and $\mc{B}$ are the same list and we may write $\mc{A} \equiv \mc{B}$.
 \end{definition}
 
-Recall that a list can be a mapping from $[0] = \emptyset$.
+Recall that a list can be a mapping from $\bar{0} = \emptyset$.
 
 \begin{definition}[Empty Lists]
-If $\mc{L}$ is a mapping from the empty set $[0] = \emptyset$ then we say $\mc{L}$ is an empty list.
-We can see that if $\mc{L}$ is an empty list then $|\mc{L}| = 0$.
-An empty list could be written as $[]$.
+Suppose $\mc{L}\in\Sigma_0^*$ so that $|\mc{L}|=0$.
+Then we say $\mc{L}$ is an empty list.
 \end{definition}
 
 \begin{theorem}[The Empty List is Unique]
-Suppose $\mc{E}$ and $\mc{E}'$ are both empty lists.
-We have that $|\mc{E}| = |\mc{E}'| = 0 $.
+Suppose $\mc{E}, \mc{E}' \in \Sigma_0^n$ so that they are both empty lists with $|\mc{E}| = |\mc{E}'| = 0 $.
 Since there is no $i$ satisfying $0\le i < 0$ we need not check equality for any elements of these empty lists.
 Therefore $\mc{E} \equiv \mc{E}'$.
+We denote the unique empty list by $\mc{E}$ and note that $\mc{E}$ can be expressed as $[]$.
 \end{theorem}
 
-\begin{definition}[The Empty List]
-Because of the uniqueness of the empty list we are justified in defining a notation for it. The empty list can be expressed as $[]$ and we define $\mc{E} \equiv []$.
-\end{definition}
-
 \subsubsection{List Concatenation}
-If we are given two lists, $\mc{A}$ and $\mc{B}$, we can define a third list by concatenating these two lists.
+Suppose $\mc{A}, \mc{B}\in\Sigma^*$.
+We define the concatenation of $\mc{A}$ and $\mc{B}$ as follows.
 
 \begin{definition}[List Concatenation]
-Suppose $\mc{A}$, $\mc{B}$, and $\mc{C}$ are lists.
-If $\mc{C}$ satisfies
+Suppose $\mc{A}, \mc{B}\in\Sigma^*$.
+Then $\mc{A}\circ \mc{B}$, the concatenation of $\mc{A}$ and $\mc{B}$ is defined as
+
 \begin{enumerate}
-\item{$|\mc{C}| = |\mc{A}| + |\mc{B}|$}
-\item{for all $i$ with $0 \le i < |\mc{A}|$ we have $\mc{C}[i] \equiv \mc{A}[i]$}
-\item{for all $i$ with $0 \le i < |\mc{B}|$ we have $\mc{C}[|\mc{A}| + i] \equiv \mc{B}[i]$}
+\item{$\mc{A}\circ\mc{B} \in \Sigma_{|\mc{A}| + |\mc{B}|}^*$ so that $|\mc{A}\circ\mc{B}| = |\mc{A}| + |\mc{B}|$.}
+\item{For all $0\le i < |\mc{A}|$ let $(\mc{A}\circ \mc{B})[i] \equiv \mc{A}[i]$.}
+\item{For all $0\le i < |\mc{B}|$ let $(\mc{A}\circ\mc{B})[|\mc{A}| + i] \equiv \mc{B}[i]$.}
 \end{enumerate}
-Then we say $\mc{C}$ is the concatenation of $\mc{A}$ and $\mc{B}$ and we write
-$$
-\mc{C} \equiv \mc{A}\circ \mc{B}
-$$
-We often abbreviate $\mc{A}\circ\mc{B}$ as $\mc{A}\mc{B}$.
-Note that such a $\mc{C}$ always exists.
+Note that we may write $\mc{A}\circ\mc{B}$ as $(\mc{A}\circ\mc{B})$ and we may abbreviate it as $\mc{A}\mc{B}$ or $(\mc{A}\mc{B}$).
+A consequence of this notation is that we can indicate the $i^{\text{th}}$ element of $\mc{A}\circ\mc{B}$ as $(\mc{A}\circ\mc{B})[i]$ or $(\mc{A}\mc{B})[i]$.
 \end{definition}
 
-\begin{theorem}[Equality of Concatenation with list implies Equality of Lists]
+\begin{theorem}[Equality of Concatenation with List implies Equality of Lists]
+Suppose $\mc{A}, \mc{A}', \mc{B}, \mc{B}' \in \Sigma^*$.
+If $\mc{A}\mc{B}\equiv \mc{A}\mc{B}'$ then $\mc{B}\equiv \mc{B}$.
+If $\mc{A}\mc{B}\equiv \mc{A}'\mc{B}$ then $\mc{A}\equiv \mc{A}$.
+
 Suppose $\mc{A}\mc{B} \equiv \mc{A}\mc{B}'$.
-Then $\mc{B} \equiv \mc{B}'$.
-First, $|\mc{A}\mc{B}| = |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}'| = |\mc{A}| + |\mc{B}'|$ so $|\mc{B}| = |\mc{B}'| = n$.
+We have $|\mc{A}\mc{B}| = |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}'| = |\mc{A}| + |\mc{B}'|$ so $|\mc{B}| = |\mc{B}'| = n$.
 Choose $0\le i < n$.
-By the definition of concatenation we have $\mc{A}\mc{B}[|\mc{A}| + i] \equiv \mc{A}\mc{B}'[|\mc{A}| + i] \equiv \mc{B}[i] \equiv \mc{B}'[i]$.
+By the definition of concatenation, we have $\mc{A}\mc{B}[|\mc{A}| + i] \equiv \mc{A}\mc{B}'[|\mc{A}| + i] \equiv \mc{B}[i] \equiv \mc{B}'[i]$.
 Since this holds for $0\le i < n$ we have $\mc{B} \equiv \mc{B}'$.
 
-Now suppose $\mc{A}\mc{B}\equiv \mc{A}'\mc{B}$. Then $\mc{A}\equiv \mc{A}'$.
-First $|\mc{A}\mc{B}| \equiv |\mc{A}| + |\mc{B}| = |\mc{A}'\mc{B}| = |\mc{A}'\mc{B}| = |\mc{A}'| + |\mc{B}|$ so $|\mc{A}| = |\mc{A}'| = n$. Consider $0\le i < n$.
-By the definition of concatenation we have $\mc{A}\mc{B}[i] \equiv \mc{A}'\mc{B}[i] \equiv \mc{A}[i] \equiv \mc{A}'[i]$.
+Now suppose $\mc{A}\mc{B}\equiv \mc{A}'\mc{B}$.
+We have $|\mc{A}\mc{B}| \equiv |\mc{A}| + |\mc{B}| = |\mc{A}'\mc{B}| = |\mc{A}'\mc{B}| = |\mc{A}'| + |\mc{B}|$ so $|\mc{A}| = |\mc{A}'| = n$. Consider $0\le i < n$.
+By the definition of concatenation, we have $\mc{A}\mc{B}[i] \equiv \mc{A}'\mc{B}[i] \equiv \mc{A}[i] \equiv \mc{A}'[i]$.
 Since this holds for $0 \le i < n$ we have $\mc{A} \equiv \mc{A}'$.
-
-
 \end{theorem}
 
 \begin{theorem}[Concatenation with the Empty List]
-Here we prove that $\mc{E}\mc{B} \equiv \mc{B} \mc{E} \equiv \mc{B}$.
+Suppose $\mc{B}\in\Sigma^*$.
+Then $\mc{E}\mc{B} \equiv \mc{B} \mc{E} \equiv \mc{B}$.
 
-For the first case, suppose $|\mc{B}|= 0$ so that $\mc{B}\equiv \mc{E}$.
-We can check that the set $\mc{E}$ satisfies the conditions to be the concatenation $\mc{E}\mc{E}$.
-First $|\mc{E}| = 0 = 0 + 0 = |\mc{E}| + |\mc{E}|$.
-Next, there is no $i$ satisfying $0 \le i < |\mc{B}|$ or $0 \le i < |\mc{E}|$ so the two element equality conditions for concatenation are vacuously satisfied.
-Therefore $\mc{E}\mc{E} \equiv \mc{E}\mc{B} \equiv \mc{B}\mc{E} \equiv \mc{E}$.
+Suppose $|\mc{B}|= 0$ so that $\mc{B}\equiv \mc{E}$ so that $\mc{E}\mc{B} \equiv \mc{B}\mc{E} \equiv \mc{E}\mc{E}$.
+But, by the definition of concatenation, $\mc{E}\mc{E}\in\Sigma_0^*$ so $\mc{E}\mc{E}\equiv \mc{E}\equiv \mc{B}$.
 
-Consider $|\mc{B}|>0$ .
+Now suppose $|\mc{B}|>0$.
 
-Let $\mc{C} \equiv \mc{E}\mc{B}$.
-First we see that $|\mc{C}| = |\mc{E}| + |\mc{B}| = |\mc{B}|$.
-By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[|\mc{E}| + i] \equiv \mc{C}[i] \equiv \mc{B}[i]$.
+We have that $|\mc{E}\mc{B}| = |\mc{E}| + |\mc{B}| = |\mc{B}|$.
+By the definition of concatenation, we have that, for $0 \le i < |\mc{B}|$, that $(\mc{E}\mc{B})[|\mc{E}| + i] \equiv (\mc{E}\mc{B})[i] \equiv \mc{B}[i]$.
 This means that $\mc{E}\mc{B}\equiv\mc{B}$.
 
-Let $\mc{C} \equiv \mc{B}\mc{E}$.
-Again $|\mc{C}| \equiv |\mc{B}|+|\mc{E}| = |\mc{B}|$.
-By the definition of concatenation we have that for $0 \le i < |\mc{B}|$ that $\mc{C}[i] \equiv \mc{B}[i]$.
-This means $\mc{B}\mc{E} \equiv \mc{B}$.
+We have that $|\mc{B}\mc{E}| = |\mc{B}| + |\mc{E}| = |\mc{B}|$.
+By the definition of concatenation, we have that, for $\le i \le |\mc{B}|$, that $(\mc{B}\mc{E})[i] \equiv \mc{B}[i]$.
+This means that $\mc{B}\mc{E}\equiv \mc{B}$.
 \end{theorem}
 
 
 \begin{theorem}[List Concatenation is Associative]
 \label{thm:concatassoc}
-Here we will prove that $\Braket{\mc{A}\circ \mc{B}}\circ \mc{C} \equiv \mc{A} \circ \Braket{\mc{B} \circ \mc{C}}$.
-The angle brackets here denote the order of operations for the multiple concatenations.
+Let $\mc{A}, \mc{B}, \mc{C}\in\Sigma^*$.
+Then $(\mc{A}\circ\mc{B})\circ \mc{C} \equiv \mc{A}\circ(\mc{B}\circ\mc{C})$.
 
-First, if $\mc{A} \equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{B}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$.
-If $\mc{B}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{C} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$.
-If $\mc{C}\equiv \mc{E}$ then $\Braket{\mc{A}\mc{B}}\mc{C} \equiv \mc{A}\mc{B} \equiv \mc{A}\Braket{\mc{B}\mc{C}}$. So the theorem holds if any of $\mc{A}$, $\mc{B}$ or $\mc{C}$ is empty.
+If $\mc{A}\equiv \mc{E}$ then $(\mc{A}\mc{B})\mc{C} \equiv \mc{B}\mc{C} \equiv \mc{A}(\mc{B}\mc{C})$.
+If $\mc{B} \equiv \mc{E}$ then $(\mc{A}\mc{B})\mc{C}\equiv \mc{A}\mc{C} \equiv \mc{A}(\mc{B}\mc{C})$.
+If $\mc{C} \equiv \mc{E}$ then $(\mc{A}\mc{B})\mc{C}\equiv \mc{A}\mc{B}\equiv \mc{A}(\mc{B}\mc{E})$.
 
-Now suppose $\mc{A}$, $\mc{B}$, and $\mc{C}$ are all nonempty so that $|\mc{A}|, |\mc{B}|, |\mc{C}| > 0$.
-First we have that
+Now suppose $|\mc{A}|, |\mc{B}|, |\mc{C}| > 0$ so that none are empty.
+Note that
 $$
-|\Braket{\mc{A}\mc{B}}\mc{C}| = |\mc{A}\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}| + |\mc{C}| = |\mc{A}| + |\mc{B}\mc{C}| = |\mc{A}\Braket{\mc{B}\mc{C}}|.
+|(\mc{A}\mc{B})\mc{C}| = |\mc{A}\mc{B}| + |\mc{B}| = |\mc{A}|+|mc{B}|+|\mc{C}| = |\mc{A}| + |\mc{B}\mc{C}| = |\mc{A}(\mc{B}\mc{C})|.
 $$
+Let $0\le i < |\mc{A}|+|\mc{B}|+|\mc{C}| = |(\mc{A}\mc{B})\mc{C}| = |\mc{A}(\mc{B}\mc{C})|$.
+We consider three cases.
 
-Consider $0 \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$.
-We must show
-$$
-\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]
-$$
-There are three cases
 \begin{itemize}
-\item{
-Suppose $0 \le i < |\mc{A}|$.
-Consider $\Braket{\mc{A}\mc{B}}\mc{C}$.
-Since $0 \le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i]$.
-Again, since $0\le i < |\mc{A}|$, we have $\Braket{\mc{A}\mc{B}}[i] \equiv \mc{A}[i]$ so that $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \mc{A}[i]$.
-On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$.
-Since $0 \le i < |\mc{A}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}} \equiv \mc{A}[i]$.
-So in this case $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]$.
-}
-\item{
-Now suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$.
-Define $j = i - |\mc{A}|$ so that $0 \le j < |\mc{B}|$.
-Consider $\Braket{\mc{A}\mc{B}}\mc{C}$.
-Because $0 \le |\mc{A}| \le i < |\mc{A}| + |\mc{B}| = |\mc{A}\mc{B}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\mc{B}}[i] \equiv \Braket{\mc{A}\mc{B}}[|\mc{A}| + j]$. Because $0 \le j < |\mc{B}|$ we have $\Braket{\mc{A}\mc{B}}[|\mc{A}|+j] = \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$.
-On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$.
-Because $0 \le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + j] \equiv \Braket{\mc{B}\mc{C}}[j]$. But, since $0 \le j < |\mc{B}|$ we have $\Braket{\mc{B}\mc{C}}[j] \equiv \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$. So in this case $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i]$.
-}
-\item{
-Now suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}| + |\mc{B}| + |\mc{C}|$.
-Define $j = i - |\mc{A}| - |\mc{B}|$ so that $0 \le j < |\mc{C}|$. Consider $\langle\mc{A}\mc{B}\rangle\mc{C}$.
-Because $0 \le j < |\mc{C}|$ we have $\Braket{\Braket{\mc{A}\mc{B}}\mc{C}}[i] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}| + |\mc{B}| + j] \equiv \langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[|\mc{A}\mc{B}| + j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}| - |\mc{B}|]$.
-On the other hand, consider $\mc{A}\Braket{\mc{B}\mc{C}}$.
-We have $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[i] \equiv \Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j]$.
-We have that $0 \le |\mc{B}| \le |\mc{B}| + j < |\mc{B}| + |\mc{C}| = |\mc{B}\mc{C}|$ so $\Braket{\mc{A}\Braket{\mc{B}\mc{C}}}[|\mc{A}| + |\mc{B}| + j] \equiv \Braket{\mc{B}\mc{C}}[|\mc{B}| + j]$.
-But, $0 \le j < |\mc{C}|$ so $\Braket{\mc{B}\mc{C}}[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i - |\mc{A}|-|\mc{B}|]$.
-So in this case $\langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[i] \equiv \langle\mc{A}\langle\mc{B}\mc{C}\rangle\rangle[i].$
-}
-
-In all cases we have $\langle\langle\mc{A}\mc{B}\rangle\mc{C}\rangle[i] \equiv \langle\mc{A}\langle\mc{B}\mc{C}\rangle\rangle[i]$.
-This means that $\langle\mc{A}\mc{B}\rangle\mc{C} \equiv \mc{A}\langle\mc{B}\mc{C}\rangle$.
+\item{Suppose $0\le i < |\mc{A}|$. Consider $(\mc{A}\mc{B})\mc{C}$. Since $0\le i < |\mc{A}| \le |\mc{A}\mc{B}|$ we have $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}\mc{B})[i]$ but we also have that this is equal to $\mc{A}[i]$ so $((\mc{A}\mc{B})\mc{C})[i] \equiv \mc{A}[i]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. Since $0\le i < |\mc{A}|$ we have $(\mc{A}(\mc{B}\mc{C}))[i]\equiv \mc{A}[i]$ so $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.}
+\item{Suppose $|\mc{A}| \le i < |\mc{A}| + |\mc{B}|$. Let $j = i - |\mc{A}|$ so that $0\le j < |\mc{B}|$.
+Consider $(\mc{A}\mc{B})\mc{C}$. Because $0\le |\mc{A}| \le i < |\mc{A}|+|\mc{B}| = |\mc{A}\mc{B}|$ we have that $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}\mc{B})[i]$.
+We then have $(\mc{A}\mc{B})[i] \equiv (\mc{A}\mc{B})[|\mc{A}|+j] \equiv \mc{B}[j] \equiv \mc{B}[i - |\mc{A}|]$ so that $((\mc{A}\mc{B})\mc{C})[i] \equiv \mc{B}[i-|\mc{A}|]$. Now consider $\mc{A}(\mc{B}\mc{C})$. We have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}|+j]$ but since $0\le j < |\mc{B}| \le |\mc{B}\mc{C}|$ we have $(\mc{A}(\mc{B}\mc{C}))[j] \equiv (\mc{B}\mc{C})[j]$. Again since $0\le j < |\mc{B}|$, we have $(\mc{B}\mc{C})[j] \equiv \mc{B}[j]\equiv \mc{B}[i-|\mc{A}|]$ so that $(\mc{A}(\mc{B}\mc{C}))[i] \equiv \mc{B}[i-|\mc{A}|]$. This means $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.}
+\item{Suppose $|\mc{A}| + |\mc{B}| \le i < |\mc{A}|+|\mc{B}|+|\mc{C}|$.
+Let $j=i-|\mc{A}|-|\mc{B}| = i-|\mc{A}\mc{B}|$ so that $0\le j < |\mc{C}|$. Consider $(\mc{A}\mc{B})\mc{C}$. We have that $((\mc{A}\mc{B})\mc{C})[i] \equiv ((\mc{A}\mc{B})\mc{C})[|\mc{A}\mc{B}|+j] \equiv \mc{C}[j]\equiv \mc{C}[i-|\mc{A}|-|\mc{B}|]$. On the other hand, consider $\mc{A}(\mc{B}\mc{C})$. We have $(\mc{A}(\mc{B}\mc{C}))[i] \equiv (\mc{A}(\mc{B}\mc{C}))[|\mc{A}|+|\mc{B}|+j]$ but $|\mc{B}| \le |\mc{B}|+j < |\mc{B}|+|\mc{C}| \equiv |\mc{B}\mc{C}|$ so $(\mc{A}(\mc{B}\mc{C}))[|\mc{A}|+|\mc{B}|+j] \equiv (\mc{B}\mc{C})[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}[i-|\mc{A}|-|\mc{B}|]$. But this means $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$.}
 \end{itemize}
+
+We have shown for $0\le i < |(\mc{A}\mc{B})\mc{C}| = |\mc{A}(\mc{B}\mc{C})|$ that $((\mc{A}\mc{B})\mc{C})[i] \equiv (\mc{A}(\mc{B}\mc{C}))[i]$ which means $(\mc{A}\mc{B})\mc{C}\equiv \mc{A}(\mc{B}\mc{C})$.
 \end{theorem}
 
 \begin{definition}[Multiple Concatenation]
 Here we define the set of $n$-concatenations over a list of lists.
-Note that lists of lists are different than lists which are themselves lists of objects.
-If $S$ is a list of $n$ lists, i.e. $S\in \textbf{Str}^*$ and $|S| = n$, then $\circ_n(S)$ is defined to be the set of all lists which arise from concatenations of the $n$ lists in $S$.
+Let $\mc{A}_1,\ldots, \mc{A}_n \in \Sigma^*$ and let $S \in (\Sigma^*)^*_n$ with $S = [\mc{A}_1, \ldots, \mc{A}_n]$.
+Note that $S$ is a list of lists which is different than a list of symbols.
+We will define $\circ_n(S)$ to be the set of all lists which arise from ordered concatenations of the $\mc{A}_i$ contained in $S$.
 We define $\circ_n$ recursively.
 
 \begin{itemize}
-\item{We define $\circ_1([\mc{A}]) = \{\mc{A}\}$}
+\item{We define $\circ_1([\mc{A}_0]) = \{\mc{A}_0\}$}
 \item{$\circ_n([\mc{A}_0,\ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{X}\circ\mc{Y}:\mc{X} \in \circ_i([\mc{A}_0,\ldots \mc{A}_{i-1}]) \text{ and } \mc{Y}\in \circ_{n-i}([\mc{A}_{i}, \ldots, \mc{A}_{n-1}])\}$}
 \end{itemize}
-We say that $\circ_n(S)$ is the set of all parenthesizations of the concatenations of the $n$ lists in $S$.
+We say that $\circ_n(S)$ is the set of all parenthesizations of the ordered concatenations of the $n$ lists in $S$.
 
 \end{definition}
 
 As an example consider $\circ_4([\mc{A}, \mc{B}, \mc{C}, \mc{D}])$. This will be equal to
+
 \begin{align*}
-\circ_4(\mc{A}, \mc{B}, \mc{C}, \mc{D}) = \{&\Braket{\mc{A}\circ\Braket{\mc{B}\circ\Braket{\mc{C}\circ\mc{D}}}},\\
-&\Braket{\mc{A}\circ\Braket{\Braket{\mc{B}\circ\mc{C}}\circ\mc{D}}},\\
-&\Braket{\Braket{\mc{A}\circ\mc{B}}\circ\Braket{\mc{C}\circ\mc{D}}},\\
-&\Braket{\Braket{\mc{A}\circ\Braket{\mc{B}\circ\mc{C}}}\circ\mc{D}},\\
-&\Braket{\Braket{\Braket{\mc{A}\circ\mc{B}}\circ\mc{C}}\circ\mc{D}}\}
+\circ_4([\mc{A}, \mc{B}, \mc{C}, \mc{D}]) = \big\{& (\mc{A}\circ (\mc{B}\circ(\mc{C}\circ\mc{D}))),\\
+& (\mc{A}\circ((\mc{B}\circ\mc{C})\circ\mc{D})) \\
+& ((\mc{A}\circ\mc{B})\circ(\mc{C}\circ\mc{D})) \\
+& ((\mc{A}\circ(\mc{B}\circ\mc{D}))\circ\mc{D}) \\
+& (((\mc{A}\circ\mc{B})\circ\mc{C})\circ\mc{D}) \big\}
 \end{align*}
+
+%\begin{align*}
+%\circ_4(\mc{A}, \mc{B}, \mc{C}, \mc{D}) = \{&\Braket{\mc{A}\circ\Braket{\mc{B}\circ\Braket{\mc{C}\circ\mc{D}}}},\\
+%&\mc{A}\circ\Braket{\Braket{\mc{B}\circ\mc{C}}\circ\mc{D}}},\\
+%&\Braket{\mc{A}\circ\mc{B}}\circ\Braket{\mc{C}\circ\mc{D}}},\\
+%&\Braket{\mc{A}\circ\Braket{\mc{B}\circ\mc{C}}}\circ\mc{D}},\\
+%&\Braket{\Braket{\Braket{\mc{A}\circ\mc{B}}\circ\mc{C}}\circ\mc{D}}\}
+%\end{align*}
 
 
 \begin{theorem}[Generalized Associativity of Multiple Concatenation]
-The generalized associativity property for multiple concatenation states that, for $S\in\textbf{Str}^*$ with $S=[\mc{A}_0,\ldots,A_{n-1}]$ that $\circ_n(S)$ has only one element.
-That is, if $\mc{A}, \mc{B}\in\circ_n(S)$ then $\mc{A}\equiv \mc{B}$.
-We may denote this unique element as $\mc{A}_0\circ\ldots\circ\mc{A}_{n-1}$, which can be abbreviated as $\mc{A}_0\ldots\mc{A}_{n-1}$.
-We proceed by induction on $n$.
+The generalized associativity property for multiple concatenation states that if $S\in (\Sigma^*)_n^*$ then $\circ_n(S)$ contains one unique element.
+That is, for $\mc{A}, \mc{B}\in\Sigma^*$, if $\mc{A}, \mc{B} \in \circ_n(S)$ then $\mc{A}\equiv \mc{B}$.
+In this case we have $S=[\mc{A}_0,\ldots,\mc{A}_{n-1}]$ with $\mc{A}_0,\ldots,\mc{A}_{n-1}\in \Sigma^*$ and the unique element may be denoted by $\mc{A}_0\circ\ldots \circ \mc{A}_{n-1}$ or $\mc{A}_0\ldots\mc{A}_{n-1}$.
+We prove this by induction on $n$.
 
 If $n=1$ then $|S|=1$ and $S = [\mc{A}]$.
 We then have $\circ_1(S) = \{\mc{A}\}$.
 This set only has one element so we are done.
 
-The induction hypothesis is that for all $m<n$ that $\circ_m([\mc{A}_0, \ldots, \mc{A}_{m-1}])$ contains a single unique element.
-This element is denoted by $\mc{A}_0\ldots\mc{A}_{m-1}$.
+Now suppose that $n>1$ but for all $1\le m<n$ that if $S\in (\Sigma^*)^*_m$ with $S=[\mc{B}_0,\ldots, \mc{B}_{m-1}]$ with $\mc{B}_0, \ldots, \mc{B}_{m-1}\in\Sigma^*$, then $\circ_m([\mc{B}_0, \ldots, \mc{B}_{m-1}])$ contains a single unique element denoted by $\mc{B}_0\ldots\mc{B}_{m-1}$.
 
-We have the following useful result.
-Suppose $1 \le l \le {m-1}$.
-Since $l < m < n$ we have, by the induction hypothesis, that $\circ_l([\mc{A}_0, \ldots, \mc{A}_{l-1}])$ has a single unique element denoted by $\mc{A}_0\ldots\mc{A}_{l-1}$ (or simply $\mc{A}_0 \equiv \mc{A}_{l-1}$ if $l=1$).
-Since $m-l < m < n$ we also have, again by the induction hypothesis, that $\circ_{m-l}([\mc{A}_l, \ldots, \mc{A}_{m-1}])$ has a single unique element denoted by $\mc{A}_l\ldots\mc{A}_{m-1}$ (or simply $\mc{A}_l \equiv \mc{A}_{m-1}$ if $l=m-1$).
-This means that
+We require the following useful result using the induction hypothesis.
+Suppose $1\le m < n$ and $S\in (\Sigma^*)^*_m$ with $S=[\mc{B}_0,\ldots,\mc{B}_{m-1}]$ with $\mc{B}_0,\ldots,\mc{B}_{m-1}\in\Sigma^*$.
+Now suppose $1 \le l < m < n$.
+Consider $S[0:l] = [\mc{B}_0, \ldots, \mc{B}_{l-1}]$.
+We can see $|S[0:l]| = l$ so $S[0:l] \in (\Sigma^*)^*_l$.
+By the induction hypothesis, we then have that $\circ_l(S[0:l]) = \circ_l([\mc{B}_0,\ldots, \mc{B}_{l-1}])$ has a unique element denoted by $\mc{B}_0\ldots\mc{B}_{l-1}$.
+We also have $1 \le m-l < m < n$.
+Consider $S[l:m] = [\mc{B}_l,\ldots, \mc{B}_{m-1}]$.
+We can see $|S[l:m]| = m-l$ so $S[l:m]\in (\Sigma^*)^*_{m-l}$.
+By the induction hypothesis, we then have that $\circ_{m-l}(S[l:m]) = \circ_{m-l}([\mc{B}_l,\ldots,\mc{B}_{m-1}])$ has a unique element denoted by $\mc{B}_l\ldots\mc{B}_{m-1}$.
+By the definition of multiple concatenation, this means
 $$
-\mc{A}_0\ldots\mc{A}_{l-1} \circ \mc{A}_l\ldots\mc{A}_{m-1} \in \circ_m([\mc{A}_0, \ldots, \mc{A}_{m-1}])
+\mc{B}_0\ldots\mc{B}_{l-1}\circ \mc{B}_l\ldots\mc{B}_{m-1} \in \circ_m(S) = \circ_m([\mc{B}_0,\ldots,\mc{B}_{m-1}])
 $$
-But, by the induction hypothesis, we know this latter set has a single unique element which means
+But, again by the induction hypothesis, this set has a unique element denoted by $\mc{B}_0\ldots\mc{B}_{m-1}$.
+This means
 $$
-\mc{A}_0\ldots\mc{A}_{m-1} \equiv \mc{A}_0\ldots\mc{A}_{l-1}\circ \mc{A}_l \ldots \mc{A}_{m-1}
+\mc{B}_0\ldots\mc{B}_{l-1}\circ\mc{B}_l\ldots\mc{B}_{m-1} \equiv \mc{B}_0\ldots\mc{B}_{m-1}
 $$
 We will use this result below.
 
-Consider now
+Consider now $S\in (\Sigma^*)^*_n$ with $S = [\mc{A}_0,\ldots,\mc{A}_{n-1}]$ with $\mc{A}_0,\ldots,\mc{A}_{n-1}\in \Sigma^*$.
+Consider
 \begin{align*}
 \circ_n([\mc{A}_0,\ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{X}\circ\mc{Y}:\mc{X} \in \circ_i([\mc{A}_0,\ldots \mc{A}_{i-1}]) \text{ and } \mc{Y}\in \circ_{n-i}([\mc{A}_{i}, \ldots, \mc{A}_{n-1}])\}
 \end{align*}
-Because $i<n$ we know, by the induction hypothesis, that $\circ_i([\mc{A}_0, \ldots, \mc{A}_{i-1}])$ has a single unique element denoted by $\mc{A}_0\ldots\mc{A}_{i-1}$.
-Likewise, because $n-i < n$, we know, again by the induction hypothesis, that $\circ_{n-i}([\mc{A}_i, \ldots, \mc{A}_{n-1}])$ has a single unique element denoted by $\mc{A}_i \ldots \mc{A}_{n-1}$.
-We then have
+Because $1\le i<n$ we know, by the induction hypothesis, that $\circ_i([\mc{A}_0, \ldots, \mc{A}_{i-1}])$ has a unique element denoted by $\mc{A}_0\ldots\mc{A}_{i-1}$.
+Likewise, because $1 \le n-i < n$, we know, again by the induction hypothesis, that $\circ_{n-i}([\mc{A}_i, \ldots, \mc{A}_{n-1}])$ has a unique element denoted by $\mc{A}_i \ldots \mc{A}_{n-1}$.
+We can then write
 \begin{align}
 \circ_n([\mc{A}_0, \ldots, \mc{A}_{n-1}]) = \bigcup_{i=1}^{n-1} \{\mc{A}_0\ldots\mc{A}_{i-1}\circ\mc{A}_i\ldots\mc{A}_{n-1}\}
 \end{align}
 
-Now suppose $\mc{X}, \mc{Y} \in \circ([\mc{A}_0, \ldots, \mc{A}{n-1}])$.
+Now suppose $\mc{X}, \mc{Y} \in \circ([\mc{A}_0, \ldots, \mc{A}_{n-1}])$.
 This means there exists $j, k$ with $1 \le j \le n-1$ and $1 \le k \le n-1$ with
 \begin{align}
 \mc{X} \equiv& \mc{A}_0\ldots\mc{A}_{j-1} \circ \mc{A}_j \ldots \mc{A}_{n-1}\\
@@ -539,14 +654,26 @@ This means there exists $j, k$ with $1 \le j \le n-1$ and $1 \le k \le n-1$ with
 We will now show $\mc{X} \equiv \mc{Y}$.
 
 If $j=k$ then clearly $\mc{X}\equiv \mc{Y}$.
+
 We now suppose, without loss of generality, that $k>j$.
-By the intermediate result on the induction hypothesis above, and $n-j < n$ and $k<n$, we can write this as
+Consider $\mc{A}_j\ldots\mc{A}_{n-1}$.
+Because $1 \le k-j < n-j < n$, and the intermediate result above, we have
+$$
+\mc{A}_j\ldots\mc{A}_{n-1} \equiv \mc{A}_j\ldots\mc{A}_{k-1}\circ \mc{A}_k\ldots\mc{A}_{n-1}
+$$
+Consider also $\mc{A}_0\ldots \mc{A}_{k-1}$.
+Because $1 \le j < k < n$, and the intermediate result above, we have
+$$
+\mc{A}_0\ldots\mc{A}_{k-1} \equiv \mc{A}_0\ldots\mc{A}_{j-1}\circ\mc{A}_j\ldots\mc{A}_{k-1}
+$$
+
+We then combine to write
 \begin{align}
-\mc{X} \equiv& \mc{A}_0\ldots\mc{A}_{j-1} \circ \langle\mc{A}_j\ldots\mc{A}_{k-1} \circ \mc{A}_k\ldots\mc{A}_{n-1}\rangle\\
-\mc{Y} \equiv& \langle \mc{A}_0\ldots\mc{A}_{j-1}\circ\mc{A}_j\ldots\mc{A}_{k-1}\rangle\circ\mc{A}_k\ldots\mc{A}_{n-1}
+\mc{X} \equiv& \mc{A}_0\ldots\mc{A}_{j-1} \circ (\mc{A}_j\ldots\mc{A}_{k-1} \circ \mc{A}_k\ldots\mc{A}_{n-1})\\
+\mc{Y} \equiv& (\mc{A}_0\ldots\mc{A}_{j-1}\circ\mc{A}_j\ldots\mc{A}_{k-1})\circ\mc{A}_k\ldots\mc{A}_{n-1}
 \end{align}
-But, we can see by Theorem \ref{thm:concatassoc} that $\mc{X}\equiv \mc{Y}$.
-This implies that $\circ_n(\mc{A}_0,\ldots, \mc{A}_{n-1})$ has a single unique element which we may denote as
+But, we can see by Theorem \ref{thm:concatassoc} (simple associativity of concatenation), that $\mc{X}\equiv \mc{Y}$.
+This implies that $\circ_n(\mc{A}_0,\ldots, \mc{A}_{n-1})$ has a unique element which we may denote as
 \begin{align*}
 \mc{A}_0\ldots\mc{A}_{n-1}
 \end{align*}
@@ -554,157 +681,214 @@ This implies that $\circ_n(\mc{A}_0,\ldots, \mc{A}_{n-1})$ has a single unique e
 \end{theorem}
 
 \begin{theorem}[Length of Multiple Concatenations]
-\label{thm:multconcat}
-Suppose $\mc{A} \equiv \mc{A}_0 \ldots \mc{A}_{N-1}$.
-We will prove by induction on $N$ that $|\mc{A}| = \sum_{k=0}^{N-1} |\mc{A}|_k$.
+\label{thm:list:lenmultconcat}
+Suppose $\mc{A} \equiv \mc{A}_0 \ldots \mc{A}_{n-1}$ with $\mc{A}_0,\ldots,\mc{A}_{n-1}\in\Sigma^*$.
+We will prove by induction on $n$ that $|\mc{A}| = \sum_{k=0}^{n-1} |\mc{A}|_k$.
 
-Suppose $N=1$.
+Suppose $n=1$.
 Then $\mc{A} \equiv \mc{A}_0$ so $|\mc{A}| = |\mc{A}_0|$.
 
-Now suppose the theorem holds for any $m<N$.
-Let $m=N-1$.
-We can write
+Now suppose that $n>1$ but for $1\le m < n$ that if $\mc{B} \equiv \mc{B}_0\ldots\mc{B}_{m-1}$ that $|\mc{B}| = \sum_{k=0}^{m-1} |\mc{B}_k|$.
+
+We have
 $$
-\mc{A} \equiv \Braket{\mc{A}_0 \ldots \mc{A}_{m-1}} \circ \mc{A}_{N-1}
+\mc{A} \equiv \mc{A}_0 \ldots \mc{A}_{n-2} \circ \mc{A}_{n-1}
 $$
-Because the term in the angle brackets is a concatenation of $m<N$ strings we have that
+But, because $n-1<n$, by the induction hypothesis we have
 $$
-|\mc{A}_0\ldots \mc{A}_{m-1}| = \sum_{k=0}^{m-1} |\mc{A}_k|
+|\mc{A}_0\ldots\mc{A}_{n-2}| = \sum_{k=0}^{n-2} |\mc{A}_k|
 $$
-By the definition of concatenation, the length of $\mc{A}$ must then be
+But by the definition of concatenation, we have
 $$
-|\mc{A}| = \sum_{k=0}^{N-2} |\mc{A}_k| + |\mc{A}_{N-1}| = \sum_{k=0}^{N-1}|\mc{A}_k|
+|\mc{A}| = \sum_{k=0}^{n-2} |\mc{A}_k| + |\mc{A}_{n-1}| = \sum_{k=0}^{n-1}|\mc{A}_{n-1}|
 $$
 \end{theorem}
 
 \begin{theorem}[Multiple Concatenation Element Extraction]
-\label{thm:multconcatextract}
-Suppose $\mc{A} \equiv \mc{A}_0\ldots\mc{A}_{N-1}$.
-Now choose $0\le k \le N-1$ and let $L_k = \sum_{j=0}^{k-1} |\mc{A}_j|$, noting that $L_0=0$.
-I will prove by induction on $N$ that if $\mc{A}_k$ is non-empty, then for $0 \le i < |\mc{A}_k|$ that $\mc{A}[L_k + i] \equiv \mc{A}_k[i]$.
+\label{thm:list:multconcatextract}
+Suppose $\mc{A} \equiv \mc{A}_0\ldots\mc{A}_{n-1}$ with $\mc{A}_0,\ldots \mc{A}_{n-1}\in\Sigma^*$.
+Now choose $0\le k < n$ and let $L_{\mc{A},k} = \sum_{j=0}^{k-1} |\mc{A}_j|$ for $k>0$ and $L_{\mc{A},k}=0$ for $k=0$.
+Then for $0\le i < |\mc{A}_k|$ we have $\mc{A}[L_{\mc{A},k}+i] \equiv \mc{A}_k[i]$.
 
-Suppose $N=1$.
-Then $\mc{A} \equiv \mc{A}_0$ and we must choose $k=0$ with $L_0=0$ and $0 \le i < |\mc{A}[0]|$.
-In this case $\mc{A}[i]$ and $\mc{A}_0[i]$ are both defined and $\mc{A}[i] \equiv \mc{A}_0[i]$.
+Suppose $n=1$.
+Then $\mc{A} \equiv \mc{A}_0$ and we must choose $k=0$ with $L_{\mc{A},0}=0$ and $0 \le i < |\mc{A}_0|$.
+We have $\mc{A}[L_{\mc{A},0}+i] \equiv \mc{A}[i] \equiv \mc{A}_0[i]$.
 
-As our induction hypothesis we suppose that for $m = N-1 < N$ that, if $\mc{B}\equiv \mc{A}_0 \ldots \mc{A}_{m-1}$ that for $0\le k \le m-1$ if $\mc{A}_k$ is non-empty and $0 \le i < |\mc{A}_k|$ then $\mc{B}[L_k+i] \equiv \mc{A}_k[i]$.
+Now suppose $n>1$ but for $1\le m < n$ that if $\mc{B}\equiv \mc{B}_0\ldots\mc{B}_{m-1}$ that for $0\le k < m$ that if $L_{\mc{B},k} = \sum_{j=0}^{k-1} |\mc{B}_j|$ then for $0\le i < |\mc{B}_k|$ we have $\mc{B}[L_{\mc{B},k} + i] \equiv \mc{B}_k[i]$.
 
-Consider $\mc{A} \equiv \mc{A}_0 \ldots \mc{A}_{N-1}$.
-We write $\mc{A}$ as
-\begin{align*}
-\mc{A} \equiv \Braket{\mc{A}_0\ldots \mc{A}_{m-1}} \circ \mc{A}_{N-1} \equiv \mc{B}\mc{A}_{N-1}
-\end{align*}
-where I've defined $\mc{B} \equiv \mc{A}_0 \ldots \mc{A}_{m-1}$.
-Note that by the Theorem \ref{thm:multconcat} we have $|\mc{B}| = L_m$.
-Choose $k$ with $0 \le k \le N-1$ with $\mc{A}_k$ non-empty and choose $i$ with $0 \le i < |\mc{A}_k|$.
-
-If $k=m=N-1$ then we have $0\le i < |\mc{A}_{N-1}|$ which means, by the definition of concatenation, that
+Now suppose $\mc{A}\equiv \mc{A}_0\ldots \mc{A}_{n-1}$ and $0\le k < n$ with $L_{\mc{A},k} = \sum_{j=0}^{k-1}|\mc{A}_j|$ and $0\le i < |\mc{A}_k|$.
+We have that
 $$
-\mc{A}[|\mc{B}|+i] \equiv \mc{A}[L_k+i] \equiv \mc{A}_{N-1}[i] \equiv \mc{A}_k[i]
+\mc{A}\equiv \mc{A}_0\ldots \mc{A}_{n-2} \circ \mc{A}_{n-1}
 $$
+Note that $|\mc{A}_0\ldots\mc{A}_{n-2}| = \sum_{j=0}^{(n-1)-1} |\mc{A}_j|$
+We consider two cases.
 
-If $k < m$ then $k+1 \le m$ so $L_{k+1} \le L_m = |\mc{B}|$.
-Consider $j = L_k + i$.
-We have
+First suppose $0\le k < n-1$.
+Then
 $$
-0\le L_k \le j < L_k + |\mc{A}_k| = L_{k+1} \le |\mc{B}|
+L_{\mc{A},k} + i = \sum_{j=0}^{k-1}|\mc{A}_j| + i < \sum_{j=0}^k |\mc{A}_j| \le \sum_{j=0}^{n-2}|\mc{A}_j| = |\mc{A}_0\ldots\mc{A}_{n-2}|
 $$
+because $0\le i < |\mc{A}_k|$.
 This means, by the definition of concatenation, that
 $$
-\mc{A}[j] \equiv \mc{B}[j] \equiv \mc{B}[L_k + i]
+\mc{A}[L_{\mc{A},k}+i] \equiv (\mc{A}_0\ldots\mc{A}_{n-2})[L_{\mc{A}, k}+1]
 $$
-But, the induction hypothesis holds for $\mc{B}$, which means $\mc{B}[L_k+i] \equiv \mc{A}_k[i]$.
-This means $\mc{A}[L_k+i] \equiv \mc{A}_k[i]$.
+But, by the induction hypothesis we have that $(\mc{A}_0\ldots\mc{A}_{n-2})[L_{\mc{A},k}+i] \equiv \mc{A}_k[i]$ so
+$\mc{A}[L_{\mc{A},k}+i] \equiv \mc{A}_k[i]$.
 
+Now suppose $k=n-1$.
+Then
+$$
+L_{\mc{A},k} = \sum_{j=0}^{(n-1)-1}|\mc{A}_j| = |\mc{A}_0\ldots \mc{A}_{n-2}|
+$$
+so
+$$
+\mc{A}[L_{\mc{A},k} +i] \equiv \mc{A}_{n-1}[i]
+$$
+by the definition of concatenation.
 \end{theorem}
 
 \subsubsection{List Slicing and Sublists}
 In addition to combining lists to form larger lists, we can also slice lists to form smaller lists.
 
 \begin{definition}[List Slicing]
-Suppose $\mc{A}$ is a list.
-We define $\mc{A}[i:j]$ recursively on the difference $j-i$. Suppose $0 \le i \le j \le |\mc{A}|$.
+Suppose $\mc{A} \in \Sigma^*$, $0\le i < |\mc{A}|$ and $0 \le n \le |\mc{A}| - i$.
+We define $\mc{A}[i:i+n]\in\Sigma^*$ recursively.
 
 \begin{itemize}
-\item{If $j-i=0$ then $\mc{A}[i:j] \equiv \mc{E}$.}
-\item{If $j-i=1$ then $\mc{A}[i:j] \equiv [\mc{A}[i]]$.\footnote{Note the difference between $[\mc{A}[i]]\in \Sigma^*$, the list containing the object $\mc{A}[i]$ and the object $\mc{A}[i]\in \Sigma$ itself.}}
-\item{If $j-i>1$ then $\mc{A}[i:j] \equiv \mc{A}[i:j-1]\circ\mc{A}[j-1:j]$}
+\item{If $n=0$ then $\mc{A}[i:i+n] \equiv \mc{E}$.}
+\item{If $n=1$ then $\mc{A}[i:i+n] \equiv [\mc{A}[i]]$.\footnote{Note here the distinction between $[\mc{A}[i]]\in\Sigma^*$ and $\mc{A}[i]\in\Sigma$.}}
+\item{If $n>1$ then $\mc{A}[i:i+n] \equiv \mc{A}[i:i+n-1] \circ \mc{A}[i+n-1:i+n]$ noting that $\mc{A}[i+n-1:i+n] \equiv [\mc{A}[i+n-1]]$.}
 \end{itemize}
+
+Suppose $i \le j \le |\mc{A}|$.
+Then $0 \le j-i \le |\mc{A}|-i$ so $\mc{A}[i:i+(j-i)] \equiv \mc{A}[i:j]$ is well-defined according to the definition above.
+
+
 \end{definition}
 
 \begin{definition}[Sublists and Initial Parts]
-Suppose $\mc{A}$ is a list, $0\le i \le j \le |\mc{A}|$ and $\mc{B} \equiv \mc{A}[i:j]$.
+Suppose $\mc{A}\in\Sigma^*$, $0\le i < |\mc{A}|$, $i\le j \le |\mc{A}|$ and $\mc{B} \equiv \mc{A}[i:j]$.
 \begin{itemize}
 \item{We say $\mc{B}$ is a sublist of $\mc{A}$.}
-\item{If $i>0$ or $j<|\mc{A}|$ then we say $\mc{B}$ is a proper sublist of $\mc{A}$.}
-\item{If $i=0$ then we say $\mc{B}$ is an initial part of $\mc{A}$.}
-\item{If $i=0$ and $j < |\mc{A}|$ then we say $\mc{B}$ is a proper initial part of $\mc{A}$.}
-Clearly if $\mc{B}$ is a proper initial part of $\mc{A}$ then it is an initial part of $\mc{A}$, if $\mc{B}$ is an initial part of $\mc{A}$ it is a sublist of $\mc{A}$, and if $\mc{B}$ is a proper sublist of $\mc{A}$ then it is a sublist of $\mc{A}$.
+\item{If $i>0$ or $j<|\mc{A}|$ then we say $\mc{B}$ is a proper sublist of $\mc{A}$. Clearly if $\mc{B}$ is a proper sublist of $\mc{A}$ then it is a sublist of $\mc{A}$.}
+\item{If $i=0$ then we say $\mc{B}$ is an initial part of $\mc{A}$. Clearly if $\mc{B}$ is an initial part of $\mc{A}$ then it is a sublist of $\mc{A}$.}
+\item{If $i=0$ and $j < |\mc{A}|$ then we say $\mc{B}$ is a proper initial part of $\mc{A}$. Clearly if $\mc{B}$ is a proper initial part of $\mc{A}$ then it is an initial part of $\mc{A}$.}
 \end{itemize}
 \end{definition}
 
 \begin{theorem}[The Empty List is an Initial Part of Every List]
-\label{thm:emptylistinitialpart}
-If $\mc{A}$ is a list then $\mc{A}[0:0] \equiv \mc{E}$ so $\mc{E}$ is an initial part of $\mc{A}$.
+\label{thm:list:emptylistisinitpart}
+If $\mc{A}\in\Sigma^*$ then $\mc{A}[0:0] \equiv \mc{E}$ so $\mc{E}$ is an initial part of $\mc{A}$.
 \end{theorem}
 
 \begin{theorem}[Length of Sublist]
+\label{thm:list:lensublist}
+Suppose $\mc{A}\in\Sigma^*$, $0\le i < |\mc{A}|$ and $0\le n \le |\mc{A}|-i$.
+Then $|\mc{A}[i:i+n]| = n$.
 
-Suppose $\mc{A}$ is a list and $0 \le i \le j \le |\mc{A}|$. Here we will prove that $|\mc{A}[i:j]| = j-i$ by induction on $j-i$.
+Suppose $n=0$ so that $\mc{A}[i:i+n] \equiv \mc{E}$.
+Then $|\mc{A}[i:i+n]| = 0 = n$.
 
-\begin{itemize}
-\item{If $j-i=0$ then $\mc{A}[i:j] \equiv \mc{E}$ and $|\mc{A}[i:j]|=0 = j-i$.}
-\item{If $j-i=1$ then $\mc{A}[i:j] = [\mc{A}[i]]$ so $|\mc{A}[i:j]| = 1 = j-i$.}
-\item{Now consider $j-i > 1$.
-Suppose that if $j'-i' < j-i$ that $|\mc{A}[i':j']| = j'-i'$.
-Consider $\mc{A}[i:j] \equiv \mc{A}[i:j-1] \circ \mc{A}[j-1:j]$.
-We have, from the definition of concatenation, that $|\mc{A}[i:j]| = |\mc{A}[i:j-1]| + |\mc{A}[j-1:j]|$.
-But, $(j-1) - i < j-i$ and $j - (j-1) = 1 < j-i$ so $|\mc{A}[i:j-1]| + |\mc{A}[j-1:j]| = (j-1)-i + j - (j-1) = j-i$.}
-\end{itemize}
+Suppose $n=1$ so that $\mc{A}[i:i+n] \equiv [\mc{A}[i]]$ so $|\mc{A}[i:i+n]| =1 = n$.
+
+Now suppose $n>1$ but that for $m<n$ with $0\le m \le |\mc{A}|-i$ that $|\mc{A}[i:i+m]| = m$.
+
+We have
+$$
+\mc{A}[i:i+n] \equiv \mc{A}[i:i+n-1]\circ[\mc{A}[i+n-1]]
+$$
+Let $m=n-1$ and note $m<n$ and $0\le m \le |\mc{A}|-i$.
+Then, by the induction hypothesis, $|\mc{A}[i:i+n-1]|= n-1$.
+We also have $|[\mc{A}[i+n-1]]|=1$.
+We then have, by the definition of concatenation, that $|\mc{A}[i:i+n]| = (n-1)+1 = n$.
 \end{theorem}
 
 \begin{theorem}[Sublist Element Extraction]
-\label{thm:sublistextraction}
-Suppose $\mc{A}$ is non-empty and $0 \le i < j \le |\mc{A}|$ and $0 \le k < j-i$.
-We will prove that $\mc{A}[i:j][k] \equiv \mc{A}[k + i]$. We will induct on $j$.
+\label{thm:list:sublistelementextraction}
+Suppose $\mc{A}\in\Sigma^*$, $0\le i < |\mc{A}|$, $0\le n \le |\mc{A}|-i$ and $0\le k < n$.
+Then $(\mc{A}[i:i+n])[k] \equiv \mc{A}[i+k]$.
 
-If $j=1$ then $i=k=0$. $\mc{A}[0:1][0] \equiv [\mc{A}[0]][0] \equiv \mc{A}[0]$. Now suppose that $j>1$ but for any $j'<j$ and $0 \le i < j'$ and $0 \le k < j'-i$ that $\mc{A}[i:j'][k]\equiv \mc{A}[k+i]$. Suppose $0 \le i < j \le |\mc{A}|$ and $0 \le k < j-i$ and consider $\mc{A}[i:j][k] \equiv (\mc{A}[i:j-1]\circ\mc{A}[j-1:j])[k]$. Note that $|\mc{A}[i:j-1]| = j-1-i$. If $0 \le k < j-1-i$ then $\mc{A}[i:j][k] \equiv \mc{A}[i:j-1][k]$. Since $j-1<j$ this means $\mc{A}[i:j][k] \equiv \mc{A}[k+i]$. If $k=j-i-1$ then $\mc{A}[i:j][k] \equiv \mc{A}[i:j][j-i-1 + 0] \equiv \mc{A}[j-1:j][0] \equiv [\mc{A}[j-1]][0] \equiv \mc{A}[j-1] = \mc{A}[k+i]$. Therefore $\mc{A}[i:j][k+i] \equiv \mc{A}[k+i]$.
+Suppose $n=0$.
+Then $\mc{A}[i:i+n] \equiv \mc{E}$.
+There is no $k$ satisfying $0\le k < 0$ so the theorem is vacuously true.
+
+Suppose $n=1$.
+Then $\mc{A}[i:i+n] \equiv [\mc{A}[i]]$.
+We must have $k=0$ and we see $(\mc{A}[i:i+n])[k] \equiv \mc{A}[i]\equiv \mc{A}[i+k]$.
+
+Now suppose $n>1$ but for $m<n$ with $0\le m \le |\mc{A}|-i$ and $0\le k < m$, that $(\mc{A}[i:i+m])[k] \equiv \mc{A}[i+k]$
+
+We have
+$$
+\mc{A}[i:i+n]\equiv \mc{A}[i:i+n-1] \circ [\mc{A}[i+n-1]]
+$$
+By Theorem \ref{thm:list:lensublist}, $|\mc{A}[i:i+n-1]| = n-1$.
+Let $m=n-1$ noting that $m<n$ and $0\le m \le |\mc{A}|-i$.
+
+There are two cases.
+If $k < m = n-1$ then
+$$
+(\mc{A}[i:i+n])[k] \equiv (\mc{A}[i:i+n-1])[k]
+$$
+by the definition of concatenation.
+Note that $0\le k < m$ so, by the induction hypothesis, $\mc{A}[i:i+n-1])[k]\equiv \mc{A}[i+k]$ meaning $(\mc{A}[i:i+n])[k] \equiv \mc{A}[i+k]$.
+
+If $k=m=n-1=|\mc{A}[i:i+n-1]|$ then
+$$
+(\mc{A}[i:i+n])[k] \equiv [\mc{A}[i+n-1]][0] \equiv \mc{A}[i+n-1] \equiv \mc{A}[i+k]
+$$
+by the definition of concatenation.
+
 \end{theorem}
 
 \begin{corollary}[A List is a Sublist of Itself]
-Taking $i=0$ and $j = |\mc{A}|$ we see that $\mc{A}[0:|\mc{A}|] \equiv \mc{A}$, therefore $\mc{A}$ is a sublist of itself.
+\label{corr:list:listsublistself}
+Suppose $\mc{A}\in\Sigma^*$.
+Then $\mc{A}\equiv \mc{A}[0:|\mc{A}|]$
+
+Let $0\le k < |\mc{A}|$.
+By Theorem \ref{thm:list:sublistelementextraction} we have $(\mc{A}[0:|\mc{A}|])[k] \equiv \mc{A}[k]$, but this means $\mc{A}[0:|\mc{A}|] \equiv \mc{A}$.
+So we see that $\mc{A}$ is a sublist and initial part of itself.
 \end{corollary}
 
 \begin{theorem}[Mutual Initial Parts are Equal]
-Suppose $\mc{A}$ is an initial part of $\mc{A}'$ and $\mc{A}'$ is an initial part of $\mc{A}$.
-This means $\mc{A} \equiv \mc{A}'[0:j]$ so $|\mc{A}| = j\le|\mc{A}'|$ and $\mc{A}'\equiv \mc{A}[0:j']$ so $|\mc{A}'| = j'\le |\mc{A}|$.
-Since $|\mc{A}|\le |\mc{A}|'$ and $|\mc{A}'| \le |\mc{A}|$ we have $|\mc{A}| = |\mc{A}'| = j = j'$.
-So $\mc{A}' \equiv \mc{A}[0:|\mc{A}|] \equiv \mc{A}$.
+Suppose $\mc{A}, \mc{A}'\in \Sigma^*$ and $\mc{A}$ is an initial part of $\mc{A}'$ and $\mc{A}'$ is an initial part of $\mc{A}$.
+Then $\mc{A}\equiv \mc{A}'$.
+
+We have $\mc{A} \equiv \mc{A}'[0:|\mc{A}|]$ so $|\mc{A}| \le|\mc{A}'|$ and $\mc{A}'\equiv \mc{A}[0:|\mc{A}'|]$ so $|\mc{A}'| \le |\mc{A}|$.
+Since $|\mc{A}|\le |\mc{A}|'$ and $|\mc{A}'| \le |\mc{A}|$ we have $|\mc{A}| = |\mc{A}'|$.
+So $\mc{A}' \equiv \mc{A}[0:|\mc{A}|] \equiv \mc{A}$ where the second equality follows from Corollary \ref{corr:list:listsublistself}.
 \end{theorem}
 
 The following theorem will be critical for proving facts about strings within the formal language.
 
 \begin{theorem}[Corresponding Intermediate Parts]
-\label{thm:corrintpart}
-We will prove that if $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ with $|\mc{C}| \le |\mc{C}'|$ that either $\mc{C}$ is an initial part of $\mc{C}'$.
-We will show that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
+\label{thm:list:correspondingintermediateparts}
+Suppose $\mc{A}, \mc{B}, \mc{C}, \mc{D}, \mc{C}', \mc{D}'\in \Sigma^*$.
+If $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ and $|\mc{C}|\le|\mc{C}'|$ then $\mc{C}$ is an initial part of $\mc{C}'$ so that $\mc{C}\equiv \mc{C}'[0:|\mc{C}|]$.
 
-If $\mc{C}\equiv\mc{E}$ then $\mc{C}$ is a sublist of $\mc{C}'$ by Theorem \ref{thm:emptylistinitialpart}.
+If $\mc{C}\equiv \mc{E}$ then $\mc{C}'[0:0] \equiv \mc{E} \equiv \mc{C}$ so $\mc{C}$ is an initial part of $\mc{C}'$.
 
-If $\mc{C}$ is non-empty, consider $0 \le j < |\mc{C}| \le |\mc{C}'|$.
-We have $\mc{A} \equiv (\mc{B}\mc{C})\mc{D} \equiv (\mc{B}\mc{C}')\mc{D}'$.
-Let $i = j + |\mc{B}|$ so that $0 \le i < |\mc{B}|+|\mc{C}| =|\mc{B}\mc{C}| \le |\mc{B}|+|\mc{C}'| = |\mc{B}\mc{C}'|$ so we have that $\mc{A}[i] \equiv (\mc{B}\mc{C})[i] \equiv (\mc{B}\mc{C}')[i]$.
-
-We rewrite this as $(\mc{B}\mc{C})[|\mc{B}|+j] \equiv (\mc{B}\mc{C}')[|\mc{B}|+j] \equiv \mc{C}[j] \equiv \mc{C}'[j] \equiv \mc{C}'[0:|\mc{C}|][j]$ by Theorem \ref{thm:sublistextraction}.
-Since this holds for all $0 \le j < |\mc{C}|$ we have that $\mc{C} \equiv \mc{C}'[0:|\mc{C}|]$.
-
-This means that $\mc{C}$ is an initial part of $\mc{C}'$.
+If $\mc{C}$ is non-empty then consider $0\le j < |\mc{C}| \le |\mc{C}'|$.
+Let $i=j + |\mc{B}|$ so that $0 \le i < |\mc{B}|+|\mc{C}| = |\mc{B}\mc{C}| \le |\mc{B}|+|\mc{C}'| = |\mc{B}\mc{C}'|$.
+Then $\mc{A}[i] \equiv (\mc{B}\mc{C})[i] \equiv (\mc{B}\mc{C}')[i]$.
+But we have
+\begin{align*}
+(\mc{B}\mc{C})[i] &\equiv (\mc{B}\mc{C})[j + |\mc{B}|] \equiv \mc{C}[j] \\
+(\mc{B}\mc{C}')[i] &\equiv (\mc{B}\mc{C}')[j+|\mc{B}|] \equiv \mc{C}'[j] \equiv (\mc{C}'[0:|\mc{C}|])[j]
+\end{align*}
+Where the last equality follows by Theorem \ref{thm:list:sublistelementextraction}.
+We then have $\mc{C}\equiv \mc{C}'[0:|\mc{C}|]$.
 \end{theorem}
 
-\begin{corollary}{Corresponding Intermediate Parts}
-\label{corr:intpart}
-If $\mc{A} \equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$ then either $\mc{C}$ is an initial part of $\mc{C}'$ of $\mc{C}'$ is an initial part of $\mc{C}$.
-This follows from the fact that either $|\mc{C}| \le |\mc{C}'|$ or $|\mc{C}'| \le |\mc{C}|$ and Theorem \ref{thm:corrintpart}.
+\begin{corollary}[Corresponding Intermediate Parts]
+\label{corr:list:correspondingintermediateparts}
+Suppose $\mc{A}, \mc{B}, \mc{C}, \mc{D}, \mc{C}', \mc{D}'\in \Sigma^*$ and $\mc{A}\equiv \mc{B}\mc{C}\mc{D} \equiv \mc{B}\mc{C}'\mc{D}'$.
+Then either $\mc{C}$ is an initial part of $\mc{C}'$ or $\mc{C}'$ is an initial part of $\mc{C}$.
+
+This follows because we either have $|\mc{C}|\le |\mc{C}'|$ or $|\mc{C}'|\le |\mc{C}|$ and Theorem \ref{thm:list:correspondingintermediateparts}.
 \end{corollary}
 
 \subsubsection{Strings from Lists}
@@ -715,7 +899,7 @@ A string is an element of $\textbf{Str} = \textbf{Symb}^*$.
 In other words, every string is a finite ordered list of symbols and any finite ordered list of symbols is a string.
 \end{definition}
 
-The only distinctive feature about strings compared to general lists is that if we have a list of symbols such as
+The only distinctive feature about strings compared to lists is that if we have a list of symbols such as
 
 $$
 [x_1, \lnot, Q, \curlywedge, (]
@@ -728,42 +912,27 @@ x_1\lnot Q\curlywedge (
 $$
 
 dropping the separating commas and enclosing square brackets.
-This abbreviation is generally ok.
-The main ambiguity in this abbreviation is that when we write down, for example, the symbol $\lnot$ it is not clear if we are talking about the symbol $\lnot$ or the list containing the symbol $[\lnot] \equiv [[0, \lnot]]$.
-In practice, this distinction is typically not important so the ambiguity is harmless.
-If we say, for example, that $\alpha \in \textbf{Str}$ where $\alpha$ is a symbol we mean $[\alpha] \in \textbf{Str}$.
+In many cases this abbreviation does not cause any confusion.
+However, one typical ambiguity caused by this abbreviation is that when we write down, for example, the symbol $\lnot$ it is not clear if we are talking about the symbol $\lnot\in\textbf{Symb}$ or the list containing the symbol $[\lnot] \in \textbf{Str}=\textbf{Symb}^*$.
+If it is not clear which is meant from context then it should be explicitly states.
+
 For strings we replace the terms `sublist' and `proper sublist' with `substring' and `proper substring'.
-
-
 \subsection{The Syntax of LFOL}
 
-The smallest syntactic elements of \textbf{LFOL} are the terms defined as follows.
+Now that we are familiar with strings and their properties and manipulations, we are ready to describe the \textbf{LFOL}.
+The \textbf{LFOL} is essentially a subset of \textbf{Str} consisting of strings satisfying certain syntactic or grammatical rules.
+We construct \textbf{LFOL} by defining incrementally more complex syntactic structures beginning with terms, followed by atomic formulas, followed by full formulas.
 
 \begin{definition}[Terms]
-
 $t \in \textbf{Term}$ iff $t \in \textbf{Str}$ and satisfies one of
 \begin{itemize}
-\item{\textbf{Variables:} $t\equiv [x]$ with $x \in \textbf{Var}$.}
-\item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Often we will abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\bv{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
+\item{\textbf{Variables:} $t\equiv x$ with $x \in \textbf{Var}$.\footnote{Here it should be clear that we mean $t\equiv [x]\in\textbf{Str}$ as opposed to $t\equiv x \in \textbf{Symb}$.}}
+\item{\textbf{Functions:} $t \equiv ft_1 \ldots t_n$ with $f \in \textbf{Func}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. We may abuse notation and write this as $f(t_1, \ldots, t_n)$ or $f(\bv{t})$. Note that if $f$ is a 0-ary function symbol then $f$ is a term representing a constant.}
 \end{itemize}
 \end{definition}
 
 Semantically, if the expressions of the formal language are making statements, then terms are the subjects of those statements.
 0-ary functions represent constants or concrete objects while variables represent place-holders into which other terms can be `plugged in'.
-
-We define the set of free variables $FV(t)$ of a term $t$ recursively.
-
-\begin{definition}[Free Variables in Terms]
-% TODO: Can't define this here before unique readability
-If $t\in \textbf{Term}$ then $t$ we define the set $FV(t)$ as follows.
-\begin{itemize}
-\item{\textbf{Variables:} If $t\equiv [x]$ with $FV = \{x\}$}
-\item{\textbf{Functions:} If $t\equiv ft_1\ldots t_n$ then $FV(t) = FV(t_1)\cup\ldots \cup FV(t_n)$.}
-\end{itemize}
-\end{definition}
-
-If $FV(t)$ is empty then we say that $t$ is closed, otherwise we say that $t$ is open.
-Closed terms can be thought of as concrete objects while open terms can be thought of as placeholders into which concrete objects can be `plugged in'.
 
 The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defined as follows.
 
@@ -771,91 +940,145 @@ The next larger syntactic elements in \textbf{LFOL} are the atomic formulas defi
 $\mc{A} \in \textbf{Atom}$ iff $\mc{A} \in \textbf{Str}$ and satisfies
 
 \begin{itemize}
-\item{\textbf{Atomic Formulas:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. Again we will abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\bv{t})$. In our notation $\curlywedge$ is an atomic formula.}
+\item{\textbf{Atomic Formulas:} $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}_n$ and $t_1, \ldots, t_n \in \textbf{Term}$. We may abuse notation and write this as $P(t_1,t_2,\ldots,t_n)$ or $P(\bv{t})$. Under these conventions $\curlywedge$ is an atomic formula.}
 \end{itemize}
 \end{definition}
 
 Semantically, an atomic formula express a boolean statement about the terms within its scope.
-If the terms are all closed then we can, semantically, think of the atomic formula as having a truth value.
-If any of the terms are open then the atomic formula would only have a truth value once closed terms are `plugged in' for all variables.
+If the terms contain no variables then we can, semantically, think of the atomic formula as having a truth value.
+If any of the terms contain variables then the atomic formula would only have a truth value once terms with no variables are `plugged in' for all variables.\footnote{These ideas will be made more concrete below when we formally define the free variables of a formula.}
 
 The final layer of syntax is the formula, sometimes called a well-formed formula  (Wff).
 Formulas combine multiple atomic formulas into more complex expressions using the logical operators.
 We will define formulas in two phases.
 We will first present \textit{permissive} formulas, then we will present \textit{strict} formulas.
 permissive formulas and strict formulas will differ in their treatment of quantifiers.
-In short, permissive formulas will allow repeated quantification (the binding of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification over a variable $x$ over an expression which does not include $x$).
+In short, permissive formulas will allow repeated quantification (the quantification of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification of a variable $x$ over an expression which does not include $x$).
 Both repeated and redundant quantification are in some-sense unnatural, in that they don't translate well into English example sentences, and that the quantification feels either confusing (in the case of repeated quantification) or wasteful (in the case of redundant quantification).
 
 Strict formulas will explicitly forbid both repeated and redundant quantification.
 The downside, however, is that it will be much more difficult to prove metalogical theorems about strict formulas.
 This is because care will need to be taken at each step to ensure that each expression satisfies the provisos necessary for strict formulas.
 It is typically the case that logic references do allow repeated and redundant quantification for precisely this reason.
-In fact, one might worry that semantically different theorems could be derived using permissive formulas compared to strict formulas, but this is in fact not the case.
+In fact, one might worry that semantically different theorems could be derived using permissive formulas compared to strict formulas, but this is in fact not the case.\footnote{We will not prove this last statement here.}
 
 Nonetheless, in this document we will mainly be using strict formulas, with permissive formulas only as a temporary stepping stone to help more easily define strict formulas.
 Moving forward `formula' will refer to `strict formula' unless otherwise specified.
 
 \begin{definition}[Permissive Formulas]
-$\mc{A} \in \textbf{pForm}$ iff $\mc{A} \in \textbf{Str}$ and satisfies one of
+If $\mc{A}\in\textbf{Str}$ then $\mc{A}\in\textbf{pForm}$ iff $\mc{A}$ satisfies one of
 
 \begin{itemize}
-\item{\textbf{Atomic Formulas:} $\mc{A}$ is an atomic formula.}
-\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ and $\mc{B}, \mc{C} \in \textbf{pForm}$.}
-\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{B} \in \textbf{pForm}$.}
-\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ and $x\in \textbf{Var}$, $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.}
+\item{\textbf{Atomic Formulas:} $\mc{A}\in\textbf{Atom}$.}
+\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{pForm}$.}
+\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$.}
+\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.}
 \end{itemize}
 \end{definition}
-
-We define the free variables, $FV(\mc{A})$ in a formula $\mc{A}$ similarly to the free variables of a term.
-
-\begin{definition}[Free Variables in Permissive Formulas]
-% TODO: Can't define this here before unique readability
-If $\mc{A}$ is a permissive formula then we define $FV(\mc{A})$ recursively.
-\begin{itemize}
-\item{if $\mc{A} \equiv Pt_1\ldots t_n$ for $n$-ary predicate $P$ then $FV(\mc{A}) = FV(t_1)\cup\ldots\cup FV(t_n)$. Note that this implies $FV(P)=\emptyset$ if $P$ is a 0-ary predicate such as $\curlywedge$.}
-\item{if $\mc{A} \equiv (\mc{B}\implies \mc{C})$ for Wffs $\mc{B}$ and $\mc{C}$ then $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.}
-\item{if $\mc{A} \equiv (\lnot\mc{B})$ then $FV(\mc{A}) = FV(\mc{B})$.}
-\item{if $\mc{A} \equiv ((\forall x)\mc{B})$ then $FV(\mc{A}) = FV(\mc{B}) - \{x\}$.}
-\item{If $FV(\mc{A}) = \emptyset$ then we say $\mc{A}$ is closed.}
-\end{itemize}
-\end{definition}
-
 
 Semantically, like atomic formulas, formulas express, now more complex, statements about terms.
-Note that, $((\forall x) \mc{B})$ is a permissive formula even if $x\not \in FV(\mc{B})$.
+
+\begin{definition}[Negation, Implication, Quantification]
+Suppose $\mc{A}\in\textbf{pForm}$.
+We define three new subsets of $\textbf{Str}$: $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{pQuant}$
+\begin{itemize}
+\item{$\mc{A}\in\textbf{Neg}$ iff $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.}
+\item{$\mc{A}\in\textbf{Imp}$ iff $\mc{A}\equiv (\mc{A}\implies \mc{B})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.}
+\item{$\mc{A}\in\textbf{pQuant}$ iff $\mc{A} \equiv ((\forall x)\mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.}
+\end{itemize}
+\end{definition}
+
+From these definitions the following theorem is clear
+
+\begin{theorem}[Permissive Formula Categorization]
+From the definitions of $\textbf{pForm}$, $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{pQaunt}$, it is clear that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant} \subset \textbf{pForm}\subset \textbf{Str}$.
+It is also clear that $\textbf{pForm} = \textbf{Atom}\cup \textbf{Neg} \cup \textbf{Imp} \cup \textbf{pQuant}$.
+
+This means that if $\mc{A}\in\textbf{pForm}$ then either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\textbf{pQuant}$.
+\end{theorem}
+
+While it may be intuitively clear that it is not possible for $\mc{A}$ to be any element of any two or more of $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ or $\textbf{pQuant}$, this is not directly implied by these definitions.
+The fact that these four sets are pairwise disjoint will be proven later as part of the unique readability theorems.
 
 \subsection{Unique Readability}
 
+They syntax of $\textbf{LFOL}$ has an important property that we will refer to as unique readability.
+Informally, unique readability means that the language has no ambiguity in the sense that each formula can be interpreted in exactly one way.
+This is perhaps easiest to illustrate by way of counter-example.
+
+In the rule for implications we specified that if $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$ then $\mc{A}\in\textbf{pForm}$.
+Suppose we had left the parentheses out of the rule.
+Consider then the candidate formula
+$$
+\mc{A}\equiv \mc{B}\implies \mc{C}\implies \mc{D}
+$$
+If we define $\mc{F} \equiv \mc{B}\implies \mc{C}$ and $\mc{G}\equiv \mc{C}\implies \mc{D}$ then we have
+$$
+\mc{A}\equiv \mc{F}\implies \mc{D} \equiv \mc{B}\implies \mc{G}
+$$
+This formula $\mc{A}$ then has two, possibly inconsistent, decompositions or interpretations.
+When the parentheses are included such ambiguity is not possible as we will prove in this section by demonstrating the unique readability of permissive formulas.
+
+
 \begin{theorem}[No Proper Initial Part of a Term is a Term]
 \label{thm:termnopropinit}
-I will prove that if $t\in\textbf{Term}$ then if $t'$ is a proper initial part of $t$ then $t'\not \in \textbf{Term}$. I will induct on $|t|$.
+Suppose $t \in\textbf{Term}$.
+Then if $t'\in\textbf{Term}$ and $t'$ is an initial part of $t$ we have $t'\equiv t$.
+Conversely, this theorem means that if $t'$ is a proper initial part of $t$ then $t'\not\in\textbf{Term}$.
 
-$|t|$ must be greater than zero because if $|t| = 0$ then $t \equiv \mc{E}$ and $\mc{E}\not \in \textbf{Term}$.
 
-If $|t| = 1$ then the only proper initial part of $t$ is $t[0:0] = \mc{E}$ and $\mc{E} \not \in \textbf{Term}$.
+If $|t|=0$ then $t\equiv \mc{E}$ and $t\not \in \textbf{Term}$ so we must have $|t|>0$.
 
-Now suppose $|t|>1$.
-Suppose, as the induction hypothesis, that for any $s\in\textbf{Term}$ with $|s|<|t|$ that if $s'$ is a proper initial part of $s$ that $s'\not \in \textbf{Term}$.
-Suppose, for contradiction, that $t'$ is a proper initial part of $t$ and that $t'$ is a term.
-We then have that $t \equiv ft_1\ldots t_n$ and $t' \equiv f't_1'\ldots t_n'$ With $t_1, \ldots t_n, t_1', \ldots t_n' \in \textbf{Term}$.
-We must have $t' \equiv t[0:j]$ for some $0 < j < |t|$ so $t'[0] \equiv t[0]$ by Theorem \ref{thm:sublistextraction}.
-This means $f' \equiv f$ so that $t' \equiv ft_1'\ldots t_n'$.
-By Corollary \ref{corr:intpart} it must be the case that either $t_1'$ is an initial part of $t_1$ or $t_1$ is an initial part of $t_1'$. But, $|t_1|, |t_1'| < |t|$ which means that neither $t_1$ nor $t_1'$ can have a proper initial part that is a term which means that either $t_1$ is a non-proper initial part of $t_1$ or $t_1$ is a non-proper initial part of $t_1'$, in both cases, we get that $t_1\equiv t_1'$.
-This argument can be repeated up to $t_n$ showing that $t_k \equiv t_k'$ for $1 \le k \le n$ which means that $t \equiv t'$ contradicting the assumption that $t'$ is a proper initial substring of $t$.
+If $|t|=1$ then we must have $t'\equiv t[0:1]\equiv t$ because $t[0:0]\equiv \mc{E}\not\in\textbf{Term}$.
+
+Suppose $|t|>1$ but that for any $s\in\textbf{Term}$ with $|s|<|t|$ that if $s'\in\textbf{Term}$  and $s'$ is an initial part of $s$ that $s'\equiv s$.
+
+We have $t, t' \in \textbf{Term}$ so $t\equiv f t_1\ldots t_n$ and $t' \equiv f' t_1'\ldots t_m'$ with $f\in\textbf{Func}_n$, $f'\in\textbf{Func}_m$ and $t_1, \ldots,t_n,t_1',\ldots,t_m'\in\textbf{Term}$.
+Because $t'$ is an initial part of $t$ we have $t' \equiv t[0:|t'|]$.
+By Theorems \ref{thm:list:multconcatextract} and \ref{thm:list:sublistelementextraction} we have $t[0]\equiv t'[0] \equiv f\equiv f'$ so that $t' \equiv f t_1'\ldots t_n'$.
+Note that, by Theorem \ref{thm:list:lenmultconcat} that $|t_1|,\ldots,|t_n|,|t_1'|,\ldots,|t_n'| < |t|$.
+
+We now prove, by a secondary induction, that, for $1\le i \le n$ that $t_i'\equiv t_i$.
+
+Suppose $i=1$.
+We have $t\equiv f \circ t_1 \circ t_2\ldots t_n$ and $t' \equiv f \circ t_1' \circ t_2'\ldots t_n'$.
+Corollary \ref{corr:list:correspondingintermediateparts} then tells us that either $t_1'$ is an initial part of $t_1$ or $t_1$ is an initial part of $t_1'$.
+But because $|t_1|, |t_1'|<|t|$, the first induction hypothesis yields that in either case $t_1'\equiv t_1$.
+
+Now suppose $1<i \le n$ but that for $j<i$ we have $t_j' \equiv t_j$.
+We have $t'\equiv f t_1\ldots t_{i-1} \circ t_i' \circ t_{i+1}'\ldots t_n'$.
+Corollary \ref{corr:list:correspondingintermediateparts} again implies $t_i$ is an initial part of $t_i'$ or $t_i'$ is an initial part of $t_i$, but the first induction hypothesis again yields that in either case $t_i\equiv t_i'$. Note that if $i = n$ then $\mc{D}$ and $\mc{D}'$ from Corollary \ref{corr:list:correspondingintermediateparts} correspond both to the empty set.
 \end{theorem}
 
 \begin{theorem}[Initial Symbols in a Term]
-\label{thm:initsymbterm}
-Suppose $t$ is a term. If $|t|=1$ then either $t[0] \in \textbf{Var}$ or $t[0] \in \textbf{Func}_0$.
-If $|t|>1$ then $t\equiv ft_1\ldots t_n$ with $f\in\textbf{Func}$ and $t_1\ldots t_n\in\textbf{Term}$ so $t[0]\equiv f \in \textbf{Func}$.
-This means that for any term $t$ that $t[0] \in \textbf{Var}$ or $t[0]\in\textbf{Func}$.
+\label{thm:read:initsymbterm}
+If $t\in \textbf{Term}$ then either $t[0]\in\textbf{Var}$ or $t[0]\in\textbf{Func}$.
+
+This can be seen from the two construction rules for $t$.
+If $t\equiv x$ with $x\in\textbf{Var}$ then $t[0]\equiv x \in\textbf{Var}$.
+If $t\equiv f t_1\ldots t_n$ with $f\in\textbf{Func}_n$ and $t_1,\ldots, t_n\in\textbf{Term}$ then, by Theorem \ref{thm:list:multconcatextract}, we have $t[0] \equiv f \in \textbf{Func}$.
+\end{theorem}
+
+\begin{theorem}[First Symbol in a Permissive Formula]
+\label{thm:read:pformfirstsymb}
+If $\mc{A}\in\textbf{pForm}$ then either $\mc{A}[0]\in\textbf{Pred}$ or $\mc{A}\equiv ($.
+
+If $\mc{A}$
+
 \end{theorem}
 
 \begin{theorem}[Initial Symbols in a Permissive Formula]
 \label{thm:initsymbform}
+If $\mc{A}\in\textbf{pForm}$.
+We prove a few facts about initial symbols in $\mc{A}$.
+\begin{itemize}
+\item{If $\mc{A}$ atomic then $\mc{A}\equiv P t_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$. Theorem \ref{thm:list:multconcatextract} yields that $\mc{A}[0] \equiv P\in\textbf{Pref}$. If $|\mc{A}|>1$, then Theorem \ref{thm:list:multconcatextract} also yields $\mc{A}[1]\equiv t_1[0]$ but then Theorem \ref{thm:read:initsymbterm} yields that either $\mc{A}[1]\in\textbf{Var}$ or $\mc{A}[1]\in\textbf{Func}$.}
+\item{f $\mc{A}$ is a negation then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.}
+\end{itemize}
+
+
 Suppose $\mc{A}\in \textbf{pForm}$.
-We will use Theorem \ref{thm:multconcatextract} throughout.
+We will use Theorem \ref{thm:list:multconcatextract} throughout.
 
 If $\mc{A}$ is atomic then $\mc{A}[0] \in \textbf{Pred}$.
 If $\mc{A}$ is an implication, negation, or quantification, then $\mc{A}[0] \equiv ($. So for every permissive formula $\mc{A}[0]$ is in $\textbf{Pred}$ or equal to $($.
@@ -1087,6 +1310,19 @@ $\mc{A}\in\textbf{sForm} = \textbf{Form}$ iff $\mc{A} \in \textbf{pForm}$ and sa
 \end{itemize}
 \end{definition}
 
+Note that we do not forbid a variable to appear both free and bound in a strict formula.
+For example,
+$$
+\mc{A} \equiv (Px \implies ((\forall x) Qxy))
+$$
+We have $\mc{A}\in\textbf{sForm}$ but $x\in FV(\mc{A})$ and $x\in QV(\mc{A})$.
+However, if possible it is best to avoid this practice.
+
+Note that we also do not forbid multiple uses of the same quantified variable:
+$$
+\mc{A}\equiv (((\forall x) Px) \land ((\forall x) Qx))
+$$
+has $\mc{A}\in\textbf{sForm}$ with $QV(\mc{A}) = \{x\}$.
 
 \subsection{Free Variable Substitution}
 
@@ -1107,6 +1343,26 @@ Suppose $\mc{A} \in \textbf{pForm}$.
 \end{itemize}
 
 \end{definition}
+
+\begin{theorem}[Identical Free Variable Substitution]
+\label{thm:idenfvsub}
+Suppose $x\in\textbf{Var}$, $t\in\textbf{Term}$ and $\mc{A}\in\textbf{pForm}$.
+Then $t[x/x] \equiv t$ and $\mc{A}[x/x]\equiv \mc{A}$.
+
+Suppose $|t| = 0$.
+Then either $t\in \textbf{Var}$ or $t\in\textbf{Func}_0$.
+If $t\in\textbf{Var}$ then if $t\equiv x$ then $t[x/x] \equiv x \equiv t$ otherwise if $t \not \equiv x$ then $t[x/x] \equiv t$.
+If $t\in\textbf{Func}_0$ then $t[x/x] \equiv t$.
+
+Now suppose $|t|>0$ but that for $s\in\textbf{Term}$ with $|s|<|t|$ that $s[x/x] \equiv s$.
+
+Since $|t|>0$ we have $t\not \in \textbf{Var}$ and $t\not \in \textbf{Func}_0$.
+So $t\equiv fs_1\ldots s_n$ with $f\in\textbf{Func}_n$ and $s_1,\ldots, s_n\in\textbf{Term}$.
+We have $|s_1|,\ldots,|s_n| < |t|$.
+We have $t[x/x] \equiv f s_1[x/x]\ldots s_n[x/x]$ but, by the induction hypothesis $s_i[x/x] \equiv s$ for $1\le i \le n$ so $t[x/x]\equiv fs_1\ldots s_n \equiv t$.
+\end{theorem}
+
+
 
 \begin{theorem}[Free Variable Substitution Within a Term Results in a Term]
 \label{thm:fvsubintermgivesterm}
@@ -1222,6 +1478,7 @@ FV(s[t/x]) &= \left(\left(FV(r_{a_1}) \cup \ldots \cup FV(r_{a_j}) \cup FV(r_{b_
 \end{theorem}
 
 \begin{theorem}[Free Variables in a Permissive Formula after Free Variable Substitution]
+\label{thm:fvinpformafterfvsub}
 Suppose $\mc{A} \in \textbf{pForm}$, $x \in \textbf{Var}$ and $t\in\textbf{Term}$. If $x\not \in \mc{A}$ then $\mc{A}[t/x]\equiv \mc{A}$ according to Theorem \ref{thm:fvsubpformnotappear} so $FV(\mc{A}[t/x]) =  FV(\mc{A})$. If $x\in FV(\mc{A})$ then $FV(\mc{A}[t/x]) = (FV(\mc{A})\setminus \{x\})\cup FV(t)$.
 
 Suppose $\mc{A}$ is atomic so that $\mc{A} \equiv Pt_1\ldots t_n$. $FV(\mc{A}) = FV(t_1)\cup\ldots \cup FV(t_n)$. Since $x\in FV(\mc{A})$ then $x$ must be in at least one $t_i$ for $1 \le i \le n$. Suppose that there are $1\le j \le n$ values of $i$ for which $x\in FV(t_i)$ and $k=n-j$ values of $i$ fo which $x\not \in FV(t_i)$. Let $a_i$ for $1\le i \le j$ enumerate the values which $x\in FV(t_{a_i})$ and let $b_i$ for $1 \le i \le n-j$ enumerate the values for which $x\not \in FV(t_{b_i})$.
@@ -1246,6 +1503,7 @@ FV(\mc{A}[t/x]) =& \begin{aligned}[t]\big( &((FV(t_{a_1})\setminus\{x\})\cup FV(
 \end{theorem}
 
 \begin{theorem}[Quantified Variables after Free Variable Substitution]
+\label{thm:qvafterfvsub}
 Suppose $\mc{A} \in \textbf{pForm}$, $x\in\textbf{Var}$ and $t\in \textbf{Term}$. Then $QV(\mc{A}[t/x]) = QV(\mc{A})$.
 
 Suppose $D(\mc{A}) = 0$. Then $\mc{A}$ is an atomic formula so $QV(\mc{A}) = \emptyset$. But $\mc{A}[t/x]$ is also an atomic formula so $QV(\mc{A}[t/x]) = \emptyset = QV(\mc{A})$.
@@ -1334,28 +1592,7 @@ If $x\not \equiv y$ then $\mc{A}[t/x] \equiv ((\forall y)\mc{B}[t/x])$ and $D(\m
 But, $D(\mc{B}) < D(\mc{A})$ so $D(\mc{B}[t/x]) = D(\mc{B})$ so $D(\mc{A}[t/x]) = D(\mc{A})$.
 \end{theorem}
 
-\begin{definition}[Absent Term]
-Suppose $t, s\in\textbf{Term}$ and $\mc{A}\in\textbf{pForm}$.
-We recursively define the concept that $t$ does not appear in $s$ or $\mc{A}$.
-If $t$ does not appear in $s$ or $\mc{A}$ then we may write $s\equiv {_{\{t\}}s}$ or $\mc{A}\equiv {_{\{t\}}\mc{A}}$.
-
-Suppose $s\in\textbf{Term}$.
-\begin{itemize}
-\item{If $s\equiv t$ the $t$ appears in $s$.}
-\item{If $s\equiv f s_1\ldots s_n$ with $f\in\textbf{Func}_n$ and $s_1,\ldots,s_n\in\textbf{Term}$ then $t$ appears in $s$ if $t$ appears in at least one of $s_1,\ldots, s_n$.}
-\end{itemize}
-
-Suppose $\mc{A}\in\textbf{pForm}$.
-\begin{itemize}
-\item{If $\mc{A} \equiv Ps_1\ldots s_n$ with $P\in\textbf{Pred}_n$ and $s_1,\ldots, s_n\in\textbf{Term}$ then $t$ appears in $\mc{A}$ if $t$ appears in at least one of $s_1,\ldots, s_n$.}
-\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ then $t$ appears in $\mc{A}$ if $t$ appears in at least one of $\mc{B}$ or $\mc{C}$.}
-\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $t$ appears in $\mc{A}$ if $t$ appears in $\mc{B}$.}
-\item{If $\mc{A} \equiv ((\forall x) \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $t$ appears in $\mc{A}$ if $t$ appears in $\mc{B}$.}
-\end{itemize}
-
-\end{definition}
-
-\section{Bound Variable Substitution}
+\subsection{Bound Variable Substitution}
 
 In addition to `plugging' terms into free variables, we are also interested in replacing one bound variable with a different variable.
 This will help us to plug one formula into another by allowing us to replace all the bound variables in the first formula with variables which are unused in the second formula.
@@ -1372,6 +1609,32 @@ We define $\mc{A}\{y/x\}$, the bound variable substitution of $y$ for $x$ in $\m
 \item{Suppose $\mc{A} \equiv ((\forall z) \mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. If $z \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$. If $z\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{y/x\})$.}
 \end{itemize}
 \end{definition}
+
+\begin{theorem}[Identical Bound Variable Substitution]
+\label{thm:identqvsub}
+Suppose $\mc{A}\in\textbf{pForm}$ and $x\in\textbf{Var}$.
+Then $\mc{A}\{x/x\} \equiv \mc{A}$.
+
+Suppose $D(\mc{A}) = 0$ so that $\mc{A}$ is atomic.
+Then $\mc{A}\{x/x\} \equiv \mc{A}$.
+
+Now suppose $D(\mc{A}) > 0$ but for any $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that $\mc{B}\{x/x\} \equiv \mc{B}$.
+
+Suppose $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$ and $\mc{A}\{x/x\} \equiv (\lnot \mc{B}\{x/x\})$.
+But, by the induction hypothesis $\mc{B}\{x/x\} \equiv \mc{B}$ so $\mc{A}\{x/x\} \equiv \mc{A}$.
+
+Suppose $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and $\mc{A}\{x/x\} \equiv (\mc{B}\{x/x\}\implies \mc{C}\{x/x\})$.
+But, by the induction hypothesis, $\mc{B}\{x/x\}\equiv \mc{B}$ and $\mc{C}\{x/x\} \equiv \mc{C}$ so $\mc{A}\{x/x\} \equiv \mc{A}$.
+
+Suppose $\mc{A} \equiv ((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$.
+If $z\not \equiv x$ then $\mc{A}\{x/x\} \equiv ((\forall z)\mc{B}\{x/x\})$ but, by the induction hypothesis, $\mc{B}\{x/x\} \equiv \mc{B}$ so $\mc{A}\{x/x\} \equiv \mc{A}$.
+If $z \equiv x$ then $\mc{A}\{x/x\} \equiv ((\forall z)(\mc{B}[z/z])\{z/z\})$.
+By Theorem \ref{thm:idenfvsub}, $\mc{B}[z/z] \equiv \mc{B}$.
+The induction hypothesis then gives us that $\mc{B}\{z/z\} \equiv \mc{B}$ so $\mc{A}\{x/x\} \equiv \mc{A}$.
+\end{theorem}
 
 \begin{theorem}[Bound Variable Substitution in a Permissive Formula Results in a Permissive Formula]
 Suppose $\mc{A}\in\textbf{pForm}$ and $x, y \in \textbf{Var}$. Then $\mc{A}\{y/x\}\in\textbf{pForm}$.
@@ -1394,6 +1657,34 @@ If $z\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{y/x\})$.
 But $D(\mc{B}) < D(\mc{A})$ so $\mc{B}\{y/x\} \in \textbf{pForm}$ so $\mc{A}\{y/x\}\in\textbf{pForm}$.
 If $z\equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$.
 By Theorem \ref{thm:pformdepthaftertermsub}, $D(\mc{B}[t/x]) = D(\mc{B}) < D(\mc{A})$ so $(\mc{B}[y/x])\{y/x\}\in\textbf{pForm}$ so $\mc{A}\{y/x\}\in\textbf{pForm}$.
+\end{theorem}
+
+\begin{theorem}[Depth of a Permissive Formula after Bound Variable Substitution]
+\label{thm:pformdepthafterqvsub}
+Suppose $\mc{A}\in \textbf{pForm}$ and $x, y \in \textbf{Var}$.
+Then $D(\mc{A}\{y/x\}) = D(\mc{A})$.
+
+Suppose $D(\mc{A}) = 0$. Then $\mc{A}$ is atomic so $\mc{A}\{y/x\} = \mc{A}$ so $D(\mc{A}\{y/x\}) + D(\mc{A})$.
+
+Now suppose $D(\mc{A}) > 0$ but that for $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that $D(\mc{B}\{y/x\}) = D(\mc{B})$.
+
+$\mc{A}$ cannot be atomic because $D(\mc{A})>0$.
+
+Suppose $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$ and $D(\mc{A}) = D(\mc{B}) + 1$.
+We have $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$ so $D(\mc{A}\{y/x\}) = D(\mc{B}\{y/x\}) + 1$ but $D(\mc{B}\{y/x\}) = D(\mc{B})$ by the induction hypothesis so $D(\mc{A}\{y/x\}) = D(\mc{A})$.
+
+Suppose $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in \textbf{pForm}$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and $D(\mc{A}) = \text{max}(D(\mc{B}), D(\mc{C})) + 1$.
+We have $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$ so $D(\mc{A}\{y/x\}) = \text{max}(D(\mc{B}\{y/x\}), D(\mc{C}\{y/x\})) + 1$ but, by the induction hypothesis, $D(\mc{B}\{y/x\}) = D(\mc{B})$ and $D(\mc{C}\{y/x\}) = D(\mc{C})$ so $D(\mc{A}\{y/x\}) = D(\mc{A})$.
+
+Suppose $\mc{A} \equiv ((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$ and $D(\mc{A}) = D(\mc{B}) + 1$.
+If $x\equiv z$ then $\mc{A}\{y/x\} \equiv ((\forall y)(\mc{B}[y/x])\{y/x\}$ so $D(\mc{A}\{y/x\}) = D((\mc{B}[y/x])\{y/x\}) + 1$.
+But $D(\mc{B}[y/x]) = D(\mc{B})<D(\mc{A})$ by Theorem \ref{thm:pformdepthaftertermsub} so, by the induction hypothesis, $D((\mc{B}[y/x])\{y/x\}) = D(\mc{B}[y/x]) = D(\mc{B})$ so $D(\mc{A}\{y/x\}) = D(\mc{A})$.
+If $x\not \equiv z$ then $\mc{A}\{y/x\} \equiv ((\forall z) \mc{B}\{y/x\})$ and $D(\mc{A}\{y/x\}) = D(\mc{B}\{y/x\}) + 1$.
+But, by the induction hypothesis, $D(\mc{B}\{y/x\}) = D(\mc{B})$ so $D(\mc{A}\{y/x\}) = D(\mc{A})$.
+
 \end{theorem}
 
 \begin{theorem}[Bound Variable Substitution for a Variable the Does Not Appear Bound]
@@ -1422,6 +1713,7 @@ We have that $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{y/x\})$ but, by the induc
 \end{theorem}
 
 \begin{theorem}[Quantified Variables after Bound Variable Substitution]
+\label{thm:qvafterqvsub}
 Suppose $\mc{A}\in\textbf{pForm}$ and $x, y\in\textbf{Var}$.
 If $x\not \in QV(\mc{A})$ then by Theorem \ref{thm:bndvarsubforvarnotappear} we know that $\mc{A}\{y/x\} \equiv \mc{A}$ so $QV(\mc{A}\{y/x\}) = QV(\mc{A})$. If $x\in QV(\mc{A})$ then we now prove that $QV(\mc{A}\{y/x\}) = (QV(\mc{A})\setminus\{x\})\cup\{y\}$.
 
@@ -1471,10 +1763,369 @@ Where the second line follows in part because $x\not \in QV(\mc{B})$.
 
 In all cases $QV(\mc{A}\{y/x\}) = (QV(\mc{A})\setminus\{x\})\cup\{y\}$.
 
+Now suppose $\mc{A}\equiv ((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We $D(\mc{B}) < D(\mc{A})$.
+Since $x\in QV(\mc{A})$ we have that $z\equiv x$ or $x\in QV(\mc{B})$ or both.
+We treat all three cases.
+
+Suppose $x\equiv z$ but $x\not \in QV(\mc{B})$.
+Then $\mc{A}\{y/x\} \equiv ((\forall y)(\mc{B}[y/x])\{y/x\})$ so $QV(\mc{A}\{y/x\}) = QV((\mc{B}[y/x])\{y/x\})\cup \{y\}$.
+We know from Theorem \ref{thm:qvafterfvsub} that $QV(\mc{B}[y/x]) = QV(\mc{B})$ so that $x\not \in QV(\mc{B}[y/x])$.
+This means $(\mc{B}[y/x])\{y/x\} \equiv \mc{B}[y/x]$ by Theorem \ref{thm:qvafterfvsub} so that
+$$
+QV(\mc{A}\{y/x\}) = QV(\mc{B}[y/x])\cup\{y\} = QV(\mc{B})\cup\{y\}
+$$
+But note that $QV(\mc{A}) = QV(\mc{B})\cup\{x\}$ and since $x\not \in QV(\mc{B})$ we have $QV(\mc{B}) = QV(\mc{A})\setminus\{x\}$ so
+$$
+QV(\mc{A}\{y/x\}) = (QV(\mc{A})\setminus \{x\})\cup\{y\}
+$$
+
+Now suppose $x\not \equiv z$ but $x\in QV(\mc{B})$
+Then $\mc{A}\{y/x\} \equiv ((\forall z)\mc{B}\{x/y\})$ so $QV(\mc{A}\{y/x\}) = QV(\mc{B}\{y/x\}) \cup z$.
+We have, by the induction hypothesis, that $QV(\mc{B}\{y/x\}) = (QV(\mc{B})\setminus\{x\})\cup\{y\}$ so that
+$$
+QV(\mc{A}\{y/x\}) = (QV(\mc{B})\setminus\{x\})\cup \{y\} \cup \{z\}
+$$
+Which is equivalent to
+\begin{align}
+QV(\mc{A}\{y/x\}) =& ((QV(\mc{B})\cup\{z\})\setminus\{x\})\cup\{y\} \notag \\
+=& (QV(\mc{A})\setminus\{x\})\cup\{y\} \notag
+\end{align}
+Where the first line follows because $z\not \equiv x$.
+
+Now suppose $x\equiv z$ and $x\in QV(\mc{B})$.
+Then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$ so $QV(\mc{A}\{y/x\}) = QV((\mc{B}[y/x])\{y/x\}) \cup \{y\}$.
+By Theorem \ref{thm:qvafterfvsub} we have $QV(\mc{B}[y/x]) = QV(\mc{B})$ so $x\in QV(\mc{B}[y/x])$.
+So by the induction hypothesis we have
+\begin{align}
+QV((\mc{B}[y/x])\{y/x\}) =& (QV(\mc{B}[y/x])\setminus\{x\})\cup \{y\} \notag \\
+=& (QV(\mc{B}) \setminus\{x\})\cup\{y\}
+\end{align}
+
+But $QV(\mc{A}) = QV(\mc{B})\cup\{x\}$  and it follows that $QV(\mc{A})\setminus\{x\} = QV(\mc{B})\setminus\{x\}$ so
+\begin{align}
+QV(\mc{A}\{y/x\}) =& QV((\mc{B}[y/x])\{y/x\})\cup \{y\} \notag \\
+=& (QV(\mc{B}) \setminus\{x\}) \cup\{y\}\notag\\
+=& (QV(\mc{A})\setminus\{x\}) \cup \{y\}\notag
+\end{align}
 \end{theorem}
 
-There are two possible issues with bound variable substitution.
-The first issue is that bound variable substitution
+\begin{theorem}[Non-Participating Free Variables After Bound Variable Substitution - 1]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y, z \in\textbf{Var}$ with $z\not \equiv y$.
+Then if $z\in FV(\mc{A})$ then $z\in FV(\mc{A}\{y/x\})$.
+Equivalently, $FV(\mc{A})\setminus\{y\} \subset FV(\mc{A}\{y/x\})$.
+
+Suppose $D(\mc{A})=0$ so $\mc{A}$ is atomic.
+Then $\mc{A}\{y/x\} \equiv \mc{A}$ so $FV(\mc{A}\{y/x\}) \equiv FV(\mc{A})$ so $z\in FV(\mc{A}\{y/x\})$.
+
+Now suppose $D(\mc{A}) > 0$ but for $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that $z\in FV(\mc{B})$ implies $z\in FV(\mc{B}\{y/x\})$.
+
+Suppose $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B})<D(\mc{A})$ and $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$.
+Because $z\in FV(\mc{A})$ we have $z\in FV(\mc{B})$.
+We then have, by the induction hypothesis, $z\in FV(\mc{B}\{y/x\}$ so $z\in FV(\mc{A}\{y/x\})$.
+
+Suppose $\mc{A}\equiv(\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in \textbf{pForm}$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$.
+Because $z \in FV(\mc{A})$ we have either $z\in FV(\mc{B})$, in which case $z\in FV(\mc{B}\{y/x\})$ by the induction hypothesis, or $z\in FV(\mc{C})$, in which case $z\in FV(\mc{C}\{y/x\})$ by the induction hypothesis.
+In either case $z\in FV(\mc{A}\{y/x\})$.
+
+Suppose $\mc{A}\equiv ((\forall w)\mc{B})$ with $w\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$.
+Since $z\in FV(\mc{A})$ we have that $z \not \equiv w$ and $z\in FV(\mc{B})$.
+
+If $w\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall w)\mc{B}\{y/x\})$.
+by the induction hypothesis, we have that $z\in FV(\mc{B}\{y/x\})$ so $z\in FV(\mc{A}\{y/x\})$, noting that $z\not \equiv w$.
+
+If $w \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x]\{y/x\})$.
+
+If $x\not \in FV(\mc{B})$ then $\mc{B}[y/x] \equiv \mc{B}$ by Theorem \ref{thm:fvsubpformnotappear} so $\mc{A}\{y/x\} \equiv ((\forall y) \mc{B}\{y/x\})$.
+By the induction hypothesis, $z\in FV(\mc{B}\{y/x\})$ so, since $z\not \equiv y$ this also gives $z\in FV(\mc{A}\{y/x\})$.
+
+If $x\in FV(\mc{B})$ then $FV(\mc{B}[y/x]) = (FV(\mc{B})\setminus\{x\})\cup\{y\}$ by Theorem \ref{thm:fvinpformafterfvsub}.
+Since $x \equiv w \not \equiv z$ this means $z\in FV(\mc{B}[y/x])$.
+We also have, by Theorem \ref{thm:pformdepthaftertermsub}, that $D(\mc{B}[y/x]) = D(\mc{B})$ so, by the induction hypothesis, we also have that $z\in FV((\mc{B}[y/x])\{y/x\})$.
+This means, again because $z \not \equiv y$, that $z\in FV(\mc{A}\{y/x\}$.
+\end{theorem}
+
+\begin{theorem}[Free Variables after Bound Variable Substitution]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y, z\in\textbf{Var}$.
+Then if $z\in FV(\mc{A}\{y/x\})$ then $z\in FV(\mc{A})$.
+Equivalently, $FV(\mc{A}\{y/x\} \subset FV(\mc{A})$.
+
+Suppose $D(\mc{A})=0$ so that $\mc{A}$ is atomic.
+Then $\mc{A}\{y/x\} \equiv \mc{A}$ so $FV(\mc{A}\{y/x\}) = FV(\mc{A})$ so $z\in FV(\mc{A})$.
+
+Now suppose $D(\mc{A})>0$ but for $\mc{B}\in\textbf{pForm}$ with $D(\mc{B})<D(\mc{A})$ that if $z\in \mc{B}\{y/x\}$ that $z\in \mc{B}$.
+
+Suppose $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$ and $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$.
+If $z\in FV(\mc{A}\{y/x\})$ then $z\in FV(\mc{B}\{y/x\})$ so, by the induction hypothesis, $z\in FV(\mc{B})$ which means $z\in FV(\mc{A})$.
+
+Suppose $\mc{A}\equiv(\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$.
+If $z\in FV(\mc{A}\{y/x\})$ then either $z\in FV(\mc{B}\{y/x\}$, in which case we have $z\in FV(\mc{B})$ by the induction hypothesis, or $z\in FV(\mc{C}\{y/x\})$, in which case we have $z\in FV(\mc{C})$ by the induction hypothesis.
+In either case we see $z\in FV(\mc{A})$.
+
+Suppose $\mc{A}\equiv ((\forall w)\mc{B})$ with $w\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$.
+
+If $w\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall w) \mc{B}\{y/x\})$.
+If $z\in FV(\mc{A}\{y/x\})$ then $z\not \equiv w$ and $z\in FV(\mc{B}\{y/x\})$.
+By the induction hypothesis, $z\in FV(\mc{B})$ which implies $z\in FV(\mc{A})$, noting that $z\not \equiv w$.
+
+If $w\equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$.
+If $z\in FV(\mc{A}\{y/x\})$ then $z\not \equiv y$ and $z\in FV((\mc{B}[y/x])\{y/x\})$.
+By Theorem \ref{thm:pformdepthaftertermsub}, we have $D(\mc{B}[y/x]) = D(\mc{B}) < D(\mc{A})$ so, by the induction hypothesis, $z\in FV(\mc{B}[y/x])$.
+We have $FV(\mc{B}[y/x]) = (FV(\mc{B})\setminus \{x\}) \cup \{y\}$.
+We also have $FV(\mc{A}) = FV(\mc{B}) \setminus \{x\}$ so $FV(\mc{B}[y/x]) = FV(\mc{A}) \cup \{y\}$ but $z\not \equiv y$ so we must have $z\in FV(\mc{A})$.
+
+
+\end{theorem}
+
+There are two ways in which bound variable substitution can, unfortunately, alter the logical or semantic meaning of a permissive formula.
+In both cases this is due to a variable being captured into the scope of a new quantifier.
+
+In the first case a variable $y$ becomes captured when it is in the scope of a quantifier $\forall x$ when $\forall x \rightarrow \forall y$ after bound variable substitution:
+\begin{align}
+\mc{A} &\equiv ((\forall y) (Py \land ((\forall x) Qxy))) \notag\\
+\mc{A}\{y/x\} &\equiv ((\forall y) (Py \land ((\forall y) Qyy))) \notag
+\end{align}
+
+In the second case a variable $x$ is changed into a $y$ after bound variable substitution resulting in it being captured by a $\forall y$ quantifier:
+\begin{align}
+\mc{B} &\equiv ((\forall x) (Px \land ((\forall y) Qxy))) \notag\\
+\mc{B}\{y/x\} &\equiv ((\forall y) (Py \land ((\forall y) Qyy))) \notag
+\end{align}
+
+Because of such variable capture it is not always the case that $FV(\mc{A}\{y/x\}) = FV(\mc{A})$.
+For example:
+\begin{align}
+\mc{A} &\equiv ((\forall x) Pxy) \notag\\
+\mc{A}\{y/x\} &\equiv ((\forall y) Pyy)\notag
+\end{align}
+So $FV(\mc{A}) = \{y\}$ but $FV(\mc{A}\{y/x\}) = \emptyset$.
+
+Similar to the case for free variable substitution, we will define the concept of bound variable substitutability to identify when bound variable substitution can be performed without altering the logical/semantic meaning of a permissive formula.
+
+\begin{definition}[Bound Variable Substitutability for Permissive Formulas]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y \in \textbf{Var}$.
+If $y$ is bound variable substitutable (of the first type) for $x$ in $\mc{A}$ we say $S_{B,1}(\mc{A}, y, x)$.
+We define bound variable substitutability as follows.
+
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $S_{B,1}(\mc{A}, y, x)$.}
+\item{If $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $S_{B, 1}(\mc{A}, y, x)$ if $S_{B, 1}(\mc{B}, y, x)$.}
+\item{If $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ then $S_{B,1}(\mc{A}, y, x)$ if $S_{B,1}(\mc{B}, y, x)$ and $S_{B, 1}(\mc{C}, y, x)$.}
+\item{If $\mc{A} \equiv ((\forall z) \mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in \textbf{pForm}$ then there are a few cases. If $z\not= x$ and $z\not = y$ then $S_{B,1}(\mc{A}, y, x)$ if $S_{B,1}(\mc{B}, y, x)$. If $z = x\not =y$ then $S_{B, 1}(\mc{A}, y, x)$ if $S_{B,1}(\mc{B}, y, x)$ and $y\not \in FV(\mc{B})$. If $z=y\not=x$ then $S_{B,1}(\mc{A}, y, x)$ if $S_{B,1}(\mc{B}, y, x)$ and $x\not \in FV(\mc{B})$. If $z=x=y$ then $S_{B,1}(\mc{A}, y, x)$.}
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[afdakls;]
+Suppose $\mc{A}\in\textbf{pForm}$, $x, y \in \textbf{Var}$, and $S_{B,1}(\mc{A}, y, x)$.
+Then if $y\in FV(\mc{A})$ then $y\in FV(\mc{A}\{y/x\})$.
+
+Suppose $\mc{A} \equiv ((\forall z) \mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$.
+Because $y\in FV(\mc{A})$ we have $z\not \equiv y$ and $y\in FV\mc{B})$.
+If $z\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall z) \mc{B}\{y/x\})$.
+By the induction hypothesis, we have $y \in FV(\mc{B}\{y/x\}$ which implies that $y\in FV(\mc{A}\{y/x\})$ noting that $z\not \equiv y$.
+
+Now suppose $z\equiv x \not \equiv y$.
+Because $S_{B,1}(\mc{A}, y, x)$ we have that $y\not \in FV(\mc{B})$ which means that $y\not \in FV(\mc{A})$.
+
+If $z\equiv x \equiv y$ then $\mc{A}\{y/x\} \equiv \mc{A}$ by Theorem \ref{thm:identqvsub} so $FV(\mc{A}\{y/x\}) = FV(\mc{A})$ so if $y\in FV(\mc{A})$ then $y\in FV(\mc{A}\{y/x\})$.
+
+Then $\mc{A}\{y/x\} \equiv ((\forall y) \mc{B})$
+\end{theorem}
+
+\begin{theorem}[Bound Variable Substitutability after Free Variable Substitution]
+\label{thm:qvsubstitutabilityafterfvsub}
+Suppose $\mc{A}\in\textbf{pForm}$, $x, y\in \textbf{Var}$ and $S_{B,1}(\mc{A}, y, x)$. Then $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Suppose $D(\mc{A}) = 0$ so that $\mc{A}$ is atomic.
+Then $\mc{A}[y/x]$ is also atomic so $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Now suppose $D(\mc{A})>0$ but that for $\mc{B}\in\textbf{pForm}$ with $D(\mc{B}) < D(\mc{A})$ that $S_{B,1}(\mc{B}, y, x)$ implies $S_{B,1}(\mc{B}[y/x],y,x)$.
+
+Suppose $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ so that $\mc{A}[y/x] \equiv (\lnot \mc{B}[y/x])$.
+We have $D(\mc{B})<D(\mc{A})$ and, because $S_{B,1}(\mc{A}, y, x)$ that $S_{B,1}(\mc{B}, y, x)$ so, by the induction hypothesis $S_{B,1}(\mc{B}[y/x], y, x)$.
+But this means $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Suppose $\mc{A} \equiv (\mc{B}\implies\mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ so that $\mc{A}[y/x] \equiv (\mc{B}[y/x] \implies \mc{C}[y/x])$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and, because $S_{B,1}(\mc{A}, y, x)$, that $S_{B,1}(\mc{B}, y, x)$ and $S_{B,1}(\mc{C}, y, x)$ so, by the induction hypothesis, $S_{B,1}(\mc{B}[y/x], y, x)$ and $S_{B,1}(\mc{C}[y/x], y, x)$.
+But this means $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Now Suppose $\mc{A} \equiv ((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
+We have $D(\mc{B}) < D(\mc{A})$.
+We consider four cases.
+
+First suppose $z\not =x$ and $z \not = y$.
+In this case $\mc{A}[y/x] \equiv ((\forall z)\mc{B}[y/x])$.
+Because $S_{B,1}(\mc{A}, y, x)$ and $z\not =x$ and $z\not =y$ we have $S_{B,1}(\mc{B}, y, x)$.
+By the induction hypothesis we have that $S_{B,1}(\mc{B}[y/x], y, x)$ but this implies $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Now suppose $z=x$ but $x\not = y$.
+In this case $\mc{A}[y/x] \equiv \mc{A}$ so $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Now suppose $z\not = x$ but $z = y$.
+In this case $\mc{A}[y/x] \equiv ((\forall y)\mc{B}[y/x])$.
+Because $S_{B,1}(\mc{A}, y, x)$ and $z\not = x$ and $z=y$ we have that $S_{B,1}(\mc{B}, y, x)$ and $x\not \in FV(\mc{B})$.
+This means $\mc{B}[y/x] \equiv \mc{B}$ so $\mc{A}[y/x] \equiv ((\forall y)\mc{B}) \equiv \mc{A}$ so $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+Now suppose $z=x=y$.
+In this case $\mc{A}[y/x] \equiv \mc{A}$ since $z\equiv x$ so $S_{B,1}(\mc{A}[y/x], y, x)$.
+
+\end{theorem}
+
+\begin{theorem}[Free Variables after Bound Variable Substitution]
+If $\mc{A}\in\textbf{pForm}$, $x, y\in\textbf{Var}$, and $S_{B,1}(\mc{A}, y, x)$ then $FV(\mc{A}\{y/x\}) = FV(\mc{A})$.
+
+Suppose $D(\mc{A})=0$ so that $\mc{A}$ is atomic. Then $\mc{A}\{y/x\} = \mc{A}$ so $FV(\mc{A}\{y/x\}) = FV(\mc{A})$.
+
+Now suppose $D(\mc{A})>0$ but that for $\mc{B}\in\textbf{pForm}$ with $D(\mc{B})<D(\mc{A})$ that if $S_{B,1}(\mc{B}, y, x)$ that $FV(\mc{B}\{y/x\}) = FV(\mc{B})$.
+
+$\mc{A}$ cannot be atomic because $D(\mc{A})>0$.
+
+Suppose $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ so that $FV(\mc{A}) = FV(\mc{B})$
+We also have $\mc{A}\{y/x\} = (\lnot \mc{B}\{y/x\})$ so that $FV(\mc{A}\{y/x\}) = FV(\mc{B}\{y/x\})$.
+We have $D(\mc{B})<D(\mc{A})$ and, because $S_{B,1}(\mc{A}, y,x )$, that $S_{B, 1}(\mc{B}, y, x)$ so, by the induction hypothesis, $FV(\mc{B}\{y/x\}) = FV(\mc{B})$.
+This means $FV(\mc{A}\{y/x\}) = FV(\mc{A})$.
+
+Now suppose $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ so that $FV(\mc{A}) = FV(\mc{B})\cup FV(\mc{C})$.
+We also have $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$ so that $FV(\mc{A}\{y/x\}) = FV(\mc{B}\{y/x\}) \cup FV(\mc{C}\{y/x\})$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and, because $S_{B,1}(\mc{A}, y, x)$, that $S_{B,1}(\mc{B}, y, x)$ and $S_{B,1}(\mc{C}, y, x)$.
+So, by the induction hypothesis $FV(\mc{B}\{y/x\}) = FV(\mc{B})$ and $FV(\mc{C}\{y/x\}) = FV(\mc{C})$ so that $FV(\mc{A}\{y/x\}) = FV(\mc{A})$.
+
+Now suppose $\mc{A} \equiv ((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ so that $FV(\mc{A}) = FV(\mc{B})\setminus \{z\}$.
+We have $D(\mc{B}) < D(\mc{A})$ and, because $S_{B,1}(\mc{A}, y, x)$, that $S_{B, 1}(\mc{B}, y, x)$.
+This means that, by the induction hypothesis, $FV(\mc{B}\{y/x\}) = FV(\mc{B})$.
+There are multiple cases to consider.
+
+Suppose $z \not = x$ and $z\not = y$.
+Then $\mc{A}\{y/x\} \equiv ((\forall z) \mc{B}\{y/x\})$ so that
+$$
+FV(\mc{A}\{y/x\}) = FV(\mc{B}\{y/x\})\setminus\{z\}=FV(\mc{B})\setminus\{z\} = FV(\mc{A})
+$$
+
+Suppose $z=x$ but $z\not =y$.
+In this case $\mc{A} \equiv ((\forall x) \mc{B})$ with $FV(\mc{A}) = FV(\mc{B}) \setminus\{x\}$.
+We also have $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$ so that $FV(\mc{A}\{y/x\}) = FV((\mc{B}[y/x])\{y/x\}) \setminus \{y\}$.
+Since $S_{B,1}(\mc{A}, y, x)$ this means $S_{B,1}(\mc{B}, y, x)$ and $y\not \in FV(\mc{B})$.
+Since $S_{B,1}(\mc{B}, y, x)$, Theorem \ref{thm:qvsubstitutabilityafterfvsub} implies $S_{B,1}(\mc{B}[y/x], y, x)$.
+Theorem \ref{thm:pformdepthaftertermsub} implies that $D(\mc{B}[y/x]) = D(\mc{B}) < D(\mc{A})$.
+The induction hypothesis then implies $FV((\mc{B}[y/x])\{y/x\}) = FV(\mc{B}[y/x])$.
+If $x\not \in FV(\mc{B})$ then $FV(\mc{B}[y/x]) = FV(\mc{B})$, by Theorem \ref{thm:fvsubpformnotappear}, so that $FV(\mc{A}\{y/x\}) = FV(\mc{B})\setminus \{y\} = FV(\mc{B})$ because $y\not \in \mc{B}$.
+Since $x\not \in FV(\mc{B})$ this is equivalent to $FV(\mc{B})\setminus \{x\} = FV(\mc{A})$.
+If $x\in FV(\mc{B})$ then Theorem \ref{thm:fvinpformafterfvsub} implies $FV(\mc{B}[y/x]) = ((FV(\mc{B})\setminus \{x\}) \cup \{y\})$ so
+\begin{align}
+FV(\mc{A}\{y/x\}) &= ((FV(\mc{B})\setminus \{x\}) \cup \{y\}) \setminus\{y\} \notag \\
+&= FV(\mc{B})\setminus \{x\} = FV(\mc{A})
+\end{align}
+This follows because $y\not \in FV(\mc{B})$.
+
+Now suppose $z \not = x$ but $z=y$.
+In this case $\mc{A} \equiv ((\forall y)\mc{B})$ with $FV(\mc{A}) = FV(\mc{B})\setminus \{y\}$.
+We also have $\mc{A}\{y/x\} \equiv ((\forall y) \mc{B}\{y/x\})$ so that $FV(\mc{A}\{y/x\}) = FV(\mc{B}\{y/x\})\setminus \{y\}$.
+But $FV(\mc{B}\{y/x\}) = FV(\mc{B})$ so $FV(\mc{A}\{y/x\}) = FV(\mc{A})$.
+
+Now suppose $z=x=y$.
+Then $\mc{A}\equiv ((\forall z) \mc{B})$ with $FV(\mc{A}) = FV(\mc{B})\setminus \{z\}$.
+We also have $\mc{A}\{y/x\} \equiv ((\forall z)(\mc{B}[z/z])\{z/z\})$
+which is equivalent to $((\forall z)\mc{B}\{z/z\})$ by Theorem \ref{thm:idenfvsub}.
+So $FV(\mc{A}\{y/x\}) = FV(\mc{B}\{y/x\}) \setminus \{z\} = FV(\mc{B})\setminus\{z\} = FV(\mc{A})$.
+\end{theorem}
+
+There is another problem with bound variable substitution in addition to the logical/semantic changes that can arise.
+If we have $\mc{A}\in\textbf{sForm}$ and $x,y\in\textbf{Var}$ it is not necessarily the case that $\mc{A}\{y/x\}\in\textbf{sForm}$.
+This problem persists even if $S_{B,1}(\mc{A}, y, x)$.
+For example
+\begin{align}
+\mc{A} &\equiv ((\forall y) (Py \land ((\forall x) Qx))) \notag \\
+\mc{A}\{y/x\} &\equiv ((\forall y) (Py\land ((\forall y) Qy))) \notag
+\end{align}
+We see that $\mc{A}\in\textbf{sForm}$ and $S_{B,1}(\mc{A}, y, x)$ but we see that $\mc{A}\{y/x\}\not \in \textbf{sForm}$.
+
+To resolve this issue we define a second form of bound variable substitutability which will identify when bound variable substitution can be carried out while maintaining strict formulas.
+
+\begin{definition}[Bound Variable Substitutability for Strict Formulas]
+Suppose $\mc{A}\in\textbf{pForm}$ and $x, y\in\textbf{Var}$.
+If $y$ is bound variable substitutable (of the second type) for $x$ in $\mc{A}$ we say $S_{B,2}(\mc{A}, y, x)$.
+We define bound variable substitutability (of the second type) as follows.
+\begin{itemize}
+\item{If $\mc{A}$ is atomic then $S_{B,2}(\mc{A}, y, x)$.}
+\item{If $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ then $S_{B,2}(\mc{A}, y, x)$ if $S_{B,2}(\mc{B}, y, x)$.}
+\item{If $\mc{A}\equiv(\mc{B}\implies \mc{C})$ then $S_{B,2}(\mc{A}, y, x)$ if $S_{B,2}(\mc{B}, y, x)$ and $S_{B,2}(\mc{C}, y, x)$.}
+\item{If $\mc{A} \equiv ((\forall z)\mc{B})$ with $z\in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ then there are a few cases to consider. If $z\not \equiv x$ and $z\not \equiv y$ then $S_{B,2}(\mc{A}, y, x)$ if $S_{B,2}(\mc{B}, y, x)$.
+If $z\equiv x$ but $z\not \equiv y$ then $S_{B,2}(\mc{A}, y, x)$ if $S_{B,2}(\mc{B}, y, x)$ and $y\not \in QV(\mc{B})$. If $z \not \equiv x$ but $z\equiv y$ then $S_{B,2}(\mc{A}, y, x)$ if $S_{B,2}(\mc{B}, y, x)$ and $x\not \in QV(\mc{B})$. If $z=x=y$ then $S_{B,2}(\mc{A}, y, x)$.}
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Bound Variable Substitutability of the Second Type Maintains Strict Formulas]
+Suppose $\mc{A}\in\textbf{sForm}$ and $x,y\in\textbf{Var}$.
+Then if $S_{B,2}(\mc{A}, y, x)$ then $\mc{A}\{y/x\}\in\textbf{sForm}$.
+\end{theorem}
+
+Above we saw an example of $\mc{A}\in\textbf{pForm}$ with $S_{B,1}(\mc{A}, y, x)$ but without $S_{B,2}(\mc{A}, y, x)$.
+It also possible to have the opposite.
+Consider
+\begin{align}
+\mc{A} &\equiv ((\forall x) Qxy)\notag\\
+\mc{A}\{y/x\} &\equiv ((\forall y) Qyy) \notag
+\end{align}
+We see that $S_{B,2}(\mc{A}, y, x)$ but not $S_{B,1}(\mc{A}, y, x)$.
+We should think of the first form of substitutability as identifying logical/semantic consistency while the second form of substitutability enforces strict formulas as we will prove below.
+
+\begin{theorem}[Strict Formulas and Bound Variable Substitutability of the Second Kind]
+Suppose $\mc{A}\in\textbf{sForm}$, $x, y \in\textbf{Var}$ and $S_{B,2}(\mc{A}, y, x)$.
+Then $\mc{A}\{y/x\} \in \textbf{sForm}$.
+
+Suppose $D(\mc{A}) = 0$ so that $\mc{A}$ is atomic.
+Then $\mc{A}\{y/x\} \equiv \mc{A}$ so $\mc{A}\{y/x\} \in\textbf{sForm}$.
+
+Now suppose $D(\mc{A})>0$ but, for $\mc{B}\in\textbf{sForm}$ with $D(\mc{B})<D(\mc{A})$ that, if $S_{B,2}(\mc{B}, y, x)$ then $\mc{B}\{y/x\}\in\textbf{sForm}$.
+
+Suppose $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{sForm}$.
+We have $D(\mc{B}) < D(\mc{A})$ and $\mc{A}\{y/x\} \equiv (\lnot \mc{B}\{y/x\})$ but, by the induction hypothesis $\mc{B}\{y/x\}\in\textbf{sForm}$, so $\mc{A}\{y/x\}\in\textbf{sForm}$.
+
+Suppose $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{sForm}$.
+We have $D(\mc{B}), D(\mc{C}) < D(\mc{A})$ and $\mc{A}\{y/x\} \equiv (\mc{B}\{y/x\} \implies \mc{C}\{y/x\})$ but, by the induction hypothesis, $\mc{B}\{y/x\}, \mc{C}\{y/x\}\in\textbf{sForm}$ so $\mc{A}\{y/x\}\in\textbf{sForm}$.
+
+Now suppose $\mc{A}\equiv((\forall z)\mc{B})$ with $z\in\textbf{Var}$ and $\mc{B}\in\textbf{sForm}$.
+We consider multiple cases.
+
+First suppose $y\equiv x$.
+Then $\mc{A}\{y/x\} \equiv \mc{A}$ by Theorem \ref{thm:identqvsub} so $\mc{A}\{y/x\} \in \textbf{sForm}$.
+We now consider $y\not \equiv x$.
+
+Suppose $z\not \equiv x$.
+Then $\mc{A}\{y/x\} \equiv ((\forall z) \mc{B}\{y/x\})$.
+By Theorem \ref{thm:pformdepthafterqvsub}, $D(\mc{B}\{y/x\}) = D(\mc{B}) < D(\mc{A})$ so, by the induction hypothesis, $\mc{B}\{y/x\}\in\textbf{sForm}$.
+
+
+
+
+We have $D(\mc{B}) < D(\mc{A})$ so, by the induction hypothesis $\mc{B}\{y/x\} \in \textbf{sForm}$.
+
+
+
+
+We have $D(\mc{B}) < D(\mc{A})$.
+Because $\mc{A}\in\textbf{sForm}$ we have $z\in FV(\mc{B})$ and $z\not \in QV(\mc{B})$.
+Suppose $z\not \equiv x$.
+Then $\mc{A}\{y/x\} \equiv ((\forall z) \mc{B}\{y/x\})$.
+By Theorem \ref{thm:bndvarsubforvarnotappear}, $\mc{B}\{y/x\} \equiv \mc{B}$ so $\mc{A}\{y/x\} \equiv \mc{A}$ so $\mc{A}\{y/x\} \in\textbf{sForm}$.
+Now suppose $z \equiv x$.
+If $y\equiv x$ then $\mc{A}\{y/x\} \equiv \mc{A}$ by Theorem \ref{thm:identqvsub} so $\mc{A}\{y/x\}\in\textbf{sForm}$.
+If $y\not \equiv x$ then $\mc{A}\{y/x\} \equiv ((\forall y) (\mc{B}[y/x])\{y/x\})$.
+By Theorem \ref{thm:qvafterfvsub}, we have that $QV(\mc{B}[y/x]) = QV(\mc{B})$ so $x\not \in QV(\mc{B}[y/x])$ since $x\not \in QV(\mc{B})$.
+This means, again by Theorem \ref{thm:bndvarsubforvarnotappear}, that $(\mc{B}[y/x])\{y/x\} \equiv \mc{B}[y/x]$ so that $\mc{A}\{y/x\} \equiv ((\forall y) \mc{B}[y/x])$.
+
+
+
+Because $x\in FV(\mc{B})$ we have, by Theorem \ref{thm:fvinpformafterfvsub}, that $FV(\mc{B}[y/x]) = (FV(\mc{B})\setminus \{x\}) \cup \{y\}$.
+We also have by Theorem
+\end{theorem}
 
 
 \section{Formal Proof}
