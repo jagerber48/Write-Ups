@@ -247,7 +247,15 @@ Note that these informal definitions may closely mirror the definitions of their
 However, we would have a logical circularity problem if we required the formal concept of a set to define the formal concept of a set.
 Instead, we rely on informal definitions initially and formalize them later, when we are able.
 
-The first informal concept we will need is that of an informal object.
+\begin{informal definition}[Logic]
+To build up our formal system of logic we will indeed require an informal system of logic.
+It is necessary that we informally or intuitively understand concepts like
+\begin{itemize}
+\item{If $A$ is true and $B$ is true then `$A$ and $B$` is true}
+\item{If $A$ implies $C$ and $B$ implies $C$ then if `$A$ or $B$' is true then $C$ is implied.}
+\end{itemize}
+\end{informal definition}
+
 \begin{informal definition}[Object]
 An object can be a wide range of things.
 Examples of an object are: a table, an apple or a word.
@@ -359,6 +367,65 @@ S\setminus T = \{x\in S: x \not \in T\}
 $$
 \end{definition}
 
+\begin{theorem}[Set Subtraction is Distributive Over Set Union]
+Suppose $S_1,\ldots, S_n, T$ are sets.
+Then
+$$
+(S_1\setminus T)\cup \ldots \cup (S_n\setminus T) = (S_1\cup\ldots \cup S_n)\setminus T
+$$
+We only informally prove this by noting that if $x$ is contained in the set on the left $x\in (S_i\setminus T)$ for at least of of $1\le i \le n$ which means that $x\not \in T$ but that $x\in S_i$ for one of $1\le i \le n$.
+But the set on the right is characterized by $x\in S_i$ for at least one of $1 \le i \le n$ but $x\not \in T$.
+In the formal set theory this would be proven using induction.
+\end{theorem}
+
+\begin{informal definition}[Ordered Pair]
+If $x$ and $y$ are objects then we can create a new object called the ordered pair of $x$ and $y$.
+This ordered pair is denoted by $(x, y)$.
+In general $(x, y) \not \equiv (y, x)$ unless $x\equiv y$.
+\end{informal definition}
+In formal set theory we can formalize tuples as $(x, y) = \{\{x\}, \{x, y\}\}$, but we have no need of such heavy formalism here and allow the informal ordered pair to stand as its own informal concept.
+
+\begin{informal definition}[Cartesian Product]
+If $S$ and $T$ are two sets then we may construct a set which consists of all ordered pairs of elements from $S$ and $T$ respectively.
+This set is called the Cartesian product of $S$ and $T$ and is denoted by $S\times T$.
+If $s\in S$ and $t\in T$ then $(s, t) \in S\times T$.
+Similarly, if $x\in S\times T$ then there exists $s\in S$ and $t\in T$ with $x = (s, t)$.
+\end{informal definition}
+
+\begin{informal definition}[Relation]
+If $S$ and $T$ are two sets then a relation $R$ between $S$ and $T$ is any subset of $S\times T$. That is $R\subset S\times T$.
+If $s\in S$, $t\in T$, and $(s, t)\in R$ then we say $s$ and $t$ are related by $R$ and may write $Rst$ using prefix notation, $R(s, t)$ using prefix notation with parentheses for clarity, or sometimes, $sRt$ using infix notation for binary relations.
+\end{informal definition}
+A common relation is the less than relation, $<$.
+We have, for example, that $(3, 4) \in <$ because $3<4$, but $(4,3)\not \in <$ because $4\not < 3$.
+
+\begin{informal definition}[Function]
+A function is a relation which satisfies two properties.
+Suppose $S$ and $T$ are two sets and $R$ is a relation between them, i.e. $R\subset S\times T$.
+\begin{itemize}
+\item{\textbf{Total}: For every $s\in S$ there exists a $t\in T$ such that $(s, t) \in S$. That is every element in $s$ is related to at least one element in $T$.}
+\item{\textbf{Functional}: If $s\in S$ and $t, t'\in T$ then if $R(s, t)$ and $R(s, t')$ then $t\equiv t'$. That is, if $s\in S$ is related to $t\in T$ it is not related to any other element in $T$.}
+\end{itemize}
+If a relation is total and functional then we say that relation is a function.
+Equivalently, a function is a relation which is total and functional.
+We often use $f\subset S\times T$ to denote a function.
+If $s\in S$ and $t\in T$ are related by $f$ then we denote this by $f(s) \equiv t$.
+\end{informal definition}
+
+\begin{informal definition}[The Natural Numbers]
+We require an informal understanding of the natural numbers.
+These are the counting number $0, 1, 2, \ldots$.
+We denote the (informal) set of all natural numbers as $\mathbb{N}$.
+We will also require an understanding of simple relations like $<$, $\ge$, $=$ on $\mathbb{N}$ as well as some simple addition.
+If $S\subset \mathbb{N}$ is a finite subset of $\mathbb{N}$ we will need an understanding of $\text{max}(S)$ and $\text{min}(S)$.
+\end{informal definition}
+
+\begin{informal definition}[Induction]
+Suppose $\phi(n)$ is a statement which depends, or is indexed by, on a natural number $n\in\mathbb{N}$.
+If we are able to prove $\phi(0)$ and also that if $\phi(m)$ is true for all $0\le m < n$ implies $\phi(n)$ is also true, then we can conclude that $\phi(n)$ is in fact true for all $n$.
+Intuitively induction says that if we can climb from the lower rungs of a ladder to a higher rung on the ladder, and if we can get on the ladder, then we can climb to any rung on the ladder.
+\end{informal definition}
+Induction on the natural numbers will be used extensively throughout and is the most complicated informal concept which we will require.
 
 
 \newpage
@@ -387,7 +454,7 @@ The logical symbols are defined as follows.
 \item{\textbf{Punctuation Marks:} Parenthesis $($ and $)$. The set of all punctuation marks is denoted $\textbf{Punct}$.}
 \end{itemize}
 
-The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \sqcup \textbf{Lop} \sqcup \textbf{Quant} \sqcup \textbf{Punct}$.
+The set of all logical symbols is denoted $\textbf{LogSymb}$ and is the disjoint union of the variables, logical operators, quantifiers and punctuation marks: $\textbf{LogSymb} = \textbf{Var} \cup \textbf{Lop} \cup \textbf{Quant} \cup \textbf{Punct}$.
 \end{definition}
 
 We have chosen to use a restricted set of logical operators in the language to the exclusion of the conjunction, $\land$, disjunction, $\lor$, and equivalence, $\iff$ connectives and the existential quantifier, $\exists$.
@@ -397,15 +464,15 @@ However, we will need to introduce the $\land$, $\lor$, and $\iff$ symbols as ab
 \begin{definition}[Non-Logical Symbols]
 The non-logical symbols are defined as follows.
 \begin{itemize}
-\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These examples all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigsqcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
-\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigsqcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$. We reserve constants $\alpha_0, \alpha_1, \ldots \in \textbf{Func}_0$ as `placeholder' constants that exist in any logical theory. The placeholder constants will be used for proofs involving universal specification and generalization, but will not be permitted to appear in logical axioms.}
+\item{\textbf{Predicate Symbols:} for each arity $0 \le n \le N_{pred}$ predicate symbols such as $P, Q, R$. Examples are $\in, \subset, <$. These examples all have arity 2 but other aritys are possible. The contradiction symbol, $\curlywedge$, is taken to be a 0-ary predicate in our language. The set of all $n$-ary predicate symbols is denoted $\textbf{Pred}_n$. The set of all predicate symbols is denoted $\textbf{Pred}$ and is the disjoint union of the sets of all $n$-ary predicate symbols: $\textbf{Pred} = \bigcup_{i=1}^{N_{\text{pred}}} \textbf{Pred}_i$.}
+\item{\textbf{Function Symbols}: for each arity $0 \le n \le N_{\text{func}}$ function symbols such as $f, g, h$. Examples are $+$ and $\times$, these examples both have arity $2$. Note that function symbols of arity $0$ are the same as constants such as $a,b,c,\emptyset,4$. The set of all $n$-ary function symbols is denoted $\textbf{Func}_n$. The set of all function symbols is the disjoint union of the sets of all $n$-ary function symbols and is denoted $\textbf{Func} = \bigcup_{n=1}^{N_{\text{func}}} \textbf{Func}_i$. We reserve constants $\alpha_0, \alpha_1, \ldots \in \textbf{Func}_0$ as `placeholder' constants that exist in any logical theory. The placeholder constants will be used for proofs involving universal specification and generalization, but will not be permitted to appear in logical axioms.}
 \end{itemize}
 
-The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoint union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \sqcup \textbf{Func}$. If we are not worried about having an infinite number of distinct symbol types then we can let $N_{\text{pred}} = N_{\text{func}} = \infty$.
+The set of all non-logical symbols is denoted $\textbf{NonLogSymb}$ and is the disjoint union of the predicate and function symbols: $\textbf{NonLogSymb} = \textbf{Pred} \cup \textbf{Func}$. If we are not worried about having an infinite number of distinct symbol types then we can let $N_{\text{pred}} = N_{\text{func}} = \infty$.
 \end{definition}
 
 \begin{definition}[The Set of All Symbols]
-The set of all symbols in the language is denoted $\textbf{Symb}$ and is the disjoint union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \sqcup \textbf{NonLogSymb}$.
+The set of all symbols in the language is denoted $\textbf{Symb}$ and is the union of the logical and non-logical symbols: $\textbf{Symb} = \textbf{LogSymb} \cup \textbf{NonLogSymb}$.
 \end{definition}
 
 \subsection{Strings}
@@ -499,6 +566,7 @@ Then $\mc{A}\circ \mc{B}$, the concatenation of $\mc{A}$ and $\mc{B}$ is defined
 \end{enumerate}
 Note that we may write $\mc{A}\circ\mc{B}$ as $(\mc{A}\circ\mc{B})$ and we may abbreviate it as $\mc{A}\mc{B}$ or $(\mc{A}\mc{B}$).
 A consequence of this notation is that we can indicate the $i^{\text{th}}$ element of $\mc{A}\circ\mc{B}$ as $(\mc{A}\circ\mc{B})[i]$ or $(\mc{A}\mc{B})[i]$.
+Note that list concatenation can be thought of as a function from $\Sigma^* \times \Sigma^* \to \Sigma^*$.
 \end{definition}
 
 \begin{theorem}[Equality of Concatenation with List implies Equality of Lists]
@@ -972,7 +1040,7 @@ If $\mc{A}\in\textbf{Str}$ then $\mc{A}\in\textbf{pForm}$ iff $\mc{A}$ satisfies
 \item{\textbf{Atomic Formulas:} $\mc{A}\in\textbf{Atom}$.}
 \item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{pForm}$.}
 \item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$.}
-\item{\textbf{Quantification:} $\mc{A}\equiv ((\forall x)\mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $(\forall x)$ in $\mc{A}$.}
+\item{\textbf{Quantification:} $\mc{A}\equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $\forall x$ in $\mc{A}$.}
 \end{itemize}
 \end{definition}
 
@@ -991,14 +1059,15 @@ We define three new subsets of $\textbf{Str}$: $\textbf{Neg}$, $\textbf{Imp}$ an
 From these definitions the following theorem is clear
 
 \begin{theorem}[Permissive Formula Categorization]
+\label{thm:synt:pformcats}
 From the definitions of $\textbf{pForm}$, $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{pQaunt}$, it is clear that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant} \subset \textbf{pForm}\subset \textbf{Str}$.
 It is also clear that $\textbf{pForm} = \textbf{Atom}\cup \textbf{Neg} \cup \textbf{Imp} \cup \textbf{pQuant}$.
 
 This means that if $\mc{A}\in\textbf{pForm}$ then either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\textbf{pQuant}$.
 \end{theorem}
 
-While it may be intuitively clear that it is not possible for $\mc{A}$ to be any element of any two or more of $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ or $\textbf{pQuant}$, this is not directly implied by these definitions.
-The fact that these four sets are pairwise disjoint will be proven later as part of the unique readability theorems.
+While it may be intuitively clear that it is not possible for $\mc{A}$ to be an element of any two or more of $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ or $\textbf{pQuant}$, this is not directly implied by these definitions.
+The fact that these four sets are pairwise disjoint will be proven in the next section on unique readability.
 
 \subsection{Unique Readability}
 
@@ -1061,10 +1130,57 @@ If $t\equiv f t_1\ldots t_n$ with $f\in\textbf{Func}_n$ and $t_1,\ldots, t_n\in\
 
 \begin{theorem}[First Symbol in a Permissive Formula]
 \label{thm:read:pformfirstsymb}
-If $\mc{A}\in\textbf{pForm}$ then either $\mc{A}[0]\in\textbf{Pred}$ or $\mc{A}\equiv ($.
+Suppose $\mc{A}\in\textbf{pForm}$.
+\begin{itemize}
+\item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$. We have $\mc{A}[0] \equiv P \in \textbf{Pred}$.}
+\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[0] \equiv ($.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv(\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$. We have $\mc{A}[0] \equiv ($.}
+\item{If $\mc{A}\in\textbf{pQuant}$ then $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[0] \equiv ($.}
+\item{In total, if $\mc{A}\in\textbf{pForm}$ then either $\mc{A}[0] \in \textbf{Pred}$ or $\mc{A}[0] \equiv ($.}
+\end{itemize}
+\end{theorem}
 
-If $\mc{A}$
+\begin{theorem}[Second Symbols in a Permissive Formula]
+Suppose $\mc{A}\in\textbf{pForm}$ and $|\mc{A}|>1$.
+\begin{itemize}
+\item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$.
+Note that since $|\mc{A}|>1$ we have $P\not \in \textbf{Pred}_0$. We have $\mc{A}[1] \equiv t_1[0]$. We know from Theorem \ref{thm:read:initsymbterm} that $t_1[0] \in \textbf{Var}$ or $t_1[0] \in \textbf{Func}$ so $\mc{A}[1]\in \textbf{Var}$ or $\mc{A}[1] \in \textbf{Func}$.}
+\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \lnot$.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \mc{B}[0]$ but we know from Theorem \ref{thm:read:pformfirstsymb} that $\mc{B}[0] \in \textbf{Pred}$ or $\mc{B}[0] \equiv ($ so $\mc{A}[1]\in\textbf{Pred}$ or $\mc{A}[1] \equiv ($.}
+\item{If $\mc{A} \in \textbf{pQuant}$ then $\mc{A} \equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \forall$}
+\item{In total we have $\mc{A}[1] \in \textbf{Var}$, $\mc{A}[1]\in\textbf{Func}$, $\mc{A}[1] \equiv \lnot$, $\mc{A}[1]\in\textbf{Pred}$, $\mc{A}[1]\equiv ($ or $\mc{A}[1] \equiv \forall$.}
+\end{itemize}
+\end{theorem}
 
+\begin{theorem}[Permissive Formula Categories are Disjoint]
+\label{thm:read:pformcatdisjoint}
+The sets $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant}\subset \textbf{pForm}$ are all pairwise disjoint.
+Suppose $\mc{A}\in\textbf{pForm}$.
+From Theorem \ref{thm:synt:pformcats} we know that either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\mc{A}\in\textbf{pQuant}$.
+
+Suppose $\mc{A}\in\textbf{Atom}$. Then $\mc{A}[0] \in \textbf{Pred}$. But for $\mc{A}\in \textbf{Neg}$, $\mc{A}\in\textbf{Imp}$ or $\textbf{pQaunt}$, we have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A} \not \in \textbf{Neg}, \textbf{Imp}, \textbf{pForm}$.
+
+Suppose $\mc{A}\in \textbf{Neg}$.
+We already know $\mc{A}\not \in \textbf{Atom}$.
+We have $\mc{A}[1] \equiv \lnot$.
+But for $\mc{A}\in\textbf{Imp}$ or $\mc{A}\in\textbf{pQuant}$ we have $\mc{A}[1]\in \text{Pred}$, $\mc{A}[1]\equiv ($ or $\mc{A}[1]\equiv \forall$.
+But $\lnot \not \in \textbf{Pred}$, $\lnot \not \equiv ($ and $\lnot\not \equiv \forall$ so $\mc{A}\not \in \textbf{Imp}$ and $\mc{A} \not \in \textbf{pQuant}$.
+
+Suppose $\mc{A} \in \textbf{Imp}$.
+We already know $\mc{A} \not \in \textbf{Atom}$ and $\mc{A} \not \in \textbf{Neg}$.
+We have $\mc{A}[1] \in \textbf{Pred}$ or $\mc{A}[1]\equiv ($.
+But for $\mc{A} \in \textbf{pQuant}$ we have $\mc{A}[1] \equiv \forall$.
+But $\forall \not \in \textbf{Pred}$ and $\forall \not \equiv ($ so $\mc{A} \not \in \textbf{pQuant}$.
+
+Suppose $\mc{A}\in\textbf{pQuant}$.
+We already know $\mc{A} \not \in \textbf{Neg}$, $\mc{A}\not \in \textbf{Imp}$ and $\mc{A} \not \in \textbf{Imp}$.
+
+This means that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant}\subset \textbf{pForm}$ are all pairwise disjoint.
+\end{theorem}
+
+\begin{theorem}[Unique Readability of Atomic Formulas]
+Suppose $\mc{A} \in \textbf{Atom}$.
+Then if $\mc{A}\equiv P t_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and$t_1,\ldots, t_n\in\textbf{Term}$ and $\mc{A}\equiv P't_1'\ldots t_m'$ with $P'\in\textbf{Pred}_m$ and $t_1', \ldots, t_m'$ then $n=m$, $P\equiv P'$, and $t_i' \equiv t_i$ for $1\le i \le n$.
 \end{theorem}
 
 \begin{theorem}[Initial Symbols in a Permissive Formula]
