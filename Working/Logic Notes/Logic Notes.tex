@@ -1090,7 +1090,7 @@ When the parentheses are included such ambiguity is not possible as we will prov
 
 
 \begin{theorem}[No Proper Initial Part of a Term is a Term]
-\label{thm:termnopropinit}
+\label{thm:read:termnopropinit}
 Suppose $t \in\textbf{Term}$.
 Then if $t'\in\textbf{Term}$ and $t'$ is an initial part of $t$ we have $t'\equiv t$.
 Conversely, this theorem means that if $t'$ is a proper initial part of $t$ then $t'\not\in\textbf{Term}$.
@@ -1119,8 +1119,8 @@ We have $t'\equiv f t_1\ldots t_{i-1} \circ t_i' \circ t_{i+1}'\ldots t_n'$.
 Corollary \ref{corr:list:correspondingintermediateparts} again implies $t_i$ is an initial part of $t_i'$ or $t_i'$ is an initial part of $t_i$, but the first induction hypothesis again yields that in either case $t_i\equiv t_i'$. Note that if $i = n$ then $\mc{D}$ and $\mc{D}'$ from Corollary \ref{corr:list:correspondingintermediateparts} correspond both to the empty set.
 \end{theorem}
 
-\begin{theorem}[Initial Symbols in a Term]
-\label{thm:read:initsymbterm}
+\begin{theorem}[Zeroth Symbols in a Term]
+\label{thm:read:zerothsymbterm}
 If $t\in \textbf{Term}$ then either $t[0]\in\textbf{Var}$ or $t[0]\in\textbf{Func}$.
 
 This can be seen from the two construction rules for $t$.
@@ -1128,8 +1128,8 @@ If $t\equiv x$ with $x\in\textbf{Var}$ then $t[0]\equiv x \in\textbf{Var}$.
 If $t\equiv f t_1\ldots t_n$ with $f\in\textbf{Func}_n$ and $t_1,\ldots, t_n\in\textbf{Term}$ then, by Theorem \ref{thm:list:multconcatextract}, we have $t[0] \equiv f \in \textbf{Func}$.
 \end{theorem}
 
-\begin{theorem}[First Symbol in a Permissive Formula]
-\label{thm:read:pformfirstsymb}
+\begin{theorem}[Zeroth Symbol in a Permissive Formula]
+\label{thm:read:zerothsymbpform}
 Suppose $\mc{A}\in\textbf{pForm}$.
 \begin{itemize}
 \item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$. We have $\mc{A}[0] \equiv P \in \textbf{Pred}$.}
@@ -1140,13 +1140,14 @@ Suppose $\mc{A}\in\textbf{pForm}$.
 \end{itemize}
 \end{theorem}
 
-\begin{theorem}[Second Symbols in a Permissive Formula]
+\begin{theorem}[First Symbols in a Permissive Formula]
+\label{thm:read:firstsymbpform}
 Suppose $\mc{A}\in\textbf{pForm}$ and $|\mc{A}|>1$.
 \begin{itemize}
 \item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$.
-Note that since $|\mc{A}|>1$ we have $P\not \in \textbf{Pred}_0$. We have $\mc{A}[1] \equiv t_1[0]$. We know from Theorem \ref{thm:read:initsymbterm} that $t_1[0] \in \textbf{Var}$ or $t_1[0] \in \textbf{Func}$ so $\mc{A}[1]\in \textbf{Var}$ or $\mc{A}[1] \in \textbf{Func}$.}
+Note that since $|\mc{A}|>1$ we have $P\not \in \textbf{Pred}_0$. We have $\mc{A}[1] \equiv t_1[0]$. We know from Theorem \ref{thm:read:zerothsymbterm} that $t_1[0] \in \textbf{Var}$ or $t_1[0] \in \textbf{Func}$ so $\mc{A}[1]\in \textbf{Var}$ or $\mc{A}[1] \in \textbf{Func}$.}
 \item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \lnot$.}
-\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \mc{B}[0]$ but we know from Theorem \ref{thm:read:pformfirstsymb} that $\mc{B}[0] \in \textbf{Pred}$ or $\mc{B}[0] \equiv ($ so $\mc{A}[1]\in\textbf{Pred}$ or $\mc{A}[1] \equiv ($.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \mc{B}[0]$ but we know from Theorem \ref{thm:read:zerothsymbpform} that $\mc{B}[0] \in \textbf{Pred}$ or $\mc{B}[0] \equiv ($ so $\mc{A}[1]\in\textbf{Pred}$ or $\mc{A}[1] \equiv ($.}
 \item{If $\mc{A} \in \textbf{pQuant}$ then $\mc{A} \equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \forall$}
 \item{In total we have $\mc{A}[1] \in \textbf{Var}$, $\mc{A}[1]\in\textbf{Func}$, $\mc{A}[1] \equiv \lnot$, $\mc{A}[1]\in\textbf{Pred}$, $\mc{A}[1]\equiv ($ or $\mc{A}[1] \equiv \forall$.}
 \end{itemize}
@@ -1158,7 +1159,7 @@ The sets $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant}\subset \tex
 Suppose $\mc{A}\in\textbf{pForm}$.
 From Theorem \ref{thm:synt:pformcats} we know that either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\mc{A}\in\textbf{pQuant}$.
 
-Suppose $\mc{A}\in\textbf{Atom}$. Then $\mc{A}[0] \in \textbf{Pred}$. But for $\mc{A}\in \textbf{Neg}$, $\mc{A}\in\textbf{Imp}$ or $\textbf{pQaunt}$, we have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A} \not \in \textbf{Neg}, \textbf{Imp}, \textbf{pForm}$.
+Suppose $\mc{A}\in\textbf{Atom}$. Then $\mc{A}[0] \in \textbf{Pred}$. But for $\mc{A}\in \textbf{Neg}$, $\mc{A}\in\textbf{Imp}$ or $\textbf{pQuant}$, we have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A} \not \in \textbf{Neg}, \textbf{Imp}, \textbf{pForm}$.
 
 Suppose $\mc{A}\in \textbf{Neg}$.
 We already know $\mc{A}\not \in \textbf{Atom}$.
@@ -1178,165 +1179,108 @@ We already know $\mc{A} \not \in \textbf{Neg}$, $\mc{A}\not \in \textbf{Imp}$ an
 This means that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant}\subset \textbf{pForm}$ are all pairwise disjoint.
 \end{theorem}
 
-\begin{theorem}[Unique Readability of Atomic Formulas]
-Suppose $\mc{A} \in \textbf{Atom}$.
-Then if $\mc{A}\equiv P t_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and$t_1,\ldots, t_n\in\textbf{Term}$ and $\mc{A}\equiv P't_1'\ldots t_m'$ with $P'\in\textbf{Pred}_m$ and $t_1', \ldots, t_m'$ then $n=m$, $P\equiv P'$, and $t_i' \equiv t_i$ for $1\le i \le n$.
+\begin{theorem}[Initial Part of an Atomic Formula]
+\label{thm:read:initpartatom}
+Suppose $\mc{A}\in\textbf{Atom}$.
+Then if $\mc{A}'$ is an initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$ then $\mc{A}' \equiv \mc{A}$.
+
+We have $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$.
+We also have that $\mc{A}'[0] \equiv \mc{A}[0] \equiv P$.
+If $\mc{A}'\in\textbf{pForm}$ then we must have $\mc{A}'\in\textbf{Atom}$ and $\mc{A}' \equiv Pt_1'\ldots t_n'$.
+
+We will prove by induction that $t_i' \equiv t_i$ for each $1\le i \le n$.
+
+If $i=1$ then we have $\mc{A} \equiv P \circ t_1 \circ t_2\ldots t_n$ and $\mc{A}' \equiv P \circ t_1' \circ t_2'\ldots t_n'$.
+Corollary \ref{corr:list:correspondingintermediateparts} then tells us that $t_1'$ is an initial part of $t_1$ or $t_1$ is an initial part of $t_1'$, but, Theorem \ref{thm:read:termnopropinit} says that a term can have no proper initial part so we must have $t_1'\equiv t_1$.
+
+Now suppose that for $1 \le i < n$ but that for $j < i$ that $t_j' \equiv t_j$.
+Then we have $\mc{A}\equiv P t_1\ldots t_{i-1} \circ t_i \circ t_{i+1} \ldots t_n$ and $\mc{A}' \equiv P t_1 \ldots t_{i-1} \circ t_i' \circ t_{i+1}' \ldots t_n'$.
+Again, by Corollary \ref{corr:list:correspondingintermediateparts} we have that $t_i'$ is an initial part of $t_i$ or $t_i$ is an initial part of $t_i'$, but Theorem \ref{thm:read:termnopropinit} tells us a term can not have a proper initial part so we therefore have $t_i' \equiv t_i$.
 \end{theorem}
 
-\begin{theorem}[Initial Symbols in a Permissive Formula]
-\label{thm:initsymbform}
-If $\mc{A}\in\textbf{pForm}$.
-We prove a few facts about initial symbols in $\mc{A}$.
+\begin{theorem}[Initial Part of a Permissive Formula]
+\label{thm:read:pformnopropinitpart}
+Suppose $\mc{A}\in\textbf{pForm}$.
+If $\mc{A}'$ is an initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$ then $\mc{A}'\equiv \mc{A}$.
+
+Suppose $|\mc{A}| = 1$.
+If $|\mc{A}'| = 0$ then $\mc{A}'\not \in \textbf{pForm}$ so we must have $|\mc{A}'| = 1$ so that $\mc{A}'\equiv \mc{A}$.
+
+Now suppose $|\mc{A}|>1$ but that for $\mc{B}\in\textbf{pForm}$ with $|\mc{B}| < |\mc{A}|$ that if $\mc{B}'$ is an initial part of $\mc{B}$ and $\mc{B}' \in \textbf{pForm}$ that $\mc{B}'\equiv \mc{B}$.
+
+Suppose $\mc{A}\in\textbf{Atom}$.
+Theorem \ref{thm:read:initpartatom} tells us already that $\mc{A}'\equiv \mc{A}$.
+
+Now suppose $\mc{A}\in\textbf{Neg}$ so that $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ and $|mc{B}|<|\mc{A}|$.
+Note that $\mc{A}[0] \equiv ($ and $\mc{A}[1]\equiv \lnot$.
+This means we must have $|\mc{A}'|>2$ (because $($ and $(\lnot$ are not in $\textbf{pForm}$) and $\mc{A}'[0]\equiv ($ and $\mc{A}'[1]\equiv \lnot$.
+This means that $\mc{A}'\not \in \textbf{Atom}$ because the zeroth element of an atomic formula is in $\textbf{Pred}$.
+It also means $\mc{A}'\not\in \textbf{Imp}$ because the first element of an implication is $($ or in $\textbf{Pred}$.
+It also means $\mc{A}' \not \in \textbf{pQuant}$ because the first element of a quantification is $\forall$.
+Therefore we must have $\mc{A}'\in\textbf{Neg}$ with $\mc{A}'\equiv (\lnot \mc{B}')$.
+Note $|\mc{B}'|<|\mc{A}'|\le |\mc{A}|$.
+But, Corollary \ref{corr:list:correspondingintermediateparts} tells us that either $\mc{B}$ is an initial part of $\mc{B}'$ or $\mc{B}'$ is an initial part of $\mc{B}$.
+But in both cases the induction hypothesis tells us that $\mc{B}'\equiv \mc{B}$ so that $\mc{A}'\equiv \mc{A}$.
+
+Now suppose $\mc{A}\in\textbf{Imp}$ so that $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ and $|\mc{B}|, |\mc{C}|<|\mc{A}|$.
+Note that $\mc{A}[0]\equiv ($ and either $\mc{A}[1]\equiv ($ or $\mc{A}[1] \in\textbf{Pred}$ by Theorem \ref{thm:read:firstsymbpform}.
+This means $|\mc{A}'|>2$ (because $($ and $(P$ are not in $\textbf{pForm}$) and $\mc{A}'[0] \equiv ($ and $\mc{A}'[1] \equiv ($ or $\mc{A}'[1] \in \textbf{Pred}$.
+We must have $\mc{A}'\not\in\textbf{Atom}$ because the zeroth element of an atomic formula is in $\textbf{Pred}$.
+We also have that $\mc{A}'\not\in\textbf{Neg}$ because the first element of a negation is $\lnot$.
+We also have that $\mc{A}'\not\in\textbf{pQuant}$ because the first element of a quantification is $\forall$.
+So we must have $\mc{A}'\in\textbf{Imp}$ with $\mc{A}'\equiv (\mc{B}'\implies \mc{C}')$.
+Note that $|\mc{B}'|,|\mc{C}'| < |\mc{A}'| \le |\mc{A}|$.
+Corollary \ref{corr:list:correspondingintermediateparts} tells us that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$.
+The induction hypothesis then tells us that $\mc{B}'\equiv \mc{B}$ so that $\mc{A}'\equiv (\mc{B}\implies \mc{C}')$.
+Again Corollary \ref{corr:list:correspondingintermediateparts} tells us taht $\mc{C}'$ is an initial part of $\mc{C}$ or $\mc{C}$ is an initial part of $\mc{C}'$, but the induction hypothesis then tells us that $\mc{C}'\equiv \mc{C}$.
+We conclude, then, that $\mc{A}'\equiv \mc{A}$.
+
+Now suppose $\mc{A}\in\textbf{pQuant}$ so that $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ with $|\mc{B}|<|\mc{A}|$.
+Note that $\mc{A}[0]\equiv ($ and $\mc{A}[1]\equiv \forall$.
+This means $|\mc{A}'|>2$ (because $($ and $(\forall$ are not in $\textbf{pForm}$ and $\mc{A}'[0]\equiv ($ and $\mc{A}'[1]\equiv \forall$.
+We must have $\mc{A}'\not\in\textbf{Atom}$ because the zeroth element of an atomic formula is in $\textbf{Pred}$.
+We must have $\mc{A}'\not\in\textbf{Neg}$ because the first element of a negation is $\lnot$.
+We also must have $\mc{A}'\not\in\textbf{Imp}$ because the first element of an implication is $($ or is in $\textbf{Pred}$.
+We must have that $\mc{A}'\in\textbf{pQuant}$ with $\mc{A}'\equiv (\forall x' \mc{B}')$ with $x'\in\textbf{Var}$ and $\mc{B}'\in\textbf{pForm}$.
+Note that $|\mc{B}'|<|\mc{A}'| \le |\mc{A}|$.
+But we must have $\mc{A}'[2] \equiv \mc{A}[2] \equiv x$ so that $x'\equiv x$.
+Then, Corollary \ref{corr:list:correspondingintermediateparts} tells us that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$.
+The induction hypothesis then tells us that $\mc{B}'\equiv \mc{B}$ so that $\mc{A}'\equiv \mc{A}$.
+\end{theorem}
+
+\begin{theorem}[Unique Readability of a Permissive Formula]
+Suppose $\mc{A}\in\textbf{pForm}$.
 \begin{itemize}
-\item{If $\mc{A}$ atomic then $\mc{A}\equiv P t_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$. Theorem \ref{thm:list:multconcatextract} yields that $\mc{A}[0] \equiv P\in\textbf{Pref}$. If $|\mc{A}|>1$, then Theorem \ref{thm:list:multconcatextract} also yields $\mc{A}[1]\equiv t_1[0]$ but then Theorem \ref{thm:read:initsymbterm} yields that either $\mc{A}[1]\in\textbf{Var}$ or $\mc{A}[1]\in\textbf{Func}$.}
-\item{f $\mc{A}$ is a negation then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.}
+\item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots, t_n$. If we also have $\mc{A}\equiv P' t_1'\ldots t_m'$ with $P'\in\textbf{Pred}_m$ and $t_1',\ldots,t_m'\in\textbf{Term}$ then $P' \equiv P$, $m=n$ and $t_i'\equiv t_i$ for $1\le i \le n$.}
+\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. If we also have $\mc{A}\equiv (\lnot \mc{B}')$ with $\mc{B}'\in\textbf{pForm}$ then $\mc{B}'\equiv \mc{B}$.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$. If we also have $\mc{A}\equiv (\mc{B}'\implies \mc{C}')$ with $\mc{B}', \mc{C}'\in\textbf{pForm}$ then $\mc{B}'\equiv \mc{B}$ and $\mc{C}'\equiv \mc{C}$.}
+\item{If $\mc{A}\in\textbf{pQuant}$ then $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. If we also have $\mc{A}\equiv (\forall x' \mc{B}')$ with $x'\in\textbf{Var}$ and $\mc{B}'\in\textbf{pForm}$ then $x'\equiv x$ and $\mc{B}'\equiv \mc{B}$.}
 \end{itemize}
+We now prove each of these claims in turn.
 
+Suppose $\mc{A}\in\textbf{Atom}$ with $\mc{A}\equiv Pt_1\ldots t_n\equiv P't_1'\ldots t_m'$ with $P\in\textbf{Pred}_n$, $P'\in\textbf{Pred}_m$ and $t_1,\ldots,t_n,t_1',\ldots t_m'\in\textbf{Term}$.
+We have $\mc{A}[0]\equiv P\equiv P'$ so we also have $m=n$.
+We perform induction to prove $t_i'\equiv t_i$ for $1\le i \le n$.
+If $i=1$ then we have $\mc{A}\equiv P\circ t_1 \circ t_2\ldots t_n \equiv P\circ t_1' \circ t_2'\ldots t_n'$, But Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:termnopropinit} tell us that $t_1'\equiv t_1$.
+Now suppose $i > 1$but for $j<i$ that $t_j'\equiv t_j$.
+Then $\mc{A}\equiv Pt_1\ldots t_{i-1} \circ t_i \circ t_{i+1} \ldots t_n \equiv Pt_1\ldots t_{i-1}\circ t_i' \circ t_{i+1}' \ldots t_n'$.
+Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:termnopropinit} again tell us $t_i'\equiv t_i$.
 
-Suppose $\mc{A}\in \textbf{pForm}$.
-We will use Theorem \ref{thm:list:multconcatextract} throughout.
+Now suppose $\mc{A}\in \textbf{Neg}$ with $\mc{A}\equiv (\lnot \mc{B}) \equiv (\lnot \mc{B}')$ with $\mc{B}, \mc{B}'\in\textbf{pForm}$.
+Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:pformnopropinitpart} tell us that $\mc{B}'\equiv \mc{B}$.
 
-If $\mc{A}$ is atomic then $\mc{A}[0] \in \textbf{Pred}$.
-If $\mc{A}$ is an implication, negation, or quantification, then $\mc{A}[0] \equiv ($. So for every permissive formula $\mc{A}[0]$ is in $\textbf{Pred}$ or equal to $($.
+Now suppose $\mc{A}\in\textbf{Imp}$ with $\mc{A}\equiv (\mc{B}\implies \mc{C})\equiv (\mc{B}'\equiv \mc{C}')$ with $\mc{B}, \mc{B}', \mc{C}, \mc{C}' \in \textbf{pForm}$.
+One application of Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:pformnopropinitpart} tells us that $\mc{B}'\equiv \mc{B}$ and then a second application tells us $\mc{C}'\equiv \mc{C}$.
 
-Suppose $|\mc{A}| > 1$.
-If $\mc{A}$ is atomic then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1\ldots t_n\in\textbf{Term}$.
-This means $\mc{A}[1]\equiv t_1[0]$ and, by Theorem \ref{thm:initsymbterm} $t_1[0]\in\textbf{Var}$ or $t_1[0]\in\textbf{Func}$.
-
-If $\mc{A}$ is an implication then $\mc{A}\equiv (\mc{B}\implies \mc{C})$ for $\mc{B},\mc{C}\in\textbf{pForm}$.
-We see that $\mc{A}[1]\equiv \mc{B}[0]$ and from above, $\mc{B}[0]$ is either in $\textbf{Pred}$ or equal to $($.
-
-If $\mc{A}$ is a negation then $\mc{A}\equiv (\lnot \mc{B})$ and $\mc{A}[1] \equiv \lnot$.
-
-If $\mc{A}$ is a quantification then $\mc{A}\equiv ((\forall x)\mc{B}0$ and $\mc{A}[1] \equiv ($.
-
-This all means that if $|\mc{A}|>1$ that $\mc{A}[1]$ is either in $\textbf{Var}$, in $\textbf{Func}$, in $\textbf{Pred}$, equal to $($, or equal to $\lnot$.
+Now suppose $\mc{A}\in\textbf{pQuant}$ with $\mc{A}\equiv (\forall x \mc{B}) \equiv (\forall x'\mc{B}')$ with $x, x' \in \textbf{Var}$ and $\mc{B}, \mc{B}'\in\textbf{pForm}$.
+We have that $\mc{A}[1] \equiv x \equiv x'$.
+An application of \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:pformnopropinitpart} tells us that $\mc{B}'\equiv \mc{B}$.
 \end{theorem}
 
-\begin{theorem}[Unique Range of Permissive Formula Construction Rules]
-\label{thm:uniquerange}
-Suppose $\mc{A}\in\textbf{pForm}$.
-We will use Theorem \ref{thm:multconcatextract} throughout.
-
-Suppose $\mc{A}$ is atomic.
-Then $\mc{A}[0] \in \textbf{Pred}$.
-If $\mc{A}$ were either an implication, negation, or quantification we would have $\mc{A}[0]\equiv (\not\in \textbf{Pred}$ so $\mc{A}$ is not an implication negation or quantification.
 
 
 
-Suppose $\mc{A}$ is an implication so that $\mc{A} \equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$.
-We know from above that $\mc{A}$ is not atomic.
-
-We see that $\mc{A}[1]\equiv \mc{B}[0]$ so by Theorem \ref{thm:initsymbform}, $\mc{A}[1]\equiv\mc{B}[0]$ is in $\textbf{Pred}$ or equal to $($.
-If $\mc{A}$ were also a negation then we would have $\mc{A}[1]\equiv \lnot$, so $\mc{A}$ is not a negation.
-
-If $|\mc{B}| = 1$ then $\mc{A}[2]\equiv \implies$.
-If $|\mc{B}| > 1$ then $\mc{A}[2] \equiv \mc{B}[1]$ which, by Theorem \ref{thm:initsymbform}, is either in $\textbf{Var}$, in $\textbf{Func}$, in $\textbf{Pred}$, equal to $($, or equal to $\lnot$.
-If $\mc{A}$ were a quantification then we would have $\mc{A}[2] \equiv \forall$, so $\mc{A}$ is not a quantification.
-
-Suppose $\mc{A}$ is a negation so that $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.
-We know from above that $\mc{A}$ is not atomic and $\mc{A}$ is not an implication.
-$\mc{A}[2] \equiv \mc{B}[0]$ which must either be in $\textbf{Pred}$ or equal to $($.
-If $\mc{A}$ were a quantification then we would have $\mc{A}[2] \equiv \forall$, so $\mc{A}$ is not a quantification.
-
-If $\mc{A}$ were a quantification then we know from above that it is not atomic, not an implication, and not a negation.
-
-Therefore if $\mc{A}\in\textbf{pForm}$ then it exactly one of atomic, implication, negation, or quantification.
-\end{theorem}
-
-\begin{theorem}[Unique Readability of Atomic Formulas]
-\label{thm:atomunique}
-Suppose $\mc{A}\in \textbf{pForm}$ and $\mc{A}$ is atomic.
-Then $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots,t_n\in\textbf{Term}$.
-We know from \ref{thm:uniquerange} that $\mc{A}$ is not an implication, negation, or quantification.
-Suppose that $\mc{A} \equiv P't_1'\ldots t_k'$ with $P'\in\textbf{Pred}_k$ and $t_1',\ldots, t_k'\in\textbf{Term}$.
-We see that $\mc{A}[0] \equiv P \equiv P'$ which also means $k=n$.
-We then have $\mc{A}\equiv P t_1'\ldots t_k'$.
-We can see by Corollary \ref{corr:intpart} that $t_1$ must be an initial part of $t_1'$ or $t_1'$ must be an initial part of $t_1$, but because of Theorem \ref{thm:termnopropinit} no term can have a proper initial part, so we must have $t_1\equiv t_1'$.
-This same argument is repeated for $t_2$ through $t_n$ so that $t_i \equiv t_i'$ for all $1 \le i \le n$.
-\end{theorem}
-
-\begin{theorem}[No Proper Initial Part of a Permissive Formula is a Permissive Formula]
-\label{thm:permpropinit}
-Suppose $\mc{A}\in\textbf{pForm}$.
-We proceed by induction on $|\mc{A}|$ to show that $\mc{A}$ has no proper initial part that is a permissive formula.
-
-If $|\mc{A}| = 1$ then the only proper initial part of $\mc{A}$ is $\mc{E} \not \in \textbf{pForm}$.
-
-Suppose that $|\mc{A}| = n>1$.
-The induction hypothesis is that for any $\mc{B}$ with $|\mc{B}|<n$ that $\mc{B}$ has no proper initial part that is a permissive formula.
-We need one case for each type of permissive formula.
-
-Suppose $\mc{A}$ is atomic and suppose $\mc{A}'\in \textbf{pForm}$ and is an initial part of $\mc{A}$.
-We have $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$.
-We can see that $\mc{A}'[0] \equiv \mc{A}[0] \equiv  P$ so we see that $\mc{A}'$ is atomic.
-We have $\mc{A}' \equiv Pt_1'\ldots t_n'$.
-By the same argument as in Theorem \ref{thm:atomunique} we conclude that $t_i' \equiv t_i$ for all $1 \le i \le n$.
-Therefore $\mc{A}' \equiv \mc{A}$ so that $\mc{A}'$ cannot be a proper initial part of $\mc{A}$.
-Note that this case does not require the induction hypothesis.
-
-If $\mc{A}$ is an implication then we have $\mc{A} \equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$.
-Suppose, for contradiction, that $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}\in\textbf{pForm}$.
-If $|\mc{A}'| = 0$ then $\mc{A}' \equiv \mc{E}$ and so $\mc{A}' \not \in \textbf{pForm}$.
-If $|\mc{A}'| = 1$ then $\mc{A}' \equiv [(]$ and $\mc{A}' \not\in \textbf{pForm}$.
-Suppose $|\mc{A}'|>1$.
-Then $\mc{A}'[1] \equiv \mc{A}[1] \equiv \mc{B}[0]$ which is either in $\textbf{Pred}$ or equal to $($. This means that $\mc{A}'$ is not a negation.
-If $|\mc{A}'| < 3$ then $\mc{A}'$ is not a quantification.
-If $|\mc{A}'| \ge 3$ then $\mc{A}'[2] \equiv \mc{A}[2] \equiv \mc{B}[1]$ which is either in $\textbf{Var}$, $\textbf{Func}$, or $\textbf{Pred}$ or equal to $($ or $\lnot$. But if $\mc{A}'$ were a quantification then we would have $\mc{A}'[2] \equiv \forall$, so $\mc{A}'$ is not a quantification.
-So $\mc{A}'$ is an implication with $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$.
-We can see by Corollary \ref{corr:intpart} that $\mc{B}$ must be an initial part of $\mc{B'}$ or $\mc{B}'$ must be an initial part of $\mc{B}$.
-But $|\mc{B}|$ and $|\mc{B}'|$ are less than $n$, so, by the induction hypothesis, neither can have a proper initial part that is also a permissive formula.
-Therefore $\mc{B} \equiv \mc{B}'$ and $\mc{A}' \equiv (\mc{B} \implies \mc{C}')$.
-By the same argument we find $\mc{C} \equiv \mc{C}'$.
-This means $\mc{A} \equiv \mc{A}'$, contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
-
-If $\mc{A}$ is a negation then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{pForm}$.
-Suppose that $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$.
-Since $\mc{A}'[0] \equiv \mc{A}[0] \equiv ($ we know that $\mc{A}'$ is not atomic.
-If $\mc{A}'$ were an implication then we would have $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$.
-In this case we would have $\mc{A}[1] \equiv \mc{B}[0]$ which can be either in $\textbf{Pred}$ or equal to $($, but $\mc{A}[1] \equiv \lnot$ so $\mc{A}'$ is not an implication.
-If $\mc{A}'$ were a quantification we would have $\mc{A}' \equiv ((\forall x) \mc{B}')$ so that $\mc{A}'[2] \equiv \forall$. But $\mc{A}'[2] \equiv \mc{B}[0]$ which is either in $\textbf{Pred}$ or equal to $($ so $\mc{A}'$ is not a quantification.
-$\mc{A}'$ must be a negation so that $\mc{A}' \equiv (\lnot \mc{B}')$ with $\mc{B}' \in \textbf{pForm}$.
-But, by Corollary \ref{corr:intpart} we have $\mc{B}$ must be an initial part of $\mc{B}'$ or $\mc{B}'$ must be an initial part of $\mc{B}$.
-But, $|\mc{B}|$ and $|\mc{B}'|$ are both less than $n$, so by the induction hypothesis, neither can have a proper initial part that is also a permissive formula so we must have $\mc{B}' \equiv \mc{B}$.
-This means $\mc{A}' \equiv \mc{A}$, contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
-
-If $\mc{A}$ is a quantification then $\mc{A} \equiv ((\forall x) \mc{B})$ with $x \in \textbf{Var}$ and $\mc{B} \in \textbf{pForm}$.
-Suppose $\mc{A}'$ is a proper initial part of $\mc{A}$ and $\mc{A}' \in \textbf{pForm}$.
-$\mc{A}'[0] \equiv \mc{A}[0] \equiv ($ so $\mc{A}'$ is not atomic.
-Also, $\mc{A}'[1] \equiv \mc{A}[1] \equiv \lnot$ so $\mc{A}'$ is not a negation.
-If $\mc{A}'$ were an implication then we would have $\mc{A}' \equiv (\mc{B}' \implies \mc{C}')$ with $\mc{B}', \mc{C}' \in \textbf{pForm}$.
-$\mc{A}'[2]$ would be $\mc{B}'[1]$ which is either in $\textbf{Var}$, $\textbf{Func}$, $\textbf{Pred}$, or equal to $($ or $\lnot$, but $\mc{A}'[2] \equiv \mc{A}[2] \equiv \forall$, so $\mc{A}'$ is not an implication.
-$\mc{A}'$ must be a quantification with $\mc{A}' \equiv ((\forall x') \mc{B}')$ with $x' \in \textbf{Var}$ and $\mc{B}' \in \textbf{pForm}$.
-$\mc{A}'[3] \equiv x' \equiv \mc{A}[3] \equiv x$ so $x' \equiv x$.
-We can then see, by an application of Corollary \ref{corr:intpart}, that $\mc{B}$ must be an initial part of $\mc{B}'$ or $\mc{B}'$ must be an initial part of $\mc{B}$.
-But since $|\mc{B}|$ and $|\mc{B}'| $ are less than $n$ neither can have a proper initial part that is also a permissive formula, so we must have $\mc{B} \equiv \mc{B}'$.
-This means $\mc{A}' \equiv \mc{A}$ contradicting the assumption that $\mc{A}'$ is a proper initial part of $\mc{A}$.
-\end{theorem}
-
-\begin{theorem}[Unique Readability of Permissive Formulas]
-\label{thm:uniqueread}
-If $\mc{A}$ is atomic with $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1, \ldots, t_n \in \textbf{Term}$ then we know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not an implication, negation, or quantification.
-We also know from Theorem \ref{thm:atomunique} that if $\mc{A} \equiv P't_1'\ldots t_n'$ with $P'\in\textbf{Pred}$ and $t_1',\ldots, t_n'\in\textbf{Term}$ that $P' \equiv P$ and $t_i' \equiv t_i$ for all $1 \le i \le n$.
-
-Suppose $\mc{A}$ is an implication with $\mc{A} \equiv (\mc{B} \implies \mc{C})$.
-We know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not atomic, a negation, or a quantification.
-Suppose $\mc{A} \equiv (\mc{B}'\implies \mc{C}')$.
-Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$.
-The same argument follows to conclude $\mc{C} \equiv \mc{C}'$.
-
-Suppose $\mc{A}$ is a negation with $\mc{A} \equiv (\lnot \mc{B})$.
-We know from Theorem \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, or a quantification.
-Suppose $\mc{A} \equiv (\lnot \mc{B}')$.
-Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$.
-
-Suppose $\mc{A}$ is a quantification with $\mc{A} \equiv ((\forall x) \mc{B})$ with $x \in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.
-We know from \ref{thm:uniquerange} that $\mc{A}$ is not atomic, an implication, or a negation.
-Suppose $\mc{A} \equiv ((\forall x') \mc{B}')$.
-Since $\mc{A}[3] \equiv x' \equiv x$ we have $x' \equiv x$.
-Corollary \ref{corr:intpart} implies that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$, but, by Theorem \ref{thm:permpropinit}, no permissive formula can have a proper initial part that is a permissive formula so we must have $\mc{B} \equiv \mc{B}'$.
-\end{theorem}
-
+\subsubsection{old}
 The unique readability of permissive formulas allows to define recursively define functions on permissive formulas as we demonstrate below.
 
 \begin{definition}[Depth of a Permissive Formula]
