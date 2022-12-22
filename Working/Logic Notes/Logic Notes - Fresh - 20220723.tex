@@ -122,7 +122,7 @@ I hope that in this revisit I'll be able to overcome this difficulty.
 
 \subsection{Formal Logic and Language}
 All of traditional mathematics can be expressed in terms of mathematical set theory.
-Set theory itself is expressed in terms of a formal logic called first-order logic \textbf{FOL} which is expressed in the language of first-order logic \textbf{LFOL}.
+Set theory itself is expressed in terms of a formal logic called first-order logic \textbf{FOL} which is expressed in the language of first-order logic \textbf{LFOL} .
 The \textbf{LFOL} is a written formal language which means that it is composed of a clearly and well-defined set of symbols which constitutes the alphabet of that language and clear rules of syntax which identify `appropriate' ways in which the symbols can be combined to form formulas.\footnote{Sometimes formulas are called well-formed formulas (Wffs), sentences, or words.}
 In addition to \textbf{LFOL}, \textbf{FOL} includes a deductive calculus based on inference rules which allows us to derive new formulas from old formulas in a way which will be made clear below.
 \textbf{FOL} is fully captured by the language in which it is expressed, \textbf{LFOL}, and the inference rules which allow for deduction within the logic.
@@ -141,7 +141,7 @@ Let's consider an example.
 Suppose we would like to formalize the statement: If $x$ is an integer and $x$ is odd then $x \div 2$ is an integer.
 
 $$
-((\forall x)((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N}))
+\forall x((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N})
 $$
 
 The smallest element in our formal language is the \textit{term}.
@@ -184,7 +184,7 @@ Atomic formulas themselves are already formulas, but we can form larger more com
 We see sub-formulas above:
 
 \begin{align*}
-& ((\forall x)((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N})) \\
+& \forall x((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N}) \\
 & ((\in x \mathbb{N} \land Ox)\implies \in \div x 2 \mathbb{N}) \\
 & (\in x \mathbb{N} \land Ox)\\
 & \in x \mathbb{N}\\
@@ -233,6 +233,197 @@ In the remainder of this document I will prove that these two forms of extension
 These proofs will utilize metalogical induction.
 
 \newpage
+\section{An Informal Introduction to Set Theory}
+
+\subsection{Preliminary Definitions}
+\begin{definition}[Unique Existence]
+If we are working in a language with equality then we define unique existence as follows.
+Suppose $\phi$ is a formula
+$$
+\exists !x \phi \equiv \exists x(\phi \land \forall y (\phi[y/x] \implies y=x))
+$$
+\end{definition}
+
+\begin{definition}[At-Most-One Existence]
+Suppose $\phi$ is a formula. We define
+$$
+\exists^{\le 1}!x \equiv \exists x \phi \implies \exists!x \phi
+$$
+\end{definition}
+
+\begin{definition}[Extension by Predicate Definition]
+Suppose $\phi$ is a formula with $FV(\phi) \equiv \{x_1,\ldots, x_n\}$.
+We may extend a theory by adding a new $n$-ary predicate $P$ and the definitional axiom
+$$
+\forall x_1 \ldots \forall x_n (Px_1\ldots x_n \iff \phi)
+$$
+Such an extension is provably conservative
+\end{definition}
+
+\begin{definition}[Extension by Function Definition]
+Suppose $\phi$ is a formula with $FV(\phi)\equiv \{x_1,\ldots, x_n, y\}$.
+Suppose in a given theory with equality we have proven
+$$
+\forall x_1 \ldots \forall x_n \exists! y \phi
+$$
+Then we may extend the theory by adding the $n$-ary function $f$ and the definitional axiom
+$$
+\forall x_1 \ldots \forall x_n \phi[fx_1\ldots x_n/y]
+$$
+Such an extension is provably conservative
+\end{definition}
+
+ZF set theory takes place in the context of a language of first order logic and deduction system.
+The only non-logical symbol included in our theory is the set membership 2-ary predicate $\in$.
+We extend the theory by adding $=$.
+
+\begin{definition}[Equality]
+Let
+$$
+\phi_= \equiv \forall z(z\in x \iff z \in y) \land \forall z (x\in z \iff y\in z)
+$$
+We see that $FV(\phi_=) \equiv \{x, y\}$.
+We define the `$y=x$' 2-ary predicate by
+$$
+\Gamma_= \equiv \forall x \forall y (x=y \iff \phi_=)
+$$
+In plain words, $x=y$ if $x$ and $y$ contain the same elements and are contained in the same sets.
+\end{definition}
+
+\begin{definition}[Empty Set Predicate]
+Let
+$$
+\phi_E \equiv \forall y (y\not\in x)
+$$
+We see $FV(\phi) = \{x\}$.
+We define the `$x$ is an empty set' 1-ary predicate by
+$$
+\forall x (Ex \iff \phi_E)
+$$
+\end{definition}
+
+\begin{definition}[Successor Predicate]
+Let
+$$
+\phi_S \equiv \forall v (v\in y \iff (v = x \lor v\in x))
+$$
+We see $FV(\phi_S) = \{x, y\}$.
+We define the `$y$ is the successor of $x$' 2-ary predicate by
+$$
+\forall x \forall y (Syx \iff \phi_S)
+$$
+\end{definition}
+
+\begin{definition}[Is Inductive Predicate]
+Let
+$$
+\phi_I \equiv \exists y (y\in x \land Ey) \land \forall v(v\in x \implies \exists w (w\in x \land Swv))
+$$
+We see $FV(\phi_I) = \{x\}$.
+We define the `$x$ is inductive' 1-ary predicate by
+$$
+\forall x (Ix \iff \phi_I)
+$$
+\end{definition}
+
+\subsection{The Axioms}
+
+Set theory is based on 6 axioms which we outline here.
+
+\begin{definition}[Axiom of Extension]
+$$
+\forall x \forall y (\forall z (z\in x \iff z\in y) \implies \forall z(x\in z \iff y \in z))
+$$
+If $x$ and $y$ contain the same sets then $x$ and $y$ are contained in the same sets.
+\end{definition}
+
+\begin{definition}[Axiom of Union]
+$$
+\forall x\exists y\forall z(z\in y \iff \exists w (w\in x \land z\in w))
+$$
+For all $x$ there exists a set $y$ whose elements are elements of the elements of $x$
+\end{definition}
+
+\begin{definition}[Axiom of Foundation]
+$$
+\forall x (\lnot Ex \implies \exists y(y\in x \land \forall z (z\in x \implies z\not \in y)))
+$$
+For all non-empty $x$ there exists a $y$ in $x$ which does not contain any element of $x$.
+\end{definition}
+
+\begin{definition}[Axiom of Power Set]
+$$
+\forall x \exists y \forall z (z\in y \iff \forall w(w\in z \implies w \in x))
+$$
+For all $x$ there exists a set of subsets of $x$.
+\end{definition}
+
+\begin{definition}[Axiom Schema of Replacement]
+Suppose $\phi$ is a formula with $x, y, w_1, \ldots, w_n \in FV(\phi)$, $B\not \in FV(\phi)$, and either $A\in FV(\phi)$ or $A\not \in FV(\phi)$.
+For each such $\phi$ we introduce the following axiom.
+$$
+\forall w_1 \ldots \forall w_n\forall A\Big(\forall x (x\in A \implies \exists^{\le1}! y\phi)  \implies \exists B \forall y(y\in B \iff \exists x(x\in A \land \phi))\Big)
+$$
+If $\phi$ is a `partial functional' predicate (on $x$ and $y$ with $w_1,\ldots, w_n, A$ held constant, there exists a set $B$ which consists of the range of $\phi$ on $x\in A$.
+\end{definition}
+
+\begin{definition}[Axiom of Infinity]
+$$
+\exists x \Big(\exists y (y\in x \land Ey) \land \forall y(y\in x \implies \exists z (z\in x \land Szy))\Big)
+$$
+There exists a set $x$ which contains an empty set and for every element $y$ of $x$ there is a set which is a successor of $y$ also in $x$.
+\end{definition}
+
+\subsection{Consequences of the Axioms}
+
+\begin{definition}[Subset]
+Let
+$$
+\phi_{\subset} \equiv \forall z (z\in x \implies z \in y)
+$$
+We see $FV(\phi_{\subset}) = \{x, y\}$.
+We define the `$x$ is a subset of $y$' 2-ary predicate by
+$$
+\forall x \forall y (x\subset y \iff \phi_{\subset})
+$$
+\end{definition}
+
+\begin{theorem}[Subsets and Equality]
+The axiom of extension states that if two sets contain the same elements then those two sets are contained in the same sets.
+Combined with the definition of equality we can conclude that if two sets contain the same elements then they are equal.
+Finally, the expression $\forall z(z\in x \iff z \in y)$ is equivalent to $x \subset y \land y \subset x$.
+Putting these facts together, we conclude:
+$$
+\forall x \forall y ((x\subset y \land y \subset x)\implies x=y)
+$$
+\end{theorem}
+
+\begin{theorem}[Schema of Substitution]
+Suppose $\phi$ is a formula with $x, w_1, \ldots, w_n \in FV(\phi)$, $y, B\not \in FV(\phi)$, and $A\in FV(\phi)$ or $A\not \in FV(\phi)$.
+Let
+$$
+\psi \equiv \phi \land x=y
+$$
+We see that $FV(\psi) = FV(\phi)\cup\{y\}$.
+
+Because of the $x=y$ clause, we can prove that
+$$
+\forall w_1\ldots \forall w_n \forall A \forall x \exists^{\le1}!y \psi
+$$
+From which we can derive
+$$
+\forall w_1\ldots \forall w_n \forall A \forall x (x\in A \implies \exists^{\le1}!y \psi)
+$$
+This is the antecedent for the axiom schema of replacement so we conclude
+$$
+\forall w_1 \ldots \forall w_n \forall A \exists B \forall y (y\in B \iff \exists x(x\in A \land \psi))
+$$
+which is equivalent to
+$$
+\forall w_1 \ldots \forall w_n \forall A \exists B \forall y (y\in B \iff \exists x(x\in A \land (\phi \land x=y)))
+$$
+\end{theorem}
+
 \section{Informal Mathematics}
 The goal of this work is to carefully define \textbf{LFOL} and \textbf{FOL} so that we can eventually formally describe ZFC set theory within \textbf{FOL} to serve as a foundation for the formal description of much of modern mathematics.
 However, we will not be able to perform this task starting from nothing.
@@ -293,11 +484,6 @@ If we have one or more sets there are ways to extract new sets composed of the e
 \begin{informal definition}[Subset]
 If $S$ and $T$ are sets and all elements that are contained in $S$ are also contained in $T$ then we say $S$ is a subset of $T$ and we denote this by $S\subset T$.
 This is equivalent to the condition that $x\in S$ implies $x\in T$.
-\end{informal definition}
-
-\begin{informal definition}[Power Set]
-If $S$ is a set then the collection of all subsets of $S$ is also a set denoted by $\mathcal{P}(S)$.
-$S\subset S$ so $S\in \mathcal{P}(S)$.
 \end{informal definition}
 
 \begin{informal definition}[Set Equality]
@@ -415,7 +601,17 @@ We often use $f\subset S\times T$ to denote a function.
 If $s\in S$ and $t\in T$ are related by $f$ then we denote this by $f(s) \equiv t$.
 \end{informal definition}
 
-\section{The Natural Numbers}
+\begin{informal definition}[The Natural Numbers]
+
+
+We require an informal understanding of the natural numbers.
+These are the counting number $0, 1, 2, \ldots$.
+We denote the (informal) set of all natural numbers as $\mathbb{N}$.
+We will also require an understanding of simple relations like $<$, $\ge$, $=$ on $\mathbb{N}$ as well as some simple addition.
+If $S\subset \mathbb{N}$ is a finite subset of $\mathbb{N}$ we will need an understanding of $\text{max}(S)$ and $\text{min}(S)$. The most important features of $\mathbb{N}$ that we will require for induction will be that $0\in \mathbb{N}$ and that if $n\in \mathbb{N}$ then there is another number, $n+1 \in \mathbb{N}$.
+\end{informal definition}
+
+\subsection{Induction}
 
 In this section we will give a formally heavy definition of the natural numbers, induction and recursion.
 In fact, the formalism here would be nearly sufficient for working with Zermelo-Fraenkel set theory itself.
@@ -456,6 +652,7 @@ Note also that $\mathbb{N}_S \subset S$.
 \end{informal definition}
 
 \begin{theorem}[Uniqueness of Inductive Closures]
+\label{thm:uniqueindclosure}
 Suppose $S$ and $T$ are inductive sets.
 Then $\mathbb{N}_S = \mathbb{N}_T$.
 
@@ -487,56 +684,30 @@ We also have that $\phi(n) \implies \phi(n^+)$ meaning $n\in S \implies n^+\in S
 Therefore, by Corollary \ref{corr:inform:inductprinc1}, $S = \mathbb{N}$ which means that $\phi(n)$ holds for all $n\in \mathbb{N}$.
 \end{theorem}
 
+\begin{informal definition}[The Axiom of Infinity]
+\label{infdef:axiominf}
+There exists an inductive set.
+\end{informal definition}
+
+\begin{corollary}[The Natural Numbers]
+The axiom of infinity tells us that there exists a set $S$ which is inductive.
+This means $\mathbb{N}_S = \mathbb{N}$ exists.
+In other words, the existence of any inductive set, guaranteed by the axiom of infinity, guarantees the existence of the natural numbers.
+\end{corollary}
+
 \begin{theorem}[Recursion on the Natural Numbers]
-Suppose $A$ is a set with $a_0 \in A$ and $g$ is a function $g:A\to A$.
-Then there exists a function $f:\mathbb{N}\to A$ satisfying $f(0) = a_0$ and $f(n^+) = g(f(n))$ for all $n\in \mathbb{N}$.
+Suppose $S$ is a set and $f:S \to S$ and $s\in S$.
+Then there exists a unique function $F:\mathbb{N}\to S$ which satisfies
+\begin{itemize}
+\item{$F(0) = s$}
+\item{$F(n+1) = f(F(n))$}
+\end{itemize}
 
-We prove this as follows.
-Consider
-\begin{align*}
-H =& \{h \in \mathcal{P}(\mathbb{N}\times A): (0, a_0) \in h \land \left((n, a)\in h \implies (n^+, g(a))\in h\right)\}  \\
-f =& \bigcap H
-\end{align*}
 
-We now must prove that $f$ is a function and that it satisfies the appropriate requirements.
-Clearly $f\subset \mathbb{N}\times A$.
-We must show that $n \in \mathbb{N}$ implies that there exists and $a\in A$ such that $(n, a) \in f$ and that if $(n, a)\in f$ and $(n, b)\in f$ with $a, b\in A$ that $a=b$.
-We prove both of these in turn by the induction principle.
 
-First we let $\phi(n)$ be the statement that there exists an $a\in A$ and $(n, a)\in f$.
-First if $n=0$ we can see that $(0, a_0)\in f$.
-Now suppose $(n, a)\in f$.
-We can see from the definition of $f$ that $(n^+, g(a))\in f$.
-The induction principle then tells us that $\phi(n)$ holds for all $\mathbb{N}$ so the relation $f$ is total.
-
-Now let $\phi(n)$ be the statement that if $(n, a)\in f$ and $(n, b)\in f$ with $a, b\in A$ that $a=b$.
-First, consider $n=0$.
-For each $h\in H$ we have $(0, a_0) \in h$ so $(0, a_0) \in f$.
-Now consider $h\in H$ with $(0, b) \in h$ with $b\neq a_0$.
-If we then consider $h' = h\setminus \{(0, b)\}$ we see that $h'\in H$ and $(0, b)\not \in h\cap h'$.
-This means that $(0, b)\not \in f$.
-So if $(0, a)\in f$ and $(0, b)\in f$ then $a=b=a_0$ so $\phi(0)$ holds for $n=0$.
-
-Now consider the induction step.
-Suppose that for $a, b\in A$ that if $(n, a)\in f$ and $(n, b)\in f$ then $a=b$.
-We know from the previous part of this theorem that there exists $c\in A$ with $(n, c)\in f$.
-We also know that if $c\neq c'$ then, by the induction hypothesis, $(n, c')\not \in f$.
-We have $(n^+, g(c))\in f$.
-Now consider $h\in H$.
-Suppose $(n^+, b)\in h$ with $b\in A$ but $b\neq g(c)$.
-Consider then $h' = h\setminus \{(n^+, b)\}$.
-We know that $(0, a_0)\in h$, but we also know $0\neq n^+$ (since $0$ is the successor of no number) so $(0, a_0)\neq (n^+, b)$ so $(0, a_0) \in h'$.
-Now suppose $m>0$ and $(m, a)\in h$ with $a\in A$.
-Then $(m^+, g(a))\in h$.
-If $m\neq n$ then $m^+ \neq n^+$ so $(m^+, g(a)) \neq (n^+, b)$ so $(m^+, g(a))\in h'$.
-If $m=n$ then $a=c$ and $(m^+, g(a)) = (n^+, g(c))\in h$.
-But we have that $b\neq g(c)$ so $(n^+, g(c))\neq (n^+, b)$ so $(n^+ g(c)\in h'$.
-We have then that $(0, a_0)\in h'$ and $(m, a)\in h'$ implies $(m^+, g(a))\in h'$ for all $m\in \mathbb{N}$.
-That means $h'\in H$.
-But we have that $(n^+, b)\not \in h\cap h'$ so that means $(n^+, b)\not \in f$.
-So now if $(n^+, a)\in f$ and $(n^+, b)\in f$ we know $a=b=g(c)$.
 \end{theorem}
 
+\subsection{More general induction}
 
 Above we have defined the induction principle over the set $\mathbb{N}$, but it turns out it is possible to perform induction over much more general sets as we define and prove below.
 
@@ -549,71 +720,22 @@ We say that $C\subset A$ is $(B, \mathcal{F})$-inductive if $C$ satisfies
 \end{itemize}
 \end{definition}
 
-\begin{definition}[$(B, \mathcal{F})$-closure]
+\begin{theorem}[$(B, \mathcal{F})$-closure]
 Suppose $C$ is a $(B, \mathcal{F})$-inductive set.
 We define the $(\mathcal{B}, \mathcal{F})$-inductive closure of $C$ as
 $$
-\mathbb{N}_{C, (B, \mathcal{F})} = \bigcap \{\tilde{C}\in \mathcal{P}(C): \tilde{C} \text{ is } (B, \mathcal{F})-\text{inductive}\}
+\mathbb{N}_{C, (B, \mathcal{F})} = \bigcap \{\tilde{C}\in\mathcal{P}(A): \tilde{C} \text{ is } (B, \mc{F})\text{-inductive}\}
 $$
-Note that since $\tilde{C}$ is $(B, \mathcal{F})$ inductive that $B\subset\tilde{C}$ for each $\tilde{C}\in \mathbb{N}_{C, (B, \mathcal{F})}$ which means $B\subset \mathbb{N}_{C, (B, \mathcal{F})}$.
-
-Suppose $f\in\mathcal{F}$ with $f:A^m\to A$ and $c_1, \ldots, c_m \in \mathbb{N}_{C, (B, \mathcal{F})}$.
-This means $c_1, \ldots, c_m \in \tilde{C}$ for each $\tilde{C} \in \mathbb{N}_{C, (B, \mathcal{F})}$.
-Since $\tilde{C}$ is inductive this means $f(c_1, \ldots, c_m)\in \tilde{C}$ for each $\tilde{C}\in \mathbb{N}_{C, (B, \mc{F})}$ which means $f(c_1, \ldots, c_m)\in \mathbb{N}_{C, (B, \mc{F})}$.
-
-This means $\mathbb{N}_{C, (B, \mc{F})}$ is inductive.
-We note that $C\subset \mathbb{N}_{C, (B, \mc{F})}$.
-\end{definition}
-
-\begin{theorem}[Uniqueness of $(B, \mc{F})$-inductive closures]
-Suppose $S$ and $T$ are $(B, \mathcal{F})$-inductive sets.
-Then $\mathbb{N}_{S, (B, \mc{F})}=\mathbb{N}_{T, (B, \mc{F})}$.
-
-This follows because $\mathbb{N}_{S, (B, \mc{F})} \subset \mathbb{N}_{T, (B, \mc{F})}\cap S \subset \mathbb{N}_{T, (B, \mc{F})}$ and $\mathbb{N}_{T, (B, \mc{F})} \subset \mathbb{N}_{S, (B, \mc{F})} \cap T \subset \mathbb{N}_{S, (B, \mathcal{F})}$.
-
-Note that $A$ itself is inductive so we can always define $\mathbb{N}_{(B, \mc{F})} = \mathbb{N}_{A, (B, \mc{F})}$.
 \end{theorem}
 
-\begin{theorem}[$(B, \mathcal{F})$-induction]
-If Suppose $C\subset \mathbb{N}_{(B, \mc{F})}$ and $C$ is a $(B, \mathcal{F})$-inductive set.
-Then $C = \mathbb{N}_{(B, \mc{F})}$
+\begin{theorem}[The Recursion Theorem]
+Suppose $S$ is a set with $s\in S$ and suppose there is a function $g:S\to S$.
+Then there exists a unique function $f:\mathbb{N} \to S$ such that $f(0) = s$ and $f(n+1) = g(f(n))$.
 
-This follows because $\mathbb{N}_{(B, \mathcal{F})} = \mathbb{N}_{C, (B, \mc{F})} \subset C \subset \mathbb{N}_{(B, \mc{F})}$.
-\end{theorem}
+If such a function $f$ exists then it will be a subset of $\mathbb{N} \times S$.
+We build this subset in pieces using the induction principle.
 
-\begin{theorem}[$(B, \mc{F})$-recursion]
-Suppose $A$ is a set, $B \subset A$ and $\mathcal{F}$ is a set of functions satisfying $f\in \mc{F}$ has $f:A^m\to A$.
-We have $\mathbb{N}_{(B,\mc{F})} = \mathbb{N}_{A, (B, \mc{F})}$.
-
-Note that for all $f\in \mc{F}$ with $f:A^m\to A$ we have $f(\mathbb{N}_{(B, \mc{F})}^m) \subset \mathbb{N}_{(B, \mc{F})}$.
-That is, $f$ restricted to $\mathbb{N}_{(B, \mc{F})}$ remains in $\mathbb{N}_{(B, \mc{F})}$.
-
-\end{theorem}
-
-\begin{theorem}[Addition]
-Define $A$ by
-$$
-A = \{f\in \mathcal{P}(\mathbb{N}\times \mathbb{N}): f\text{ is a function}\}
-$$
-That is, $A$ is the set of all functions from $\mathbb{N}\to\mathbb{N}$.
-We introduce the function $+_0$:
-\begin{align*}
-+_0: \mathbb{N} &\to \mathbb{N}\\
-n &\mapsto n
-\end{align*}
-We then define $g:A\to A$ by
-\begin{align*}
-g: A &\to A\\
-f &\mapsto g(f)\\
-n & \mapsto g(f)(n) = \left(f(n)\right)^+
-\end{align*}
-
-
-
-$$
-g = \{z \in \mathbb{A}\times \mathbb{A}: (a, b) \text{ with } a, b\in A \text{ and for all } x, y\in \mathbb{N} \text{ we have } (x, y)\in a \iff (x, y^+) \in b\}
-$$
-In other words $g(+_n) = g(+_{n^+})$.
+Let $f_0 = \{(0, s)\} \subset \mathbb{N}\times S$
 \end{theorem}
 
 \begin{theorem}[Recursive Definition]
@@ -1251,57 +1373,45 @@ Semantically, an atomic formula express a boolean statement about the terms with
 If the terms contain no variables then we can, semantically, think of the atomic formula as having a truth value.
 If any of the terms contain variables then the atomic formula would only have a truth value once terms with no variables are `plugged in' for all variables.\footnote{These ideas will be made more concrete below when we formally define the free variables of a formula.}
 
+
+
 The final layer of syntax is the formula, sometimes called a well-formed formula  (Wff).
 Formulas combine multiple atomic formulas into more complex expressions using the logical operators.
-We will define formulas in two phases.
-We will first present \textit{permissive} formulas, then we will present \textit{strict} formulas.
-permissive formulas and strict formulas will differ in their treatment of quantifiers.
-In short, permissive formulas will allow repeated quantification (the quantification of a variable $x$ within the scope of a quantifier already binding over $x$) and redundant quantification (the quantification of a variable $x$ over an expression which does not include $x$).
-Both repeated and redundant quantification are in some-sense unnatural, in that they don't translate well into English example sentences, and that the quantification feels either confusing (in the case of repeated quantification) or wasteful (in the case of redundant quantification).
 
-Strict formulas will explicitly forbid both repeated and redundant quantification.
-The downside, however, is that it will be much more difficult to prove metalogical theorems about strict formulas.
-This is because care will need to be taken at each step to ensure that each expression satisfies the provisos necessary for strict formulas.
-It is typically the case that logic references do allow repeated and redundant quantification for precisely this reason.
-In fact, one might worry that semantically different theorems could be derived using permissive formulas compared to strict formulas, but this is in fact not the case.\footnote{We will not prove this last statement here.}
-
-Nonetheless, in this document we will mainly be using strict formulas, with permissive formulas only as a temporary stepping stone to help more easily define strict formulas.
-Moving forward `formula' will refer to `strict formula' unless otherwise specified.
-
-\begin{definition}[Permissive Formulas]
-If $\mc{A}\in\textbf{Str}$ then $\mc{A}\in\textbf{pForm}$ iff $\mc{A}$ satisfies one of
+\begin{definition}[Formulas]
+If $\mc{A}\in\textbf{Str}$ then $\mc{A}\in\textbf{Form}$ iff $\mc{A}$ satisfies one of
 
 \begin{itemize}
 \item{\textbf{Atomic Formulas:} $\mc{A}\in\textbf{Atom}$.}
-\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{pForm}$.}
-\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$.}
-\item{\textbf{Quantification:} $\mc{A}\equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in \textbf{pForm}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $\forall x$ in $\mc{A}$.}
+\item{\textbf{Negation:} $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B} \in \textbf{Form}$.}
+\item{\textbf{Implication:} $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{Form}$.}
+\item{\textbf{Quantification:} $\mc{A}\equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in \textbf{Form}$. We say all substrings of $\mc{B}$ (including $\mc{B}$) appear in the scope of $\forall x$ in $\mc{A}$.}
 \end{itemize}
 \end{definition}
 
 Semantically, like atomic formulas, formulas express, now more complex, statements about terms.
 
 \begin{definition}[Negation, Implication, Quantification]
-Suppose $\mc{A}\in\textbf{pForm}$.
-We define three new subsets of $\textbf{Str}$: $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{pQuant}$
+Suppose $\mc{A}\in\textbf{Form}$.
+We define three new subsets of $\textbf{Str}$: $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{Quant}$
 \begin{itemize}
-\item{$\mc{A}\in\textbf{Neg}$ iff $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$.}
-\item{$\mc{A}\in\textbf{Imp}$ iff $\mc{A}\equiv (\mc{A}\implies \mc{B})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$.}
-\item{$\mc{A}\in\textbf{pQuant}$ iff $\mc{A} \equiv ((\forall x)\mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$.}
+\item{$\mc{A}\in\textbf{Neg}$ iff $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{Form}$.}
+\item{$\mc{A}\in\textbf{Imp}$ iff $\mc{A}\equiv (\mc{A}\implies \mc{B})$ with $\mc{B}, \mc{C}\in\textbf{Form}$.}
+\item{$\mc{A}\in\textbf{Quant}$ iff $\mc{A} \equiv ((\forall x)\mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{Form}$.}
 \end{itemize}
 \end{definition}
 
 From these definitions the following theorem is clear
 
 \begin{theorem}[Permissive Formula Categorization]
-\label{thm:synt:pformcats}
-From the definitions of $\textbf{pForm}$, $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{pQaunt}$, it is clear that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant} \subset \textbf{pForm}\subset \textbf{Str}$.
-It is also clear that $\textbf{pForm} = \textbf{Atom}\cup \textbf{Neg} \cup \textbf{Imp} \cup \textbf{pQuant}$.
+\label{thm:synt:formcats}
+From the definitions of $\textbf{Form}$, $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ and $\textbf{Qaunt}$, it is clear that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{Quant} \subset \textbf{Form}\subset \textbf{Str}$.
+It is also clear that $\textbf{Form} = \textbf{Atom}\cup \textbf{Neg} \cup \textbf{Imp} \cup \textbf{Quant}$.
 
-This means that if $\mc{A}\in\textbf{pForm}$ then either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\textbf{pQuant}$.
+This means that if $\mc{A}\in\textbf{Form}$ then either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\textbf{Quant}$.
 \end{theorem}
 
-While it may be intuitively clear that it is not possible for $\mc{A}$ to be an element of any two or more of $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ or $\textbf{pQuant}$, this is not directly implied by these definitions.
+While it may be intuitively clear that it is not possible for $\mc{A}$ to be an element of any two or more of $\textbf{Atom}$, $\textbf{Neg}$, $\textbf{Imp}$ or $\textbf{Quant}$, this is not directly implied by these definitions.
 The fact that these four sets are pairwise disjoint will be proven in the next section on unique readability.
 
 \subsection{Unique Readability}
@@ -1310,7 +1420,7 @@ They syntax of $\textbf{LFOL}$ has an important property that we will refer to a
 Informally, unique readability means that the language has no ambiguity in the sense that each formula can be interpreted in exactly one way.
 This is perhaps easiest to illustrate by way of counter-example.
 
-In the rule for implications we specified that if $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$ then $\mc{A}\in\textbf{pForm}$.
+In the rule for implications we specified that if $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{Form}$ then $\mc{A}\in\textbf{Form}$.
 Suppose we had left the parentheses out of the rule.
 Consider then the candidate formula
 $$
@@ -1365,63 +1475,63 @@ If $t\equiv f t_1\ldots t_n$ with $f\in\textbf{Func}_n$ and $t_1,\ldots, t_n\in\
 
 \begin{theorem}[Zeroth Symbol in a Permissive Formula]
 \label{thm:read:zerothsymbpform}
-Suppose $\mc{A}\in\textbf{pForm}$.
+Suppose $\mc{A}\in\textbf{Form}$.
 \begin{itemize}
 \item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$. We have $\mc{A}[0] \equiv P \in \textbf{Pred}$.}
-\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[0] \equiv ($.}
-\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv(\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{pForm}$. We have $\mc{A}[0] \equiv ($.}
-\item{If $\mc{A}\in\textbf{pQuant}$ then $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[0] \equiv ($.}
-\item{In total, if $\mc{A}\in\textbf{pForm}$ then either $\mc{A}[0] \in \textbf{Pred}$ or $\mc{A}[0] \equiv ($.}
+\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{Form}$. We have $\mc{A}[0] \equiv ($.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv(\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C} \in \textbf{Form}$. We have $\mc{A}[0] \equiv ($.}
+\item{If $\mc{A}\in\textbf{Quant}$ then $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{Form}$. We have $\mc{A}[0] \equiv ($.}
+\item{In total, if $\mc{A}\in\textbf{Form}$ then either $\mc{A}[0] \in \textbf{Pred}$ or $\mc{A}[0] \equiv ($.}
 \end{itemize}
 \end{theorem}
 
-\begin{theorem}[First Symbols in a Permissive Formula]
-\label{thm:read:firstsymbpform}
-Suppose $\mc{A}\in\textbf{pForm}$ and $|\mc{A}|>1$.
+\begin{theorem}[First Symbols in a Formula]
+\label{thm:read:firstsymbform}
+Suppose $\mc{A}\in\textbf{Form}$ and $|\mc{A}|>1$.
 \begin{itemize}
 \item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}$ and $t_1,\ldots,t_n\in\textbf{Term}$.
 Note that since $|\mc{A}|>1$ we have $P\not \in \textbf{Pred}_0$. We have $\mc{A}[1] \equiv t_1[0]$. We know from Theorem \ref{thm:read:zerothsymbterm} that $t_1[0] \in \textbf{Var}$ or $t_1[0] \in \textbf{Func}$ so $\mc{A}[1]\in \textbf{Var}$ or $\mc{A}[1] \in \textbf{Func}$.}
-\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \lnot$.}
-\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \mc{B}[0]$ but we know from Theorem \ref{thm:read:zerothsymbpform} that $\mc{B}[0] \in \textbf{Pred}$ or $\mc{B}[0] \equiv ($ so $\mc{A}[1]\in\textbf{Pred}$ or $\mc{A}[1] \equiv ($.}
-\item{If $\mc{A} \in \textbf{pQuant}$ then $\mc{A} \equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. We have $\mc{A}[1] \equiv \forall$}
+\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A} \equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{Form}$. We have $\mc{A}[1] \equiv \lnot$.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B} \implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{Form}$. We have $\mc{A}[1] \equiv \mc{B}[0]$ but we know from Theorem \ref{thm:read:zerothsymbpform} that $\mc{B}[0] \in \textbf{Pred}$ or $\mc{B}[0] \equiv ($ so $\mc{A}[1]\in\textbf{Pred}$ or $\mc{A}[1] \equiv ($.}
+\item{If $\mc{A} \in \textbf{Quant}$ then $\mc{A} \equiv (\forall x \mc{B})$ with $x\in \textbf{Var}$ and $\mc{B}\in\textbf{Form}$. We have $\mc{A}[1] \equiv \forall$}
 \item{In total we have $\mc{A}[1] \in \textbf{Var}$, $\mc{A}[1]\in\textbf{Func}$, $\mc{A}[1] \equiv \lnot$, $\mc{A}[1]\in\textbf{Pred}$, $\mc{A}[1]\equiv ($ or $\mc{A}[1] \equiv \forall$.}
 \end{itemize}
 \end{theorem}
 
-\begin{theorem}[Permissive Formula Categories are Disjoint]
-\label{thm:read:pformcatdisjoint}
-The sets $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant}\subset \textbf{pForm}$ are all pairwise disjoint.
-Suppose $\mc{A}\in\textbf{pForm}$.
-From Theorem \ref{thm:synt:pformcats} we know that either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\mc{A}\in\textbf{pQuant}$.
+\begin{theorem}[Formula Categories are Disjoint]
+\label{thm:read:formcatdisjoint}
+The sets $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{Quant}\subset \textbf{Form}$ are all pairwise disjoint.
+Suppose $\mc{A}\in\textbf{Form}$.
+From Theorem \ref{thm:synt:formcats} we know that either $\mc{A}\in\textbf{Atom}$, $\mc{A}\in\textbf{Neg}$, $\mc{A}\in\textbf{Imp}$, or $\mc{A}\in\textbf{Quant}$.
 
-Suppose $\mc{A}\in\textbf{Atom}$. Then $\mc{A}[0] \in \textbf{Pred}$. But for $\mc{A}\in \textbf{Neg}$, $\mc{A}\in\textbf{Imp}$ or $\textbf{pQuant}$, we have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A} \not \in \textbf{Neg}, \textbf{Imp}, \textbf{pForm}$.
+Suppose $\mc{A}\in\textbf{Atom}$. Then $\mc{A}[0] \in \textbf{Pred}$. But for $\mc{A}\in \textbf{Neg}$, $\mc{A}\in\textbf{Imp}$ or $\textbf{Quant}$, we have $\mc{A}[0] \equiv ( \not \in \textbf{Pred}$ so $\mc{A} \not \in \textbf{Neg}, \textbf{Imp}, \textbf{Form}$.
 
 Suppose $\mc{A}\in \textbf{Neg}$.
 We already know $\mc{A}\not \in \textbf{Atom}$.
 We have $\mc{A}[1] \equiv \lnot$.
-But for $\mc{A}\in\textbf{Imp}$ or $\mc{A}\in\textbf{pQuant}$ we have $\mc{A}[1]\in \text{Pred}$, $\mc{A}[1]\equiv ($ or $\mc{A}[1]\equiv \forall$.
-But $\lnot \not \in \textbf{Pred}$, $\lnot \not \equiv ($ and $\lnot\not \equiv \forall$ so $\mc{A}\not \in \textbf{Imp}$ and $\mc{A} \not \in \textbf{pQuant}$.
+But for $\mc{A}\in\textbf{Imp}$ or $\mc{A}\in\textbf{Quant}$ we have $\mc{A}[1]\in \text{Pred}$, $\mc{A}[1]\equiv ($ or $\mc{A}[1]\equiv \forall$.
+But $\lnot \not \in \textbf{Pred}$, $\lnot \not \equiv ($ and $\lnot\not \equiv \forall$ so $\mc{A}\not \in \textbf{Imp}$ and $\mc{A} \not \in \textbf{Quant}$.
 
 Suppose $\mc{A} \in \textbf{Imp}$.
 We already know $\mc{A} \not \in \textbf{Atom}$ and $\mc{A} \not \in \textbf{Neg}$.
 We have $\mc{A}[1] \in \textbf{Pred}$ or $\mc{A}[1]\equiv ($.
-But for $\mc{A} \in \textbf{pQuant}$ we have $\mc{A}[1] \equiv \forall$.
-But $\forall \not \in \textbf{Pred}$ and $\forall \not \equiv ($ so $\mc{A} \not \in \textbf{pQuant}$.
+But for $\mc{A} \in \textbf{Quant}$ we have $\mc{A}[1] \equiv \forall$.
+But $\forall \not \in \textbf{Pred}$ and $\forall \not \equiv ($ so $\mc{A} \not \in \textbf{Quant}$.
 
-Suppose $\mc{A}\in\textbf{pQuant}$.
+Suppose $\mc{A}\in\textbf{Quant}$.
 We already know $\mc{A} \not \in \textbf{Neg}$, $\mc{A}\not \in \textbf{Imp}$ and $\mc{A} \not \in \textbf{Imp}$.
 
-This means that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{pQuant}\subset \textbf{pForm}$ are all pairwise disjoint.
+This means that $\textbf{Atom}, \textbf{Neg}, \textbf{Imp}, \textbf{Quant}\subset \textbf{Form}$ are all pairwise disjoint.
 \end{theorem}
 
 \begin{theorem}[Initial Part of an Atomic Formula]
 \label{thm:read:initpartatom}
 Suppose $\mc{A}\in\textbf{Atom}$.
-Then if $\mc{A}'$ is an initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$ then $\mc{A}' \equiv \mc{A}$.
+Then if $\mc{A}'$ is an initial part of $\mc{A}$ and $\mc{A}'\in\textbf{Form}$ then $\mc{A}' \equiv \mc{A}$.
 
 We have $\mc{A} \equiv Pt_1\ldots t_n$ with $P\in \textbf{Pred}$ and $t_1,\ldots, t_n\in\textbf{Term}$.
 We also have that $\mc{A}'[0] \equiv \mc{A}[0] \equiv P$.
-If $\mc{A}'\in\textbf{pForm}$ then we must have $\mc{A}'\in\textbf{Atom}$ and $\mc{A}' \equiv Pt_1'\ldots t_n'$.
+If $\mc{A}'\in\textbf{Form}$ then we must have $\mc{A}'\in\textbf{Atom}$ and $\mc{A}' \equiv Pt_1'\ldots t_n'$.
 
 We will prove by induction that $t_i' \equiv t_i$ for each $1\le i \le n$.
 
@@ -1434,49 +1544,49 @@ Again, by Corollary \ref{corr:list:correspondingintermediateparts} we have that 
 \end{theorem}
 
 \begin{theorem}[Initial Part of a Permissive Formula]
-\label{thm:read:pformnopropinitpart}
+\label{thm:read:formnopropinitpart}
 Suppose $\mc{A}\in\textbf{pForm}$.
-If $\mc{A}'$ is an initial part of $\mc{A}$ and $\mc{A}'\in\textbf{pForm}$ then $\mc{A}'\equiv \mc{A}$.
+If $\mc{A}'$ is an initial part of $\mc{A}$ and $\mc{A}'\in\textbf{Form}$ then $\mc{A}'\equiv \mc{A}$.
 
 Suppose $|\mc{A}| = 1$.
-If $|\mc{A}'| = 0$ then $\mc{A}'\not \in \textbf{pForm}$ so we must have $|\mc{A}'| = 1$ so that $\mc{A}'\equiv \mc{A}$.
+If $|\mc{A}'| = 0$ then $\mc{A}'\not \in \textbf{Form}$ so we must have $|\mc{A}'| = 1$ so that $\mc{A}'\equiv \mc{A}$.
 
-Now suppose $|\mc{A}|>1$ but that for $\mc{B}\in\textbf{pForm}$ with $|\mc{B}| < |\mc{A}|$ that if $\mc{B}'$ is an initial part of $\mc{B}$ and $\mc{B}' \in \textbf{pForm}$ that $\mc{B}'\equiv \mc{B}$.
+Now suppose $|\mc{A}|>1$ but that for $\mc{B}\in\textbf{Form}$ with $|\mc{B}| < |\mc{A}|$ that if $\mc{B}'$ is an initial part of $\mc{B}$ and $\mc{B}' \in \textbf{Form}$ that $\mc{B}'\equiv \mc{B}$.
 
 Suppose $\mc{A}\in\textbf{Atom}$.
 Theorem \ref{thm:read:initpartatom} tells us already that $\mc{A}'\equiv \mc{A}$.
 
-Now suppose $\mc{A}\in\textbf{Neg}$ so that $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$ and $|mc{B}|<|\mc{A}|$.
+Now suppose $\mc{A}\in\textbf{Neg}$ so that $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{Form}$ and $|mc{B}|<|\mc{A}|$.
 Note that $\mc{A}[0] \equiv ($ and $\mc{A}[1]\equiv \lnot$.
-This means we must have $|\mc{A}'|>2$ (because $($ and $(\lnot$ are not in $\textbf{pForm}$) and $\mc{A}'[0]\equiv ($ and $\mc{A}'[1]\equiv \lnot$.
+This means we must have $|\mc{A}'|>2$ (because $($ and $(\lnot$ are not in $\textbf{Form}$) and $\mc{A}'[0]\equiv ($ and $\mc{A}'[1]\equiv \lnot$.
 This means that $\mc{A}'\not \in \textbf{Atom}$ because the zeroth element of an atomic formula is in $\textbf{Pred}$.
 It also means $\mc{A}'\not\in \textbf{Imp}$ because the first element of an implication is $($ or in $\textbf{Pred}$.
-It also means $\mc{A}' \not \in \textbf{pQuant}$ because the first element of a quantification is $\forall$.
+It also means $\mc{A}' \not \in \textbf{Quant}$ because the first element of a quantification is $\forall$.
 Therefore we must have $\mc{A}'\in\textbf{Neg}$ with $\mc{A}'\equiv (\lnot \mc{B}')$.
 Note $|\mc{B}'|<|\mc{A}'|\le |\mc{A}|$.
 But, Corollary \ref{corr:list:correspondingintermediateparts} tells us that either $\mc{B}$ is an initial part of $\mc{B}'$ or $\mc{B}'$ is an initial part of $\mc{B}$.
 But in both cases the induction hypothesis tells us that $\mc{B}'\equiv \mc{B}$ so that $\mc{A}'\equiv \mc{A}$.
 
-Now suppose $\mc{A}\in\textbf{Imp}$ so that $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{pForm}$ and $|\mc{B}|, |\mc{C}|<|\mc{A}|$.
-Note that $\mc{A}[0]\equiv ($ and either $\mc{A}[1]\equiv ($ or $\mc{A}[1] \in\textbf{Pred}$ by Theorem \ref{thm:read:firstsymbpform}.
-This means $|\mc{A}'|>2$ (because $($ and $(P$ are not in $\textbf{pForm}$) and $\mc{A}'[0] \equiv ($ and $\mc{A}'[1] \equiv ($ or $\mc{A}'[1] \in \textbf{Pred}$.
+Now suppose $\mc{A}\in\textbf{Imp}$ so that $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B}, \mc{C}\in\textbf{Form}$ and $|\mc{B}|, |\mc{C}|<|\mc{A}|$.
+Note that $\mc{A}[0]\equiv ($ and either $\mc{A}[1]\equiv ($ or $\mc{A}[1] \in\textbf{Pred}$ by Theorem \ref{thm:read:firstsymbform}.
+This means $|\mc{A}'|>2$ (because $($ and $(P$ are not in $\textbf{Form}$) and $\mc{A}'[0] \equiv ($ and $\mc{A}'[1] \equiv ($ or $\mc{A}'[1] \in \textbf{Pred}$.
 We must have $\mc{A}'\not\in\textbf{Atom}$ because the zeroth element of an atomic formula is in $\textbf{Pred}$.
 We also have that $\mc{A}'\not\in\textbf{Neg}$ because the first element of a negation is $\lnot$.
-We also have that $\mc{A}'\not\in\textbf{pQuant}$ because the first element of a quantification is $\forall$.
+We also have that $\mc{A}'\not\in\textbf{Quant}$ because the first element of a quantification is $\forall$.
 So we must have $\mc{A}'\in\textbf{Imp}$ with $\mc{A}'\equiv (\mc{B}'\implies \mc{C}')$.
 Note that $|\mc{B}'|,|\mc{C}'| < |\mc{A}'| \le |\mc{A}|$.
 Corollary \ref{corr:list:correspondingintermediateparts} tells us that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$.
 The induction hypothesis then tells us that $\mc{B}'\equiv \mc{B}$ so that $\mc{A}'\equiv (\mc{B}\implies \mc{C}')$.
-Again Corollary \ref{corr:list:correspondingintermediateparts} tells us taht $\mc{C}'$ is an initial part of $\mc{C}$ or $\mc{C}$ is an initial part of $\mc{C}'$, but the induction hypothesis then tells us that $\mc{C}'\equiv \mc{C}$.
+Again Corollary \ref{corr:list:correspondingintermediateparts} tells us that $\mc{C}'$ is an initial part of $\mc{C}$ or $\mc{C}$ is an initial part of $\mc{C}'$, but the induction hypothesis then tells us that $\mc{C}'\equiv \mc{C}$.
 We conclude, then, that $\mc{A}'\equiv \mc{A}$.
 
-Now suppose $\mc{A}\in\textbf{pQuant}$ so that $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$ with $|\mc{B}|<|\mc{A}|$.
+Now suppose $\mc{A}\in\textbf{Quant}$ so that $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{Form}$ with $|\mc{B}|<|\mc{A}|$.
 Note that $\mc{A}[0]\equiv ($ and $\mc{A}[1]\equiv \forall$.
-This means $|\mc{A}'|>2$ (because $($ and $(\forall$ are not in $\textbf{pForm}$ and $\mc{A}'[0]\equiv ($ and $\mc{A}'[1]\equiv \forall$.
+This means $|\mc{A}'|>2$ (because $($ and $(\forall$ are not in $\textbf{Form}$ and $\mc{A}'[0]\equiv ($ and $\mc{A}'[1]\equiv \forall$.
 We must have $\mc{A}'\not\in\textbf{Atom}$ because the zeroth element of an atomic formula is in $\textbf{Pred}$.
 We must have $\mc{A}'\not\in\textbf{Neg}$ because the first element of a negation is $\lnot$.
 We also must have $\mc{A}'\not\in\textbf{Imp}$ because the first element of an implication is $($ or is in $\textbf{Pred}$.
-We must have that $\mc{A}'\in\textbf{pQuant}$ with $\mc{A}'\equiv (\forall x' \mc{B}')$ with $x'\in\textbf{Var}$ and $\mc{B}'\in\textbf{pForm}$.
+We must have that $\mc{A}'\in\textbf{Quant}$ with $\mc{A}'\equiv (\forall x' \mc{B}')$ with $x'\in\textbf{Var}$ and $\mc{B}'\in\textbf{Form}$.
 Note that $|\mc{B}'|<|\mc{A}'| \le |\mc{A}|$.
 But we must have $\mc{A}'[2] \equiv \mc{A}[2] \equiv x$ so that $x'\equiv x$.
 Then, Corollary \ref{corr:list:correspondingintermediateparts} tells us that $\mc{B}'$ is an initial part of $\mc{B}$ or $\mc{B}$ is an initial part of $\mc{B}'$.
@@ -1484,12 +1594,12 @@ The induction hypothesis then tells us that $\mc{B}'\equiv \mc{B}$ so that $\mc{
 \end{theorem}
 
 \begin{theorem}[Unique Readability of a Permissive Formula]
-Suppose $\mc{A}\in\textbf{pForm}$.
+Suppose $\mc{A}\in\textbf{Form}$.
 \begin{itemize}
 \item{If $\mc{A}\in\textbf{Atom}$ then $\mc{A}\equiv Pt_1\ldots t_n$ with $P\in\textbf{Pred}_n$ and $t_1,\ldots, t_n$. If we also have $\mc{A}\equiv P' t_1'\ldots t_m'$ with $P'\in\textbf{Pred}_m$ and $t_1',\ldots,t_m'\in\textbf{Term}$ then $P' \equiv P$, $m=n$ and $t_i'\equiv t_i$ for $1\le i \le n$.}
-\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{pForm}$. If we also have $\mc{A}\equiv (\lnot \mc{B}')$ with $\mc{B}'\in\textbf{pForm}$ then $\mc{B}'\equiv \mc{B}$.}
-\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{pForm}$. If we also have $\mc{A}\equiv (\mc{B}'\implies \mc{C}')$ with $\mc{B}', \mc{C}'\in\textbf{pForm}$ then $\mc{B}'\equiv \mc{B}$ and $\mc{C}'\equiv \mc{C}$.}
-\item{If $\mc{A}\in\textbf{pQuant}$ then $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{pForm}$. If we also have $\mc{A}\equiv (\forall x' \mc{B}')$ with $x'\in\textbf{Var}$ and $\mc{B}'\in\textbf{pForm}$ then $x'\equiv x$ and $\mc{B}'\equiv \mc{B}$.}
+\item{If $\mc{A}\in\textbf{Neg}$ then $\mc{A}\equiv (\lnot \mc{B})$ with $\mc{B}\in\textbf{Form}$. If we also have $\mc{A}\equiv (\lnot \mc{B}')$ with $\mc{B}'\in\textbf{Form}$ then $\mc{B}'\equiv \mc{B}$.}
+\item{If $\mc{A}\in\textbf{Imp}$ then $\mc{A}\equiv (\mc{B}\implies \mc{C})$ with $\mc{B},\mc{C}\in\textbf{Form}$. If we also have $\mc{A}\equiv (\mc{B}'\implies \mc{C}')$ with $\mc{B}', \mc{C}'\in\textbf{Form}$ then $\mc{B}'\equiv \mc{B}$ and $\mc{C}'\equiv \mc{C}$.}
+\item{If $\mc{A}\in\textbf{Quant}$ then $\mc{A}\equiv (\forall x \mc{B})$ with $x\in\textbf{Var}$ and $\mc{B}\in\textbf{Form}$. If we also have $\mc{A}\equiv (\forall x' \mc{B}')$ with $x'\in\textbf{Var}$ and $\mc{B}'\in\textbf{Form}$ then $x'\equiv x$ and $\mc{B}'\equiv \mc{B}$.}
 \end{itemize}
 We now prove each of these claims in turn.
 
@@ -1501,15 +1611,15 @@ Now suppose $i > 1$but for $j<i$ that $t_j'\equiv t_j$.
 Then $\mc{A}\equiv Pt_1\ldots t_{i-1} \circ t_i \circ t_{i+1} \ldots t_n \equiv Pt_1\ldots t_{i-1}\circ t_i' \circ t_{i+1}' \ldots t_n'$.
 Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:termnopropinit} again tell us $t_i'\equiv t_i$.
 
-Now suppose $\mc{A}\in \textbf{Neg}$ with $\mc{A}\equiv (\lnot \mc{B}) \equiv (\lnot \mc{B}')$ with $\mc{B}, \mc{B}'\in\textbf{pForm}$.
-Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:pformnopropinitpart} tell us that $\mc{B}'\equiv \mc{B}$.
+Now suppose $\mc{A}\in \textbf{Neg}$ with $\mc{A}\equiv (\lnot \mc{B}) \equiv (\lnot \mc{B}')$ with $\mc{B}, \mc{B}'\in\textbf{Form}$.
+Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:formnopropinitpart} tell us that $\mc{B}'\equiv \mc{B}$.
 
-Now suppose $\mc{A}\in\textbf{Imp}$ with $\mc{A}\equiv (\mc{B}\implies \mc{C})\equiv (\mc{B}'\equiv \mc{C}')$ with $\mc{B}, \mc{B}', \mc{C}, \mc{C}' \in \textbf{pForm}$.
-One application of Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:pformnopropinitpart} tells us that $\mc{B}'\equiv \mc{B}$ and then a second application tells us $\mc{C}'\equiv \mc{C}$.
+Now suppose $\mc{A}\in\textbf{Imp}$ with $\mc{A}\equiv (\mc{B}\implies \mc{C})\equiv (\mc{B}'\equiv \mc{C}')$ with $\mc{B}, \mc{B}', \mc{C}, \mc{C}' \in \textbf{Form}$.
+One application of Corollary \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:formnopropinitpart} tells us that $\mc{B}'\equiv \mc{B}$ and then a second application tells us $\mc{C}'\equiv \mc{C}$.
 
-Now suppose $\mc{A}\in\textbf{pQuant}$ with $\mc{A}\equiv (\forall x \mc{B}) \equiv (\forall x'\mc{B}')$ with $x, x' \in \textbf{Var}$ and $\mc{B}, \mc{B}'\in\textbf{pForm}$.
+Now suppose $\mc{A}\in\textbf{Quant}$ with $\mc{A}\equiv (\forall x \mc{B}) \equiv (\forall x'\mc{B}')$ with $x, x' \in \textbf{Var}$ and $\mc{B}, \mc{B}'\in\textbf{Form}$.
 We have that $\mc{A}[1] \equiv x \equiv x'$.
-An application of \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:pformnopropinitpart} tells us that $\mc{B}'\equiv \mc{B}$.
+An application of \ref{corr:list:correspondingintermediateparts} and Theorem \ref{thm:read:formnopropinitpart} tells us that $\mc{B}'\equiv \mc{B}$.
 \end{theorem}
 
 

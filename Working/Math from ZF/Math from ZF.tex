@@ -1,0 +1,672 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{bussproofs}
+\usepackage{amsthm}
+
+\makeatletter
+\newtheoremstyle{break}% name
+    {12pt}%         Space above, empty = `usual value'
+    {12pt}%         Space below
+    {\addtolength{\@totalleftmargin}{1.5em}
+     \addtolength{\linewidth}{-3em}
+     \parshape 1 1.5em \linewidth
+     \itshape}% Body font
+    {}%         Indent amount (empty = no indent, \parindent = para indent)
+    {\bfseries}% Thm head font
+    {}%        Punctuation after thm head
+    {\newline}% Space after thm head: \newline = linebreak
+    {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{break}
+\newtheorem{informal definition}[definition]{Informal Definition}
+
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+\newcommand{\qq}[1]{``#1''}
+
+\begin{document}
+\title{Math from Zermelo-Fraenkel Axioms}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+The goal of this document is to do some basic manipulations starting from the Zermelo-Fraenkel set theory.
+We do not take equality to be a logical symbol but will instead define it as a defined 2-ary predicate.
+
+\section{Preliminaries}
+
+\begin{definition}[``at most one`` existence]
+Let $\phi$ be a formula with $x\in FV(\phi)$ and with $y\not\equiv y' \not \equiv x$ with $y$ and $y'$ substitutable for $x$ in $\phi$.
+
+We let $\exists^{\leqslant 1} x\phi$ abbreviate
+
+$$
+\forall x\forall y \forall y' ((\phi[y/x]\land \phi[y'/x]) \implies y'=y)
+$$
+Informally this expression says that if $\phi$ holds for $y'$ and $y$ then $y'$ must equal $y$.
+But note that this expression doesn't require $\phi$ to hold for any $x$.
+That is, this expression is not inconsistent with
+$$
+\lnot\exists x \phi
+$$
+\end{definition}
+
+If we are working in a language with equality then we may define unique existence.
+\begin{definition}[Unique Existence]
+Let $\phi$ be a formula with $x\in FV(\phi)$ and with $y\not \equiv x$ and $y$ substitutable for $x$ in $\phi$.
+We let $\exists ! x \phi$ abbreviate
+$$
+\exists x \phi \land \exists^{\leqslant 1} x \phi
+$$
+\end{definition}
+
+\begin{definition}[Extension by Predicate Definition]
+Suppose $\phi$ is a formula with $FV(\phi) \equiv \{x_1,\ldots, x_n\}$.
+We may extend a theory by adding a new $n$-ary predicate $P$ and the definitional axiom
+$$
+\forall x_1 \ldots \forall x_n (Px_1\ldots x_n \iff \phi)
+$$
+Such an extension is provably conservative
+\end{definition}
+
+\begin{definition}[Extension by Function Definition]
+Suppose $\phi$ is a formula with $FV(\phi)\equiv \{x_1,\ldots, x_n, y\}$.
+Suppose in a given theory with equality we have proven
+$$
+\forall x_1 \ldots \forall x_n \exists! y \phi
+$$
+Then we may extend the theory by adding the $n$-ary function $f$ and the definitional axiom
+$$
+\forall x_1 \ldots \forall x_n \phi[fx_1\ldots x_n/y]
+$$
+Such an extension is provably conservative
+\end{definition}
+
+ZF set theory takes place in the context of a language of first order logic and deduction system.
+The only non-logical symbol included in our theory is the set membership 2-ary predicate $\in$.
+
+\begin{definition}[Equality]
+Consider
+$$
+\phi_= \equiv \forall z(z\in x \iff z \in y) \land \forall z (x\in z \iff y\in z)
+$$
+We see that $FV(\phi_=) \equiv \{x, y\}$.
+In plain words, $\phi_=$ says sets $x$ and $y$ contain the same sets and sets $x$ and $y$ are contained in the same sets.
+We perform an extension by definition using $\phi_=$ to introduce $=$ as a new 2-ary predicate into $\in$-theory.
+We introduce the following equality axiom.
+$$
+\Gamma_= \equiv \forall x \forall y (x=y \iff \phi_=)
+$$
+In other words, for all sets $x$ and $y$, we say that $x=y$ if $x$ and $y$ contain the same sets and are contained in the same sets.
+\end{definition}
+
+\begin{definition}[Empty Set Predicate]
+Let
+$$
+\phi_E \equiv \forall x (x\not\in y)
+$$
+We see $FV(\phi_E) = \{y\}$.
+In plain words $\phi_E$ says that no set is contained in $y$.
+We define the `$y$ is an empty set' predicate by
+$$
+\Gamma_E \equiv \forall y (Ey \iff \phi_E)
+$$
+\end{definition}
+
+\begin{definition}[Successor Predicate]
+Let
+$$
+\phi_S \equiv \forall v (v\in y \iff (v = x \lor v\in x))
+$$
+We see $FV(\phi_S) = \{x, y\}$.
+In plain words, $\phi_S$ says that the elements of $y$ include $x$ and all elements of $x$.
+We define the `$y$ is the successor of $x$' predicate by
+$$
+\Gamma_S \equiv \forall x \forall y (Syx \iff \phi_S)
+$$
+\end{definition}
+
+\begin{definition}[Is Inductive Predicate]
+Let
+$$
+\phi_I \equiv \exists y (y\in x \land Ey) \land \forall v(v\in x \implies \exists w (w\in x \land Swv))
+$$
+We see $FV(\phi_I) = \{x\}$.
+In plain words $\phi_I$ says that there is an empty set in $x$ and for every set contained in $x$ the successor of that set is also in $x$.
+We define the `$x$ is inductive' predicate by
+$$
+\forall x (Ix \iff \phi_I)
+$$
+\end{definition}
+
+\section{Zermelo-Fraenkel Axioms}
+
+We take the ZF axioms from a Stack Exchange post: https://math.stackexchange.com/questions/916072/what-axioms-does-zf-have-exactly
+
+Having extended $\in$-theory by including the $=$ predicate, we will use the $=$ predicate in our ZF axioms.
+
+\begin{definition}[Axiom of Extensionality]
+$$
+\forall x \forall y(\forall z (z\in x \iff z \in y) \implies \forall z(x\in z \iff y \in z))
+$$
+This axiom says that if sets $x$ and $y$ contain the same sets then $x$ and $y$ are contained in the same sets.
+\end{definition}
+
+\begin{definition}[Axiom of Union]
+$$
+\forall x \exists y \forall z (z\in y \iff \exists w (w\in x \land z\in w))
+$$
+This axiom says that for any set $x$ there exists a set $y$ whose elements are the elements of the elements of $x$.
+\end{definition}
+
+\begin{definition}[Axiom of Foundation]
+$$
+\forall x (\lnot Ex \implies \exists y(y\in x \land \forall z(z\in x \implies z \not \in y)))
+$$
+This axiom says that if $x$ is non-empty then it contains at least one element $y$ such that none of the elements of $x$ are contained in $y$.
+\end{definition}
+
+\begin{definition}[Axiom of Power Set]
+$$
+\forall x \exists y \forall z (z\in y \iff \forall w (w \in z \implies w \in x))
+$$
+This axiom says that for any set $x$ there exists a set whose elements are the subsets of $x$.
+\end{definition}
+
+\begin{definition}[Axiom Schema of Replacement]
+Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B\not \in FV(\phi)$.
+Then we include the axiom
+$$
+\forall w_1\ldots\forall w_n \forall A \Big( \forall x(x\in A \implies \exists!y \phi)  \implies \exists B \forall y(y\in B \iff \exists x (x\in A \land \phi))\Big)
+$$
+This axiom schemata says that if $\phi$ is a functional logical relation between $x$ and $y$ (when $A, w_1, \ldots, w_n$ are held constant) then there is a set which consists exactly of the sets that are related to elements $x\in A$.
+\end{definition}
+
+\begin{definition}[Axiom Schema of Replacement]
+Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B\not \in FV(\phi)$.
+Then we include the axiom
+\begin{align}
+\forall w_1\ldots\forall w_n \forall A \Big(& \forall x(x\in A \implies \forall y \forall y' (\phi \land \phi[y/y']\implies y'=y)) \notag\\
+&  \implies \exists B \forall y(y\in B \iff \exists x (x\in A \land \phi))\Big) \notag
+\end{align}
+
+This axiom schemata says that if $\phi$ is a functional logical relation between $x$ and $y$ (when $A, w_1, \ldots, w_n$ are held constant) then there is a set which consists exactly of the sets that are related to elements $x\in A$.
+\end{definition}
+
+\begin{definition}[Axiom of Infinity]
+$$
+\exists x Ix
+$$
+
+This axiom says that there exists an inductive set.
+
+%\begin{equation}
+%\exists x \Big(\exists y(y \in x \land Ey) \land \forall u (u\in x \implies \exists v(v\in x \land Svu)) \Big)
+%\end{equation}
+%
+%
+%\begin{equation}
+%\exists x \Big(\exists y (y\in x \land \forall z (z\not \in y)) \land \forall u (u\in x  \implies \exists v (v\in x \land \forall w (w\in v \iff (w\in u \lor w = u))))\Big)
+%\end{equation}
+\end{definition}
+
+\section{Basic Theorems and Definitions}
+
+\begin{theorem}[Extensionality and Equality]
+Here we prove that the Axiom of Extensionality and the definition of equality imply
+$$
+\forall x \forall y \left(\forall z(z\in x \iff z \in y) \implies x=y\right)
+$$
+
+Let
+\begin{align}
+A &\equiv \forall z (z\in x \iff z \in y) \notag\\
+B &\equiv \forall z (x\in z \iff y \in z) \notag
+\end{align}
+
+Then
+\begin{align}
+\Gamma_= &\equiv \forall x \forall y (x=y \iff (A\land B)) \notag\\
+\Gamma_{\text{ext}} &\equiv \forall x \forall y (A \implies B)
+\end{align}
+
+With some applications of $\forall E$ and $\forall I$ and some basic logic we can see
+$$
+\forall x \forall y (x=y \iff A)
+$$
+\end{theorem}
+
+\begin{definition}[Subset]
+Let
+$$
+\phi_{\subset} \equiv \forall z \left(z\in x \implies z \in y\right)
+$$
+
+We see that $FV(\phi_{\subset}) \equiv \{x, y\}$.
+In plain words $\phi_\subset$ says all elements of $x$ are also elements of $y$.
+We introduce the following subset axiom
+$$
+\Gamma_{\subset} \equiv \forall x \forall y (x\subset y \iff \phi_{\subset})
+$$
+\end{definition}
+
+\begin{theorem}[Equality and Subsets]
+From the above characterization of the Axiom of Extensionality in terms of equality and the definition of subset we can see
+
+$$
+\forall x \forall y \left((x\subset y \land y \subset x) \iff x = y \right)
+$$
+\end{theorem}
+
+\begin{theorem}[Power Set and Subsets]
+From the above characterization of the Axiom of Power Set and the definition of subset we can see
+
+$$
+\forall x \exists y \forall z(z\in y \iff z\subset x)
+$$
+
+Define
+
+$$
+\phi_{\mathcal{P}} \equiv \forall z (z\in y \iff z \subset x)
+$$
+We can see $FV(\phi_{\mathcal{P}}) = \{x, y\}$.
+We can prove, using the Axiom of Power Set and the Axiom of Extensionality that
+
+$$
+\forall x \exists! y \phi_{\mathcal{P}}
+$$
+
+We introduce a new 1-ary function $\mathcal{P}$ and the definitional axiom
+
+$$
+\Gamma_{\mathcal{P}} \equiv \forall x \forall z(z\in \mathcal{P}x \iff z \subset x)
+$$
+
+We often write $\mathcal{P}$ as $\mathcal{P}(x)$ so that
+
+$$
+\Gamma_{\mathcal{P}} \equiv \forall x \forall z (z\in \mathcal{P}(x) \iff z \subset x)
+$$
+
+\end{theorem}
+
+\begin{theorem}[Existence of an Empty Set]
+We prove the existence of an empty set from the Axiom of Infinity, which directly asserts the existence of an empty set.
+
+Recall the defining formula for an inductive set:
+$$
+\phi_I \equiv \exists y(y\in x \land Ey) \land \forall v (v \in x \implies \exists w(w\in x \land Swv))
+$$
+
+Let
+\begin{align}
+\pi &\equiv \exists y (y\in x \land Ey)\\
+\psi &\equiv \forall v (v \in x \implies \exists w(w\in x \land Swv))
+\end{align}
+so that
+$$
+\phi_I \equiv \pi \land \psi
+$$
+
+\begin{center}
+\begin{tabular}{ p{2cm} p{8cm} p{3cm} }
+(1) & $\Gamma_{def} \vdash \forall x (Ix \iff \phi_I)$ & Prem \\
+(2) & $\Gamma_{ZF} \vdash \exists x Ix$ & Prem\\
+(3) & $\Gamma_{def} \vdash I\alpha_1 \iff \phi[\alpha_1/x]$ & $\forall$E, 1 \\
+(4) & $I\alpha_1 \vdash I\alpha_1$ & A \\
+(5) & $\Gamma_{def}, I\alpha_1 \vdash \phi[\alpha_1/x]$ & $\iff$E, 3, 4\\
+(6) & $\Gamma_{def}, I\alpha_1 \vdash \pi[\alpha_1/x]\land \psi[\alpha_1/x]$ & W, 5\\
+(7) & $\Gamma_{def}, I\alpha_1 \vdash \pi[\alpha_1/x]$ & $\land$E, 6\\
+(8) & $\Gamma_{def}, I\alpha_1 \vdash \exists y(y\in \alpha_1 \land Ey)$ & W, 7\\
+(9) & $\alpha_2\in\alpha_1 \land E\alpha_2\vdash \alpha_2\in\alpha_1 \land E\alpha_2$ & A\\
+(10) & $\alpha_2\in\alpha_1\land E\alpha_2\vdash E\alpha_2$ & $\land E$ 9\\
+(11) & $\alpha_2\in\alpha_1 \land E\alpha_2 \vdash \exists y Ey$ & $\exists I$, 10\\
+(12) & $\vdash (\alpha_2\in \alpha_1 \land E\alpha_2)\implies \exists y Ey$ & $\implies$I, 11\\
+(13) & $\Gamma_{def}, I\alpha_1 \vdash \exists y Ey$ & $\exists$E, 8, 12\\
+(14) & $\Gamma_{def} \vdash I\alpha_1 \implies \exists y Ey$ & $\implies$I, 13\\
+(15) & $\Gamma_{ZF}, \Gamma_{def} \vdash \exists y Ey$ & $\exists$E, 2, 14
+\end{tabular}
+\end{center}
+\end{theorem}
+
+\begin{theorem}[Uniqueness of the Empty Set]
+We prove that $Ey \land Ex \implies x = y$.
+Because $x$ and $y$ are empty they contain no elements so we can prove $x\subset y \land y \subset x$ so, by the theorem of equality and subsets, we have $x=y$.
+We let $\emptyset$ denote the empty set.
+\end{theorem}
+
+\begin{theorem}[$\emptyset \subset x$]
+\label{thm:emptysetsubsetx}
+We have
+
+$$
+\forall x \forall z (z\in \emptyset \implies  z \in x)
+$$
+
+This is always vacuously true because the antecedent $z\in \emptyset$ is always false by the definitional axiom of the empty set.
+Therefore
+
+$$
+\forall x (\phi \subset x)
+$$
+
+In particular this means
+$$
+\forall x (\emptyset \in \mathcal{P}(x))
+$$
+\end{theorem}
+
+\begin{theorem}[$x\subset x$]
+\label{thm:xsubsetx}
+We have
+$$
+\forall x \forall z(z \in x \implies z\in x)
+$$
+
+which follows from simple inferences.
+In particular this means
+$$
+\forall x (x \subset x)
+$$
+and
+$$
+\forall x(x\in \mathcal{P}(x))
+$$
+\end{theorem}
+
+\begin{definition}[Explicit Set Builder Notation]
+Suppose $t_1, \ldots, t_m$ are terms and suppose that $x_1, \ldots, x_n$ appear free among these terms.
+We define
+
+$$
+\phi_{\{t_1,\ldots, t_m\}} \equiv \forall z(z\in y \iff (z=t_1 \lor \ldots \lor z=t_m))
+$$
+If we can prove that
+
+$$
+\forall x_1\ldots \forall x_n \exists! y \phi_{\{t_1, \ldots, t_m\}}
+$$
+
+Then we may introduce a new $n-ary$ symbol $S_{\{t_1, \ldots, t_m\}}$ with the definitional axiom
+
+$$
+\Gamma_{\{t_1,\ldots, t_m\}} \equiv \forall x_1 \ldots \forall x_n \forall z (z\in S_{\{t_1,\ldots, t_m\}} \iff (z=t_1 \lor \ldots \lor z=t_m))
+$$
+
+We typically write $S_{\{t_1,\ldots,t_m\}}$ as $\{t_1,\ldots, t_m\}$ so that
+
+$$
+\Gamma_{\{t_1,\ldots, t_m\}} \equiv \forall x_1 \ldots \forall x_n \forall z(z\in \{t_1,\ldots, t_m\} \iff(z=t_1\lor \ldots \lor z=t_m))
+$$
+\end{definition}
+
+\begin{theorem}[$\mathcal{P}(\emptyset) = \{\emptyset\}$]
+By either Theorem \ref{thm:emptysetsubsetx} or \ref{thm:xsubsetx} we can see that $\emptyset \in \mathcal{P}(\emptyset)$.
+
+Suppose $x \not = \emptyset$.
+We know that $\emptyset \subset x$ so we must have $x\not\subset \emptyset$ which means $x\not \in \mathcal{P}(\emptyset)$.
+Therefore we have
+$$
+\forall z (z\in \mathcal{P}(\emptyset) \iff z = \emptyset)
+$$
+
+From which we can conclude $\mathcal{P}(\emptyset) = \{\emptyset\}$.
+\end{theorem}
+
+\begin{theorem}[$\{z\}$ exists]
+Here will prove that
+
+$$
+\forall z \exists y \forall x (x\in y \iff x = z)
+$$
+From which we can define the set $\{z\}$ so long as $z$ is a set.
+
+Let
+
+$$
+\phi \equiv (x = \emptyset \land y = z)
+$$
+and consider the Axiom of Replacement with $A = P(\emptyset) = \{\emptyset\}$.
+
+$$
+\forall z(\forall x (x\in \{\emptyset\} \implies \exists!y \phi) \implies \exists B \forall y (y\in B \iff \exists x(x\in \{\emptyset\} \land\phi)))
+$$
+The antecedent is true for all $z$ so we get
+$$
+\forall z \exists B \forall y (y\in B \iff \exists x(x\in \{\emptyset\} \land \phi))
+$$
+The formula $\exists x (x\in \{\emptyset\} \land \phi)$ can be reduced to just $y=z$ so that
+$$
+\forall z \exists B \forall y(y\in B \iff y=z)
+$$
+We apply a change of variables
+$$
+\forall z \exists y \forall x (x\in y \iff x=z)
+$$
+which is what we were trying to prove.
+The axiom of extensionality tells us that
+$$
+\forall z \exists!y \forall x(x\in y \iff x=z)
+$$
+We define the 1-ary function $\{z\}$ with the definitional formula
+$$
+\phi_{\{z\}}\ \equiv \forall z \forall x(x\in \{z\} \iff x=z)
+$$
+
+\end{theorem}
+
+\begin{definition}[Arbitrary Union]
+Let
+
+$$
+\phi_{\cup} \equiv \forall z(z\in y \iff \exists w(w\in x \land z \in w))
+$$
+
+We see $FV(\phi_{\cup}) \equiv \{x, y\}$.
+In plain words $\phi_{\cup}$ says that $z$ is in $y$ if there is a $w$ in $x$ with $z$ in $w$.
+The Axiom of Union tells us that such a set $y$ exists for each set $x$.
+Furthermore, the axiom of extensionality tells us that this set $y$ is unique.
+Therefore
+$$
+\forall x \exists! y \phi_{\cup}
+$$
+
+We introduce the 1-ary function symbol $\cup$ and the defining axiom
+
+$$
+\Gamma_{\cup} \equiv \forall x \forall z (z\in \cup x \iff \exists w(w\in x \land z \in w))
+$$
+
+\end{definition}
+
+\begin{theorem}[Schema of Substitution]
+The Schema substitution says that for any formula $\psi$ with $FV(\psi) \subset \{x, A, w_1, \ldots, w_n\}$ with $B\not \in FV(\psi)$ that
+
+$$
+\forall w_1\ldots \forall w_n \forall A \exists B \forall x (x \in B \iff (x\in A \land \phi))
+$$
+
+We will prove this using some previous results.
+First let
+$$
+\psi \equiv
+$$
+
+
+
+\end{theorem}
+
+
+
+\section{old}
+
+
+\begin{theorem}[Axiom Schema of Specification]
+From the existence of the empty set and the Axiom Schema of Replacement we can prove the Axiom Schema of Specification.
+
+The Axiom Schema of Replacement states the following.
+Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B\not \in FV(\phi)$.
+Then
+$$
+\forall w_1\ldots \forall w_n \forall A\left(\forall x (x\in  A \implies \exists! y\phi) \implies \exists B \forall y(y\in B \iff \exists x(x\in A \land \phi))\right)
+$$
+
+The Axiom Schema of Specification states the following.
+Suppose $\psi$ is a formula with $FV(\psi) \subset (x, A, w_1, \ldots, w_n)$ and $B\not \in FV(\psi)$.
+$$
+\forall w_1\ldots w_n \forall A \exists B \forall x ( x\in B \iff (x\in A \land \psi))
+$$
+
+For each $\psi$ we prove the corresponding axioms as follows.
+Let $\phi \equiv \psi \land x=y$.
+We can see that $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ because $FV(\psi) \subset \{x, A, w_1, \ldots, w_n\}$.
+We can also see that $B\not \in FV(\phi)$.
+Because of the $x=y$ subformula, we can see that (for fixed $w_1,\ldots, w_n$) that if $\psi(x)$ holds then $\forall x\exists! y \phi(x, y)$ holds.
+This implies, by the Axiom Schema of Replacement, that
+$$
+\exists B \forall y(y\in B \iff \exists x (x \in A \land \psi \land x=y))
+$$
+
+which is equivalent to
+$$
+\exists B \forall x (x\in B \iff (x\in A \land \psi))
+$$
+where $B$ is exactly the set required by the axiom Schema of Specification.
+\end{theorem}
+
+
+\begin{definition}[Arbitrary Intersection]
+Let
+$$
+\phi_{\cap} \equiv \forall z(z\in y \iff (z\in \cup x \land (\forall w (w\in x \implies z\in w))))
+$$
+
+We see $FV(\phi_{\cap}) \equiv \{x, y\}$.
+In plain words, $\phi_{\cap}$ says that a set $z$ is an element of $y$ if that set is in the union of $x$ (meaning that each element of $z$ is an element of an element of $x$) and that $z$ is an element of element of $x$.
+
+With the identification $A \to \cup x$, $B\to y$, $x\to z$, we see that for each set $x$ there exists a set $y$ satisfying $\phi_{\cap}$ from the Axiom Schema of Specification.
+The axiom of extensionality tells us that this set is unique.
+We therefore have
+$$
+\forall x \exists!y \phi_{\cap}
+$$
+
+We introduce the function symbol $\cap$ and introduce the defining axiom
+
+$$
+\Gamma_{\cap} \equiv \forall x \forall z(z\in \cap x \iff (z\in \cup x \land(\forall w(w\in x \implies z \in w))))
+$$
+
+\end{definition}
+
+\begin{definition}[Power Set]
+The axiom of the power set says
+$$
+\forall x \exists y \forall z(z\in y \iff \forall w (w\in z \implies w\in x)
+$$
+We can rewrite this as
+$$
+\forall x \exists y \forall z(z\in y \iff z \subset x)
+$$
+
+Let
+$$
+\phi_{\mathcal{P}} \equiv \forall z (z\in y \iff z \subset x)
+$$
+We see that $FV(\phi_{\mathcal{P}}) \equiv \{x, y\}$.
+We can also see, by the axiom of extensionality, that
+$$
+\forall x \exists! y \phi_{\mathcal{P}}
+$$
+We introduce the function symbol $\mathcal{P}$ and the axiom
+$$
+\forall x \forall z (z \in \mathcal{P}x \iff z \subset x)
+$$
+$\mathcal{P}x$ is the powerset of $x$
+\end{definition}
+
+\begin{theorem}[Pairing]
+Suppose $x$ is set $y$ is a set.
+We will prove that
+$$
+\exists z \forall w(w\in z \iff (z = x \lor z = y))
+$$
+We will prove this using the Axiom Schema of Replacement.
+We will construct a functional logical relation whose range is the set we're interested in, but first we need a domain set.
+Since the range has two sets in it we'll need a domain with two sets.
+
+\end{theorem}
+
+\begin{definition}[Set Builder Notation]
+Suppose $x_1,\ldots, x_n$ are terms with free variables $\{w_1, \ldots, w_m\}$
+Let
+$$
+\phi_{\{x_1, \ldots, x_n\}} \equiv x \in y \iff (x = x_1 \lor \ldots \lor x = x_n)
+$$
+
+
+\end{definition}
+
+
+\section{The Natural Numbers}
+
+We now define the natural numbers and prove many properties about them.
+
+
+
+
+\section{old}
+\begin{definition}[Explicit Set Notation]
+Suppose $t_1,\ldots, t_n$ are terms with $FV(t_1)\cup\ldots \cup FV(t_n) = \{v_1, \ldots, v_n\}$.
+Let the formula $\phi$ be
+$$
+\phi \equiv \forall x (x\in y \iff (x=t_1 \lor \ldots \lor x=t_n))
+$$
+We see that $FV(\phi) = \{y, v_1,\ldots, v_n\}$.
+
+\begin{center}
+\begin{tabular}{ p{2cm} p{8cm} p{3cm} }
+($N_{t_1}$) & $\Gamma_1 \vdash \forall v_{1,1} \ldots \forall v_{1,n_1}\exists z (z=t_1)$ & \\
+\vdots & \vdots & \vdots \\
+($N_{t_n}$) & $\Gamma_n \vdash \forall v_{n,1} \ldots \forall v_{n,n_n}\exists z (z=t_n)$ & \\
+($k$) & $\Gamma_I \vdash \gamma_I$ & Prem \\
+($k+1$) & $\Gamma_I \vdash \exists x \phi$ & W \\
+($k+2$) & $\phi[\alpha_1/x] \vdash \phi[\alpha_1/x]$ & A \\
+($k+3$) & $\phi[\alpha_1/x] \vdash \pi[\alpha_1/x]\land \psi[\alpha_1/x]$ & W \\
+($k+4$) & $\phi[\alpha_1/x] \vdash \pi[\alpha_1/x]$ & $\land$E, $k+3$\\
+($k+5$) & $\phi[\alpha_1/x] \vdash \exists y \theta[\alpha_1/x]$ & W \\
+&$\theta[\alpha_1/x][\alpha_2/y] \vdash \theta[\alpha_1/x][\alpha_2/y]$ & \\
+&$\theta[\alpha_1/x][\alpha_2/y] \vdash \alpha_2\in \alpha_1 \land \forall z(z\not\in \alpha_2)$ & \\
+&$\theta[\alpha_1/x][\alpha_2/y] \vdash \forall z(z\not\in \alpha_2)$ & $\land$E \\
+&$\theta[\alpha_1/x][\alpha_2/y] \vdash \exists y \forall z(z\not\in y)$ & $\land$E \\
+& $\vdash \theta[\alpha_1/x][\alpha_2/y] \implies \exists y \forall z(z\not\in y)$ & $\land$E \\
+& $\phi[\alpha_1/x] \vdash \exists y \forall z (z\not \in y)$ & \\
+\end{tabular}
+\end{center}
+\end{definition}
+
+Arbitrary set:
+
+
+
+Successor: 1-ary function
+
+$$
+\phi \equiv v \in y \iff (v=x \lor (x\in v \land \forall z (z\in v \implies z=x)))
+$$
+
+\end{document}
