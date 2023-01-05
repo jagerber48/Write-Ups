@@ -1,0 +1,527 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{bussproofs}
+\usepackage{amsthm}
+
+\makeatletter
+\newtheoremstyle{break}% name
+    {12pt}%         Space above, empty = `usual value'
+    {12pt}%         Space below
+    {\addtolength{\@totalleftmargin}{1.5em}
+     \addtolength{\linewidth}{-3em}
+     \parshape 1 1.5em \linewidth
+     \itshape}% Body font
+    {}%         Indent amount (empty = no indent, \parindent = para indent)
+    {\bfseries}% Thm head font
+    {}%        Punctuation after thm head
+    {\newline}% Space after thm head: \newline = linebreak
+    {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{break}
+\newtheorem{informal definition}[definition]{Informal Definition}
+
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+\newcommand{\qq}[1]{``#1''}
+
+\begin{document}
+\title{Natural Numbers}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+In this document we will begin with the Axiom of Infinity from which we will define the natural numbers, define various properties and operations of the natural numbers, and prove facts about the natural numbers. We will show the inductive and recursive properties of the natural number and build up proofs for structural induction and recursion.
+
+\section{}
+
+\begin{definition}[The Empty Set]
+The empty set $\emptyset$ satisfies
+
+$$
+\forall x (x\not \in \emptyset)
+$$
+
+The existence of the empty set is either asserted or proven in set theory and uniqueness can be proven.
+
+
+\end{definition}
+
+\begin{definition}[Successor]
+If $s$ is a set then we define the successor of $s$ by
+
+$$
+s^+ = s\cup \{s\}
+$$
+\end{definition}
+
+\begin{theorem}[Successor Characterization]
+\label{thm:succchar}
+$s^+ = s \cup \{s\}$  means that $x\in s^+$ implies $x\in s$ or $x \in \{s\}$.
+This latter statement is equivalent to $x=s$.
+So
+$$
+x \in s^+ \implies x=s \lor x\in s
+$$
+\end{theorem}
+
+\begin{definition}[The Axiom of Infinity]
+The axiom of infinity states that
+
+$$
+\exists x (\emptyset \in x \land \forall y (y\in x \implies y^+ \in x))
+$$
+
+Such a set $x$ which contains (1) the empty set and (2) the successor of each of its elements is said to be an inductive set.
+The axiom of infinity therefore asserts the existence of an empty set.
+
+\end{definition}
+
+\begin{definition}[Inductive Closure]
+Suppose $S$ is an inductive set.
+Then we define the inductive closure $\mathbb{N}_S$ of $S$ by
+
+$$
+\mathbb{N}_S = \bigcap \{A \in \mathcal{P}(S): A \text{ is inductive}\}
+$$
+\end{definition}
+
+\begin{corollary}[Inductive Closure is a Subset]
+\label{coor:indclosuresubset}
+Suppose $S$ is inductive so that $S\in \mathcal{P}(S)$.
+From the definition of $\mathbb{N}_S$ we can see that $\mathbb{N}_S \subset S$.
+\end{corollary}
+
+\begin{theorem}[Inductive Closure is Inductive]
+$\mathbb{N}_S$ is the intersection of inductive sets $A$ within $\mathcal{P}(S)$.
+Since $\emptyset \in A$ for each of these inductive $A$, we have the $\emptyset \in \mathbb{N}_S$.
+
+Likewise, If $s\in \mathbb{N}_S$ then that means $s \in A$ for each inductive $A$ which means that $s^+\in A$ for each inductive $A$ so that $s^+\in\mathbb{N}_S$.
+
+Therefore $\mathbb{N}_S$ is inductive.
+\end{theorem}
+
+\begin{theorem}[Uniqueness of Inductive Closures]
+\label{thm:uniqueindclosure}
+Suppose $S$ and $T$ are inductive sets.
+From Corollary \ref{coor:indclosuresubset} we see that $\mathbb{N}_S\subset S$ and $\mathbb{N}_T \subset T$.
+Consider then
+\begin{align*}
+\mathbb{N}_S \subset \mathbb{N}_T \cap S \subset \mathbb{N}_T\\
+\mathbb{N}_T \subset \mathbb{N}_S \cap T \subset \mathbb{N}_S
+\end{align*}
+\end{theorem}
+
+\begin{definition}[The Natural Numbers]
+If $S$ is an inductive set we define the natural numbers $\mathbb{N}$ by
+$$
+\mathbb{N} = \mathbb{N}_S
+$$
+The Axiom of Infinity guarantees the existence of such a set $S$ and therefore $\mathbb{N}$
+From Theorem \ref{thm:uniqueindclosure} we see that $\mathbb{N}$ is unique.
+\end{definition}
+
+\begin{definition}[Zero]
+We define
+$$
+0 = \emptyset
+$$
+\end{definition}
+
+\begin{corollary}[The Natural Numbers are a Subset of Any Inductive Set]
+\label{corr:natnumsubsetindset}
+If $T$ is any inductive set then $\mathbb{N} = \mathbb{N}_T \subset T$.
+\end{corollary}
+
+\begin{theorem}[The Induction Principle \#1]
+\label{thm:indprinc1}
+Suppose $S$ is an inductive set and $S\subset \mathbb{N}$.
+By Theorem \ref{corr:natnumsubsetindset} we have $\mathbb{N}\subset S$ so that $S=\mathbb{N}$.
+\end{theorem}
+
+\begin{theorem}[The Induction Principle \#2]
+\label{thm:indpinc2}
+Suppose we have $\phi$ is a formula which has $n$ appearing as a free variable.
+Suppose we have proven that
+\begin{align*}
+\phi[0/n]&\\
+\forall n \in \mathbb{N}(\phi& \implies \phi[n^+/n])
+\end{align*}
+
+Then consider
+$$
+S = \{n \in \mathbb{N}: \phi\}
+$$
+
+We can see that $\emptyset \in S$ and $n\in S \implies n^+ \in S$.
+Therefore $S$ is inductive.
+But we also have $S\subset \mathbb{N}$ so that by Theorem \ref{thm:indprinc1}, we have that $S = \mathbb{N}$.
+This means that
+$$
+\forall n (n \in \mathbb{N} \implies \phi)
+$$
+\end{theorem}
+
+\subsection{The Peano Axioms}
+
+The Peano Axioms are a set of properties about a hypothetical set $P$ along with a function $+: P \to P$.
+If these properties hold for $P$ then $P$ behaves like the natural numbers we're familiar with from elementary school
+
+\begin{itemize}
+\item{$\exists ! p \in P: \forall m \in P: +(m) \not = p$. We call this unique element $0$.}
+\item{$\forall n, m \in P: +(n) = +(m) \implies n=m$.}
+\item{For any $\phi$ with $n$ free in $\phi$ we have $(\phi[0/n] \land (\phi \implies \phi[+(n)/n])) \implies \forall p\in P: \phi[p/n]$}
+\end{itemize}
+
+We prove that these properties hold for $\mathbb{N}$.
+First we define the function $+$ by
+\begin{align*}
++: \mathbb{N} &\to \mathbb{N}\\
+n &\mapsto n^+
+\end{align*}
+
+\begin{definition}[Predecessor]
+If $n=m^+$ then we say $m$ is a predecessor of $n$.
+\end{definition}
+
+The first Peano Axiom says that there is a unique element $p\in P$ that has no predecessor.
+First we show 0 has no predecessor, then we show there is no other element that has no predecessor.
+
+\begin{theorem}[0 has no Predecessor]
+\label{thm:zeronopred}
+Recall $n^+ = n\cup \{n\}$.
+In particular this means that $n\in n^+$.
+But also recall that $0 = \emptyset$ and that $\emptyset$ contains no elements.
+This means that we can not have $0 = n^+$ for any $n$.
+
+Note that by the definition of $+$ it immediately follows that because there is no $m$ such that $m^+=0$ we have that there is no $m$ such that $+(m) = 0$.
+\end{theorem}
+
+\begin{theorem}[Every Non-Zero Natural Number has a Predecessor]
+\label{thm:nonzerohaspred}
+Suppose $n\in N$ with $n \not = 0$.
+We will prove that there exists an $m$ such that $n = m^+$.
+
+We prove this using induction.
+Let $\phi$ be the formula
+
+$$
+\phi \equiv n=0 \lor \exists m \in \mathbb{N} : n = m^+
+$$
+
+We can see that $\phi$ holds when $n=0$.
+Suppose that $\phi$ holds.
+Then
+$$
+\phi[n^+/n] \equiv n^+ = 0 \lor \exists m\in \mathbb{N}: n^+ = m^+
+$$
+
+Clearly the right hand side of the `or' symbol holds when $m=n$
+These two facts, combined with Theorem \ref{thm:indpinc2} means that $\phi$ holds for all $n$:
+
+$$
+\forall n \in \mathbb{N}: n = 0 \lor \exists m \in \mathbb{N}: n = m^+
+$$
+
+In other words: every non-zero natural number has a predecessor.
+\end{theorem}
+
+\begin{corollary}[0 is the Unique Element with no Predecessor]
+Theorems \ref{thm:zeronopred} and \ref{thm:nonzerohaspred} imply that $\mathbb{N}$ satisfies the first Peano Axiom for $0\in \mathbb{N}$.
+\end{corollary}
+
+\begin{lemma}[$n \subset n^+$]
+\label{lem:nsubsetnplus}
+$n^+ = n \cup \{n\}$ which means $x\in n \implies x \in n^+$.
+That is, $n \subset n^+$.
+\end{lemma}
+
+\begin{lemma}[$m\in n \implies m \subset n$]
+\label{lem:minnmsubsetn}
+Let
+$$
+\phi \equiv m\in n \implies m \subset n
+$$
+We can see $\phi[0/n]$ holds vacuously because $\forall m (m\not \in 0)$.
+
+Suppose $\phi$ holds.
+We must show $\phi[n^+/n]$ holds.
+Assume $m\in n^+$.
+We must show $m\subset n^+$.
+By Theorem \ref{thm:succchar} we see that $m = n$ or $m\in n$.
+If $m\in n$ then $m\subset n$ by the induction hypothesis, but $n \subset n^+$ by Lemma \ref{lem:nsubsetnplus} so $m\subset n^+$.
+If $m=n$ then, by Lemma \ref{lem:nsubsetnplus} we have $m=n \subset n^+$.
+\end{lemma}
+
+\begin{lemma}[$m\in n \implies n \not \subset m$]
+\label{lem:minnnnotsubsetm}
+Let
+$$
+\phi \equiv m\in n \implies n \not \subset m
+$$
+
+We can see $\phi[0/n]$ holds vacuously because $\forall m (m \not \in 0)$.
+
+Suppose $\phi$ holds. We must show $\phi[n^+/n]$ holds.
+Assume $m\in n^+$.
+We must show $n^+ \not \subset m$.
+By Theorem \ref{thm:succchar} we see that $m=n$ or $m\in n$.
+
+Suppose $m=n$.
+Suppose $n\in n$.
+Then by $\phi$ we would have $n\not \subset n$, but we know that $n\subset n$ for all sets $n$ so we know $n\not \in n$.
+But, we have that $n\in n^+$.
+Since $n\in n^+$ but $n\not \in n$ we have that $n^+ \not \subset n = m$.
+
+Suppose $m\in n$.
+Then by the $\phi$ we have $n \not \subset m$.
+Since $n\subset n^+$ this also means $n^+\not \subset m$.
+\end{lemma}
+
+\begin{theorem}[$m^+ = n^+ \implies m=n$]
+Assume that $m^+ = n^+$.
+We have that $m\in m^+=n^+$ which means either $m=n$ or $m\in n$.
+If $m=n$ we are done.
+Suppose $m\in n$.
+We also have that $n \in n^+ = m^+$ so we either have $n=m$ or $n\in m$.
+We already assumed $m\not = n$ so we consider $n\in m$.
+Because $m\in n$, we have by Lemma \ref{lem:minnmsubsetn} that $m\subset n$.e
+But because $n\in m$ we have by Lemma \ref{lem:minnnnotsubsetm} that $m\not \subset n$.
+This contraction follows from $m\in n$ so we must have $m=n$.
+
+From the definition of $+$ and this theorem it immediately follows that $+(m)=+(n) \implies m=n$.
+\end{theorem}
+
+The third Peano axiom follows immediately from the definition of $+$ and the fact that $\mathbb{N}$ is inductive.
+
+
+
+\begin{theorem}[The Recursion Theorem]
+Suppose $S$ is a set, $s\in S$ and $f$ is a function with $f:S \to S$.
+Then there exists a unique function $F:\mathbb{N}\to S$ with
+\begin{itemize}
+\item{$F(0) = s$}
+\item{$\forall n \in \mathbb{N}: F(n^+) = f(F(n))$}
+\end{itemize}
+
+We prove this as follows.
+Let
+$$
+C = \{A \in \mathcal{P}(\mathbb{N}\times S): (0, s)\in A \land (n, t)\in A \implies (n^+, f(t))\in A\}
+$$
+
+$$
+F = \bigcap C
+$$
+
+We can see that $F\in \mathcal{P}(\mathbb{N} \times S)$ so that $F \subset \mathbb{N} \times S$.
+We will show that $F$ is a function $F:\mathbb{N} \to S$ with the desired properties.
+
+We can see that $(0, s) \in F$.
+We can also see that $(n, t)\in F \implies (n^+, f(t)) \in F$.
+If $F$ were in fact a total functional relation then this would mean $F(n^+) = f(F(n))$.
+So we need only show that $F$ is a total functional relation.
+
+First we show that $F$ is total which means that
+$$
+\forall n \in \mathbb{N} \exists t\in S: (n, t) \in F
+$$
+We will prove this by induction on $n$.
+We have $(0, s) \in F$ so the base case is satisfied.
+Now suppose $(n, t)\in F$.
+This means $(n, t) \in A$ for each $A$ in the collection above.
+This means that $(n^+, f(t))\in A$ for each $A$ which means that $(n^+, f(t)) \in F$.
+This means that $\tilde{F} \in C$.
+But since $(0, s') \not \in \tilde{F} \in C$ we can't have $(0, s') \in F = \bigcap C$.
+This contradiction means we must have $s'=s$.
+
+Now we show that $F$ is functional which means
+$$
+\forall n\in \mathbb{N} \forall t \in S \forall t' \in S \left((n, t) \in F \land (n, t')\in F\right) \implies t=t'
+$$
+We again proceed by induction.
+
+First we consider the case $n=0$.
+We know $(0, s)\in F$.
+Suppose $(0, s')\in F$ with $s'\not = s$.
+Consider then the set $\tilde{F} = F\setminus \{(0, s')\}$.
+We have that $(0, s) \in \tilde{F}$ because $(0, s) \not = (0, s')$.
+Also, if $(n, t)\in F$ then we still have $(n^+, f(t)) \in F$ because, since 0 is not the successor of any element, $0 \not = n^+$ so $(0, s') \not = (n^+, f(t))$.
+
+Now suppose $(n, t) \in F \land (n, t') \in F \implies t=t'$.
+We must show the same holds for $(n^+, t)$ and $(n^+, t')$.
+Suppose $(n^+, t) \in F$ and $(n^+, t') \in F$.
+Because $F$ is total we have $(n, \tilde{t}) \in F$ for some $\tilde{t} \in S$.
+From the definition of $C$ we must have that $(n^+, f(\tilde{t})) \in F$.
+Suppose $t \not = f(\tilde{t})$.
+Consider then $\tilde{F} = F \setminus \{(n^+, t)\}$.
+We have that $n^+\not = 0$ so $(0, s)\in \tilde{F}$.
+Now suppose $(m, r) \in \tilde{F}$.
+We must show $(m^+, f(r))$ remains in the diminished set $\tilde{F}$.
+Suppose $m=n$.
+We know that $r=\tilde{t}$ and we also know $(n^+, f(\tilde{t})) = (m^+, f(r)) \in \tilde{F}$ because $f(\tilde{t}) \not = t$.
+Iw $m\not = n$ then $m^+ \not = n^+$ so $(m^+, f(r)) \in \tilde{F}$.
+This means that $\tilde{F} \in C$.
+But, since $(n^+, t)\not \in \tilde{F} \in C$ we can't have $(n^+, t) \in F = \bigcap C$.
+This contradiction means we must have $t = f(\tilde{t})$.
+We can apply the same logic to $t'$ to show that $t' = f(\tilde{t}) = t$.
+
+We have proven that $F$ is a total functional relation, meaning it a function $F: \mathbb{N}\to S$.
+We can see that $(0, s)\in F$ so that $F(0) = s$.
+We can also have that if $(n, F(n)) \in F$ that $(n^+, f(F(n))) \in F$.
+That is $F(n^+) = f(F(n))$.
+\end{theorem}
+
+\begin{definition}[Structurally Inductive]
+Suppose $U$ is a set and $\mathcal{F}$ is a family of functions such that $f \in \mathcal{F}$ means there is some $n\in \mathbb{N}$ such that $f: U^n \to U$.
+Suppose $B \subset U$.
+
+Suppose $C \subset U$.
+We say $C$ is $(U, B, \mathcal{F})$-inductive if
+\begin{itemize}
+\item{$B\subset C$}
+\item{For all $f\in \mathcal{F}$ if $f:U^n\to U$, $z\in C^n \subset U^n = \text{Dom}(f)$ implies $f(z)\in C$. In other words, $C$ is closed under all $f\in \mathcal{F}$. More formally
+$$
+\forall f\in \mathcal{F}(\forall n\in \mathbb{N}(f:U^n \to U \implies \forall z \in C^n (f(z) \in C)))
+$$}
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Structural Inductive Closure]
+Suppose $U$ is a set $\mathcal{F}$ is a family of function with $f\in \mathcal{F}$ implies $f:U^n \to U$ and $B\subset U$.
+We define the $(U, B, \mathcal{F})$ closure as
+$$
+\mathbb{N}_{(U, B, \mathcal{F})} = \bigcap \{C \in P(U): C \text{ is } (U, B, \mathcal{F})\text{-inductive} \}
+$$
+\end{definition}
+
+\begin{theorem}[Structurally Inductive Subset]
+Suppose $C$ is $(U, B, \mathcal{F})$-inductive.
+Then $\mathbb{N}_{(U, B, \mathcal{F})} \subset C$.
+\end{theorem}
+
+\begin{corollary}[Structural Induction Principle \# 1]
+If $C\subset\mathbb{N}_{(U, B, \mathcal{F})}$ is inductive then $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+\end{corollary}
+
+\begin{theorem}[Structural Induction Principle \# 2]
+Consider $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+Suppose $\phi$ is a formula which has $u$ appearing as a free variables.
+Suppose we have proven
+$$
+\forall b \in B: \phi[b/u]
+$$
+$$
+\forall f \in \mathcal{F}(\forall n \in \mathbb{N}((f:U^n \to U \land \forall z \in C^n(\forall \tilde{c} \in z(n)(\phi[\tilde{c}/u])))\implies \phi[f(z)/u]))
+$$
+
+Then
+
+$$
+\forall c \in C (\phi[c/u])
+$$
+
+In clearer (but less formally rigorous) language, the second condition says that for each $f\in \mathcal{F}$, if $f:U^n \to U$ and $\phi[c_i/u]$ holds for $0\le i \le n-1$ then $\phi[f(c_0, \ldots, c_{n-1})/u]$ also holds.
+
+This follows by the following argument.
+Let
+$$
+S = \{c \in C: \phi[c/u]\}
+$$
+
+We see that $S \subset C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+We will show that $S$ is $(U, B, \mathcal{F})$-inductive so that $S = \mathbb{N}_{(U, B, \mathcal{F})}$.
+
+We can see that $B\in S$ by the base induction step.
+
+Now we must show that, for each $f\in \mathcal{F}$ with $f:U^n \to U$ that $\forall z \in S^n$ that $f(z)\in S$.
+That is, $\phi[f(z)/u]$ holds.
+But if $z\in S^n$ then $\forall \tilde{z} \in z(n) (\tilde{z}\in S)$ so that $\phi[\tilde{z}/u]$ holds.
+But from this, and the proven induction step statement, we then have that $\phi[f(z)/u]$ holds so that $f(z) \in S$.
+This means that $S$ is inductive so that $S = \mathbb{N}_{(U, B, \mathcal{F})}$ so that $\phi[c/u]$ holds for all $c \in C$.
+
+\end{theorem}
+
+\begin{definition}[Map]
+Suppose $f:A \to B$.
+Suppose $z \in A^n$.
+We define
+\begin{align*}
+\text{Map}_f: A^n &\to B^n\\
+\text{Map}_f(z)(i) = f(z(i))
+\end{align*}
+
+$$
+\text{Map}_{f, n} = \{x \in P(A^n \times B^n): \exists z \in A^n (\exists y \in B^n (\braket{z, y} \in x \land \forall i \in n: y(i) = f(z(i))))\}
+$$
+
+
+
+\end{definition}
+
+\begin{theorem}[Structural Recursion]
+Consider $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+Suppose we have a set $S$ and a function $h_B:B \to S$.
+
+Suppose that for all $f\in \mathcal{F}$ we have that $f|_C$ is injective and that for all $f, f' \in \mathcal{F}$ we have that $\text{Img}(f|_C) \cap \text{Img}(f'|_C) = \emptyset$, that is, the ranges of each $f\in \mathcal{F}$ restricted to $C$ are all pairwise disjoint.
+
+Suppose also there is a set $\tilde{\mathcal{F}}$ and a bijection $\mathcal{B}: \mathcal{F} \to \tilde{\mathcal{F}}$ such that if $f\in \mathcal{F}$ and $f: U^n \to U$ then $\mathcal{B}(f): S^n \to S$.
+That is, $\tilde{\mathcal{F}}$ is a family of functions on elements of $S$ corresponding to the family of functions $\mathcal{F}$ acting on elements of $C$.
+
+It is possible to extend $h_B$ to a unique $h:C \to S$ where $h$ satisfies
+\begin{align*}
+h|_B = h_B \\
+\end{align*}
+and, if $f:U^n \to U$ then
+$$
+h(f(z)) = \mathcal{B}(f)(\text{Map}_{h, n}(z))
+$$
+
+We prove this as follows.
+
+\tiny
+\begin{align*}
+G = \{&A \in \mathcal{P}(C \times S): \\
+&\forall b \in B (\Braket{b, h_B(b)} \in A) \land \\
+&\forall f \in \mathcal{F}(\forall n \in \mathbb{N}(f:U^n \to U \implies \forall \tilde{c} \in C^n(\forall \tilde{s} \in S^n(\forall i \in n(\Braket{\tilde{c}(i), \tilde{s}(i)} \in A) \implies \Braket{f(\tilde{c}), \mathcal{B}(f)(\tilde{s})}\in A))))\}
+\end{align*}
+
+
+Define
+\tiny
+$$
+G = \{A\in \mathcal{P}(C\times S): \forall b \in B (\Braket{b, h_B(b)} \in A) \land \forall f \in \mathcal{F}(\forall n \in \mathbb{N}((f:U^n \to U \implies \forall z \in C^n(\forall \tilde{c}\in z(n)(\exists s \in S(\Braket{\tilde{c}, s} \in A)))) \implies \braket{f(z), (\text{Map}_{\mathcal{B}(f), n}(z))} \in A))\}
+$$
+\normalsize
+
+We then define
+
+$$
+h = \bigcap G
+$$
+
+We must show that $h: C \to S$
+
+
+\end{theorem}
+
+
+If $X$ is the inductive set guaranteed by the Axiom of Infinity then we have that $\mathbb{N} = \mathbb{N}_{(X, \{0\}, +)}$.
+
+First we show that $h$ is total, meaning $\forall c \in C (\exists s \in S(\Braket{c, s}\in h))$.
+
+
+\end{document}

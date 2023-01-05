@@ -43,20 +43,174 @@
 \maketitle
 
 \section{Introduction}
+The language of first order logic is a formal language which includes, variable, term, predicate, function, and logical symbols including negation, i
+
+
+In this document we will state the Zermelo-Fraenkel (ZF) axioms in the language of first order logic (LFOL) with the inclusion of the $\in$ predicate.
+
 The goal of this document is to do some basic manipulations starting from the Zermelo-Fraenkel set theory.
 We do not take equality to be a logical symbol but will instead define it as a defined 2-ary predicate.
+
+\section{Zermelo-Fraenkel Axioms (uncommented)}
+
+\begin{definition}[Axiom of Extensionality]
+$$
+\forall x \forall y(\forall z (z\in x \iff z \in y) \implies \forall z(x\in z \iff y \in z))
+$$
+\end{definition}
+
+\begin{definition}[Axiom of Union]
+$$
+\forall x \exists y \forall z (z\in y \iff \exists w (w\in x \land z\in w))
+$$
+\end{definition}
+
+\begin{definition}[Axiom of Foundation]
+$$
+\forall x (\exists z (z\in x) \implies \exists y(y\in x \land \forall z(z\in x \implies z \not \in y)))
+$$
+\end{definition}
+
+\begin{definition}[Axiom of Power Set]
+$$
+\forall x \exists y \forall z (z\in y \iff \forall w (w \in z \implies w \in x))
+$$
+\end{definition}
+
+\begin{definition}[Axiom Schema of Replacement]
+Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B, z_1, z_2 \not \in FV(\phi)$.
+Then we include the axiom
+\tiny
+\begin{align*}
+\forall w_1 \ldots \forall w_n \forall A \Big( \forall x(x\in A \implies(\forall z_1 \forall z_2 ((\phi[z_1/y]\land \phi[z_2/y])\implies z_1=z_2))) \implies \exists B \forall y(y\in B \iff \exists x(x\in A \land \phi))\Big)
+\end{align*}
+\normalsize
+\end{definition}
+
+\begin{definition}[Axiom of Infinity]
+\tiny
+\begin{align*}
+\exists x \Bigg(\exists y \Big(y\in x \land \forall z \big(\lnot(z\in y)\big)\Big) \land \forall y\Big(y\in x \implies \exists w\big(w\in x \land \forall v(v\in w \iff ((\forall z(z\in v \iff z\in y)\implies \forall z (v\in z \iff y \in z)) \lor v\in y))\big)\Big)\Bigg)
+\end{align*}
+\normalsize
+
+\end{definition}
+
+\section{Zermelo-Fraenkel Axioms (commented)}
+
+We define the Zermelo-Fraenkel (ZF) axioms.
+
+\begin{definition}[Axiom of Extensionality]
+$$
+\forall x \forall y(\forall z (z\in x \iff z \in y) \implies \forall z(x\in z \iff y \in z))
+$$
+This axiom says that if sets $x$ and $y$ contain the same sets then $x$ and $y$ are contained in the same sets.
+\end{definition}
+
+\begin{definition}[Axiom of Union]
+$$
+\forall x \exists y \forall z (z\in y \iff \exists w (w\in x \land z\in w))
+$$
+This axiom says that for any set $x$ there exists a set $y$ whose elements are the elements of the elements of $x$.
+\end{definition}
+
+\begin{definition}[Axiom of Foundation]
+$$
+\forall x (\exists z (z\in x) \implies \exists y(y\in x \land \forall z(z\in x \implies z \not \in y)))
+$$
+This axiom says that if $x$ is non-empty then it contains at least one element $y$ such that none of the elements of $x$ are contained in $y$.
+\end{definition}
+
+\begin{definition}[Axiom of Power Set]
+$$
+\forall x \exists y \forall z (z\in y \iff \forall w (w \in z \implies w \in x))
+$$
+This axiom says that for any set $x$ there exists a set whose elements are the subsets of $x$.
+\end{definition}
+
+\begin{definition}[Axiom Schema of Replacement]
+Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B, z_1, z_2 \not \in FV(\phi)$.
+Then we include the axiom
+\tiny
+\begin{align*}
+\forall w_1 \ldots \forall w_n \forall A \Big( \forall x(x\in A \implies(\forall z_1 \forall z_2 ((\phi[z_1/y]\land \phi[z_2/y])\implies z_1=z_2))) \implies \exists B \forall y(y\in B \iff \exists x(x\in A \land \phi))\Big)
+\end{align*}
+\normalsize
+
+This axioms schemata is broken as an antecedent on the first line and a consequent on the second line.
+The antecedent  specifies that for each $x$ in the set $A$ (and for each set of parameters $w_1, \ldots, w_n$) there is a $y$ such that $\phi$ is satisfied, but furthermore, that if there are two elements $z_1$ and $z_2$ such that $\phi$ is satisfied then $z_2=z_1$.
+In fewer words: for each $x$ there is \textbf{at most} one $y$ such that $\phi$ is satisfied.
+
+The consequent specifies that there exists a set $B$ whose elements $y$, together with elements $x\in A$, satisfy $\phi$.
+
+Said, most colloquially, the axiom schemata says that if $\phi$ (with parameters $w_1,\ldots,w_n$ fixed) is a ``partial functional relation'' with domain $A$, then range of $\phi$ is a set.
+\end{definition}
+
+\begin{definition}[Axiom of Infinity]
+\tiny
+\begin{align*}
+\exists x \Bigg(\exists y \Big(y\in x \land \forall z \big(\lnot(z\in y)\big)\Big) \land \forall y\Big(y\in x \implies \exists w\big(w\in x \land \forall v(v\in w \iff ((\forall z(z\in v \iff z\in y)\implies \forall z (v\in z \iff y \in z)) \lor v\in y))\big)\Big)\Bigg)
+\end{align*}
+\normalsize
+
+This axiom cannot be explained without introducing (metalogical) abbreviations.
+
+The formula $\forall z(\lnot (z\in y))$ indicates that $y$ is an empty set which we may abbreviate as $Ey$.
+
+The formula $\forall z (z\in v \iff z\in y) \implies \forall z(v\in z \iff y \in z)$ indicates that if $v$ and $y$ contain exactly the same sets then $v$ and $y$ are contained in exactly the same sets.
+In set theory this means that $v$ and $y$ are exactly the same, in short, $v=y$.
+
+With the introduction of these two abbreviations we have
+
+
+\small
+$$
+\exists x\Bigg(\exists y\Big(y\in x \land Ey\Big) \land \forall y\Big(y\in x \implies \exists w \big(w\in x \land \forall v(v\in w \iff (v=y \lor v \in y))\big)\Big)\Bigg)
+$$
+
+
+\normalsize
+The formula $\forall v (v\in w \iff (v=y \lor v \in y))$ means that every element of $w$ either $y$ or an element of $y$.
+Such a set $w$ is called a ``successor'' of $y$ and the expression ``$w$ is successor of $y$'' may be abbreviated as $Swy$.
+With this abbreviation we have
+
+$$
+\exists x \Bigg(\exists y \Big(y\in x \land Ey\Big) \land \forall y \Big(y\in x \implies \exists w\big(w\in x \land Swy \big) \Big) \Bigg)
+$$
+
+We will see below that, due to the axiom of extensionality, the empty set is unique.
+The empty set is often denoted by $\emptyset$.
+The first clause may then be written as $\emptyset \in x$.
+It is also the case that the successor of $y$ is unique and denoted by $y^+$.
+These two denotations are more than ``logical abbreviations'' as will be discussed below, but with these replacements we may write
+$$
+\exists x (\emptyset \in x \land \forall y(y\in x \implies y^+\in x))
+$$
+
+The set $x$ whose existence is specified by the axiom of infinity has the properties that (1) $\emptyset \in x$ and (2) for each $y\in x$ we have that $y^+\in x$.
+Such a set, which contains the empty set and the successor of each of its elements, is said to be an inductive set.
+We indicate that $x$ is inductive with the abbreviation $Ix$.
+We may then write the axiom of infinity as
+
+$$
+\exists x Ix
+$$
+
+That is, the Axiom of Infinity specifies the existence of an inductive set.
+We will later see that the natural numbers corresponding to the intersection of all inductive sets (that is, the inductive sets .
+\end{definition}
 
 \section{Preliminaries}
 
 \begin{definition}[``at most one`` existence]
-Let $\phi$ be a formula with $x\in FV(\phi)$ and with $y\not\equiv y' \not \equiv x$ with $y$ and $y'$ substitutable for $x$ in $\phi$.
+Let $\phi$ be a formula with $x\in FV(\phi)$ and with $y\not\equiv z \not \equiv x$ with $y$ and $z$ substitutable for $x$ in $\phi$.
 
 We let $\exists^{\leqslant 1} x\phi$ abbreviate
 
 $$
-\forall x\forall y \forall y' ((\phi[y/x]\land \phi[y'/x]) \implies y'=y)
+\forall y \forall z ((\phi[z/x]\land \phi[y/x]) \implies z=y)
 $$
-Informally this expression says that if $\phi$ holds for $y'$ and $y$ then $y'$ must equal $y$.
+Informally this expression says that if $\phi$ holds for $z$ and $y$ then $z$ must equal $y$.
 But note that this expression doesn't require $\phi$ to hold for any $x$.
 That is, this expression is not inconsistent with
 $$
@@ -69,7 +223,7 @@ If we are working in a language with equality then we may define unique existenc
 Let $\phi$ be a formula with $x\in FV(\phi)$ and with $y\not \equiv x$ and $y$ substitutable for $x$ in $\phi$.
 We let $\exists ! x \phi$ abbreviate
 $$
-\exists x \phi \land \exists^{\leqslant 1} x \phi
+\exists x \phi \land \exists^{\leqslant 1} x \phi\equiv \exists x \phi \land \forall y \forall z ((\phi[z/x]\land\phi[y/x])\implies z=y
 $$
 \end{definition}
 
@@ -150,77 +304,6 @@ We define the `$x$ is inductive' predicate by
 $$
 \forall x (Ix \iff \phi_I)
 $$
-\end{definition}
-
-\section{Zermelo-Fraenkel Axioms}
-
-We take the ZF axioms from a Stack Exchange post: https://math.stackexchange.com/questions/916072/what-axioms-does-zf-have-exactly
-
-Having extended $\in$-theory by including the $=$ predicate, we will use the $=$ predicate in our ZF axioms.
-
-\begin{definition}[Axiom of Extensionality]
-$$
-\forall x \forall y(\forall z (z\in x \iff z \in y) \implies \forall z(x\in z \iff y \in z))
-$$
-This axiom says that if sets $x$ and $y$ contain the same sets then $x$ and $y$ are contained in the same sets.
-\end{definition}
-
-\begin{definition}[Axiom of Union]
-$$
-\forall x \exists y \forall z (z\in y \iff \exists w (w\in x \land z\in w))
-$$
-This axiom says that for any set $x$ there exists a set $y$ whose elements are the elements of the elements of $x$.
-\end{definition}
-
-\begin{definition}[Axiom of Foundation]
-$$
-\forall x (\lnot Ex \implies \exists y(y\in x \land \forall z(z\in x \implies z \not \in y)))
-$$
-This axiom says that if $x$ is non-empty then it contains at least one element $y$ such that none of the elements of $x$ are contained in $y$.
-\end{definition}
-
-\begin{definition}[Axiom of Power Set]
-$$
-\forall x \exists y \forall z (z\in y \iff \forall w (w \in z \implies w \in x))
-$$
-This axiom says that for any set $x$ there exists a set whose elements are the subsets of $x$.
-\end{definition}
-
-\begin{definition}[Axiom Schema of Replacement]
-Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B\not \in FV(\phi)$.
-Then we include the axiom
-$$
-\forall w_1\ldots\forall w_n \forall A \Big( \forall x(x\in A \implies \exists!y \phi)  \implies \exists B \forall y(y\in B \iff \exists x (x\in A \land \phi))\Big)
-$$
-This axiom schemata says that if $\phi$ is a functional logical relation between $x$ and $y$ (when $A, w_1, \ldots, w_n$ are held constant) then there is a set which consists exactly of the sets that are related to elements $x\in A$.
-\end{definition}
-
-\begin{definition}[Axiom Schema of Replacement]
-Suppose $\phi$ is a formula with $FV(\phi) \subset \{x, y, A, w_1, \ldots, w_n\}$ with $y\in FV(\phi)$ and $B\not \in FV(\phi)$.
-Then we include the axiom
-\begin{align}
-\forall w_1\ldots\forall w_n \forall A \Big(& \forall x(x\in A \implies \forall y \forall y' (\phi \land \phi[y/y']\implies y'=y)) \notag\\
-&  \implies \exists B \forall y(y\in B \iff \exists x (x\in A \land \phi))\Big) \notag
-\end{align}
-
-This axiom schemata says that if $\phi$ is a functional logical relation between $x$ and $y$ (when $A, w_1, \ldots, w_n$ are held constant) then there is a set which consists exactly of the sets that are related to elements $x\in A$.
-\end{definition}
-
-\begin{definition}[Axiom of Infinity]
-$$
-\exists x Ix
-$$
-
-This axiom says that there exists an inductive set.
-
-%\begin{equation}
-%\exists x \Big(\exists y(y \in x \land Ey) \land \forall u (u\in x \implies \exists v(v\in x \land Svu)) \Big)
-%\end{equation}
-%
-%
-%\begin{equation}
-%\exists x \Big(\exists y (y\in x \land \forall z (z\not \in y)) \land \forall u (u\in x  \implies \exists v (v\in x \land \forall w (w\in v \iff (w\in u \lor w = u))))\Big)
-%\end{equation}
 \end{definition}
 
 \section{Basic Theorems and Definitions}

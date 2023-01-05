@@ -1,0 +1,380 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{bussproofs}
+\usepackage{amsthm}
+
+\makeatletter
+\newtheoremstyle{break}% name
+    {12pt}%         Space above, empty = `usual value'
+    {12pt}%         Space below
+    {\addtolength{\@totalleftmargin}{1.5em}
+     \addtolength{\linewidth}{-3em}
+     \parshape 1 1.5em \linewidth
+     \itshape}% Body font
+    {}%         Indent amount (empty = no indent, \parindent = para indent)
+    {\bfseries}% Thm head font
+    {}%        Punctuation after thm head
+    {\newline}% Space after thm head: \newline = linebreak
+    {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{break}
+\newtheorem{informal definition}[definition]{Informal Definition}
+
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+\newcommand{\qq}[1]{``#1''}
+
+\begin{document}
+\title{Structural Recursion}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+\section{Stuff}
+
+\begin{definition}[Structurally Inductive]
+Suppose $U$ is a set and $\mathcal{F}$ is a family of functions such that $f \in \mathcal{F}$ implies there is some $n\in \mathbb{N}$ such that $f: U^n \to U$.
+Suppose $B \subset U$.
+
+Suppose $C \subset U$.
+We say $C$ is $(U, B, \mathcal{F})$-inductive if
+\begin{itemize}
+\item{$B\subset C$}
+\item{For all $f\in \mathcal{F}$ if $f:U^n\to U$, $\bv{c}\in C^n \subset U^n = \text{Dom}(f)$ implies $f(\bv{c})\in C$. In other words, $C$ is closed under all $f\in \mathcal{F}$. More formally
+$$
+\forall f\in \mathcal{F}(\forall n\in \mathbb{N}(f:U^n \to U \implies \forall \bv{c} \in C^n (f(\bv{c}) \in C)))
+$$}
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[$U$ is $(U, B, \mathcal{F})$-inductive]
+\label{thm:Uinductive}
+We know $B\subset U$.
+We also know that for all $f\in \mathcal{F}$ with $f:U^n \to U$ that for all $\bv{u}\in U^n$ that $f(\bv{u}) \in U$.
+\end{theorem}
+
+
+\begin{theorem}[Structurally Inductive Subset]
+\label{thm:indsubset}
+Suppose $C$ is $(U, B, \mathcal{F})$-inductive.
+Then $\mathbb{N}_{(U, B, \mathcal{F})} \subset C$.
+\end{theorem}
+
+\begin{corollary}[Structural Induction Principle \# 1]
+If $C\subset\mathbb{N}_{(U, B, \mathcal{F})}$ is inductive then $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+\end{corollary}
+
+\begin{theorem}[Structural Induction Principle \# 2]
+Consider $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+Suppose $\phi$ is a formula which has $u$ appearing as a free variable.
+The second structural induction principle states the following.
+Suppose we have proven
+$$
+\forall b \in B: \phi[b/u]
+$$
+\small
+$$
+\forall f \in \mathcal{F}(\forall n \in \mathbb{N}(f:U^n \to U \implies (\forall \bv{c}\in C^n(\forall i \in [n](\phi[\bv{c}_i/u]) \implies \phi[f(\bv{c})/u]))))
+$$
+\normalsize
+Then we may conclude
+
+$$
+\forall c \in C (\phi[c/u])
+$$
+
+We prove this as follows.
+Let
+$$
+S = \{c \in C: \phi[c/u]\}
+$$
+
+We will prove that $S = C$.
+We see that $S \subset C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+We will show that $S$ is $(U, B, \mathcal{F})$-inductive so that $S = \mathbb{N}_{(U, B, \mathcal{F})}$ by Theorem \ref{thm:indsubset}.
+
+By the first induction hypothesis (the base case) we see that $B\subset S$.
+
+For the second structurally inductive condition we use the second induction hypothesis (the inductive step).
+Now we must show that, for each $f\in \mathcal{F}$ with $f:U^n \to U$ that $\forall \bv{s} \in S^n$ that $f(\bv{s})\in S$.
+That is, $\phi[f(\bv{s})/u]$ holds.
+But if $\bv{s}\in S^n$ then $\forall i \in [n] (\bv{s}_i \in S)$ so that $\phi[\bv{s}_i/u]$ holds.
+But from this, and the second induction hypothesis, we then have that $\phi[f(\bv{s})/u]$ holds so that $f(\bv{s}) \in S$.
+This means that $S$ is inductive so that $S = \mathbb{N}_{(U, B, \mathcal{F})}$ so that $\phi[c/u]$ holds for all $c \in C$.
+
+\end{theorem}
+
+\begin{theorem}[Inductive Closure Coverage]
+Suppose $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+Consider
+$$
+\tilde{C} = \bigcup\left\{B, \bigcup\{x\in \mathcal{P}(C): \exists f \in \mathcal{F}(\forall n \in \mathcal{N}(f:U^n \to U \implies x = \text{Img}(f|_{C^n})))\}\right\}
+$$
+%$$
+%\tilde{C} = \bigcup \left\{B,  \bigcup\{\text{Img}(f) \in \mathcal{P}(C): f\in \mathcal{F}\} \right\}
+%$$
+
+We will show that $C = \tilde{C}$.
+
+First suppose $c\in \tilde{C}$
+Then either $c\in B$ in which case $c\in C$ because $C$ is $(U, B, \mathcal{F})$-inductive or there is some $f\in \mathcal{F}$ and $n\in \mathbb{N}$ so that $f:U^n \to U$ and $c\in \text{Img}(f|_{C^n})$.
+Suppose $f:U^n \to U$ and $c \in \text{Img}(f|_{C^n})$ there exists $\bv{c}\in C^n$ with $f(\bv{c}) = c$.
+Because $C$ is $(U, B, \mathcal{F})$-inductive this means $c = f(\bv{c}) \in C$.
+This means $\tilde{C} \subset C$.
+
+Now suppose $c\in C$.
+We will proceed by induction to show $c\in \tilde{C}$.
+We can see that if $c\in B$ then $c\in \tilde{C}$.
+Now suppose that for $f\in \mathcal{F}$ with $f:U^n \to U$ and consider $\mathbb{c}\in C^n$.
+Suppose that for all $i \in [n]$ we have $\bv{c}_i \in \tilde{C}$.
+Because $\tilde{C} \subset C$ this means $\bv{c}_i \in C$.
+This means that $f(\bv{c})\in \text{Img}(f|_{C^n}) \subset \tilde{C}$.
+This concludes the induction proof that $c\in \tilde{C}$ so that $C \subset \tilde{C}$.
+This means that every element of $C = \mathbb{N}_{(U, B, \mathcal{F})}$ is either an element of $B$ or in the image of an $f\in \mathcal{F}$ with $f:U^n \to U$ restricted to $(\mathbb{N}_{(U, B, \mathcal{F})})^n$.
+
+We see that $\tilde{C} = C$.
+\end{theorem}
+
+\begin{lemma}[Tuple Selection]
+\label{lem:tupleselection}
+Suppose $\phi$ is a formula with $x, y$ free in $\phi$.
+Suppose $X, Y$ are sets.
+We will prove that if for all $\boldsymbol{x} \in X^n$ and for all $i\in n$ we have that there exists $y\in Y$ such that $\phi[\boldsymbol{x}_i/x]$ holds that there exists $\boldsymbol{y}\in Y^n$ such that for all $i\in n$ we have $\phi[\boldsymbol{x}_i/x][\boldsymbol{y}_i/y]$ holds.
+
+We prove this by induction on $n$.
+First consider $n=1$.
+We have if we have $\boldsymbol{x} \in X^1$ then there is some $x\in X$ with $\boldsymbol{x} = (x)$ so that $\boldsymbol{x}_0 = x$.
+We know there exists $y\in Y$ such that $\phi[\boldsymbol{x}_0/x]$ holds.
+Then let $\boldsymbol{y} = (y)$ so that $\phi[\bv{x}_0/x][\bv{y}_0/y]$ holds.
+
+Now suppose $\boldsymbol{x}\in X^n$ and that for all $i \in n$ there exists $y\in Y$ such that $\phi[\boldsymbol{x}_i/x]$ holds implies there exists $\boldsymbol{y}\in Y^n$ such that for all $i\in n$ we have that $\phi[\bv{x}_i/x][\bv{y}_i/y]$ holds.
+Now suppose $\boldsymbol{x}' \in X^{n+1}$ and that for all $i\in n+1$ there exists $y \in Y$ such that $\phi[\boldsymbol{x}'_i/x]$ holds.
+Note in particular, that there exists $y' \in Y$ such that $\phi[\bv{x}_n /x][y'/y]$ holds.
+
+Recall that $\bv{y} \in Y^n$ means that $\bv{y}$ is a function $\bv{y}:[n] \to Y$ where $[n] = \{m \in \mathbb{N}: m < n\}$.
+This means, more explicitly, that $\bv{y} \subset [n] \times Y$ with the property that for all $i \in [n]$ we have that there exists a unique $y\in Y$ such that $\braket{i, y} \in \bv{y}$.
+
+We then define
+$$
+\bv{y}' = \bv{y} \cup \{(n, y')\}
+$$
+We can see from the definitions of $\bv{y}$ and $\bv{y}'$ that $\bv{y}' \subset [n+1] \times Y$ which satisfies that for each $i\in [n+1]$ there exists a unique $y\in Y$ such that $\braket{i, y} \in \bv{y}'$ so that $y:[n+1] \to Y$ so that $\bv{y}' \in Y^{n+1}$.
+We can also see that for each $i\in [n+1]$ that $\phi[\bv{x}'_i/x][\bv{y}'_i/y]$ holds.
+
+This concludes the induction proof that, for any $\phi$ with $x, y$ free,
+$$
+\forall \bv{x}\in X^n (\forall i \in [n](\exists y (\phi[\bv{x}_i, y]))\implies \exists \bv{y}\in Y^n(\forall i \in [n](\phi[\bv{x}_i/x][\bv{y}_i/y])))
+$$
+
+\end{lemma}
+
+\begin{corollary}[Unique Tuple Selection]
+Suppose $\phi$ is a formula with $x$ and $y$ free.
+Let $\psi = \phi \land \forall y' (\phi[y'/y] \implies y'=y)$.
+Using $\psi$ with Lemma \ref{lem:tupleselection} yields
+\begin{align*}
+\forall x \in X^n \big(& \forall i \in [n] \exists y(\phi[\bv{x}_i/x] \land \forall y' (\phi[\bv{x}_i/x][y'/y] \implies y'=y))\\
+& \exists \bv{y}\in Y^n(\forall i \in [n](\phi[\bv{x}_i/x][\bv{y}_i/y] \land \forall y' (\phi[\bv{x}_i/x][y'/y] \implies y'=\bv{y}_i))) \big)
+\end{align*}
+
+The antecedent is equivalent to
+$$
+\forall i \in [n] \exists!y (\phi[\bv{x}_i/x])
+$$
+
+The consequent can be manipulated
+
+$$
+\exists \bv{y} \in Y^n (\forall i \in [n](\phi[\bv{x}_i/x][\bv{y}_i/y])\land \forall i\in [n](\forall y'(\phi[\bv{x}_i/x][y'/y] \implies y'=\bv{y}_i)))
+$$
+
+Consider
+$$
+\forall i \in [n] (\forall y' (\phi[\bv{x}_i/x][y'/y] \implies y' = \bv{y_i}))
+$$
+
+We will show that this expression implies
+$$
+\forall \bv{y}' \in Y^n (\forall i \in [n](\phi[\bv{x}_i/x][\bv{y}'_i/y]) \implies \bv{y}' = \bv{y})
+$$
+
+\end{corollary}
+
+\begin{definition}[Map]
+Suppose $f:X \to Y$ and $n\in \mathbb{N}$.
+We define
+\begin{align}
+f^{(n)} =& \{z \in X^n \times Y^n: \exists \bv{x} \in X^n \Big(\exists \bv{y} \in Y^n \big(z=\braket{\bv{x}, \bv{y}} \land \forall i \in [n]( \bv{y}_i = f(\bv{x}_i))\big)\Big)\}\\
+=& \{\braket{\bv{x}, \bv{y}} \in X^n \times Y^n: x\in X^n \land y \in Y^n \land \forall i \in [n] (\bv{y}_i = f(\bv{x}_i))\}
+\end{align}
+
+We see that $f^{(n)}\subset X^n \times Y^n$ is a relation between $X^n$ and $Y^n$.
+Suppose $\boldsymbol{x}\in X^n$.
+Because $f:X \to Y$ we know that for each $i\in n$ there exists a $y\in Y$ with $y=f(\bv{x}_i)$.
+This means that, by Theorem \ref{thm:tupleselection} there exists a $\bv{y}\in Y^n$ such that $\bv{y}_i = f(\bv{x}_i)$ for each $i\in n$ so that $\braket{\bv{x}, \bv{y}}\in f^{(n)}$ showing that $f^{(n)}$ is a total relation.
+Now suppose $\braket{\bv{x}, \bv{y}}, \braket{\bv{x}, \bv{y}'} \in f^{(n)}$.
+For each $i \in [n]$ we have $\bv{y}_i = \bv{y}'_i = f(\bv{x}_i)$ which means $\bv{y}' = \bv{y}$ showing that $f^{(n)}$ is a functional relation.
+Because $f^{(n)}$ is a total functional relation this means $f^{(n)}$ is a function $f^{(n)}:X^n \to Y^n$.
+\end{definition}
+
+\begin{theorem}[Structural Recursion Theorem]
+Consider $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+Suppose we have a set $S$ and a function $h_B:B \to S$.
+
+Suppose that for all $f\in \mathcal{F}$ we have that $f|_{C^n}$ is injective and that for all $f, f' \in \mathcal{F}$ with $f:U^n \to U$ and $f': U^{n'} \to U$ we have that $\text{Img}(f|_{C^n}) \cap \text{Img}(f'|_{C^{n'}}) = \emptyset$ and $\text{Img}(f|_{C^n}) \cap B = \emptyset$, that is, the ranges of each $f\in \mathcal{F}$ restricted to $C^n$ are all pairwise disjoint and disjoint with $B$.
+
+Suppose also there is a set $\tilde{\mathcal{F}}$ and a bijection $\mathcal{B}: \mathcal{F} \to \tilde{\mathcal{F}}$ such that if $f\in \mathcal{F}$ and $f: U^n \to U$ then $\mathcal{B}(f): S^n \to S$.
+That is, $\tilde{\mathcal{F}}$ is a family of functions on elements of $S$ corresponding to the family of functions $\mathcal{F}$ acting on elements of $C$.
+
+We define
+$$
+\tilde{f} = \mathcal{B}(f)
+$$
+
+The structural recursion theorem states that, under the above properties, there exists a unique function $h:C \to S$ where $h$ satisfies
+\begin{align*}
+h|_B = h_B \\
+\end{align*}
+and, if $f\in \mathcal{F}$, $f:U^n \to U$ and $\bv{c} \in C^n$ then
+$$
+h(f(\bv{c})) = \tilde{f}(h^{(n)}(\bv{c}))
+$$
+
+We prove this as follows.
+We seek a total functional relation $h \subset C\times S$.
+We will extract his relation from a larger collection of relations $G$ satisfying relevant properties.
+
+\tiny
+\begin{align*}
+H = \{&A \in \mathcal{P}(C \times S): \\
+&\forall b \in B (\Braket{b, h_B(b)} \in A) \land \\
+&\forall f \in \mathcal{F}(\forall n \in \mathbb{N}(f:U^n \to U \implies \forall \bv{c} \in C^n (\forall \bv{s}\in S^n (\forall i \in n(\braket{\bv{c}_i, \bv{s}_i} \in A) \implies \braket{f(\bv{c}), \tilde{f}(\bv{s})}\in A))))\}
+\end{align*}
+
+\normalsize
+We then define
+
+$$
+h = \bigcap H
+$$
+
+We must show that $h: C \to S$ meaning that $h$ is a total functional relation.
+$h$ being total means $\forall c \in C(\exists s\in S(\braket{c, s} \in h))$.
+$h$ being functional means
+$$
+\forall c \in C(\forall s, s' \in S((\braket{c, s}\in h \land \braket{c, s'}\in h) \implies s=s'))
+$$
+We will first prove $h$ is total by induction.
+
+First, if we have $b \in B \subset C$ then we know that for each $A \in H$ we have $\braket{b, h_B(b)}\in H$ so, by $h = \bigcap H$ we have $\Braket{b, h_B(b)} \in h$.
+
+Now consider $f\in \mathcal{F}$ with $f:U^n \to U$ and consider $\bv{c} \in C^n$.
+For the induction hypothesis we have that for each $c\in C$ there exists $s\in S$ with $\braket{c, s} \in h$.
+In particular this means that for each $i \in n$ there exists an $s$ such that $\braket{\bv{c}_i, s} \in h$.
+Lemma \ref{lem:tupleselection} then tells us there exists $\bv{s}\in S^n$ such that $\braket{\bv{c}_i, \bv{s}_i} \in h$ for each $i\in n$.
+This means that $\braket{\bv{c}_i, \bv{s}_i} \in A$ for each $A \in H$.
+The characterization of $A \in H$ means we must have $\braket{f(\bv{c}), \tilde{f}(\bv{s})} \in A$ for each $A \in H$.
+This implies $\braket{f(\bv{c}), \tilde{f}(\bv{s})}\in h$.
+This completes the structural induction proof that $h$ is a total relation.
+
+We now prove $h$ is a functional relation, again by induction.
+
+Suppose $b\in B \subset C$ and $\braket{b, s}, \braket{b, s'} \in h$.
+We know from the definition $h = \bigcap H$ and the definition of $h$ that $\braket{b, h_B(b)} \in h$.
+Suppose, for contradiction, that $s \not = h_B(b)$.
+$\braket{b, s}\in h$ means there exists an $A\in H$ with $\braket{b, s}\in A$.
+Consider $A' = A \setminus\{\braket{b, s}\}$.
+We will show $A'\in H$ which will contradict $\braket{b, s} \in h = \bigcap H$ meaning we must have $s = h_B(b)$.
+The same argument will follow for $s'$ so that $s=s' = h_B(b)$.
+
+We show $A' \in H$.
+First consider $b'\in B$.
+We know $\braket{b', h_B(b')} \in A$.
+If $b' \not = b$ then we also have $\braket{b', h_B(b')} \in A'$ because $b' \not = b$.
+If $b' = b$ then $\braket{b', h_B(b')} \in A'$ because $s \not = h_B(b)$.
+Now suppose $f\in \mathcal{F}$ with $f:U^n \to U$.
+Consider $\bv{c} \in C^n$ and $\bv{s} \in S^n$.
+We must show that
+$$
+\forall i \in n(\braket{\bv{c}_i, \bv{s}_i} \in A') \implies \braket{f(\bv{c}), \tilde{f}(\bv{s})} \in A'
+$$
+We know that this same expression holds for $A$ so that $\braket{f(\bv{c}), \tilde{f}(\bv{s})} \in A$.
+Because the range of $f|_{C^n}$ is disjoint from $B$ we must have $f(\bv{c}) \not= b$.
+But this means $\braket{f(\bv{c}), \tilde{f}(\bv{s})} \in A'$.
+This concludes the proof that $A' \in H$ and therefore that $\braket{b, s}, \braket{b, s'}\in h$ implies $s=s'=h_B(b)$.
+
+We now perform the induction step.
+That is, we assume for $f\in \mathcal{F}$ with $f:U^n \to U$ and $\bv{c}\in C^n$ that for all $i\in [n]$ that, for $s, s' \in S$,  if $\braket{\bv{c}_i, s}, \braket{\bv{c}_i, s'} \in h$ that $s=s'$.
+From this we must prove that, for $s, s'\in S$, that $\braket{f(\bv{c}), s}, \braket{f(\bv{c}), s'} \in h$ implies $s=s'$.
+Because $h$ is total we have that $\forall i \in [n] (\exists t\in S(\braket{\bv{c}_i, t}\in h))$.
+Furthermore, by the induction hypothesis, this $t$ is unique for each $i$.
+This means, by Lemma \ref{lem:tupleselection}\footnote{The uniqueness bit hasn't been proven yet} that $\exists! \bv{t}\in S^n (\forall i \in [n](\braket{\bv{c}_i, \bv{t}_i}\in h))$.
+Because $h = \bigcap H$ we have that $\exists! \bv{t}\in S^n (\forall A \in H(\forall i \in [n](\braket{\bv{c}_i, \bv{t}_i} \in A)))$, that is, the same unique $\bv{t}$ satisfies the condition for each set $A$.
+This implies, by the definition of $A\in H$, that $\braket{f(\bv{c}), \tilde{f}(\bv{t})} \in A$ for each $A\in h$ and therefore that $\braket{f(\bv{c}), \tilde{f}(\bv{t})}\in h$.
+Consider $A\in H$ with $\braket{f(\bv{c}), \tilde{f}(\bv{t})}\in A$.
+Consider then $A' = A\setminus \{\braket{f(\bv{c}), s}\}$.
+We suppose, for the sake of contradiction, that $s \not = \tilde{f}(\bv{t})$.
+We will show that $A' \in H$.
+First consider $b\in B \subset C$.
+We know $\braket{b, h_B(b)} \in A$, but, because the range of $f|_{C^n}$ is disjoint from $B$ we have $f(\bv{c}) \not = b$ so $\braket{b, h_B(b)}\in A'$.
+Now consider $f'\in \mathcal{F}$ with $f':U^{n'} \to U$ and consider $\bv{c}' \in C^{n'}$ and $\bv{t}'\in S^{n'}$.
+Suppose that for all $i \in [n']$ that $\braket{\bv{c}'_i, \bv{t}'_i} \in A'$.
+We must show $\braket{f'(\bv{c}'), \tilde{f}'(\bv{t}')} \in A'$.
+Because $A\in H$ we have $\braket{f'(\bv{c}'), \tilde{f}'(\bv{t}')} \in A$.
+Suppose $f' \not = f$.
+Then because the range of $f|_{C^n}$ is disjoint from the range of $f'|_{C^{n'}}$ we have $f(\bv{c}) \not = f'(\bv{c}')$ so we know $\braket{f'(\bv{c}'), \tilde{f}'(\bv{t}')} \in A'$.
+Now suppose $f=f'$.
+Suppose $\bv{c} \not = \bv{c}'$.
+Then because $f|_{C^n}$ is injective we have $f(\bv{c}) \not = f'(\bv{c})$ which means $\braket{f'(\bv{c}'), \tilde{f}'(\bv{t}')} \in A'$.
+Finally, suppose $\bv{c} = \bv{c'}$.
+Recall that, as a result of the induction hypothesis, $\bv{t}$ was the unique $\bv{t}$ satisfying $\braket{f(\bv{c}), \tilde{f}(\bv{t})} \in A$.
+This means we must have $\bv{t} = \bv{t}'$ so that $\braket{f'(\bv{c}'), \tilde{f}'(\bv{t}')} = \braket{f(\bv{c}), \tilde{f}(\bv{t})}$.
+But, because of the assumption that $\tilde{f}(\bv{t}) \not = s$ we must have $\braket{f'(\bv{c}'), \tilde{f}'(\bv{t}')} \in A'$.
+From this we conclude that $A'\in H$ but we have $\braket{f(\bv{c}), s} \not \in A'$ but $\braket{f(\bv{c}), s}\in h$, this is a contradiction since $h = \bigcap H$.
+We must then have $s = \tilde{f}(\bv{t})$.
+We can apply the same argument to $s'$ to conclude $s' = \tilde{f}(\bv{t}) = s$.
+This concludes the proof that $h$ is a functional relation.
+
+We have proven that $h$ is a total functional relation so we have that $h$ is a function $h:C\to S$.
+
+We will now show that $h$ satisfies the required conditions.
+If $b\in B$ then we know $\braket{b, h_B(b)} \in h$ so that $h(b) = h_B(b)$ so that $h|_B = h_B$.
+Now consider $f\in \mathcal{F}$ with $f:U^n \to U$ and $\bv{c} \in C^n$.
+Define $\bv{s} = h^{(n)}(\bv{c})$ so that for all $i \in [n]$ that $\braket{\bv{c}_i, h(\bv{c}_i)} = \braket{\bv{c}_i, \bv{s}_i} \in h$.
+This implies that $\braket{\bv{c}_i, \bv{s}_i)} \in A$ for all $A\in H$.
+The definition of $H$ then implies $\braket{f(\bv{c}), \tilde{f}(\bv{s})} \in A$ for all $A\in H$ so that $\braket{f(\bv{c}), \tilde{f}(\bv{s})} = \braket{f(\bv{c}), \tilde{f}(h^{(n)}(\bv{c})} \in h$.
+Because $h:C \to S$ this means $h(f(\bv{c})) = \tilde{f}(h^{(n)}(\bv{c}))$.
+
+Finally we prove that $h$ is the unique function satisfying $h|_B = h_B$ and for $f\in \mathcal{F}$ with $f:U^n \to U$ and $\bv{c}\in C^n$ that $h(f(\bv{c})) = \tilde{f}(h^{(n)}(\bv{c}))$.
+Suppose $h'$ is another function satisfying these two conditions.
+We prove by induction that $h' = h$, that is, for all $c\in C$ $h'(c) = h(c)$.
+If $b\in B \subset C$ then
+$$
+h'(b) = h'|_B(b) = h_B(b) = h|_B(b) = h(b)
+$$
+Now suppose that for $\bv{c} \in C$ that for all $i\in [n]$ that $h'(\bv{c}_i) = h(\bv{c}_i)$.
+This means that $h^{'(n)}(\bv{c}) = h^{(n)}(\bv{c})$
+We then have
+$$
+h'(f(\bv{c})) = \tilde{f}(h^{'(n)}(\bv{c})) = \tilde{f}(h^{(n)}(\bv{c}) = h(f(\bv{c}))
+$$
+This concludes the proof by induction that $h'=h$.
+
+
+\end{theorem}
+
+\end{document}
