@@ -1,0 +1,221 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage{bussproofs}
+\usepackage{amsthm}
+
+\makeatletter
+\newtheoremstyle{break}% name
+    {12pt}%         Space above, empty = `usual value'
+    {12pt}%         Space below
+    {\addtolength{\@totalleftmargin}{1.5em}
+     \addtolength{\linewidth}{-3em}
+     \parshape 1 1.5em \linewidth
+     \itshape}% Body font
+    {}%         Indent amount (empty = no indent, \parindent = para indent)
+    {\bfseries}% Thm head font
+    {}%        Punctuation after thm head
+    {\newline}% Space after thm head: \newline = linebreak
+    {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{break}
+\newtheorem{informal definition}[definition]{Informal Definition}
+
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+\newcommand{\qq}[1]{``#1''}
+
+\begin{document}
+\title{Structural Recursion and Trees}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+\begin{definition}[Structurally Inductive]
+Suppose $U$ is a set, $B\subset U$ and $\mathcal{F}$ is a family of functions where $f\in \mathcal{F}$ means $f:U^n \to U$ for some $n\in \mathbb{N}$.
+If $C$ is a set that satisfies
+
+\begin{itemize}
+\item{$B\subset C$}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ then for each $\bv{c}\in C^n$ we have $f(\bv{c}) \in C$}
+\end{itemize}
+
+Then we say $C$ is $(U, B, \mathcal{F})$-inductive
+\end{definition}
+
+\begin{definition}[Structural Inductive Closure]
+Let
+$$
+\mathcal{C}_{(U, B, \mathcal{F})} = \{C \in \mathcal{P}(U): C\text{ is }(U, B, \mathcal{F})\text{-inductive}\}
+$$
+The we define the $(U, B, \mathcal{F})$-inductive closure as
+$$
+\mathbb{N}_{(U, B, \mathcal{F})} = \bigcap \mathcal{C}
+$$
+\end{definition}
+
+\begin{theorem}[Structural Induction]
+Suppose $\phi$ is a formula that has $u$ as a free variable.
+Let $C = \mathbb{N}_{(U, B, \mathcal{F})}$
+If we have that
+\begin{align*}
+&\forall b \in B(\phi[b/u]) \\
+&\forall f \in \mathcal{F}(\forall n \in \mathbb{N}(f:U^n \to U \implies \forall \bv{c} \in C^n(\forall i \in [n](\phi[\bv{c}_i/u])\implies \phi[f(\bv{c}/u)])))
+\end{align*}
+
+Then we may conclude
+$$
+\forall c \in C(\phi[c/u])
+$$
+\end{theorem}
+
+We note that $\mathbb{N}=\mathbb{N}_{(\mathbb{N}, \{0\}, \{+_1\})}$ so that regular induction on the natural numbers is a special case of structural induction.
+
+\begin{theorem}[Structural Recursion Theorem]
+Let $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
+Suppose there is a set $S$.
+Suppose also
+
+\begin{itemize}
+\item{There is a function $h_B:B \to S$.}
+\item{There is a family of function $\tilde{\mathcal{F}}$ and a bijection $\mathcal{B}: \mathcal{F} \to \tilde{\mathcal{F}}$ and that if $f\in \mathcal{F}$ has $f:U^n \to U$ for $n\in \mathbb{N}$ then $\mathcal{B}(f): S^n \to S$. We let $\tilde{f} = \mathcal{B}(f)$.}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ the restriction $f|_{C^n}$ is injective.}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ we have $\text{Img}(f|_{C^n}) \cap B = \emptyset$.}
+\item{For each $f, f' \in \mathcal{F}$ with $f:U^n \to U$ and $f':U^{n'} \to U$ we have $\text{Img}(f|_{C^n}) \cap \text{Img}(f|_{C^{n'}}) = \emptyset$.}
+\end{itemize}
+
+Under these conditions it can be proven that there exists a function $h:C\to S$ which satisfies
+
+\begin{align*}
+h|_B &= h_B\\
+h(f(\bv{c})) &= \tilde{f}(h^{(n)}(\bv{c}))
+\end{align*}
+
+for all $f\in \mathcal{F}$ with $f:U^n \to U$ and for all $\bv{C} \in C^n$.
+here $h^{(n)}(\bv{c}) = (h(\bv{c}_0), \ldots, h(\bv{c}_{n-1}))$.
+
+\end{theorem}
+
+\begin{definition}[Directed Graph]
+A graph of size $n$ consists of a set $V$ of vertices which has cardinality $|V|=n$ and a set of directed edges $E \subset V \times V$.
+Each element $e\in E$ is an ordered pair $\braket{v_1, v_2}$ for $v_1, v_2 \in V$.
+We say $G=(V, E)$ is a directed graph with vertices $V$ and directed edges $E$.
+\end{definition}
+
+\begin{definition}[Parent/Child]
+Suppose $G=(V, E)$ is a directed graph.
+Suppose $v \in V$ and $(v', v)\in E$.
+Then we say $v'$ is a parent of $v$ and $v$ is a child of $v'$.
+\end{definition}
+
+\begin{definition}[Rooted Tree]
+Suppose $G=(V, E)$ is a directed graph.
+Suppose that there is exactly one node $v_0 \in V$ which has no parent.
+Suppose that every other node $v\in V$ with $v\not=v_0$ has exactly one parent.
+Then we say $G=(V, E)$ is a directed rooted tree.
+\end{definition}
+
+\begin{definition}[Parse Tree]
+Suppose $U$ is a set, $B\subset U$ and $\mathcal{F}$ is family of functions where $f\in \mathcal{F}$ means $f:U^n \to U$ for some $n\in \mathbb{N}$.
+
+Suppose $G=(V, E)$ is a rooted tree.
+Define a set
+$$
+\tilde{\mathcal{F}} = \mathcal{F} \cup B
+$$
+Suppose there are function $F_V:V \to \tilde{\mathcal{F}}$ and $F_E:E \to \mathbb{N}$.
+Suppose these functions satisfy
+\begin{itemize}
+\item{If $v\in V$ has no children then $F_V(v) \in B$, otherwise $F_V(v) \in \mathcal{F}$.}
+\item{Consider $v\in V$ which has a non-zero number of children so that $F_V(v) \in \mathcal{F}$. Suppose $F_V(v) = f$ with $f:U^n \to U$. Then consider the set $E^{(C)}_v$ which is the set of edges connecting $v$ to its children. This set must satisfy $|E^{(C)}_v| = n$ and $F_E(E^{(C)}_v) = [n] = \{0, \ldots, n-1\}$. That is $F_E$ restricted to $E^{(C)}_v$ is a bijection onto $[n]$.}
+\end{itemize}
+
+If these conditions are satisfied then we say the collection $(V, E, F_V, F_E)$ constitutes a $(U, B, \mathcal{F})$-parse tree.
+
+We let $\mathbb{T}_{(U, B, \mathcal{F})}$ denote the set of all $(U, B, \mathcal{F})$ parse trees.
+\end{definition}
+
+\begin{definition}[Parse Tree Equivalence Relation]
+We define an equivalence relation $\sim$ on $T = \mathbb{T}_{(U, B, \mathcal{F})}$.
+Suppose $t, t' \in T$.
+Suppose $t = (V, E, F_V, F_E)$ and $t' = (V', E', F'_{V'}, F'_{E'})$.
+We say $t \sim t'$ if the following conditions hold
+
+\begin{itemize}
+\item{$V = V' = [n] = \{0, \ldots, n-1\}$ for some $n\in \mathbb{N}$.}
+\item{There exists a bijection $\rho: V \to V'$.}
+\item{For all $v_1, v_2 \in V$ we have that $(v_1, v_2) \in E$ if and only if $(\rho(v_1), \rho(v_2)) \in E'$}
+\item{For all $v\in V$ we have that $F_V(v) = F'_{V'}(\rho(v))$.}
+\item{For all $e\in E$ with $e = (v, v')$ we let $e' = (\rho(v), \rho(v'))$ and we have $F_E(e) = F'_{E'}(e')$.}
+\end{itemize}`
+\end{definition}
+
+\begin{theorem}[Parse Tree Equivalence Relation]
+Here we prove that $\sim$ is indeed an equivalence relations.
+
+If we let $\rho = I_V$, the identity on $V$, we can see that $t\sim t$ for all $t\in T$.
+
+Suppose $t \sim t'$.
+We must show $t' \sim t$.
+We have $t = (V, E, F_V, F_E)$ and $t' = (V', E', F'_{V'}, F'_{E'})$.
+Because $t \sim t'$ we know there is a bijection $\rho$ satisfying the conditions for $\sim$.
+Consider $\rho^{-1}$.
+We see that $\rho^{-1}$ is a bijection $\rho^{-1}:V'\to V$
+Consider $(v_1', v_2') \in E'$.
+Let $v_1 = \rho^{-1}(v_1')$ and $v_2 = \rho^{-1}(v_2')$ so that $v_1, v_2 \in V$.
+Because $t \sim t'$ we have that $(v_1, v_2) = (\rho^{-1}(v_1'), \rho^{-1}(v_2')) \in E$ if and only if $(\rho(\rho^{-1}(v_1')), \rho(\rho^{-1}(v_1')), \rho(\rho^{-1}(v_2'))) = (v_1', v_2') \in E'$.
+Suppose $v' \in V'$.
+We then know $\rho^{-1}(v) \in V$ which means $F'_{V'}(\rho(\rho^{-1}(v'))) = F'_{V'}(v') = F_V(\rho^{-1}(v))$.
+Likewise if $e' \in E'$ with $e' = (v_1', v_2')$ then we know $e = (\rho^{-1}(v_1'), \rho^{-1}(v_2')) \in E$ and that $F'_{E'}((\rho(\rho^{-1}(v_1')), \rho(\rho^{-1}(v_2')))) = F'_{E'}((v_1' ,v_2')) = F_E((\rho^{-1}(v_1'), \rho^{-1}(v_2')))$.
+All of this means $t' \sim t$.
+
+Suppose $t \sim t'$ and $t' \sim t''$.
+If $\rho$ is the bijection relating $t$ and $t'$ and $\tau$ is the relation relating $t'$ and $t''$, then we can show $t \sim t''$ by consider the bijection $\sigma = \tau \circ \rho$.
+
+\end{theorem}
+
+\begin{definition}[Parse Tree Equivalence Class]
+We define $\bar{\mathbb{T}}_{(U, B, \mathbb{F})} = \mathbb{T}_{(U, B, \mathcal{F})} / \sim$ to be the equivalence class of parse trees.
+Elements of $\bar{\mathbb{T}}_{(U, B, \mathcal{F})}$ are parse where the actual identities of the vertices $V$ do not matter.
+All that is significant are the connectivity of the vertices and the labels of the vertices and edges.
+That is, two parse trees are equivalent if vertices with the same labels are connected by edges with the same labels.
+
+Note that for $\bar{\mathbb{T}}_{(U, B, \mathcal{F})}$ we require the constraint that $V = [n] = \{0, \ldots, n-1\}$.
+If we allowed $V$ to be arbitrary then the equivalence class would indeed be a proper class and not a set.
+\end{definition}
+
+We would like to show there is a bijection between between $\mathbb{N}_{(U, B, \mathcal{F})}$ and $\bar{\mathbb{T}}_{(U, B, \mathcal{F})}$.
+
+\begin{theorem}[Bijection between structural inductive closure and parse trees]
+Let $C = \mathbb{N}_{(U, B, \mathcal{F})}$ and $T = \bar{\mathbb{T}}_{(U, B, \mathcal{F})}$.
+First we define $h_B:B \to T$.
+We define $h_B$ by
+$$
+h_B(b) = [(\{0\}, \{\emptyset\}, \{\braket{0, b}\}, \{\emptyset\})]
+$$
+That is $h_B$ maps $b\in B$ to the parse tree in $T$ which has a single vertex which is mapped to $b$ and has no edges.
+
+We construct a family of functions $\tilde{\mathcal{F}}$ corresponding to $\mathcal{F}$.
+For each $f\in \mathcal{F}$ with $f:U^n \to U$ we construct $\tilde{f}:T^n \to T$.
+Consider $\bv{t} = (t_0, \ldots, t_{n-1})$ for $t_i\in T$ for $0\le i < n$.
+We define $\tilde{f}(\bv{t})$ to be the parse tree defined as follows.
+The new parse tree $\tilde{f}(\bv{t})$ will have $1 + \sum_{i=0^{n-1}} |t_i|$ vertices.
+\end{theorem}
+
+
+
+\end{document}
+

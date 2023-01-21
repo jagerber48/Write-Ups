@@ -3,6 +3,7 @@
 \usepackage{amssymb, amsmath, amsfonts}
 \usepackage{bussproofs}
 \usepackage{amsthm}
+\usepackage{braket}
 
 \makeatletter
 \newtheoremstyle{break}% name
@@ -33,6 +34,7 @@
 \newcommand{\mc}[1]{\mathcal{#1}}
 \newcommand{\bc}[1]{\bv{\mc{#1}}}
 \newcommand{\qq}[1]{``#1''}
+\newcommand{\NUBF}[0]{\mathbb{N}_{(U, B, \mathcal{F})}}
 
 \begin{document}
 \title{Logic Notes}
@@ -233,197 +235,6 @@ In the remainder of this document I will prove that these two forms of extension
 These proofs will utilize metalogical induction.
 
 \newpage
-\section{An Informal Introduction to Set Theory}
-
-\subsection{Preliminary Definitions}
-\begin{definition}[Unique Existence]
-If we are working in a language with equality then we define unique existence as follows.
-Suppose $\phi$ is a formula
-$$
-\exists !x \phi \equiv \exists x(\phi \land \forall y (\phi[y/x] \implies y=x))
-$$
-\end{definition}
-
-\begin{definition}[At-Most-One Existence]
-Suppose $\phi$ is a formula. We define
-$$
-\exists^{\le 1}!x \equiv \exists x \phi \implies \exists!x \phi
-$$
-\end{definition}
-
-\begin{definition}[Extension by Predicate Definition]
-Suppose $\phi$ is a formula with $FV(\phi) \equiv \{x_1,\ldots, x_n\}$.
-We may extend a theory by adding a new $n$-ary predicate $P$ and the definitional axiom
-$$
-\forall x_1 \ldots \forall x_n (Px_1\ldots x_n \iff \phi)
-$$
-Such an extension is provably conservative
-\end{definition}
-
-\begin{definition}[Extension by Function Definition]
-Suppose $\phi$ is a formula with $FV(\phi)\equiv \{x_1,\ldots, x_n, y\}$.
-Suppose in a given theory with equality we have proven
-$$
-\forall x_1 \ldots \forall x_n \exists! y \phi
-$$
-Then we may extend the theory by adding the $n$-ary function $f$ and the definitional axiom
-$$
-\forall x_1 \ldots \forall x_n \phi[fx_1\ldots x_n/y]
-$$
-Such an extension is provably conservative
-\end{definition}
-
-ZF set theory takes place in the context of a language of first order logic and deduction system.
-The only non-logical symbol included in our theory is the set membership 2-ary predicate $\in$.
-We extend the theory by adding $=$.
-
-\begin{definition}[Equality]
-Let
-$$
-\phi_= \equiv \forall z(z\in x \iff z \in y) \land \forall z (x\in z \iff y\in z)
-$$
-We see that $FV(\phi_=) \equiv \{x, y\}$.
-We define the `$y=x$' 2-ary predicate by
-$$
-\Gamma_= \equiv \forall x \forall y (x=y \iff \phi_=)
-$$
-In plain words, $x=y$ if $x$ and $y$ contain the same elements and are contained in the same sets.
-\end{definition}
-
-\begin{definition}[Empty Set Predicate]
-Let
-$$
-\phi_E \equiv \forall y (y\not\in x)
-$$
-We see $FV(\phi) = \{x\}$.
-We define the `$x$ is an empty set' 1-ary predicate by
-$$
-\forall x (Ex \iff \phi_E)
-$$
-\end{definition}
-
-\begin{definition}[Successor Predicate]
-Let
-$$
-\phi_S \equiv \forall v (v\in y \iff (v = x \lor v\in x))
-$$
-We see $FV(\phi_S) = \{x, y\}$.
-We define the `$y$ is the successor of $x$' 2-ary predicate by
-$$
-\forall x \forall y (Syx \iff \phi_S)
-$$
-\end{definition}
-
-\begin{definition}[Is Inductive Predicate]
-Let
-$$
-\phi_I \equiv \exists y (y\in x \land Ey) \land \forall v(v\in x \implies \exists w (w\in x \land Swv))
-$$
-We see $FV(\phi_I) = \{x\}$.
-We define the `$x$ is inductive' 1-ary predicate by
-$$
-\forall x (Ix \iff \phi_I)
-$$
-\end{definition}
-
-\subsection{The Axioms}
-
-Set theory is based on 6 axioms which we outline here.
-
-\begin{definition}[Axiom of Extension]
-$$
-\forall x \forall y (\forall z (z\in x \iff z\in y) \implies \forall z(x\in z \iff y \in z))
-$$
-If $x$ and $y$ contain the same sets then $x$ and $y$ are contained in the same sets.
-\end{definition}
-
-\begin{definition}[Axiom of Union]
-$$
-\forall x\exists y\forall z(z\in y \iff \exists w (w\in x \land z\in w))
-$$
-For all $x$ there exists a set $y$ whose elements are elements of the elements of $x$
-\end{definition}
-
-\begin{definition}[Axiom of Foundation]
-$$
-\forall x (\lnot Ex \implies \exists y(y\in x \land \forall z (z\in x \implies z\not \in y)))
-$$
-For all non-empty $x$ there exists a $y$ in $x$ which does not contain any element of $x$.
-\end{definition}
-
-\begin{definition}[Axiom of Power Set]
-$$
-\forall x \exists y \forall z (z\in y \iff \forall w(w\in z \implies w \in x))
-$$
-For all $x$ there exists a set of subsets of $x$.
-\end{definition}
-
-\begin{definition}[Axiom Schema of Replacement]
-Suppose $\phi$ is a formula with $x, y, w_1, \ldots, w_n \in FV(\phi)$, $B\not \in FV(\phi)$, and either $A\in FV(\phi)$ or $A\not \in FV(\phi)$.
-For each such $\phi$ we introduce the following axiom.
-$$
-\forall w_1 \ldots \forall w_n\forall A\Big(\forall x (x\in A \implies \exists^{\le1}! y\phi)  \implies \exists B \forall y(y\in B \iff \exists x(x\in A \land \phi))\Big)
-$$
-If $\phi$ is a `partial functional' predicate (on $x$ and $y$ with $w_1,\ldots, w_n, A$ held constant, there exists a set $B$ which consists of the range of $\phi$ on $x\in A$.
-\end{definition}
-
-\begin{definition}[Axiom of Infinity]
-$$
-\exists x \Big(\exists y (y\in x \land Ey) \land \forall y(y\in x \implies \exists z (z\in x \land Szy))\Big)
-$$
-There exists a set $x$ which contains an empty set and for every element $y$ of $x$ there is a set which is a successor of $y$ also in $x$.
-\end{definition}
-
-\subsection{Consequences of the Axioms}
-
-\begin{definition}[Subset]
-Let
-$$
-\phi_{\subset} \equiv \forall z (z\in x \implies z \in y)
-$$
-We see $FV(\phi_{\subset}) = \{x, y\}$.
-We define the `$x$ is a subset of $y$' 2-ary predicate by
-$$
-\forall x \forall y (x\subset y \iff \phi_{\subset})
-$$
-\end{definition}
-
-\begin{theorem}[Subsets and Equality]
-The axiom of extension states that if two sets contain the same elements then those two sets are contained in the same sets.
-Combined with the definition of equality we can conclude that if two sets contain the same elements then they are equal.
-Finally, the expression $\forall z(z\in x \iff z \in y)$ is equivalent to $x \subset y \land y \subset x$.
-Putting these facts together, we conclude:
-$$
-\forall x \forall y ((x\subset y \land y \subset x)\implies x=y)
-$$
-\end{theorem}
-
-\begin{theorem}[Schema of Substitution]
-Suppose $\phi$ is a formula with $x, w_1, \ldots, w_n \in FV(\phi)$, $y, B\not \in FV(\phi)$, and $A\in FV(\phi)$ or $A\not \in FV(\phi)$.
-Let
-$$
-\psi \equiv \phi \land x=y
-$$
-We see that $FV(\psi) = FV(\phi)\cup\{y\}$.
-
-Because of the $x=y$ clause, we can prove that
-$$
-\forall w_1\ldots \forall w_n \forall A \forall x \exists^{\le1}!y \psi
-$$
-From which we can derive
-$$
-\forall w_1\ldots \forall w_n \forall A \forall x (x\in A \implies \exists^{\le1}!y \psi)
-$$
-This is the antecedent for the axiom schema of replacement so we conclude
-$$
-\forall w_1 \ldots \forall w_n \forall A \exists B \forall y (y\in B \iff \exists x(x\in A \land \psi))
-$$
-which is equivalent to
-$$
-\forall w_1 \ldots \forall w_n \forall A \exists B \forall y (y\in B \iff \exists x(x\in A \land (\phi \land x=y)))
-$$
-\end{theorem}
-
 \section{Informal Mathematics}
 The goal of this work is to carefully define \textbf{LFOL} and \textbf{FOL} so that we can eventually formally describe ZFC set theory within \textbf{FOL} to serve as a foundation for the formal description of much of modern mathematics.
 However, we will not be able to perform this task starting from nothing.
@@ -569,221 +380,129 @@ In the formal set theory this would be proven using induction.
 
 \begin{informal definition}[Ordered Pair]
 If $x$ and $y$ are objects then we can create a new object called the ordered pair of $x$ and $y$.
-This ordered pair is denoted by $(x, y)$.
-In general $(x, y) \not \equiv (y, x)$ unless $x\equiv y$.
+This ordered pair is denoted by $\braket{x, y}$.
+In general $\braket{x, y} \not = \braket{y, x}$ unless $x = y$.
 \end{informal definition}
-In formal set theory we can formalize tuples as $(x, y) = \{\{x\}, \{x, y\}\}$, but we have no need of such heavy formalism here and allow the informal ordered pair to stand as its own informal concept.
+In formal set theory we can formalize tuples as $\braket{x, y} = \{\{x\}, \{x, y\}\}$, but we have no need of such heavy formalism here and allow the informal ordered pair to stand as its own informal concept.
 
 \begin{informal definition}[Cartesian Product]
 If $S$ and $T$ are two sets then we may construct a set which consists of all ordered pairs of elements from $S$ and $T$ respectively.
 This set is called the Cartesian product of $S$ and $T$ and is denoted by $S\times T$.
-If $s\in S$ and $t\in T$ then $(s, t) \in S\times T$.
-Similarly, if $x\in S\times T$ then there exists $s\in S$ and $t\in T$ with $x = (s, t)$.
+If $s\in S$ and $t\in T$ then $\braket{s, t} \in S\times T$.
+Similarly, if $x\in S\times T$ then there exists $s\in S$ and $t\in T$ with $x = \braket{s, t}$.
 \end{informal definition}
 
 \begin{informal definition}[Relation]
 If $S$ and $T$ are two sets then a relation $R$ between $S$ and $T$ is any subset of $S\times T$. That is $R\subset S\times T$.
-If $s\in S$, $t\in T$, and $(s, t)\in R$ then we say $s$ and $t$ are related by $R$ and may write $Rst$ using prefix notation, $R(s, t)$ using prefix notation with parentheses for clarity, or sometimes, $sRt$ using infix notation for binary relations.
+If $s\in S$, $t\in T$, and $\braket{s, t}\in R$ then we say $s$ and $t$ are related by $R$ and may write $Rst$ using prefix notation, $R(s, t)$ using prefix notation with parentheses for clarity, or sometimes, $sRt$ using infix notation for binary relations.
 \end{informal definition}
 A common relation is the less than relation, $<$.
-We have, for example, that $(3, 4) \in <$ because $3<4$, but $(4,3)\not \in <$ because $4\not < 3$.
+We have, for example, that $\braket{3, 4} \in <$ because $3<4$, but $\braket{4,3}\not \in <$ because $4\not < 3$.
 
 \begin{informal definition}[Function]
 A function is a relation which satisfies two properties.
 Suppose $S$ and $T$ are two sets and $R$ is a relation between them, i.e. $R\subset S\times T$.
 \begin{itemize}
-\item{\textbf{Total}: For every $s\in S$ there exists a $t\in T$ such that $(s, t) \in S$. That is every element in $s$ is related to at least one element in $T$.}
+\item{\textbf{Total}: For every $s\in S$ there exists a $t\in T$ such that $\braket{s, t} \in S$. That is every element in $s$ is related to at least one element in $T$.}
 \item{\textbf{Functional}: If $s\in S$ and $t, t'\in T$ then if $R(s, t)$ and $R(s, t')$ then $t\equiv t'$. That is, if $s\in S$ is related to $t\in T$ it is not related to any other element in $T$.}
 \end{itemize}
 If a relation is total and functional then we say that relation is a function.
 Equivalently, a function is a relation which is total and functional.
-We often use $f\subset S\times T$ to denote a function.
-If $s\in S$ and $t\in T$ are related by $f$ then we denote this by $f(s) \equiv t$.
+If $f$ is a function with domain $S$ and range $Y$ we may indicate this by $f:S\to T$.
+For each $s\in S$, we denote the unique element $t\in T$ which satisfies $\braket{s, t}\in f$ by $f(s)$ so that $f(s) = t$.
+\end{informal definition}
+
+\begin{informal definition}[Function Restriction]
+Suppose $f$ is a function $f:S \to T$.
+Suppose $X\subset S$.
+We define
+$$
+f|_X = \{\braket{x, t} \in S\times T: x\in X\}
+$$
+
+$f|_X$ is the function which is defined only on $X\subset S$ but which, on this set $X$, takes on the same values as $f$.
 \end{informal definition}
 
 \begin{informal definition}[The Natural Numbers]
-
-
 We require an informal understanding of the natural numbers.
 These are the counting number $0, 1, 2, \ldots$.
 We denote the (informal) set of all natural numbers as $\mathbb{N}$.
 We will also require an understanding of simple relations like $<$, $\ge$, $=$ on $\mathbb{N}$ as well as some simple addition.
-If $S\subset \mathbb{N}$ is a finite subset of $\mathbb{N}$ we will need an understanding of $\text{max}(S)$ and $\text{min}(S)$. The most important features of $\mathbb{N}$ that we will require for induction will be that $0\in \mathbb{N}$ and that if $n\in \mathbb{N}$ then there is another number, $n+1 \in \mathbb{N}$.
 \end{informal definition}
 
-\subsection{Induction}
-
-In this section we will give a formally heavy definition of the natural numbers, induction and recursion.
-In fact, the formalism here would be nearly sufficient for working with Zermelo-Fraenkel set theory itself.
-Nonetheless, it is still appropriate for this informal section.
-
-\begin{informal definition}[The Empty Set]
-There is a set which contains no elements.
-We may denote it by $\{\}$ or $\emptyset$.
-We also denote this set by 0 and call it the zero set or just zero.
-\end{informal definition}
-
-\begin{informal definition}[Successor]
-If $s$ is a set we define the successor of $s$ as $s^+ = s \cup \{s\}$.
-\end{informal definition}
-
-\begin{informal definition}[Inductive Set]
-If $S$ is a set then we say $S$ is inductive if
+\begin{informal definition}[Induction Over the Natural Numbers]
+Suppose $\phi$ is some property or expression which depends on a natural number $n\in \mathbb{N}$.
+If we can prove that
 \begin{itemize}
-\item{$\emptyset\in S$}
-\item{$s \in S$ implies $s^+\in S$}
+\item{Base Case: $\phi$ is true for $n=0$}
+\item{Inductive Case: $\phi$ being true for $n$ implies $\phi$ being true for $n+1$}
 \end{itemize}
+Then we may conclude that $\phi$ is true for all $n\in \mathbb{N}$.
+Informally, this makes sense because we can use the base case to tells us that $\phi$ holds for $n=0$, then we can use the induction case to show that $\phi$ holds for $n=1 = 0+1$ (since it holds for $n=0$) and so on.
+Once the natural numbers have been formalized it will be possible to formalize the inductive reasoning process.
 \end{informal definition}
 
-\begin{informal definition}[Inductive Closure]
-Suppose $S$ is an inductive set.
-We define the inductive closure of $S$ by
-$$
-\mathbb{N}_S = \bigcap \{A \in \mc{P}(S): A \text{ is inductive}\}
-$$
-Note that $A \in \mc{P}(S)$ means $A \subset S$ so $\mathbb{N}_S$ is the intersection of all the inductive subsets of $S$.
+\begin{informal definition}[Structurally Inductive]
+Suppose $U$ is a set, $B\subset U$ and $\mathcal{F}$ is a family of functions where each $f\in \mathcal{F}$ is a function $f:U^n \to U$ for some $n\in \mathbb{N}$.
 
-Since $\emptyset$ is in every inductive subset of $S$ we must have $\emptyset \in \mathbb{N}_S$.
-Now suppose $s\in \mathbb{N}_S$.
-That means $s$ is in every inductive subset of $S$.
-But since each of these subsets is inductive, that means $s^+$ is also in each of these subsets so $s^+\in \mathbb{N}_S$.
-Therefore $\mathbb{N}_S$ is inductive.
-Note also that $\mathbb{N}_S \subset S$.
-\end{informal definition}
-
-\begin{theorem}[Uniqueness of Inductive Closures]
-\label{thm:uniqueindclosure}
-Suppose $S$ and $T$ are inductive sets.
-Then $\mathbb{N}_S = \mathbb{N}_T$.
-
-This follows because $\mathbb{N}_S \subset \mathbb{N}_T \cap S \subset \mathbb{N}_T$ and $\mathbb{N}_T \subset \mathbb{N}_S \cap T \subset \mathbb{N}_S$.
-
-We define the natural numbers as $\mathbb{N} = \mathbb{N}_S$ where $S$ is any inductive set.
-\end{theorem}
-
-\begin{corollary}[Natural Numbers are a Subset of Any Inductive Set]
-Suppose $S$ is inductive. Then $\mathbb{N} = \mathbb{N}_S \subset S$.
-\end{corollary}
-
-\begin{corollary}[The Induction Principle \#1]
-\label{corr:inform:inductprinc1}
-If $S\subset \mathbb{N}$ is inductive then $S = \mathbb{N}$.
-\end{corollary}
-
-\begin{theorem}[The Induction Principle \#2]
-Suppose $\phi(n)$ is a statement that depends on (among other variables) a natural number $n$.
-If we are able to prove $\phi(0)$ and that $\phi(n) \implies \phi(n^+)$ then we may conclude $\phi(n)$ holds for all $n\in \mathbb{N}$.
-
-We prove this as follows.
-Let
-$$
-S = \{n\in\mathbb{N}: \phi(n)\}
-$$
-We note that $\phi(0)$ holds so $0=\emptyset \in S$.
-We also have that $\phi(n) \implies \phi(n^+)$ meaning $n\in S \implies n^+\in S$ meaning $S$ in inductive.
-Therefore, by Corollary \ref{corr:inform:inductprinc1}, $S = \mathbb{N}$ which means that $\phi(n)$ holds for all $n\in \mathbb{N}$.
-\end{theorem}
-
-\begin{informal definition}[The Axiom of Infinity]
-\label{infdef:axiominf}
-There exists an inductive set.
-\end{informal definition}
-
-\begin{corollary}[The Natural Numbers]
-The axiom of infinity tells us that there exists a set $S$ which is inductive.
-This means $\mathbb{N}_S = \mathbb{N}$ exists.
-In other words, the existence of any inductive set, guaranteed by the axiom of infinity, guarantees the existence of the natural numbers.
-\end{corollary}
-
-\begin{theorem}[Recursion on the Natural Numbers]
-Suppose $S$ is a set and $f:S \to S$ and $s\in S$.
-Then there exists a unique function $F:\mathbb{N}\to S$ which satisfies
+We say a set $C\subset U$ is $(U, B, \mathcal{F})$-inductive if it satisfies two properties:
 \begin{itemize}
-\item{$F(0) = s$}
-\item{$F(n+1) = f(F(n))$}
+\item{$B \subset C$}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ then for each $\bv{c}\in C^n \subset U^n$ we have $f(\bv{c}) \in C$}
 \end{itemize}
 
+This idea generalizes induction the natural numbers.
+Indeed if we let $B= \{0\}$ and $\mathcal{F} = \{+_1\}$ where $+_1: \mathbb{N} \to \mathbb{N}$ is defined by $+_1(n) = n+1$ then we can, informally, see that $\mathbb{N}$ is $(\mathbb{N}, \{0\}, \{+_1\})$-inductive.
 
-
-\end{theorem}
-
-\subsection{More general induction}
-
-Above we have defined the induction principle over the set $\mathbb{N}$, but it turns out it is possible to perform induction over much more general sets as we define and prove below.
-
-\begin{definition}[$(B, \mathcal{F})$-inductive]
-Suppose $A$ is a set, $B\subset A$ and $\mathcal{F}$ is a set of functions satisfying $f: A^m \to A$.
-We say that $C\subset A$ is $(B, \mathcal{F})$-inductive if $C$ satisfies
-\begin{itemize}
-\item{$B\subset C$}
-\item{For all $f\in \mathcal{F}$ with $f:A^m \to A$, if $c_1, \ldots, c_m\in C$ then $f(c_1,\ldots, c_m)\in C$.}
-\end{itemize}
-\end{definition}
-
-\begin{theorem}[$(B, \mathcal{F})$-closure]
-Suppose $C$ is a $(B, \mathcal{F})$-inductive set.
-We define the $(\mathcal{B}, \mathcal{F})$-inductive closure of $C$ as
-$$
-\mathbb{N}_{C, (B, \mathcal{F})} = \bigcap \{\tilde{C}\in\mathcal{P}(A): \tilde{C} \text{ is } (B, \mc{F})\text{-inductive}\}
-$$
-\end{theorem}
-
-\begin{theorem}[The Recursion Theorem]
-Suppose $S$ is a set with $s\in S$ and suppose there is a function $g:S\to S$.
-Then there exists a unique function $f:\mathbb{N} \to S$ such that $f(0) = s$ and $f(n+1) = g(f(n))$.
-
-If such a function $f$ exists then it will be a subset of $\mathbb{N} \times S$.
-We build this subset in pieces using the induction principle.
-
-Let $f_0 = \{(0, s)\} \subset \mathbb{N}\times S$
-\end{theorem}
-
-\begin{theorem}[Recursive Definition]
-Suppose $U$ is a set.
-Let $B\subset U$ called the basis and let $\mc{F}$ be a (finite) set of assembly functions of the form $f: U \underbrace{\times \ldots \times}_{m \text{ times}} U \to U$.
-We prove that there exists a set $C$ such that $B\in C$ and if $f\in \mathbb{N}$ with $f: \times^m U \to U$, $c_1,\ldots, c_m\in C$, then $f(c_1, \ldots, c_m) \in C$.
-
-A sequence on $U$ is a function from $\bar{n} \to U$.
-
-If $u: \bar{n} \to U$ is a sequence of length $n$ on $U$ satisfying, for all $0 \le i \le n-1$, one of
-\begin{itemize}
-\item{$u_i \in B$}
-\item{$u_i = f(u_{j_1}, \ldots, u_{j_m})$ with $j_1,\ldots,j_m < i$ and $f:\times^m U \to U$ with $f\in \mc{F}$}
-\end{itemize}
-then we say $u$ is a $\mc{F}_B$-construction sequence on $U$.
-
-We then define, for $1\le n$
-
-\begin{equation*}
-\begin{split}
-C_n = \{c\in U: \exists u &\text{ such that } u \text{ is a length-$n$ } \mc{F}_B \text{-construction sequence on } U \\ & \text{ and } c = u_{n-1}\}
-\end{split}
-\end{equation*}
-
-We then define
-
-$$
-C = \bigcup_{n\in N} C_n
-$$
-
-We now prove that $C$ satisfies the desired properties.
-First we can see that $B \subset C_0 \subset C$ because for each $b\in B$ we can construct the construction segment $\{\{0, b\}\}$ which is a length-1 sequence on $U$.
-
-Now suppose $c_1, \ldots, c_m \in C$.
-We must show $f(c_1,\ldots, c_m)\in C$ for $f\in \mc{F}$ with $f:\times^m U \to U$.
-Since $c_1, \ldots, c_m \in C$ we have $c_i \in C_{n_i}$ for each $1\le i \le m$ so that there exists sequences $u^i$ with $u^i_{n_i} = c_i$.
-We can construct a new sequence $\tilde{u}$ of length $\sum_{i=1}^m n_i$ by concatenating all of the $u^i$.
-We can finally construct a new sequence of length $\sum_{i=1}^m n_i + 1$ by appending $f(c_1,\ldots, c_m)$ to $\tilde{u}$.
-
-\end{theorem}
-
-\begin{informal definition}[Induction]
-Suppose $\phi(n)$ is a statement which depends, or is indexed by, on a natural number $n\in\mathbb{N}$.
-If we are able to prove $\phi(0)$ and also that if $\phi(m)$ is true for all $0\le m < n$ implies $\phi(n)$ is also true, then we can conclude that $\phi(n)$ is in fact true for all $n$.
-Intuitively induction says that if we can climb from the lower rungs of a ladder to a higher rung on the ladder, and if we can get on the ladder, then we can climb to any rung on the ladder.
 \end{informal definition}
-Induction on the natural numbers will be used extensively throughout and is the most complicated informal concept which we will require.
 
+\begin{informal definition}[Structural Inductive Closure]
+We define the $(U, B, \mathcal{F})$-inductive closure $\mathbb{N}_{(U, B, \mathcal{F})}$ by
+$$
+\NUBF = \bigcap \{C \in \mathcal{P}(U): C \text{ is } (U, B, \mathcal{F})\text{-inductive} \}
+$$
+
+Intuitively the structural inductive closure $\NUBF$ includes $B$, those elements which can be reached by successive applications of functions $f\in \mathcal{F}$ and no other elements.
+Any element of $c \in \NUBF$ can be deconstructed using a `parse tree' in which each leaf is an element of $B$ and each non-leaf node is an element $f \in \mathcal{F}$ such that each node can be identified with $f$ acting on it's children.
+\end{informal definition}
+
+\begin{informal definition}[Structural Induction]
+Consider $C = \NUBF$.
+Suppose $\phi$ is a formula which depends on an element $c\in C$.
+If we can prove that
+
+\begin{itemize}
+\item{Base Case: $\phi$ is true for $c \in B$}
+\item{Inductive Case: For each $f\in \mathcal{F}$ with $f:U^n \to U$ we have that $\phi$ being true for $c_1, \ldots, c_n \in C$ implies $\phi$ is true for $f(c_1, \ldots, c_n)$}
+\end{itemize}
+
+Then we may conclude that $\phi$ is true for all $c\in C$.
+
+\end{informal definition}
+
+\begin{informal definition}[Structural Recursion]
+Consider $C = \NUBF$ and a set $S$.
+
+Suppose
+
+\begin{itemize}
+\item{There is a function $h_B: B \to S$}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ there is a corresponding function $\tilde{f}$ with $\tilde{f}:S^n \to S$}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ we have that $f|_{C^n}$ is injective}
+\item{For each $f\in \mathcal{F}$ with $f:U^n \to U$ we have that $\text{Img}(f|_{C^n}) \cap B = \emptyset$.}
+\item{For each pair $f, f' \in \mathcal{F}$ with $f:U^n \to U$ and $f':U^{n'}\to U$ we have that $\text{Img}(f|_{C^n}) \cap \text{Img}(f'|_{C^{n'}}) = \emptyset$}
+\end{itemize}
+
+Then it follows that there exists a unique function $h:C \to S$ which satisfies
+
+\begin{itemize}
+\item{for $c\in B$ we have $h(c) = h_B(c)$}
+\item{If $f\in \mathcal{F}$ with $f:U^n \to U$, $c_1, \ldots, c_n \in C$, and $f(c_i) = s_i$ for $0\le i < n$ then $h(f(c_1, \ldots, c_n)) = \tilde{f}(h(c_1), \ldots, h(c_n))$.}
+\end{itemize}
+
+The latter two constraints on $f|_{C^n}$ ensure that for any $c\in C$ we can uniquely "break it down" into constituent components combined together using functions from $f$.
+Then, once $c$ has been broken down into elements of $B$, we may calculate corresponding elements of $s$ using $h_B$ and then combine these elements using the corresponding functions $\tilde{f}$.
+\end{informal definition}
 
 \newpage
 \section{Syntax of the Language of First Order Logic (LFOL)}
@@ -840,11 +559,11 @@ This section will be devoted to various definitions and metalinguistic or syntac
 The technical formalism presented here will be required to establish the unique readability of formulas in $\textbf{LFOL}$ and to permit proofs regarding free and bound variable substitution.
 
 \begin{definition}[Natural Number Subset]
-Let $\bar{n}$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$.
+Let $[n]$ denote the (possibly empty) set of natural numbers (including 0) which are less than $n$.
 \end{definition}
 
-As an example we have that $\bar{5} = \{0, 1, 2, 3, 4\}$.
-Note that $\bar{0} = \{\} = \emptyset$.
+As an example we have that $[n] = \{0, 1, 2, 3, 4\}$.
+Note that $[0] = \{\} = \emptyset$.
 
 \begin{definition}[Finite Ordered List]
 If $\Sigma$ is any set of objects then a length $n$ finite ordered list of objects in $\Sigma$ is a functional mapping from $\bar{n}$ to $\Sigma$.\footnote{When we use the term `list' below we always mean `finite ordered list'.}

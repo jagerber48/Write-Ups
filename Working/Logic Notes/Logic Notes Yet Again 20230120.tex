@@ -1,0 +1,149 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb, amsmath, amsfonts}
+\usepackage{amsthm}
+\usepackage{glossaries}
+\usepackage{braket}
+\usepackage{bussproofs}
+
+\makeatletter
+\newtheoremstyle{break}% name
+    {12pt}%         Space above, empty = `usual value'
+    {12pt}%         Space below
+    {\addtolength{\@totalleftmargin}{1.5em}
+     \addtolength{\linewidth}{-3em}
+     \parshape 1 1.5em \linewidth
+     \itshape}% Body font
+    {}%         Indent amount (empty = no indent, \parindent = para indent)
+    {\bfseries}% Thm head font
+    {}%        Punctuation after thm head
+    {\newline}% Space after thm head: \newline = linebreak
+    {}%         Thm head spec
+\theoremstyle{break}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{break}
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{break}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{break}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{break}
+\newtheorem{informal definition}[definition]{Informal Definition}
+
+\newcommand{\bv}[1]{\boldsymbol{#1}}
+\newcommand{\mc}[1]{\mathcal{#1}}
+\newcommand{\bc}[1]{\bv{\mc{#1}}}
+\newcommand{\qq}[1]{``#1''}
+\newcommand{\NUBF}[0]{\mathbb{N}_{(U, B, \mathcal{F})}}
+
+\newacronym{fol}{\textbf{FOL}}{first-order logic}
+\newacronym{lfol}{\textbf{LFOL}}{language of first-order logic}
+\newacronym{zf}{ZF}{Zermelo-Fraenkel}
+
+
+\begin{document}
+\title{Logic Notes}
+\author{Justin Gerber}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+\subsection{Overview}
+
+All of traditional mathematics can be expressed in terms of mathematical set theory.
+Set theory is expressed in terms of a formal logic called \gls{fol} which is expressed in the \gls{lfol}.
+The \gls{lfol} is a written formal language which means that is is composed of an explicitly and clearly defined set of symbols which constitutes the alphabet of that language and similarly explicitly and clearly defined syntax rules which identify \qq{appropriate} ways in which the symbols can be combined to form formulas.\footnote{Authors may refer to formulas as well-formed formulas (WFFs), sentences, or words.}
+In addition to \gls{lfol}, \gls{fol} includes inference rules which, together, constitute a deductive calculus which allows us to \qq{deduce} new formulas from old formulas in a way which will be made clear below.
+\gls{fol} and the inference rules constitute \gls{fol}.
+
+A formal theory within a formal logic begins with a set of axioms which are a subset of the formulas of the formal language.
+It is then possible, using the inference rules, to derive new formulas from these axioms using the inference rules.
+The main question we ask about a formal theory is which formulas can be proven from the given axioms?
+
+The ultimate goal of this document is to state the \gls{zf} axioms which underpin mathematical set theory in the \gls{lfol} as well as to define and prove some very basic concepts in set and number theory.
+Though our goal is to formalize basic results in set and number theory, we will find we are philosophical forced to rely on informal definitions and understandings of very basic concepts related to set and number theory.
+That is, we will find it is impossible to define or prove basic theorems even about \gls{lfol} without an understanding of basic properties of, e.g., the natural numbers.
+
+We will begin with an exposition of the informal concepts on which we will rely throughout the following text.
+Next we will define sequences and strings and prove theorems about them.
+Afterwards we will be ready to define and prove basic theorems about \gls{lfol}.
+Next we will first define inference rules for \gls{fol} and then we will derive metatheorems to derive new \qq{convenience} inference rules.
+We will then spend time describing the framework by extending a formal language and formal logic via the introduction of new symbols and axioms and prove that, if done correctly, such extensions are conservative extensions, thus legitimizing the practice of introducing new symbols via definitions in a theory.
+With the preceding we will be ready to state the \gls{zf} axioms and begin to prove basic set theoretic theorems about them.
+
+\subsection{A Note on Syntax and Semantics}
+
+Two critical pillars within formal logic are syntax and semantics.
+Syntax is encapsulates the formal rules described above regarding the alphabet of a formal language, the syntactic rules for combining symbols into formulas, and the inference rules for deriving new formulas from old.
+In short, syntax describes the \qq{rules of the game} of formal logic.
+Semantics is, crudely, the assigning of meaning to the symbols of the language.
+In its simplest form, semantics is the assigning of truth values to formulas.
+
+Let's consider an example.
+Suppose we would like to formalize the statement: If $m$ is a natural number and $m$ is odd then $m \div 2$ is a natural number.
+In \gls{lfol} this expression might be formalized as\footnote{Here we use polish notation so that $\in m \mathbb{N}$ formalizes that $m$ is contained in $\mathbb{N}$. This would be expressed in infix notation as $m\in \mathbb{N}$.}
+\begin{equation*}
+\forall m((\in m \mathbb{N} \land Om) \implies \in \div m 2 \mathbb{N})
+\end{equation*}
+
+The smallest element in our formal language is the \textit{term}.
+A term is one of three things: (1) a concrete object such as the number \qq{2}, (2) a variable into which concrete objects can be \qq{plugged in} such as \qq{$m$}, or (3) an $n$-ary function of other terms such as \qq{$\div m 2$}.
+In fact, below we will express a concrete object as a 0-ary function.
+The terms in the above expression are
+\begin{align*}
+&m\\
+&\mathbb{N}\\
+&m\\
+&\div m 2\\
+&m\\
+&2\\
+&\mathbb{N}
+\end{align*}
+Above I've included every term in the formula as it appears from left to right including repetitions of the same term.
+The only variable which appears is \qq{$m$}.
+We see that \qq{$2$} and \qq{$\mathbb{N}$} appear as 0-ary functions or constants.
+We see that \qq{$\div$} appears as a 2-ary function with arguments \qq{$m$} and \qq{2} which are a variable and 0-ary function, respectively.
+
+The next larger element in our formal language is the \textit{atomic formula}.
+An atomic formula is the combination of an $n$-ary predicate symbol and $n$ terms.
+We have two predicate symbols in the above formula: \qq{$\in$} is a 2-ary predicate and \qq{$O$} is a 1-ary predicate symbol.
+The atomic formulas are then
+\begin{align*}
+\mc{A} &\equiv \in m \mathbb{N}\\
+\mc{B} &\equiv On\\
+\mc{C} &\equiv \in \div m 2 \mathbb{N}
+\end{align*}
+Here $\mc{A}$, $\mc{B}$, and $\mc{C}$ are metalanguage symbols which stand for the corresponding formulas on the right sides of the $\equiv$ symbol.
+
+Finally, the next larger object in our language is the formula.
+Atomic formulas themselves are already formulas, but we can form larger, more complex, formaulas by stringing together smaller formulas with connectives such as \qq{$\land$} and \qq{$\implies$} or quantifying with \qq{$\forall$}.
+The formulas in the above expression are
+\begin{align*}
+&\forall m((\in m \mathbb{N} \land O m) \implies \in \div m 2 \mathbb{N})\\
+&(\in m\mathbb{N}\land Om) \implies \in \div m 2 \mathbb{N}\\
+&(\in m\mathbb{N} \land Om)\\
+&\in m \mathbb{N}\\
+&Om\\
+&\in \div m 2 \mathbb{N}
+\end{align*}
+
+The preceding discussion within this section has been a purely syntactic analysis of the formula in question.
+That is, we broke the formula down into smaller parts within the formal language according to the syntax rules of the language.
+In the following sections we will learn that the formula given above is indeed a valid formula within \gls{lfol}.
+
+Semantics enters the discussion when we give an \textit{interpretation} to the various expressions above.
+For example, when we \textit{interpret} the symbol \qq{2} as the number 2, the expression \qq{$\div m 2$} as the division of the variable \qq{$m$} by the number \qq{2}, or the predicate \qq{$Om$} to mean that the variable $m$ is odd, we imposing semantics onto the expression.
+We also are making a semantic interpretation any time we impose or deduce a truth value for a given formula.
+For example, on all of the usual interpretations, we would assign a value of \qq{false} to the formula above because the odd natural numbers are, in fact, not divisible by 2.
+
+On goal of this document is to follow a game formalize approach to formal logic.
+Game formalism is a philosophical point of view which holds that it is possible to describe set theory, and by extension, all of mathematics using only syntactic methods.
+Or, more conservatively, at the very least, game formalism asks the question of how far one can get using such an approach.
+To that end, I would like it to be clear that all definitions and arguments should be self-contained within purely syntactic analyses.
+At a few times, I may make reference to semantic ideas, but this will only be to motivate and give intuition for syntactic definitions and manipulations.
+Such references should be disposable with respect to the main focus of this work.
+One could, instead, proceed by dropping semantics entirely from the narrative.
+In such an approach, some definitions may appear unmotivated, at least at first, but that is not, technically, a problem for the game formalist.
+
+\end{document}

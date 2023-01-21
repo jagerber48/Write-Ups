@@ -503,42 +503,321 @@ Now suppose that for $\bv{c} \in C$ that for all $i\in [n]$ that $h'(\bv{c}_i) =
 This means that $h^{'(n)}(\bv{c}) = h^{(n)}(\bv{c})$
 We then have
 $$
-h'(f(\bv{c})) = \tilde{f}(h^{'(n)}(\bv{c})) = \tilde{f}(h^{(n)}(\bv{c}) = h(f(\bv{c}))
+h'(f(\bv{c})) = \tilde{f}(h^{'(n)}(\bv{c})) = \tilde{f}(h^{(n)}(\bv{c})) = h(f(\bv{c}))
 $$
 This concludes the proof by induction that $h'=h$.
 \end{theorem}
 
 \section{Peano Axioms}
 
-%\begin{theorem}[Inductive Closure Coverage]
-%Suppose $C = \mathbb{N}_{(U, B, \mathcal{F})}$.
-%Consider
-%$$
-%\tilde{C} = \bigcup\left\{B, \bigcup\{x\in \mathcal{P}(C): \exists f \in \mathcal{F}(\forall n \in \mathcal{N}(f:U^n \to U \implies x = \text{Img}(f|_{C^n})))\}\right\}
-%$$
-%%$$
-%%\tilde{C} = \bigcup \left\{B,  \bigcup\{\text{Img}(f) \in \mathcal{P}(C): f\in \mathcal{F}\} \right\}
-%%$$
-%
-%We will show that $C = \tilde{C}$.
-%
-%First suppose $c\in \tilde{C}$
-%Then either $c\in B$ in which case $c\in C$ because $C$ is $(U, B, \mathcal{F})$-inductive or there is some $f\in \mathcal{F}$ and $n\in \mathbb{N}$ so that $f:U^n \to U$ and $c\in \text{Img}(f|_{C^n})$.
-%Suppose $f:U^n \to U$ and $c \in \text{Img}(f|_{C^n})$ there exists $\bv{c}\in C^n$ with $f(\bv{c}) = c$.
-%Because $C$ is $(U, B, \mathcal{F})$-inductive this means $c = f(\bv{c}) \in C$.
-%This means $\tilde{C} \subset C$.
-%
-%Now suppose $c\in C$.
-%We will proceed by induction to show $c\in \tilde{C}$.
-%We can see that if $c\in B$ then $c\in \tilde{C}$.
-%Now suppose that for $f\in \mathcal{F}$ with $f:U^n \to U$ and consider $\mathbb{c}\in C^n$.
-%Suppose that for all $i \in [n]$ we have $\bv{c}_i \in \tilde{C}$.
-%Because $\tilde{C} \subset C$ this means $\bv{c}_i \in C$.
-%This means that $f(\bv{c})\in \text{Img}(f|_{C^n}) \subset \tilde{C}$.
-%This concludes the induction proof that $c\in \tilde{C}$ so that $C \subset \tilde{C}$.
-%This means that every element of $C = \mathbb{N}_{(U, B, \mathcal{F})}$ is either an element of $B$ or in the image of an $f\in \mathcal{F}$ with $f:U^n \to U$ restricted to $(\mathbb{N}_{(U, B, \mathcal{F})})^n$.
-%
-%We see that $\tilde{C} = C$.
-%\end{theorem}
+\begin{definition}[Peano Structure]
+A Peano structure is a set $P$ together with an element $0_P \in P$ and a function $+_1:P\to P$ that satisfies the following properties
+\begin{align}
+&\forall p \in P (+_1(p) \not = 0_P)  \tag{P1}\label{eq:P1}\\
+&\forall p, p', p'' \in P((+_1(p')=p \land +_1(p'')=p) \implies p'=p'') \tag{P2}\label{eq:P2}\\
+& (S \subset P \land ((0_P \in S \land p \in S) \implies +_1(p) \in S)) \implies S=P \tag{P3}\label{eq:P3}
+\end{align}
+
+The fact that $+_1:P\to P$ means that for all $p\in P$ we have $+_1(p)\in P$.
+If we call $+_1$ the Peano successor function and a $p'$ satisfying $+_1(p') = p$ the predecessor of $p$ Eq. \ref{eq:P1} tells us that $0_P$ has no predecessor.
+Eq. \ref{eq:P2} tells us that $+_1$ is injective.
+In other words, every non-zero element of $P$ has only one predecessor.
+Eq. \ref{eq:P3} tells us that $P$ satisfies the induction principle.
+
+Note that the Peano axioms can be reformulated so that Eq. \ref{eq:P1} postulates the unique existence of an element with no predecessor from which $0_P$ can later be defined.
+This would require rewriting Eq. \ref{eq:P3} in a more complicated form.
+
+
+\end{definition}
+
+\begin{definition}[Natural Numbers Plus 1 Operation]
+We define an operation $+_1:\mathbb{N}\to \mathbb{N}$:
+\begin{align*}
++_1 =& \{z \in \mathbb{N} \times \mathbb{N}: \exists n \in \mathbb{N}(z = \braket{n, n^+})\}\\
+=& \{\braket{n, n^+} \in \mathbb{N} \times \mathbb{N}: n\in \mathbb{N}\}
+\end{align*}
+We can see that $n$ is total and functional so that $+$ is indeed a function $+_1:\mathbb{N}\to \mathbb{N}$.
+\end{definition}
+
+\begin{theorem}[0 has no Predecessor]
+\label{thm:0nopredecessor}
+Recall that
+$$
+n^+ = n \cup \{n\}
+$$
+so that
+$$
+m\in n^+ \iff (m=n \lor m \in n)
+$$
+Note that $n\in n^+$ so we can see that $n^+ \not = \emptyset = 0$.
+This means that $0$ has no predecessor.
+That is
+$$
+\forall  n\in \mathbb{N}(n^+ \not= 0)
+$$
+\end{theorem}
+
+\begin{theorem}[$n \subset n^+$]
+recall $n^+= n \cup \{n\}$.
+The first term $n$ appearing in the unions mean that every element $m\in n$ is also in $n^+$.
+This means $n \subset n^+$.
+\end{theorem}
+
+\begin{theorem}[$m\in n \implies m \subset n$]
+\label{thm:ntransitive}
+We proceed by induction.
+Suppose $n=0=\emptyset$.
+Then the formula is vacuously true because $m\not \in n$.
+
+Now suppose, as the induction hypothesis, that $m\in n \implies m \subset n$.
+Suppose $m\in n^+$.
+We must show $m\subset n^+$.
+$m\in n^+$ means $m = n$ or $m\in n$.
+Suppose $m=n$ and consider $x \in m=n \subset n^+$ so we have $x\in n^+$ so that $m\subset n^+$.
+Now suppose $m\in n$ and consider $x\in m$.
+By the induction hypothesis we have $m\subset n$ so we must have $x\in n \subset n^+$ so $x\in n^+$ so that $m\subset n^+$.
+
+
+Suppose $x\in m$.
+Note that since $m\in n^+$ we have $m=n$ or $m\in n$.
+If $m=n$ then $x\in n=m$ so, by the induction hypothesis, we have that $x\subset n\subset n^+$.
+Now suppose $m\in n$ which implies $m\subset n \subset n^+$.
+We then have $x \in n^+$
+\end{theorem}
+
+\begin{theorem}[$m\in n \implies n \not \subset m$]
+\label{thm:minnnnotsubsetm}
+We prove the by induction.
+
+If $n=0$ then the formula is vacuously true since $m\not \in 0 = \emptyset$.
+
+Suppose, for the induction hypothesis, that $m\in n \implies n \not \subset m$.
+Now assume $m\in n^+$.
+We must show $n^+ \not \subset m$.
+Since $m\in n^+$ we have $m=n$ or $m\in n$.
+if $m\in n$ then we know $n\not \subset m$ by the induction hypothesis.
+We know $n\subset n^+$ so this means $n^+ \not \subset m$.
+Suppose $m=n$. We know $n\subset n$ so, by the contrapositive of the induction hypothesis we have $n\not \in n$.
+But $n=m$ so we see that $n \not \in m$ but we have $n\in n^+$ so $m\not \subset n^+$.
+\end{theorem}
+
+\begin{theorem}[$+_1$ is injective]
+\label{thm:+injective}
+Suppose $+_1(n) = +_1(m)$.
+We must show $n=m$.
+Since $m\in +_1(n) = n^+$ we have $m=n$ or $m\in n$ and since $n\in  +_1(m) = m^+$ we have $n=m$ or $n\in m$.
+If $n=m$ we are done.
+
+Suppose $m\in n$ and $n\in m$.
+By Theorem \ref{thm:ntransitive} we have that, because $m \in n$ that $m \subset n$, but by Theorem \ref{thm:minnnnotsubsetm} we have that, because $n\in m$ that $m\not \subset n$.
+We conclude that it can't be the case that $m\in n$ and $n\in m$ so we must have $n=m$.
+
+\end{theorem}
+
+\begin{theorem}[The Natural Numbers are a Peano Structure]
+We can see that if we let $P= \mathbb{N}$, $0_P = 0$ and define $+_1$ as the set successor operation then $P$ is a Peano structure.
+We have $0 \in \mathbb{N}$ and $+_1:\mathbb{N}\to \mathbb{N}$.
+Theorem \ref{thm:0nopredecessor} tells that $0$ has not predecessor satisfying the first Peano axiom.
+Theorem \ref{thm:+injective} tells us that $+_1$ is injective satisfying the second Peano axiom.
+Theorem \ref{thm:indprinc1} tells us that $\mathbb{N}$ satisfies the induction principle satisfying the third Peano axiom.
+\end{theorem}
+
+\begin{theorem}[The Peano Axioms are Inductive]
+If $P$ is a Peano structure then $P$ is $(P, \{0_P\}, \{+_1\})$-inductive.
+This follows because $\{0_P\} \subset P$ and $+_1:P\to P$.
+\end{theorem}
+
+\begin{theorem}[$P = \mathbb{N}_{(P, \{0_P\}, \{+_1\})}$]
+We have that
+$$
+\mathcal{C}  = \{C\in \mathcal{P}(P): P \text{ is } (P, \{0_P\}, \{+_1\})\text{-inductive}\}
+$$
+
+$$
+\mathbb{N}_{(P, \{0_P\}, \{+_1\})} = \bigcap \mathcal{C}
+$$
+We can see that $\mathbb{N}_{(P, \{0_P\}, \{+_1\})}  \subset P$.
+We must show $P \subset \mathbb{N}_{(P, \{0_P\}, \{+_1\})} $.
+That is, $\forall p \in P (p \in \mathbb{N}_P)$.
+We prove this using the induction principle for the Peano structure.
+Let
+$$
+S = \{p \in P: p \in \mathbb{N}_{(P, \{0_P\}, \{+_1\})} \}
+$$
+We know that $0_P$ because $0_P$ is in each inductive $C\in \mathcal{C}$.
+If $p \in S$ then $p\in C$ for each $C \in \mathcal{C}$ but since each $C$ is $(P, \{0_P\}, \{+_1\})$-inductive that means $+_1(p) \in C$ so that $+_1(p) \in S$.
+By the Peano induction principle this means that $S=P$ so that $P \subset \mathbb{N}_P$ meaning $P= \mathbb{N}_{(P, \{0_P\}, \{+_1\})} $.
+\end{theorem}
+
+\begin{theorem}[Adding an Arbitrary Number]
+Suppose $P$ is a Peano structure.
+We know that $P=\mathbb{N}_{(P, \{0_P\}, \{+_1\})}$.
+Because $0_P$ has no predecessor we have $0\not \in \text{Img}(+_1)$.
+We also have that $+_1$ is injective.
+Let $\tilde{+_1} = +$ and $\tilde{\mathcal{F}} = \{\tilde{+_1}\}$ and $\mathcal{B}(+_1) = \tilde{+_1}$.
+Suppose $p\in P$.
+Let $h_{\{0_P\}}(0_P) = p$.
+The conditions for the recursion theorem then apply and allow us to define a function $+_p:P\to P$ which satisfies
+\begin{align*}
++_p(0_P) &= p \\
++_p(+_1(n)) &= +_1(+_p(n))
+\end{align*}
+\end{theorem}
+
+\begin{theorem}[$+_{0_P}(p) = +_p(0_P) = p$]
+We proceed by induction.
+We have that $+_p(0_P) = p$ from the recursive definition of $+_p$.
+
+To show $+_{0_P}(p)=p$ we proceed by induction.
+Suppose $p=0_P$.
+Then we have
+$$
++_{0_P}(0_P) = 0_P
+$$
+from the recursive definition of $+_{0_P}$.
+Now suppose $+_{0_P}(p) = p$.
+Then consider
+$$
++_{0_P}(+_1(p)) = +_1(+_{0_P}(p)) = +_1(p)
+$$
+\end{theorem}
+
+\begin{theorem}[$+_n(+_1(m)) = +_{+_1(n)}(m)$]
+We proceed by induction.
+If $n=0_P$ then
+$$
++_{0_P}(+_1(m)) = +_1(m) = +_{+_1(0_P}
+$$
+\end{theorem}
+
+\begin{theorem}[$+_n(m) = +_m(n)$]
+We proceed by induction.
+If $n=0_P$ then
+$$
++_{0_P}(m) = m = +_m(0_P)
+$$
+Which follows from $0_P$ being the additive identity (previous theorem).
+
+Now suppose $+_n(m) = +_m(n)$ and consider $+_1(n)$
+$$
++_m(+_1(n)) = +_1(+_m(n)) = +_1(+_n(m)) = +_n(+_1(m))
+$$
+
+\end{theorem}
+
+
+\begin{theorem}[Binary Addition]
+We define a binary operation $+$ as follows.
+
+\begin{align*}
++_B: P \times P &\to P\\
+(n, m) &\mapsto +_n(m)
+\end{align*}
+\end{theorem}
+
+\begin{theorem}[$0_P$ is the $+_B$ identity]
+We will show $+_B(0_p, p) = +_B(p, 0_P) = p$.
+First consider
+$$
++_B(p, 0_P) = +_p(0_P) = p
+$$
+by the recursive definition of $+_p$
+
+We must use induction to prove $+_B(0_P, p) = p$.
+First suppose $p=0_P$ so that
+$$
++_B(0_P, 0_P) = +_{0_P}(0_P) = 0_P
+$$
+Now suppose $+_B(0_P, p) = p$ and consider
+$$
++_B(0_P, +_1(p)) = +_{0_P}(+_1(p)) = +_1(+_{0_P}(p)) = +_1(+_B(0_P, p)) = +_1(p)
+$$
+\end{theorem}
+
+
+\begin{theorem}[Arbitrary Number Addition is Commutative]
+Suppose $n, m \in P$.
+We will show $+_n(m) = +_m(n)$.
+We proceed by induction.
+If $n=0_P$ then
+$$
++_{0_P}(m) = +_m(0_P)
+$$
+\end{theorem}
+
+\begin{theorem}[Addition is Commutative]
+We will show $+_B(p, p') = +_B(p', p)$.
+We proceed by induction on $p$.
+
+Suppose $p=0_P$ so that
+$$
++_B(0_P, p') = p' = +_B(p', 0_P)
+$$
+because $0_P$ is the $+_B$ identity.
+
+Now suppose $+_B(p, p') = +_B(p', p)$ and consider $+_1(p)$.
+$$
++_B(+_1(p), p') = +_{+_1(p)}(p')
+$$
+
+\end{theorem}
+
+\begin{theorem}[Addition is Associative]
+Consider $a, p, c \in P$.
+We will show $+_B(+_B(a, p), c) = +_B(a, +_B(p, c))$.
+We proceed by induction on $p$.
+First suppose $p=0_P$ so that
+$$
++_B(+_B(a, 0_P), c) = +_B(a, c) = +_B(a, +_B(0_P, c))
+$$
+which follows because $0_P$ is the $+_B$ identity.
+
+Now suppose $+_B(+_B(a, p), c) = +_B(a, +_B(p, c))$ and consider $+_1(p)$:
+\begin{align*}
++_B(+_B(a, +_1(p)), c) =& +_B(+_a(+_1(p)), c) = +_B(+_1(+_a(p)), c)\\
+=& +_{+_1(+_a(p))}(c)
+\end{align*}
+\end{theorem}
+
+
+\begin{theorem}[Addition is Associative]
+Consider $a, p, c\in P$.
+Consider $(a+_B p) +_B c$.
+We prove by induction on $p$ that $(a +_B p) +_B c = a +_B (p+_B c)$.
+
+Suppose $p=0_P$.
+We then have
+$$
+(a+_B 0_P) +_B c = a +_B c = a +_B (0_P +_B c)
+$$
+
+Now suppose, as the induction hypothesis that $(a + p) + c = a + (p+c)$.
+Then consider
+$$
+(a + +(p)) + c = +_a(+(+p)) + c = +(+_a(+p)) + c
+$$
+
+\end{theorem}
+
+\begin{definition}[Less Than or Equal]
+We define a relation $\le\subset P \times P$ by
+\begin{align*}
+\le =& \{z \in P\times P: \exists p, p' \in P (z = \braket{p, p'} \land \exists m\in P(p+m = p'))\\
+=& \{\braket{p, p'}\in P\times P: p, p' \in P \land \exists m\in P( p+m = p')\}
+\end{align*}
+
+In other words, we have that $p \le p'$ if and only if there is an $m\in P$ with $p+m = p'$.
+\end{definition}
+
+\begin{theorem}[$\le$ is reflexive]
+Suppose $p\in P$.
+We have $p+0_p = +_p(0_P) = p$.
+This means, by the definition of $\le$, the $p\le p$.
+\end{theorem}
+
+\begin{theorem}[$\le$ is transitive]
+Suppose $a, b, c \in P$ and that $a \le b$ and $b\le c$.
+$a\le b$ means there exists $m\in P$ with $a+m = b$ and $b \le c$ means there exists $m' \in P$ with $b+m' = c$.
+\end{theorem}
 
 \end{document}

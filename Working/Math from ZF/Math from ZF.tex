@@ -43,7 +43,7 @@
 \maketitle
 
 \section{Introduction}
-The language of first order logic is a formal language which includes, variable, term, predicate, function, and logical symbols including negation, i
+The language of first order logic is a formal language which includes, variable, term, predicate, function, and logical symbols including negation andimplication
 
 
 In this document we will state the Zermelo-Fraenkel (ZF) axioms in the language of first order logic (LFOL) with the inclusion of the $\in$ predicate.
@@ -118,7 +118,7 @@ This axiom says that for any set $x$ there exists a set $y$ whose elements are t
 $$
 \forall x (\exists z (z\in x) \implies \exists y(y\in x \land \forall z(z\in x \implies z \not \in y)))
 $$
-This axiom says that if $x$ is non-empty then it contains at least one element $y$ such that none of the elements of $x$ are contained in $y$.
+This axiom says that if $x$ is non-empty then it contains an element $y$ such that none of the elements of $x$ are contained in $y$.
 \end{definition}
 
 \begin{definition}[Axiom of Power Set]
