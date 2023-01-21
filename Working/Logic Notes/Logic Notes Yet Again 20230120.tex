@@ -29,12 +29,16 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \theoremstyle{break}
 \newtheorem{informal definition}[definition]{Informal Definition}
+\theoremstyle{break}
+\newtheorem{informal theorem}[theorem]{Informal Theorem}
 
 \newcommand{\bv}[1]{\boldsymbol{#1}}
 \newcommand{\mc}[1]{\mathcal{#1}}
 \newcommand{\bc}[1]{\bv{\mc{#1}}}
 \newcommand{\qq}[1]{``#1''}
-\newcommand{\NUBF}[0]{\mathbb{N}_{(U, B, \mathcal{F})}}
+\newcommand{\natnum}[0]{\mathbb{N}}
+\newcommand{\UBF}[0]{(U, B, \mc{F})}
+\newcommand{\NUBF}[0]{\natnum_{\UBF}}
 
 \newacronym{fol}{\textbf{FOL}}{first-order logic}
 \newacronym{lfol}{\textbf{LFOL}}{language of first-order logic}
@@ -47,7 +51,9 @@
 \date{\today}
 \maketitle
 
+
 \section{Introduction}
+
 
 \subsection{Overview}
 
@@ -72,6 +78,7 @@ Next we will first define inference rules for \gls{fol} and then we will derive 
 We will then spend time describing the framework by extending a formal language and formal logic via the introduction of new symbols and axioms and prove that, if done correctly, such extensions are conservative extensions, thus legitimizing the practice of introducing new symbols via definitions in a theory.
 With the preceding we will be ready to state the \gls{zf} axioms and begin to prove basic set theoretic theorems about them.
 
+
 \subsection{A Note on Syntax and Semantics}
 
 Two critical pillars within formal logic are syntax and semantics.
@@ -82,7 +89,7 @@ In its simplest form, semantics is the assigning of truth values to formulas.
 
 Let's consider an example.
 Suppose we would like to formalize the statement: If $m$ is a natural number and $m$ is odd then $m \div 2$ is a natural number.
-In \gls{lfol} this expression might be formalized as\footnote{Here we use polish notation so that $\in m \mathbb{N}$ formalizes that $m$ is contained in $\mathbb{N}$. This would be expressed in infix notation as $m\in \mathbb{N}$.}
+In \gls{lfol} this expression might be formalized as\footnote{Here we use prefix notation so that $\in m \mathbb{N}$ formalizes that $m$ is contained in $\mathbb{N}$. This would be expressed in infix notation as $m\in \mathbb{N}$.}
 \begin{equation*}
 \forall m((\in m \mathbb{N} \land Om) \implies \in \div m 2 \mathbb{N})
 \end{equation*}
@@ -145,5 +152,321 @@ At a few times, I may make reference to semantic ideas, but this will only be to
 Such references should be disposable with respect to the main focus of this work.
 One could, instead, proceed by dropping semantics entirely from the narrative.
 In such an approach, some definitions may appear unmotivated, at least at first, but that is not, technically, a problem for the game formalist.
+
+
+\section{Informal Mathematics}
+
+The goal of this work is to carefully define \gls{lfol} and \gls{fol} so that we can eventually formally describe \gls{zf} set theory with \gls{fol} to serve as a foundation for the formalization of much of modern mathematics.
+However, we will not be able to perform this task starting from nothing.
+Indeed, to create this foundation for formal mathematics, we will find ourselves relying on \textit{informal} conceptions of various simple mathematical constructs such as the natural, or \qq{counting}, numbers.
+
+In this section I will outline these prerequisite informal mathematical concepts necessary for this project.
+We will encounter various \qq{definitions} for informal concepts, but these definitions should not be taken as formally seriously as those that appear in later sections of this work or in formal mathematical texts.
+These definitions should be thought of more like definitions of English words which are understood by speakers and listeners of the language and less like formal definitions which could, for example, be encoded on a computer.
+
+Furthermore, these informal definitions may closely mirror the definitions for their formal counterparts.
+However, we would have a logical circularity problem if we required the formal concept of, e.g., a set to underpin the formal concept of a set.
+Instead, we rely on informal definitions initially and formalize them later, when we have the requisite machinery in place.
+
+
+\subsection{Informal Logic}
+
+\begin{informal definition}[Logic]
+To build up our formal system of logic we will indeed require an informal system of logic.
+It is necessary that we informally or intuitively understand concepts like
+\begin{itemize}
+\item{If $\mc{A}$ is true and $\mc{B}$ is true then \qq{$\mc{A}$ and $\mc{B}$} is true.}
+\item{If $\mc{A}$ implies $\mc{C}$ and $\mc{B}$ implies $\mc{C}$ then if \qq{$\mc{A}$ or $\mc{B}$} is true then $\mc{C}$ is true.}
+\end{itemize}
+\end{informal definition}
+
+\begin{informal definition}[Object]
+An object is a clearly definable and delineated entity.
+\end{informal definition}
+
+\begin{informal definition}[Symbol]
+A symbols is a type of object.
+Written symbols are specific two-dimensional patterns depicted on two-dimensional surfaces like paper or screens.
+We will typically use symbols from the English alphabet and numeral system as well as some punctuation symbols and brackets.
+\end{informal definition}
+
+\begin{informal definition}[Object Equality]
+Suppose the symbols $x$, $y$, and $z$ represent objects.
+If $x$ and $y$ are the same object then we may write $x \equiv y$. Otherwise we write $x\not \equiv y$.
+From this it (informally) follows that if $x\equiv y$ then $y \equiv x$ and that if $x \equiv y$ and $y \equiv z$ then $x \equiv z$.
+We of course also always have that $x \equiv x$.
+\end{informal definition}
+
+
+\subsection{Informal Set Theory}
+
+\begin{informal definition}[Set]
+A set is a collection of distinct objects.
+If $x$, $y$, and $z$ are objects then the set containing these objects may be denoted as $\{a, b, c\}$.
+Note that sets only enumerate distinct objects so if $x\equiv y$ then $\{x, y\}$ is the same set as $\{x\}$ and $\{y\}$.
+
+If a certain object $x$ is contained in a set $y$ then we denote this with the set membership symbol, $\in$ as $x \in y$.
+\end{informal definition}
+
+\begin{informal definition}[Subset]
+If $S$ and $T$ are sets and all elements that are contained in $S$ are also contained in $T$ then we say $S$ is a subset of $T$ and we denote this by $S \subset T$.
+This can also be expressed by indicating that $x\in S$ implies $x \in T$.
+\end{informal definition}
+
+\begin{informal definition}[Set Equality]
+If $S$ and $T$ are sets and $S\subset T$ and $T\subset S$ then we say $S=T$.
+From this it follows that
+\begin{itemize}
+\item{$S=S$}
+\item{$S=T$ implies $T=S$}
+\item{If $U$ is a third set that if $S=T$ and $T=U$ then $S=U$.}
+\end{itemize}
+\end{informal definition}
+
+\begin{informal definition}[The Empty Set]
+There is a set which contains no elements which we denote by $\emptyset = \{\}$.
+\end{informal definition}
+
+\begin{informal definition}[Subset Specification]
+Suppose $S$ is a set.
+Then we may extract a subset of $S$ by picking out all components of $x\in S$ which satisfy a certain property $\phi(x)$.
+This specification set is denoted by
+\begin{equation*}
+\{x\in S: \phi(x)\}
+\end{equation*}
+\end{informal definition}
+
+Note that sets constructed using subset specification are always subsets of a larger set $S$.
+If we were to drop the constraint that the specification set is a subset of a larger set $S$ and allow sets of the form $\{x: \phi(x)\}$, i.e. to allow all objects $x$ satisfying a certain property $\phi(x)$ to form a set, then we open ourselves to the Russell paradox which we describe now.
+
+The Russell paradox considers the Russell \qq{set}
+\begin{equation*}
+R = \{x: x\not \in x\}
+\end{equation*}
+The paradox asks the question is $R\in R$?
+If $R\in R$ then $R\not \in R$ because of what it means to be an element of $R$.
+But if $R\not \in R$ then we have $R\in R$, again because of what it means to be an element of $R$.
+With subset specification we avoid this by only specifying subsets of already well-behaved sets.
+
+Another type of pathology we must avoid in formal set theory is that of infinite descending sequences of sets.
+That is, sets that satisfy something like $x\in y$ and $y\in x$ so that $y = \{x\} = \{\{y\}\} = \{\{\{x\}\}\} = \{\ldots \{x\} \ldots \}$.
+In \gls{zf} set theory such constructions are avoided using the axiom of regularity.
+In our informal setting we will not explicitly address this pathology.
+Rather, we will just stick to considering simple enough objects that we know this isn't of concern to the informal theory.
+
+\begin{informal definition}[Set Union]
+If $S$ is a collection of set $S$ then we may take the union over the elements of $S$.
+This set denoted by $\bigcup S$ contains all the elements contained in the elements of $S$.
+That is, $x \in \bigcup S$ if and only if there is a $y\in S$ with $x\in y$.
+If $S$ contains two elements $T$ and $U$ then we write
+$$
+\bigcup S = \bigcup \{T, U\} = T \cup U
+$$
+If $S = \{s_0, \ldots, s_{n-1}\}$ then we may write
+$$
+\bigcup S = s_0 \cup \ldots \cup s_{n-1}
+$$
+\end{informal definition}
+
+\begin{informal definition}[Set Intersection]
+If $S$ is a collection of sets then we define the intersection of the elements of $S$ to be the set whose elements are exactly those which are contained in each element of $S$.
+$$
+\bigcap S = \{x \in \bigcup S: \text{For each } y \in S \text{ we have } x \in y\}
+$$
+If $S$ has two elements so that $S = \{T, U\}$ then we write
+$$
+\bigcap S = \bigcap \{T, U\} = T \cap U
+$$
+If $S = \{s_0, \ldots, s_{n-1}\}$ then we may write
+$$
+\bigcap S = s_0 \cap \ldots \cap s_{n-1}
+$$
+\end{informal definition}
+
+\begin{informal definition}[Set Subtraction]
+If $S$ and $T$ are sets then we may subtract $T$ from $S$ by collecting all the elements of $S$ which are not in $T$:
+\begin{equation*}
+S\setminus T = \{x \in S: x \not \in T\}
+\end{equation*}
+\end{informal definition}
+
+\begin{informal theorem}[Set Subtraction is Distributive Over Set Union]
+Suppose $S_0, \ldots, S_{n-1}, T$ are sets.
+We show that
+\begin{equation*}
+(S_0 \cup \ldots \cup S_{n-1}) \setminus T = (S_0 \setminus T) \cup \ldots \cup (S_{n-1} \setminus T)
+\end{equation*}
+Let $X = (S_0 \cup \ldots \cup S_{n-1}) \setminus T$ and $Y = (S_0 \setminus T) \cup \ldots \cup (S_{n-1} \setminus T)$.
+We must show $X=Y$.
+Suppose $x \in X$.
+That means that (1) $x\not in T$ and (2) there is an $0 \le i < n$ with $x\in S_i$.
+This means that for some $0 \le i < n$ we have $x\in (S_i \setminus T)$ so that $x\in Y$.
+Now suppose $y\in Y$.
+This means that for some $0 \le i < n$ we have $y\in (S_i \setminus T)$ which means $y \not \in T$ and $y\in S_i$.
+This means $y\in (S_0 \cup \ldots S_{n-1})$ and since $y \not \in Y$ we have $y\in X$.
+So we have $X = Y$.
+\end{informal theorem}
+
+\begin{informal definition}
+If $x$ and $y$ are objects then we create a new object called the ordered pair of $x$ and $y$ and denote it by $\braket{x, y}$.
+Ordered pairs have the property that $\braket{x, y} = \braket{y, x}$ if and only if $x = y$.
+\end{informal definition}
+
+\begin{informal definition}[Cartesian Product]
+If $S$ and $T$ are two sets then we may construct a set which consists of all the ordered pairs whose first elements are contained in $S$ and whose second elements are contained in $T$.
+This set is called the Cartesian product of $S$ and $T$ and is denoted by $S\times T$.
+We have that $\braket{s, t} \in S\times T$ if and only if $s\in S$ and $t \in T$.
+\end{informal definition}
+
+\begin{informal definition}[Relation]
+If $S$ and $T$ are two sets then a relation $R$ between $S$ and $T$ is any subset of $S\times T$.
+That is $R \subset S \times T$.
+If $s\in S$ and $t\in T$ and $\braket{s, t} \in R$ then we say $s$ and $t$ are related by $R$ and we my write $Rst$ using direct prefix notation or $R(s, t)$ using prefix notation with parentheses for clarity, or $sRt$ for binary relations.
+$S$ is called the domain of $R$ and $T$ is called the co-domain of $R$.
+\end{informal definition}
+
+\begin{informal definition}[Relation Restriction]
+Suppose $R\subset S \times T$ is a relation.
+Suppose $S' \subset S$.
+We define a new relation
+$$
+R|_{S'} = \{\braket{s', t} \in R: s' in S'\}
+$$
+$R|_{S'}$ is the restriction of $R$ to the possibly smaller domain $S' \subset S$.
+For $s' \in S'$ we have that $s'$ is related to the same elements of $T$ under $R|_{S'}$ as it is related to under $R$.
+Note that $R|_{S'} \subset S' \times T$.
+\end{informal definition}
+
+\begin{informal definition}[Function]
+A function is a relation which satisfies two properties.
+Suppose $S$ and $T$ are two sets and $R$ is a relation between them so that $R \subset S\times T$.
+\begin{itemize}
+\item{\textbf{Total}: For every $s\in S$ there exists a $t\in T$ such that $\braket{s, t} \in R$. That is every element of $s$ is related to at least one element of $T$}
+\item{\textbf{Functional}: If $s\in S$ and $t, t' \in T$ then if $\braket{s, t} \in R$ and $\braket{s, t'} \in R$ then $t = t'$. That is every element of $s$ is related to at most one element of $T$.}
+\end{itemize}
+If a relation $R$ is total and functional then we say that that relation is a function.
+$R \subset S \times T$ begin functional means that each element of $s$ is related to exactly one element of $T$.
+If $f\subset S\times T$ with domain $S$ and co-domain $T$ then we may indicate this by $f: S \to T$.
+For each $s\in S$ we denote the unique element $t\in T$ which satisfies $\braket{s, t} \in f$ by $f(s)$ so that $f(s)\in T$ and $\braket{s, f(s)} \in f$.
+\end{informal definition}
+
+\begin{informal definition}[Function Image]
+Suppose $f: S\to T$.
+If $S' \subset S$ then we define
+$$
+f(S') = \{t \in T: \text{There exists } s' \in S' \text{ such that } \braket{s', t} \in f\}
+$$
+$f(S')$ is the image of $f$ under $S'$.
+
+We define the image of $f$ to be
+$$
+\text{Img}(f) = f(S)
+$$
+\end{informal definition}
+
+
+\begin{definition}[Power Set]
+If $S$ is a set then we denote the set of all subsets of $S$ by $\mc{P}(S)$.
+Note that $\emptyset, S \in \mc{P}(S)$.
+\end{definition}
+
+\begin{informal definition}[$n$-ary Cartesian Product]
+Suppose $S$ is a set and $n\in \natnum$.
+We define $S^n$ to be the collection of all functions with domain $[n]$ and co-domain $S$.
+$$
+S^n = \{f \in \mc{P}([n]\times S): f \text{ is a function}\}
+$$
+That is $\bv{s} \in S^n$ means $\bv{s}: [n] \to S$.
+If $0 \le i < n$ then we write $\bv{s}_i = \bv{s}(i)$ noting that $\bv{s}_i \in S$.
+\end{informal definition}
+
+\subsection{Informal Number Theory}
+
+\begin{informal definition}[The Natural Numbers]
+We require an informal understanding the natural numbers.
+These are the counting numbers $0, 1, 2, \ldots$.
+We denote the set of all natural numbers by $\natnum$.
+We will require an understanding of simple relations like $<, \ge, =$ on $\natnum$ as well as the addition binary function $+$.
+\end{informal definition}
+
+\begin{informal definition}[Induction on the Natural Numbers]
+Suppose $\phi$ is an expression which depends on a natural number $n \in \natnum$.
+If we can prove that
+\begin{itemize}
+\item{\textbf{Base case}: $\phi$ holds for $n = 0$}
+\item{\textbf{Inductive Case}: $\phi$ holding for $n$ implies $\phi$ holds for $n+1$}
+\end{itemize}
+then we may conclude that $\phi$ holds for all $n \in \natnum$.
+Informally this makes sense because we can use te base case to tell us that $\phi$ holds for $n=0$, then we can use the inductive case to show that $\phi$ holds for $n=1 = 0 + 1$ (since it holds for $n=0$) and so on.
+In \gls{zf} set theory we will see that the inductive property of the natural numbers is actually a theorem of the theory.
+\end{informal definition}
+
+\begin{informal definition}[Numbers Less than $n$]
+We let
+$$
+[n] = \{m \in \natnum: m < n\} = \{0, \ldots, n-1\}
+$$
+denote the set of natural numbers less than $n$.
+Note that there are $n$ elements in $[n]$ and $[0] = \emptyset$.
+\end{informal definition}
+
+\begin{informal definition}[Structurally Inductive]
+Suppose $U$ is a set, $B\subset U$ and $\mc{F}$ is a family of functions where $f\in \mc{F}$ is a function $f:U^n \to U$ for some $n\in \natnum$.
+We say that a subset $C\subset U$ is $\UBF$-inductive if it satisfies two properties:
+\begin{itemize}
+\item{$B\subset C$}
+\item{For each $f\in \mc{F}$ with $f:U^n \to U$ and for each $\mc{c} \in C^n \subset U^n$ we have $f(\bv{c}) \in C$.}
+\end{itemize}
+\end{informal definition}
+
+\begin{informal definition}[Structural Inductive Closure]
+We define the $\UBF$-inductive closure $\NUBF$ by
+$$
+\NUBF = \bigcap \{C \in \mc{P}(U): C \text{ is } \UBF\text{-inductive}\}
+$$
+Intuitively, the structural inductive closure $\NUBF$ includes (1) $B$, (2) those elements of $U$ which can be reached by successive applications of elements of $\mc{F}$ onto previously included elements (starting with elements in $B$) and (3) no elements not included in (1) or (2).
+Equivalently, any element of $c\in \NUBF$ can be deconstructed using a \qq{parse tree} whose leaves are elements of $B$ and whose non-leaf nodes are elements of $f\in \mc{F}$ such that each node can be identified with $f$ acting on its children.
+$c\in \NUBF$ then corresponds to the root of the parse tree.
+
+The structural inductive closure generalizes the natural numbers $\natnum$.
+Indeed, if we define $+_1: \natnum \to \natnum$ by $+_1(n) = n+1$ then it can be seen that
+$$
+\natnum = \natnum_{(\natnum, \{0\}, \{+_1\})}
+$$
+That is the natural numbers are their own inductive closure with $0$ as the only element in the base set and with $+_1$ as the only generator function.
+\end{informal definition}
+
+\begin{informal definition}[Structural Induction]
+Consider $C = \NUBF$.
+Suppose $\phi$ is a formula which depends on an element $c\in C$.
+If we can prove that
+\begin{itemize}
+\item{\textbf{Base Case}: $\phi$ holds for all $b\in B$}
+item{\textbf{Inductive Case}: For each $f\in \mc{F}$ with $f:U^n \to U$ for some $n\in \natnum$ and for each $\bv{c} \in C^n$ we have that $\phi$ holding for each $\bv{c}_i$ for $i\in [n]$ means $\phi$ holds for $f(\bv{c})$}
+\end{itemize}
+then we may conclude that $\phi$ holds for all $c\in C$.
+\end{informal definition}
+
+\begin{informal definition}[Structural Recursion]
+Consider $C = \NUBF$ and a set $S$.
+Suppose
+\begin{itemize}
+\item{There is a function $h_B: B \to S$}
+\item{For each $f\in \mc{F}$ with $f: U^n \to U$ there is a corresponding function $\tilde{f}$ with $\tilde{f}:S^n \to S$}
+\item{For each $f\in \mc{F}$ with $f:U^n \to U$ we have that $f|_{C^n}$ is injective (that is $f(\bv{c}) = f(\bv{c}')$ implies $\bv{c}=\bv{c}'$)}
+\item{For each $f \in \mc{F}$ with $f:U^n \to U$ we have that $\text{Img}(f|_{C^n}) \cap B = \emptyset$.}
+\item{For each $f, f' \in \mc{F}$ with $f:U^n \to U$ and $f:U^{n'} \to U$ we have that $\text{Img}(f|_{C^n}) \cap \text{Img}(f'|_{C^{n'}}) = \emptyset$}
+\end{itemize}
+then it follows that there exists a unique function $h:C \to S$ which satisfies
+\begin{itemize}
+\item{For $b\in B$ we have $h(b) = h_B(b)$}
+\item{If $f\in \mc{F}$ with $f:U^n \to U$, $c_0, \ldots, c_{n-1} \in C$ and $f(c_i) = s_i$ for $i \in [n]$, then $h(f(c_0, \ldots, c_{n-1})) = \tilde{f}(h(c_0), \ldots, h(c_{n-1}))$.}
+\end{itemize}
+
+The latter two constrains on $f|_{C^n}$ ensure that for any $c\in C$ we can uniquely \qq{break it down} into constituent components combined together using a function $f\in \mc{F}$.
+We can intuitively understand $h$ in the following way.
+If the \qq{unique breakdown} conditions are ensured then we are guaranteed that we can deconstruct $c$ down to elements of $B$.
+We can then calculate $h$ on those elements of $B$ using $h_B$ and reconstruct the full function $h$ using the elements $\tilde{f}$ corresponding to the functions $f$ required to reconstruct $c$.
+\end{informal definition}
 
 \end{document}
